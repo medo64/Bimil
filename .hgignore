@@ -1,0 +1,20 @@
+syntax: glob
+
+*.bak
+*.csproj.user
+*.pdb
+*.suo
+*.tmp
+*.vshost.exe
+
+*/bin/*
+*/obj/*
+*/TestResults/*
+
+
+syntax: regexp
+
+^.*[B|b]inaries/.*
+^.*[R|r]eleases/.*
+^.*[B|b]ackup/.*
+^.*Temporary/.*
