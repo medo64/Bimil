@@ -3,6 +3,7 @@ using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using Medo.Security.Cryptography.Bimil;
+using Medo.Configuration;
 
 namespace Bimil {
     internal partial class MainForm : Form {
@@ -10,6 +11,7 @@ namespace Bimil {
         private BimilDocument Document = null;
         private string DocumentFileName = null;
         private bool DocumentChanged = false;
+        private RecentFiles RecentFiles = new RecentFiles();
 
         public MainForm() {
             InitializeComponent();
@@ -79,8 +81,18 @@ namespace Bimil {
         }
 
         private void Form_Load(object sender, EventArgs e) {
+            RefreshFiles();
             RefreshItems();
             UpdateMenu();
+        }
+
+        private void RefreshFiles() {
+            mnuOpen.DropDownItems.Clear();
+            for (int i = 0; i < this.RecentFiles.Count; i++) {
+                var item = new ToolStripMenuItem(this.RecentFiles[i].Title) { Tag = this.RecentFiles[i].FileName };
+                item.Click += new EventHandler(delegate(object sender2, EventArgs e2) { LoadFile(item.Tag.ToString()); });
+                mnuOpen.DropDownItems.Add(item);
+            }
         }
 
         private void Form_FormClosing(object sender, FormClosingEventArgs e) {
@@ -151,6 +163,8 @@ namespace Bimil {
                 this.Document = doc;
                 this.DocumentFileName = fileName;
                 this.DocumentChanged = false;
+                this.RecentFiles.Push(this.DocumentFileName);
+                RefreshFiles();
             } catch (FormatException) {
                 Medo.MessageBox.ShowError(this, "Either password is wrong or file is damaged.");
             }
@@ -178,6 +192,8 @@ namespace Bimil {
                     this.Document.Save(frm.FileName);
                     this.DocumentFileName = frm.FileName;
                     this.DocumentChanged = false;
+                    this.RecentFiles.Push(this.DocumentFileName);
+                    RefreshFiles();
                     UpdateMenu();
                 }
             }
