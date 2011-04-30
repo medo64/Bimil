@@ -8,9 +8,9 @@ syntax: glob
 *.vshost.exe
 
 */bin/*
+*/gen/*
 */obj/*
 */TestResults/*
-
 
 syntax: regexp
 
