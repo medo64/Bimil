@@ -76,10 +76,10 @@
             this.cmbRecordType.Size = new System.Drawing.Size(250, 24);
             this.cmbRecordType.TabIndex = 3;
             // 
-            // textBox1
+            // txtName
             // 
             this.txtName.Location = new System.Drawing.Point(92, 12);
-            this.txtName.Name = "textBox1";
+            this.txtName.Name = "txtName";
             this.txtName.Size = new System.Drawing.Size(250, 22);
             this.txtName.TabIndex = 1;
             this.txtName.Text = "New";
@@ -114,7 +114,8 @@
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "New record";
-            this.Load += new System.EventHandler(this.NewRecordForm_Load);
+            this.Activated += new System.EventHandler(this.Form_Activated);
+            this.Load += new System.EventHandler(this.Form_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

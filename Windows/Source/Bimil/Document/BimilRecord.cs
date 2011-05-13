@@ -51,6 +51,10 @@
         /// </summary>
         MultilineText = 1,
         /// <summary>
+        /// Fixed-font text.
+        /// </summary>
+        MonospacedText = 2,
+        /// <summary>
         /// URL.
         /// </summary>
         Url = 10,

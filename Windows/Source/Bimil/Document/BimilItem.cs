@@ -65,6 +65,15 @@ namespace Medo.Security.Cryptography.Bimil {
         }
 
         /// <summary>
+        /// Adds new fixed-font record.
+        /// </summary>
+        /// <param name="key">Key.</param>
+        /// <param name="value">Value.</param>
+        public BimilRecord AddMonospacedTextRecord(string key, string value) {
+            return AddRecord(key, value, BimilRecordFormat.MonospacedText);
+        }
+
+        /// <summary>
         /// Adds new URL record.
         /// </summary>
         /// <param name="key">Key.</param>

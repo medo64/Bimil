@@ -65,6 +65,7 @@
             this.lsvFields.UseCompatibleStateImageBehavior = false;
             this.lsvFields.View = System.Windows.Forms.View.Details;
             this.lsvFields.ColumnWidthChanging += new System.Windows.Forms.ColumnWidthChangingEventHandler(this.lsvFields_ColumnWidthChanging);
+            this.lsvFields.ItemActivate += new System.EventHandler(this.lsvFields_ItemActivate);
             this.lsvFields.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.lsvFields_ItemDrag);
             this.lsvFields.SelectedIndexChanged += new System.EventHandler(this.lsvFields_SelectedIndexChanged);
             this.lsvFields.DragDrop += new System.Windows.Forms.DragEventHandler(this.lsvFields_DragDrop);

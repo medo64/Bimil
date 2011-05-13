@@ -38,16 +38,26 @@ namespace Bimil {
         private void lsvFields_KeyDown(object sender, KeyEventArgs e) {
             switch (e.KeyData) {
                 case Keys.Insert: {
-                    btnAdd_Click(null, null);
+                        btnAdd_Click(null, null);
                     } break;
                 case Keys.F2: {
-                        if (lsvFields.FocusedItem != null) {
-                            lsvFields.FocusedItem.BeginEdit();
-                        }
+                    lsvFields_ItemActivate(null, null);
                     } break;
                 case Keys.Delete: {
-                    btnRemove_Click(null, null);
+                        btnRemove_Click(null, null);
                     } break;
+            }
+        }
+
+        private void lsvFields_ItemActivate(object sender, EventArgs e) {
+            if (lsvFields.FocusedItem != null) {
+                var record = (BimilRecord)lsvFields.FocusedItem.Tag;
+                using (var frm = new NewRecordForm(this.Document, record)) {
+                    if (frm.ShowDialog(this) == DialogResult.OK) {
+                        lsvFields.FocusedItem.Tag = frm.Record;
+                        lsvFields.FocusedItem.Text = frm.Record.Key.Text;
+                    }
+                }
             }
         }
 
@@ -101,7 +111,7 @@ namespace Bimil {
 
 
         private void btnAdd_Click(object sender, EventArgs e) {
-            using (var frm = new NewRecordForm(this.Document)) {
+            using (var frm = new NewRecordForm(this.Document, null)) {
                 if (frm.ShowDialog(this) == DialogResult.OK) {
                     var lvi = new ListViewItem(frm.Record.Key.Text) { Tag = frm.Record };
                     lsvFields.Items.Add(lvi);
