@@ -22,17 +22,12 @@ namespace Bimil {
         }
 
         private void Form_Load(object sender, EventArgs e) {
-            lsvFields.Columns[0].Width = lsvFields.ClientSize.Width - SystemInformation.VerticalScrollBarWidth;
+            lsvFields.Columns[0].Width = lsvFields.Width - SystemInformation.VerticalScrollBarWidth;
 
             foreach (var record in this.Item.Records) {
                 var lvi = new ListViewItem(record.Key.Text) { Tag = record };
                 lsvFields.Items.Add(lvi);
             }
-        }
-
-        private void lsvFields_ColumnWidthChanging(object sender, ColumnWidthChangingEventArgs e) {
-            e.NewWidth = lsvFields.ClientSize.Width - SystemInformation.VerticalScrollBarWidth;
-            e.Cancel = true;
         }
 
         private void lsvFields_KeyDown(object sender, KeyEventArgs e) {

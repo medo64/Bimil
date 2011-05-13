@@ -192,6 +192,7 @@
             this.lsvPasswords.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lsvPasswords.Enabled = false;
             this.lsvPasswords.FullRowSelect = true;
+            this.lsvPasswords.GridLines = true;
             this.lsvPasswords.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
             this.lsvPasswords.LabelEdit = true;
             this.lsvPasswords.LabelWrap = false;
@@ -203,7 +204,6 @@
             this.lsvPasswords.TabIndex = 1;
             this.lsvPasswords.UseCompatibleStateImageBehavior = false;
             this.lsvPasswords.View = System.Windows.Forms.View.Details;
-            this.lsvPasswords.ColumnWidthChanging += new System.Windows.Forms.ColumnWidthChangingEventHandler(this.lsvPasswords_ColumnWidthChanging);
             this.lsvPasswords.ItemActivate += new System.EventHandler(this.lsvPasswords_ItemActivate);
             this.lsvPasswords.SelectedIndexChanged += new System.EventHandler(this.lsvPasswords_SelectedIndexChanged);
             this.lsvPasswords.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form_KeyDown);

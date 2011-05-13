@@ -103,12 +103,7 @@ namespace Bimil {
         }
 
         private void Form_Resize(object sender, EventArgs e) {
-            lsvPasswords.Columns[0].Width = lsvPasswords.ClientSize.Width - SystemInformation.VerticalScrollBarWidth;
-        }
-
-        private void lsvPasswords_ColumnWidthChanging(object sender, ColumnWidthChangingEventArgs e) {
-            e.NewWidth = lsvPasswords.ClientSize.Width - SystemInformation.VerticalScrollBarWidth;
-            e.Cancel = true;
+            lsvPasswords.Columns[0].Width = lsvPasswords.Width - SystemInformation.VerticalScrollBarWidth;
         }
 
         private void lsvPasswords_ItemActivate(object sender, EventArgs e) {
