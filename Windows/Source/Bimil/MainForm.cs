@@ -190,6 +190,7 @@ namespace Bimil {
             if (this.Document == null) { return; }
 
             using (var frm = new SaveFileDialog() { AddExtension = true, AutoUpgradeEnabled = true, Filter = "Bimil files|*.bimil|All files|*.*", RestoreDirectory = true }) {
+                if (this.DocumentFileName != null) { frm.FileName = this.DocumentFileName; }
                 if (frm.ShowDialog(this) == DialogResult.OK) {
                     this.Document.Save(frm.FileName);
                     this.DocumentFileName = frm.FileName;
@@ -254,7 +255,7 @@ namespace Bimil {
                         item.AddRecord(record.Key, "", record.Value);
                     }
 
-                    using (var frm2 = new EditItemForm(item, true)) {
+                    using (var frm2 = new EditItemForm(this.Document, item, true)) {
                         if (frm2.ShowDialog(this) == DialogResult.OK) {
                             var listItem = new ListViewItem(item.Title) { Tag = item };
                             lsvPasswords.Items.Add(listItem);
@@ -273,7 +274,7 @@ namespace Bimil {
             if ((this.Document == null) || (lsvPasswords.SelectedItems.Count != 1)) { return; }
 
             var item = (BimilItem)(lsvPasswords.SelectedItems[0].Tag);
-            using (var frm2 = new EditItemForm(item, false)) {
+            using (var frm2 = new EditItemForm(this.Document, item, false)) {
                 if (frm2.ShowDialog(this) == DialogResult.OK) {
                     lsvPasswords.SelectedItems[0].Text = item.Title;
                     this.DocumentChanged = true;

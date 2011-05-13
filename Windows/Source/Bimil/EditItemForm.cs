@@ -1,36 +1,29 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
+using System.Diagnostics;
 using System.Drawing;
-using System.Text;
+using System.Reflection;
 using System.Windows.Forms;
 using Medo.Security.Cryptography.Bimil;
-using System.Reflection;
-using System.Diagnostics;
 
 namespace Bimil {
     public partial class EditItemForm : Form {
 
+        private readonly BimilDocument Document;
         private readonly BimilItem Item;
-        private readonly bool StartsAsEditable;
+        private bool Editable;
 
-        public EditItemForm(BimilItem item, bool startsAsEditable) {
+        public EditItemForm(BimilDocument document, BimilItem item, bool startsAsEditable) {
             InitializeComponent();
             this.Font = SystemFonts.MessageBoxFont;
 
+            this.Document = document;
             this.Item = item;
-            this.StartsAsEditable = startsAsEditable;
+            this.Editable = startsAsEditable;
         }
 
         private void EditItemForm_Load(object sender, EventArgs e) {
-            if (this.StartsAsEditable) {
-                btnEdit.Visible = false;
-                btnOK.Visible = true;
-            } else {
-                btnEdit.Visible = true;
-                btnOK.Visible = false;
-                btnCancel.Text = "Close";
+            if (this.Editable) {
+                btnEdit_Click(null, null);
             }
             FillRecords();
         }
@@ -43,7 +36,13 @@ namespace Bimil {
 
         private void Form_KeyDown(object sender, KeyEventArgs e) {
             switch (e.KeyData) {
-                case Keys.F2: btnEdit_Click(null, null); break;
+                case Keys.F2:
+                    if (btnEdit.Visible) { 
+                        btnEdit_Click(null, null);
+                    } else if (btnFields.Visible) {
+                        btnFields_Click(null, null); 
+                    } 
+                    break;
             }
         }
 
@@ -59,20 +58,21 @@ namespace Bimil {
             int y = 0;
             TextBox titleTextBox;
             {
-                titleTextBox = new TextBox() { Font = this.Font, Location = new Point(labelWidth + labelBuffer, 0), Tag = this.Item, Text = this.Item.Title, Width = pnl.ClientSize.Width - labelWidth - labelBuffer, ReadOnly = !this.StartsAsEditable };
+                titleTextBox = new TextBox() { Font = this.Font, Location = new Point(labelWidth + labelBuffer, 0), Tag = this.Item, Text = this.Item.Title, Width = pnl.ClientSize.Width - labelWidth - labelBuffer, ReadOnly = !this.Editable };
                 titleTextBox.GotFocus += new EventHandler(delegate(object sender2, EventArgs e2) { ((TextBox)sender2).SelectAll(); });
                 titleTextBox.TextChanged += new EventHandler(delegate(object sender2, EventArgs e2) { btnOK.Enabled = (((Control)sender2).Text.Trim().Length > 0); });
                 pnl.Controls.Add(titleTextBox);
                 var label = new Label() { AutoEllipsis = true, Location = new Point(0, y), Size = new Size(labelWidth, unitHeight), Text = "Name:", TextAlign = ContentAlignment.MiddleLeft, UseMnemonic = false };
                 pnl.Controls.Add(label);
 
-                y += label.Height + (label.Height / 4);
+                y += titleTextBox.Height + (label.Height / 4);
             }
 
+            int yH;
             foreach (var record in this.Item.Records) {
                 switch (record.Format) {
                     case BimilRecordFormat.Text: {
-                            var textBox = new TextBox() { Font = this.Font, Location = new Point(labelWidth + labelBuffer, y), Tag = record, Text = record.Value.Text, Width = pnl.ClientSize.Width - labelWidth - labelBuffer - unitHeight, ReadOnly = !this.StartsAsEditable };
+                        var textBox = new TextBox() { Font = this.Font, Location = new Point(labelWidth + labelBuffer, y), Tag = record, Text = record.Value.Text, Width = pnl.ClientSize.Width - labelWidth - labelBuffer - unitHeight, ReadOnly = !this.Editable };
                             textBox.GotFocus += new EventHandler(delegate(object sender2, EventArgs e2) { ((TextBox)sender2).SelectAll(); });
                             pnl.Controls.Add(textBox);
                             var btnCopy = new Button() { Location = new Point(pnl.ClientSize.Width - unitHeight, y), Size = new Size(unitHeight, unitHeight), TabStop = false, Tag = textBox, Text = "", Image = new Bitmap(Assembly.GetExecutingAssembly().GetManifestResourceStream("Bimil.Resources.Copy_16.png")) };
@@ -87,10 +87,11 @@ namespace Bimil {
                                 }
                             });
                             pnl.Controls.Add(btnCopy);
+                            yH = textBox.Height;
                         } break;
 
                     case BimilRecordFormat.Password: {
-                            var textBox = new TextBox() { Font = this.Font, Location = new Point(labelWidth + labelBuffer, y), Tag = record, Text = record.Value.Text, Width = pnl.ClientSize.Width - labelWidth - labelBuffer - unitHeight - unitHeight, UseSystemPasswordChar = true, ReadOnly = !this.StartsAsEditable };
+                        var textBox = new TextBox() { Font = this.Font, Location = new Point(labelWidth + labelBuffer, y), Tag = record, Text = record.Value.Text, Width = pnl.ClientSize.Width - labelWidth - labelBuffer - unitHeight - unitHeight, UseSystemPasswordChar = true, ReadOnly = !this.Editable };
                             textBox.GotFocus += new EventHandler(delegate(object sender2, EventArgs e2) { ((TextBox)sender2).SelectAll(); });
                             pnl.Controls.Add(textBox);
                             var btnShowPass = new Button() { Location = new Point(pnl.ClientSize.Width - unitHeight - unitHeight, y), Size = new Size(unitHeight, unitHeight), TabStop = false, Tag = textBox, Text = "", Image = new Bitmap(Assembly.GetExecutingAssembly().GetManifestResourceStream("Bimil.Resources.RevealPassword_16.png")) };
@@ -112,10 +113,11 @@ namespace Bimil {
                                 }
                             });
                             pnl.Controls.Add(btnCopy);
+                            yH = textBox.Height;
                         } break;
 
                     case BimilRecordFormat.Url: {
-                            var textBox = new TextBox() { Font = this.Font, Location = new Point(labelWidth + labelBuffer, y), Tag = record, Text = record.Value.Text, Width = pnl.ClientSize.Width - labelWidth - labelBuffer - unitHeight - unitHeight, ReadOnly = !this.StartsAsEditable };
+                        var textBox = new TextBox() { Font = this.Font, Location = new Point(labelWidth + labelBuffer, y), Tag = record, Text = record.Value.Text, Width = pnl.ClientSize.Width - labelWidth - labelBuffer - unitHeight - unitHeight, ReadOnly = !this.Editable };
                             textBox.GotFocus += new EventHandler(delegate(object sender2, EventArgs e2) { ((TextBox)sender2).SelectAll(); });
                             pnl.Controls.Add(textBox);
                             var btnExecuteUrl = new Button() { Location = new Point(pnl.ClientSize.Width - unitHeight - unitHeight, y), Size = new Size(unitHeight, unitHeight), TabStop = false, Tag = textBox, Text = "", Image = new Bitmap(Assembly.GetExecutingAssembly().GetManifestResourceStream("Bimil.Resources.ExecuteUrl_16.png")) };
@@ -150,20 +152,22 @@ namespace Bimil {
                                 }
                             });
                             pnl.Controls.Add(btnCopy);
+                            yH = textBox.Height;
                         } break;
 
                     case BimilRecordFormat.MultilineText:
                     default: { //behave as multiline text
-                            var textBox = new TextBox() { Location = new Point(labelWidth + labelBuffer, y), Tag = record, Text = record.Value.Text, Width = pnl.ClientSize.Width - labelWidth - labelBuffer, Multiline = true, Height = unitHeight * 2, AcceptsReturn = true, ReadOnly = !this.StartsAsEditable };
+                        var textBox = new TextBox() { Location = new Point(labelWidth + labelBuffer, y), Tag = record, Text = record.Value.Text, Width = pnl.ClientSize.Width - labelWidth - labelBuffer, Multiline = true, Height = unitHeight * 2, AcceptsReturn = true, ReadOnly = !this.Editable };
                             textBox.GotFocus += new EventHandler(delegate(object sender2, EventArgs e2) { ((TextBox)sender2).SelectAll(); });
                             pnl.Controls.Add(textBox);
+                            yH = textBox.Height;
                         } break;
                 }
 
                 var label = new Label() { AutoEllipsis = true, Location = new Point(0, y), Size = new Size(labelWidth, unitHeight), Text = record.Key.Text + ":", TextAlign = ContentAlignment.MiddleLeft, UseMnemonic = false };
                 pnl.Controls.Add(label);
 
-                y += label.Height + (label.Height / 4);
+                y += yH + (label.Height / 4);
             }
 
             if (pnl.VerticalScroll.Visible == true) {
@@ -186,9 +190,11 @@ namespace Bimil {
                     textBox.ReadOnly = false;
                 }
             }
+            btnFields.Visible = true;
             btnEdit.Visible = false;
             btnOK.Visible = true;
             btnCancel.Text = "Cancel";
+            this.Editable = true;
         }
 
         private void btnOK_Click(object sender, EventArgs e) {
@@ -206,7 +212,11 @@ namespace Bimil {
         }
 
         private void btnFields_Click(object sender, EventArgs e) {
-
+            using (var frm = new FieldsEditorForm(this.Document, this.Item)) {
+                if (frm.ShowDialog(this) == DialogResult.OK) {
+                    FillRecords();
+                }
+            }
         }
 
     }

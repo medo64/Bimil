@@ -109,6 +109,18 @@
     <Compile Include="EditItemForm.Designer.cs">
       <DependentUpon>EditItemForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="FieldsEditorForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FieldsEditorForm.Designer.cs">
+      <DependentUpon>FieldsEditorForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="NewRecordForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NewRecordForm.Designer.cs">
+      <DependentUpon>NewRecordForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="SelectTemplateForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -157,6 +169,12 @@
     <Compile Include="Tray.cs" />
     <EmbeddedResource Include="EditItemForm.resx">
       <DependentUpon>EditItemForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FieldsEditorForm.resx">
+      <DependentUpon>FieldsEditorForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NewRecordForm.resx">
+      <DependentUpon>NewRecordForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SelectTemplateForm.resx">
       <DependentUpon>SelectTemplateForm.cs</DependentUpon>
