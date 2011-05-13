@@ -35,6 +35,18 @@ namespace Bimil {
             FillRecords();
         }
 
+        private void Form_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e) {
+            switch (e.KeyData) {
+                case Keys.F2: e.IsInputKey = true; break;
+            }
+        }
+
+        private void Form_KeyDown(object sender, KeyEventArgs e) {
+            switch (e.KeyData) {
+                case Keys.F2: btnEdit_Click(null, null); break;
+            }
+        }
+
 
         private void FillRecords() {
             pnl.Visible = false;
@@ -191,6 +203,10 @@ namespace Bimil {
                     }
                 }
             }
+        }
+
+        private void btnFields_Click(object sender, EventArgs e) {
+
         }
 
     }

@@ -133,9 +133,11 @@ namespace Bimil {
             } finally {
                 GC.Collect(); //in attempt to kill password string
             }
-            this.Document = doc;
-            this.DocumentFileName = null;
-            this.DocumentChanged = false;
+            if (doc != null) {
+                this.Document = doc;
+                this.DocumentFileName = null;
+                this.DocumentChanged = false;
+            }
             RefreshItems();
             UpdateMenu();
         }

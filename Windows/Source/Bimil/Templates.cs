@@ -12,7 +12,7 @@ namespace Bimil {
 
                 list.Add(new Template("User name and password", "User name", BimilRecordFormat.Text, "Password", BimilRecordFormat.Password, "URL", BimilRecordFormat.Url, "Notes", BimilRecordFormat.MultilineText));
                 list.Add(new Template("Credit card", "Card number", BimilRecordFormat.Text, "Expiration date", BimilRecordFormat.Text, "Security code", BimilRecordFormat.Password, "PIN", BimilRecordFormat.Password, "Notes", BimilRecordFormat.MultilineText));
-                list.Add(new Template("Bank card", "Card number", BimilRecordFormat.Text, "Expiration date", BimilRecordFormat.Text, "PIN", BimilRecordFormat.Password, "Notes", BimilRecordFormat.MultilineText));
+                list.Add(new Template("Bank card", "Card number", BimilRecordFormat.Text, "Expiration date", BimilRecordFormat.Text, "Account number", BimilRecordFormat.Text, "PIN", BimilRecordFormat.Password, "Notes", BimilRecordFormat.MultilineText));
 
                 Templates.TemplatesCache = list.ToArray();
             }
