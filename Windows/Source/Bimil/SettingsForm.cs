@@ -9,8 +9,6 @@ namespace Bimil {
             this.Font = SystemFonts.MessageBoxFont;
         }
 
-        private readonly Medo.Configuration.RunOnStartup RunOnStartup = new Medo.Configuration.RunOnStartup(Medo.Configuration.RunOnStartup.Current.Title, Medo.Configuration.RunOnStartup.Current.ExecutablePath, "/tray");
-
         private void SettingsForm_Load(object sender, EventArgs e) {
             chbCloseOnEscape.Checked = Settings.CloseOnEscape;
         }
