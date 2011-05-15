@@ -166,7 +166,6 @@
       <DependentUpon>SettingsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Templates.cs" />
-    <Compile Include="Tray.cs" />
     <EmbeddedResource Include="EditItemForm.resx">
       <DependentUpon>EditItemForm.cs</DependentUpon>
     </EmbeddedResource>

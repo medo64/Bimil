@@ -35,18 +35,8 @@ namespace Bimil {
             }
             Medo.Application.SingleInstance.Attach();
 
-
-            if (Settings.UseNotificationArea) {
-                Tray.Show();
-            }
-
-            if (Medo.Application.Args.Current.ContainsKey("tray") == false) {
-                App.MainForm = new MainForm();
-                App.MainForm.Show();
-            }
-
-            Application.Run();
-            Tray.Hide();
+            App.MainForm = new MainForm();
+            Application.Run(App.MainForm);
 
             SetupMutex.Close();
         }

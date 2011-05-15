@@ -1,9 +1,9 @@
 ﻿namespace Bimil {
     internal static class Settings {
 
-        public static bool UseNotificationArea {
-            get { return Medo.Configuration.Settings.Read("UseNotificationArea", true); }
-            set { Medo.Configuration.Settings.Write("UseNotificationArea", value); }
+        public static bool CloseOnEscape {
+            get { return Medo.Configuration.Settings.Read("CloseOnEscape", false); }
+            set { Medo.Configuration.Settings.Write("CloseOnEscape", value); }
         }
 
     }

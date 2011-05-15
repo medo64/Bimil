@@ -34,7 +34,7 @@ namespace Bimil {
                     } break;
 
                 case Keys.Escape: {
-                        if (Settings.UseNotificationArea) {
+                        if (Settings.CloseOnEscape) {
                             this.Close();
                             e.Handled = true;
                             e.SuppressKeyPress = true;
@@ -103,14 +103,11 @@ namespace Bimil {
                 e.Cancel = true;
                 return;
             }
-#if DEBUG
+
             this.Document = null;
             this.DocumentFileName = null;
             this.DocumentChanged = false;
-            Tray.Hide();
             Application.Exit();
-#endif
-            App.MainForm = null;
         }
 
         private void Form_Resize(object sender, EventArgs e) {

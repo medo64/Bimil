@@ -12,13 +12,11 @@ namespace Bimil {
         private readonly Medo.Configuration.RunOnStartup RunOnStartup = new Medo.Configuration.RunOnStartup(Medo.Configuration.RunOnStartup.Current.Title, Medo.Configuration.RunOnStartup.Current.ExecutablePath, "/tray");
 
         private void SettingsForm_Load(object sender, EventArgs e) {
-            chbUseNotificationArea.Checked = Settings.UseNotificationArea;
-            chbRunOnStartup.Checked = this.RunOnStartup.RunForCurrentUser;
+            chbCloseOnEscape.Checked = Settings.CloseOnEscape;
         }
 
         private void btnOK_Click(object sender, EventArgs e) {
-            Settings.UseNotificationArea = chbUseNotificationArea.Checked;
-            this.RunOnStartup.RunForCurrentUser = chbRunOnStartup.Checked;
+            Settings.CloseOnEscape = chbCloseOnEscape.Checked;
         }
 
     }
