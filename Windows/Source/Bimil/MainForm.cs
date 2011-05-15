@@ -90,13 +90,24 @@ namespace Bimil {
             mnuOpen.DropDownItems.Clear();
             for (int i = 0; i < this.RecentFiles.Count; i++) {
                 var item = new ToolStripMenuItem(this.RecentFiles[i].Title) { Tag = this.RecentFiles[i].FileName };
-                item.Click += new EventHandler(delegate(object sender2, EventArgs e2) { LoadFile(item.Tag.ToString()); });
+                item.Click += new EventHandler(delegate(object sender2, EventArgs e2) {
+                    if (SaveIfNeeded() != DialogResult.OK) { return; }
+                    LoadFile(item.Tag.ToString());
+                });
                 mnuOpen.DropDownItems.Add(item);
             }
         }
 
         private void Form_FormClosing(object sender, FormClosingEventArgs e) {
+            if (SaveIfNeeded() != DialogResult.OK) {
+                e.Cancel = true;
+                return;
+            }
 #if DEBUG
+            this.Document = null;
+            this.DocumentFileName = null;
+            this.DocumentChanged = false;
+            Tray.Hide();
             Application.Exit();
 #endif
             App.MainForm = null;
@@ -115,9 +126,34 @@ namespace Bimil {
         }
 
 
+        private DialogResult SaveIfNeeded() {
+            if (this.DocumentChanged) {
+                string question;
+                if (this.DocumentFileName != null) {
+                    var file = new FileInfo(this.DocumentFileName);
+                    var title = file.Name.Substring(0, file.Name.Length - file.Extension.Length);
+                    question = title + " is not saved. Do you wish to save it now?"; 
+                } else {
+                    question = "Document is not saved. Do you wish to save it now?";
+                }
+                switch (Medo.MessageBox.ShowQuestion(this, question, MessageBoxButtons.YesNoCancel)) {
+                    case DialogResult.Yes:
+                        mnuSave_ButtonClick(null, null);
+                        return (this.DocumentChanged == false) ? DialogResult.OK : DialogResult.Cancel;
+                    case DialogResult.No: return DialogResult.OK;
+                    case DialogResult.Cancel: return DialogResult.Cancel;
+                    default: return DialogResult.Cancel;
+                }
+            } else {
+                return DialogResult.OK;
+            }
+        }
+
+
         #region Menu
 
         private void mnuNew_Click(object sender, EventArgs e) {
+            if (SaveIfNeeded() != DialogResult.OK) { return; }
             BimilDocument doc = null;
             try {
                 using (var frm = new NewPasswordForm()) {
@@ -138,6 +174,7 @@ namespace Bimil {
         }
 
         private void mnuOpen_ButtonClick(object sender, EventArgs e) {
+            if (SaveIfNeeded() != DialogResult.OK) { return; }
             using (var frm = new OpenFileDialog() { AddExtension = true, AutoUpgradeEnabled = true, Filter = "Bimil files|*.bimil|All files|*.*", RestoreDirectory = true }) {
                 if (frm.ShowDialog(this) == DialogResult.OK) {
                     LoadFile(frm.FileName);
