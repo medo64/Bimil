@@ -86,16 +86,9 @@ namespace Bimil {
             UpdateMenu();
         }
 
-        private void RefreshFiles() {
-            mnuOpen.DropDownItems.Clear();
-            for (int i = 0; i < this.RecentFiles.Count; i++) {
-                var item = new ToolStripMenuItem(this.RecentFiles[i].Title) { Tag = this.RecentFiles[i].FileName };
-                item.Click += new EventHandler(delegate(object sender2, EventArgs e2) {
-                    if (SaveIfNeeded() != DialogResult.OK) { return; }
-                    LoadFile(item.Tag.ToString());
-                });
-                mnuOpen.DropDownItems.Add(item);
-            }
+        private void Form_Shown(object sender, EventArgs e) {
+            var fileName = Medo.Application.Args.Current.GetValue("");
+            if (fileName != null) { LoadFile(fileName); }
         }
 
         private void Form_FormClosing(object sender, FormClosingEventArgs e) {
@@ -114,6 +107,18 @@ namespace Bimil {
             lsvPasswords.Columns[0].Width = lsvPasswords.Width - SystemInformation.VerticalScrollBarWidth;
         }
 
+        private void RefreshFiles() {
+            mnuOpen.DropDownItems.Clear();
+            for (int i = 0; i < this.RecentFiles.Count; i++) {
+                var item = new ToolStripMenuItem(this.RecentFiles[i].Title) { Tag = this.RecentFiles[i].FileName };
+                item.Click += new EventHandler(delegate(object sender2, EventArgs e2) {
+                    if (SaveIfNeeded() != DialogResult.OK) { return; }
+                    LoadFile(item.Tag.ToString());
+                });
+                mnuOpen.DropDownItems.Add(item);
+            }
+        }
+
         private void lsvPasswords_ItemActivate(object sender, EventArgs e) {
             mnuEdit_Click(null, null);
         }
@@ -129,7 +134,7 @@ namespace Bimil {
                 if (this.DocumentFileName != null) {
                     var file = new FileInfo(this.DocumentFileName);
                     var title = file.Name.Substring(0, file.Name.Length - file.Extension.Length);
-                    question = title + " is not saved. Do you wish to save it now?"; 
+                    question = title + " is not saved. Do you wish to save it now?";
                 } else {
                     question = "Document is not saved. Do you wish to save it now?";
                 }
