@@ -21,7 +21,7 @@ namespace Bimil {
 
             mnu.Renderer = Helpers.ToolStripBorderlessSystemRendererInstance;
 
-            Medo.Windows.Forms.State.SetupOnLoadAndClose(this);
+            Medo.Windows.Forms.State.SetupOnLoadAndClose(this, cntSplit);
         }
 
         private void Form_KeyDown(object sender, KeyEventArgs e) {
@@ -58,25 +58,6 @@ namespace Bimil {
                         e.Handled = true;
                         e.SuppressKeyPress = true;
                     } break;
-
-                case Keys.Insert: {
-                        mnuAdd_Click(null, null);
-                        e.Handled = true;
-                        e.SuppressKeyPress = true;
-                    } break;
-
-                case Keys.F4: {
-                        mnuEdit_Click(null, null);
-                        e.Handled = true;
-                        e.SuppressKeyPress = true;
-                    } break;
-
-                case Keys.Delete: {
-                        mnuRemove_Click(null, null);
-                        e.Handled = true;
-                        e.SuppressKeyPress = true;
-                    } break;
-
             }
         }
 
@@ -104,7 +85,7 @@ namespace Bimil {
         }
 
         private void Form_Resize(object sender, EventArgs e) {
-            lsvPasswords.Columns[0].Width = lsvPasswords.Width - SystemInformation.VerticalScrollBarWidth;
+            lsvPasswords.Columns[0].Width = lsvPasswords.ClientSize.Width;
         }
 
         private void RefreshFiles() {
@@ -121,6 +102,29 @@ namespace Bimil {
 
         private void lsvPasswords_ItemActivate(object sender, EventArgs e) {
             mnuEdit_Click(null, null);
+        }
+
+        private void lsvPasswords_KeyDown(object sender, KeyEventArgs e) {
+            switch (e.KeyData) {
+                case Keys.Insert: {
+                        mnuAdd_Click(null, null);
+                        e.Handled = true;
+                        e.SuppressKeyPress = true;
+                    } break;
+
+                case Keys.F4: {
+                        mnuEdit_Click(null, null);
+                        e.Handled = true;
+                        e.SuppressKeyPress = true;
+                    } break;
+
+                case Keys.Delete: {
+                        mnuRemove_Click(null, null);
+                        e.Handled = true;
+                        e.SuppressKeyPress = true;
+                    } break;
+
+            }
         }
 
         private void lsvPasswords_SelectedIndexChanged(object sender, EventArgs e) {
@@ -355,6 +359,7 @@ namespace Bimil {
                 }
             }
             lsvPasswords.EndUpdate();
+            Form_Resize(null, null);
         }
 
         private void UpdateMenu() {
@@ -364,7 +369,7 @@ namespace Bimil {
             mnuEdit.Enabled = (this.Document != null) && (lsvPasswords.SelectedItems.Count == 1);
             mnuRemove.Enabled = (this.Document != null) && (lsvPasswords.SelectedItems.Count > 0);
 
-            lsvPasswords.Enabled = (this.Document != null);
+            cntSplit.Visible = (this.Document != null);
 
             if (this.DocumentFileName == null) {
                 this.Text = this.DocumentChanged ? "Bimil*" : "Bimil";
