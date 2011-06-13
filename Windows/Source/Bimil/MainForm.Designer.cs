@@ -37,14 +37,12 @@
             this.mnuAdd = new System.Windows.Forms.ToolStripButton();
             this.mnuEdit = new System.Windows.Forms.ToolStripButton();
             this.mnuRemove = new System.Windows.Forms.ToolStripButton();
-            this.cntSplit = new System.Windows.Forms.SplitContainer();
-            this.trvFolders = new System.Windows.Forms.TreeView();
+            this.pnlDocument = new System.Windows.Forms.Panel();
             this.lsvPasswords = new System.Windows.Forms.ListView();
             this.lsvPasswords_colTitle = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.cmbSearch = new System.Windows.Forms.ComboBox();
             this.mnu.SuspendLayout();
-            this.cntSplit.Panel1.SuspendLayout();
-            this.cntSplit.Panel2.SuspendLayout();
-            this.cntSplit.SuspendLayout();
+            this.pnlDocument.SuspendLayout();
             this.SuspendLayout();
             // 
             // mnu
@@ -189,39 +187,16 @@
             this.mnuRemove.ToolTipText = "Remove (Del)";
             this.mnuRemove.Click += new System.EventHandler(this.mnuRemove_Click);
             // 
-            // cntSplit
+            // pnlDocument
             // 
-            this.cntSplit.BackColor = System.Drawing.SystemColors.Window;
-            this.cntSplit.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cntSplit.Location = new System.Drawing.Point(0, 27);
-            this.cntSplit.Name = "cntSplit";
-            // 
-            // cntSplit.Panel1
-            // 
-            this.cntSplit.Panel1.BackColor = System.Drawing.SystemColors.Window;
-            this.cntSplit.Panel1.Controls.Add(this.trvFolders);
-            this.cntSplit.Panel1MinSize = 100;
-            // 
-            // cntSplit.Panel2
-            // 
-            this.cntSplit.Panel2.Controls.Add(this.lsvPasswords);
-            this.cntSplit.Panel2MinSize = 100;
-            this.cntSplit.Size = new System.Drawing.Size(462, 328);
-            this.cntSplit.SplitterDistance = 154;
-            this.cntSplit.SplitterWidth = 3;
-            this.cntSplit.TabIndex = 1;
-            this.cntSplit.TabStop = false;
-            // 
-            // trvFolders
-            // 
-            this.trvFolders.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.trvFolders.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.trvFolders.FullRowSelect = true;
-            this.trvFolders.HideSelection = false;
-            this.trvFolders.Location = new System.Drawing.Point(0, 0);
-            this.trvFolders.Name = "trvFolders";
-            this.trvFolders.Size = new System.Drawing.Size(154, 328);
-            this.trvFolders.TabIndex = 0;
+            this.pnlDocument.BackColor = System.Drawing.SystemColors.Window;
+            this.pnlDocument.Controls.Add(this.lsvPasswords);
+            this.pnlDocument.Controls.Add(this.cmbSearch);
+            this.pnlDocument.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlDocument.Location = new System.Drawing.Point(0, 27);
+            this.pnlDocument.Name = "pnlDocument";
+            this.pnlDocument.Size = new System.Drawing.Size(462, 328);
+            this.pnlDocument.TabIndex = 0;
             // 
             // lsvPasswords
             // 
@@ -234,10 +209,10 @@
             this.lsvPasswords.HideSelection = false;
             this.lsvPasswords.LabelEdit = true;
             this.lsvPasswords.LabelWrap = false;
-            this.lsvPasswords.Location = new System.Drawing.Point(0, 0);
+            this.lsvPasswords.Location = new System.Drawing.Point(0, 24);
             this.lsvPasswords.Name = "lsvPasswords";
             this.lsvPasswords.ShowGroups = false;
-            this.lsvPasswords.Size = new System.Drawing.Size(305, 328);
+            this.lsvPasswords.Size = new System.Drawing.Size(462, 304);
             this.lsvPasswords.Sorting = System.Windows.Forms.SortOrder.Ascending;
             this.lsvPasswords.TabIndex = 0;
             this.lsvPasswords.UseCompatibleStateImageBehavior = false;
@@ -246,12 +221,21 @@
             this.lsvPasswords.SelectedIndexChanged += new System.EventHandler(this.lsvPasswords_SelectedIndexChanged);
             this.lsvPasswords.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lsvPasswords_KeyDown);
             // 
+            // cmbSearch
+            // 
+            this.cmbSearch.Dock = System.Windows.Forms.DockStyle.Top;
+            this.cmbSearch.FormattingEnabled = true;
+            this.cmbSearch.Location = new System.Drawing.Point(0, 0);
+            this.cmbSearch.Name = "cmbSearch";
+            this.cmbSearch.Size = new System.Drawing.Size(462, 24);
+            this.cmbSearch.TabIndex = 2;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(462, 355);
-            this.Controls.Add(this.cntSplit);
+            this.Controls.Add(this.pnlDocument);
             this.Controls.Add(this.mnu);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.KeyPreview = true;
@@ -265,9 +249,7 @@
             this.Resize += new System.EventHandler(this.Form_Resize);
             this.mnu.ResumeLayout(false);
             this.mnu.PerformLayout();
-            this.cntSplit.Panel1.ResumeLayout(false);
-            this.cntSplit.Panel2.ResumeLayout(false);
-            this.cntSplit.ResumeLayout(false);
+            this.pnlDocument.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -288,10 +270,10 @@
         private System.Windows.Forms.ToolStripButton mnuAdd;
         private System.Windows.Forms.ToolStripButton mnuReportABug;
         private System.Windows.Forms.ToolStripButton mnuChangePassword;
-        private System.Windows.Forms.SplitContainer cntSplit;
+        private System.Windows.Forms.Panel pnlDocument;
         private System.Windows.Forms.ListView lsvPasswords;
         private System.Windows.Forms.ColumnHeader lsvPasswords_colTitle;
-        private System.Windows.Forms.TreeView trvFolders;
+        private System.Windows.Forms.ComboBox cmbSearch;
     }
 }
 

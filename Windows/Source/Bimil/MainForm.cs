@@ -21,7 +21,7 @@ namespace Bimil {
 
             mnu.Renderer = Helpers.ToolStripBorderlessSystemRendererInstance;
 
-            Medo.Windows.Forms.State.SetupOnLoadAndClose(this, cntSplit);
+            Medo.Windows.Forms.State.SetupOnLoadAndClose(this);
         }
 
         private void Form_KeyDown(object sender, KeyEventArgs e) {
@@ -369,7 +369,7 @@ namespace Bimil {
             mnuEdit.Enabled = (this.Document != null) && (lsvPasswords.SelectedItems.Count == 1);
             mnuRemove.Enabled = (this.Document != null) && (lsvPasswords.SelectedItems.Count > 0);
 
-            cntSplit.Visible = (this.Document != null);
+            pnlDocument.Visible = (this.Document != null);
 
             if (this.DocumentFileName == null) {
                 this.Text = this.DocumentChanged ? "Bimil*" : "Bimil";
