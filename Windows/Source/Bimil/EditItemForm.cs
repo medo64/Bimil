@@ -70,6 +70,17 @@ namespace Bimil {
                 y += titleTextBox.Height + (label.Height / 4);
             }
 
+            ComboBox categoryComboBox;
+            {
+                categoryComboBox = new ComboBox() { Font = this.Font, Location = new Point(labelWidth + labelBuffer, y), Tag = this.Item, Text = "", Width = pnl.ClientSize.Width - labelWidth - labelBuffer, Enabled = this.Editable };
+                categoryComboBox.GotFocus += new EventHandler(delegate(object sender2, EventArgs e2) { ((ComboBox)sender2).SelectAll(); });
+                pnl.Controls.Add(categoryComboBox);
+                var label = new Label() { AutoEllipsis = true, Location = new Point(0, y), Size = new Size(labelWidth, unitHeight), Text = "Category:", TextAlign = ContentAlignment.MiddleLeft, UseMnemonic = false };
+                pnl.Controls.Add(label);
+
+                y += titleTextBox.Height + (label.Height / 4);
+            }
+
             int yH;
             foreach (var record in this.Item.Records) {
                 if (record.Key.Text.StartsWith(".", StringComparison.Ordinal) == false) {
@@ -211,6 +222,10 @@ namespace Bimil {
                 var textBox = control as TextBox;
                 if (textBox != null) {
                     textBox.ReadOnly = false;
+                }
+                var comboBox = control as ComboBox;
+                if (comboBox != null) {
+                    comboBox.Enabled = true;
                 }
             }
             btnFields.Visible = true;
