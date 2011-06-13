@@ -72,123 +72,125 @@ namespace Bimil {
 
             int yH;
             foreach (var record in this.Item.Records) {
-                switch (record.Format) {
-                    case BimilRecordFormat.Text: {
-                            var textBox = new TextBox() { Font = this.Font, Location = new Point(labelWidth + labelBuffer, y), Tag = record, Text = record.Value.Text, Width = pnl.ClientSize.Width - labelWidth - labelBuffer - unitHeight, ReadOnly = !this.Editable };
-                            textBox.GotFocus += new EventHandler(delegate(object sender2, EventArgs e2) { ((TextBox)sender2).SelectAll(); });
-                            pnl.Controls.Add(textBox);
-                            var btnCopy = new Button() { Location = new Point(pnl.ClientSize.Width - unitHeight, y), Size = new Size(unitHeight, unitHeight), TabStop = false, Tag = textBox, Text = "", Image = new Bitmap(Assembly.GetExecutingAssembly().GetManifestResourceStream("Bimil.Resources.Copy_16.png")) };
-                            btnCopy.Click += new EventHandler(delegate(object sender2, EventArgs e2) {
-                                var box = (TextBox)(((Control)sender2).Tag);
-                                box.Select();
-                                var text = box.Text;
-                                if (text.Length > 0) {
-                                    Clipboard.SetText(text);
-                                } else {
-                                    Clipboard.Clear();
-                                }
-                            });
-                            pnl.Controls.Add(btnCopy);
-                            yH = textBox.Height;
-                        } break;
-
-                    case BimilRecordFormat.MonospacedText: {
-                            var textBox = new TextBox() { Font = EditItemForm.FixedFont, Location = new Point(labelWidth + labelBuffer, y), Tag = record, Text = record.Value.Text, Width = pnl.ClientSize.Width - labelWidth - labelBuffer - unitHeight, ReadOnly = !this.Editable };
-                            textBox.GotFocus += new EventHandler(delegate(object sender2, EventArgs e2) { ((TextBox)sender2).SelectAll(); });
-                            pnl.Controls.Add(textBox);
-                            var btnCopy = new Button() { Location = new Point(pnl.ClientSize.Width - unitHeight, y), Size = new Size(unitHeight, textBox.Height), TabStop = false, Tag = textBox, Text = "", Image = new Bitmap(Assembly.GetExecutingAssembly().GetManifestResourceStream("Bimil.Resources.Copy_16.png")) };
-                            btnCopy.Click += new EventHandler(delegate(object sender2, EventArgs e2) {
-                                var box = (TextBox)(((Control)sender2).Tag);
-                                box.Select();
-                                var text = box.Text;
-                                if (text.Length > 0) {
-                                    Clipboard.SetText(text);
-                                } else {
-                                    Clipboard.Clear();
-                                }
-                            });
-                            pnl.Controls.Add(btnCopy);
-                            yH = textBox.Height;
-                        } break;
-
-                    case BimilRecordFormat.Password: {
-                            var textBox = new TextBox() { Font = this.Font, Location = new Point(labelWidth + labelBuffer, y), Tag = record, Text = record.Value.Text, Width = pnl.ClientSize.Width - labelWidth - labelBuffer - unitHeight - unitHeight, UseSystemPasswordChar = true, ReadOnly = !this.Editable };
-                            textBox.GotFocus += new EventHandler(delegate(object sender2, EventArgs e2) { ((TextBox)sender2).SelectAll(); });
-                            pnl.Controls.Add(textBox);
-                            var btnShowPass = new Button() { Location = new Point(pnl.ClientSize.Width - unitHeight - unitHeight, y), Size = new Size(unitHeight, unitHeight), TabStop = false, Tag = textBox, Text = "", Image = new Bitmap(Assembly.GetExecutingAssembly().GetManifestResourceStream("Bimil.Resources.RevealPassword_16.png")) };
-                            btnShowPass.Click += new EventHandler(delegate(object sender2, EventArgs e2) {
-                                var box = (TextBox)(((Control)sender2).Tag);
-                                box.Select();
-                                box.UseSystemPasswordChar = !box.UseSystemPasswordChar;
-                            });
-                            pnl.Controls.Add(btnShowPass);
-                            var btnCopy = new Button() { Location = new Point(pnl.ClientSize.Width - unitHeight, y), Size = new Size(unitHeight, unitHeight), TabStop = false, Tag = textBox, Text = "", Image = new Bitmap(Assembly.GetExecutingAssembly().GetManifestResourceStream("Bimil.Resources.Copy_16.png")) };
-                            btnCopy.Click += new EventHandler(delegate(object sender2, EventArgs e2) {
-                                var box = (TextBox)(((Control)sender2).Tag);
-                                box.Select();
-                                var text = box.Text;
-                                if (text.Length > 0) {
-                                    Clipboard.SetText(text);
-                                } else {
-                                    Clipboard.Clear();
-                                }
-                            });
-                            pnl.Controls.Add(btnCopy);
-                            yH = textBox.Height;
-                        } break;
-
-                    case BimilRecordFormat.Url: {
-                            var textBox = new TextBox() { Font = EditItemForm.UnderlineFont, Location = new Point(labelWidth + labelBuffer, y), Tag = record, Text = record.Value.Text, Width = pnl.ClientSize.Width - labelWidth - labelBuffer - unitHeight - unitHeight, ReadOnly = !this.Editable, ForeColor = SystemColors.HotTrack };
-                            textBox.GotFocus += new EventHandler(delegate(object sender2, EventArgs e2) { ((TextBox)sender2).SelectAll(); });
-                            pnl.Controls.Add(textBox);
-                            var btnExecuteUrl = new Button() { Location = new Point(pnl.ClientSize.Width - unitHeight - unitHeight, y), Size = new Size(unitHeight, unitHeight), TabStop = false, Tag = textBox, Text = "", Image = new Bitmap(Assembly.GetExecutingAssembly().GetManifestResourceStream("Bimil.Resources.ExecuteUrl_16.png")) };
-                            btnExecuteUrl.Click += new EventHandler(delegate(object sender2, EventArgs e2) {
-                                var box = (TextBox)(((Control)sender2).Tag);
-                                box.Select();
-                                var text = box.Text;
-                                if (text.Contains("://")) {
-                                    Process.Start(text);
-                                } else {
+                if (record.Key.Text.StartsWith(".", StringComparison.Ordinal) == false) {
+                    switch (record.Format) {
+                        case BimilRecordFormat.Text: {
+                                var textBox = new TextBox() { Font = this.Font, Location = new Point(labelWidth + labelBuffer, y), Tag = record, Text = record.Value.Text, Width = pnl.ClientSize.Width - labelWidth - labelBuffer - unitHeight, ReadOnly = !this.Editable };
+                                textBox.GotFocus += new EventHandler(delegate(object sender2, EventArgs e2) { ((TextBox)sender2).SelectAll(); });
+                                pnl.Controls.Add(textBox);
+                                var btnCopy = new Button() { Location = new Point(pnl.ClientSize.Width - unitHeight, y), Size = new Size(unitHeight, unitHeight), TabStop = false, Tag = textBox, Text = "", Image = new Bitmap(Assembly.GetExecutingAssembly().GetManifestResourceStream("Bimil.Resources.Copy_16.png")) };
+                                btnCopy.Click += new EventHandler(delegate(object sender2, EventArgs e2) {
+                                    var box = (TextBox)(((Control)sender2).Tag);
+                                    box.Select();
+                                    var text = box.Text;
                                     if (text.Length > 0) {
-                                        Process.Start("http://" + text);
+                                        Clipboard.SetText(text);
                                     } else {
                                         Clipboard.Clear();
                                     }
-                                }
-                            });
-                            pnl.Controls.Add(btnExecuteUrl);
-                            var btnCopy = new Button() { Font = this.Font, Location = new Point(pnl.ClientSize.Width - unitHeight, y), Size = new Size(unitHeight, unitHeight), TabStop = false, Tag = textBox, Text = "", Image = new Bitmap(Assembly.GetExecutingAssembly().GetManifestResourceStream("Bimil.Resources.Copy_16.png")) };
-                            btnCopy.Click += new EventHandler(delegate(object sender2, EventArgs e2) {
-                                var box = (TextBox)(((Control)sender2).Tag);
-                                box.Select();
-                                var text = box.Text;
-                                if (text.Contains("://")) {
-                                    Clipboard.SetText(text);
-                                } else {
+                                });
+                                pnl.Controls.Add(btnCopy);
+                                yH = textBox.Height;
+                            } break;
+
+                        case BimilRecordFormat.MonospacedText: {
+                                var textBox = new TextBox() { Font = EditItemForm.FixedFont, Location = new Point(labelWidth + labelBuffer, y), Tag = record, Text = record.Value.Text, Width = pnl.ClientSize.Width - labelWidth - labelBuffer - unitHeight, ReadOnly = !this.Editable };
+                                textBox.GotFocus += new EventHandler(delegate(object sender2, EventArgs e2) { ((TextBox)sender2).SelectAll(); });
+                                pnl.Controls.Add(textBox);
+                                var btnCopy = new Button() { Location = new Point(pnl.ClientSize.Width - unitHeight, y), Size = new Size(unitHeight, textBox.Height), TabStop = false, Tag = textBox, Text = "", Image = new Bitmap(Assembly.GetExecutingAssembly().GetManifestResourceStream("Bimil.Resources.Copy_16.png")) };
+                                btnCopy.Click += new EventHandler(delegate(object sender2, EventArgs e2) {
+                                    var box = (TextBox)(((Control)sender2).Tag);
+                                    box.Select();
+                                    var text = box.Text;
                                     if (text.Length > 0) {
-                                        Clipboard.SetText("http://" + text);
+                                        Clipboard.SetText(text);
                                     } else {
                                         Clipboard.Clear();
                                     }
-                                }
-                            });
-                            pnl.Controls.Add(btnCopy);
-                            yH = textBox.Height;
-                        } break;
+                                });
+                                pnl.Controls.Add(btnCopy);
+                                yH = textBox.Height;
+                            } break;
 
-                    case BimilRecordFormat.MultilineText:
-                    default: { //behave as multiline text
-                            var textBox = new TextBox() { Location = new Point(labelWidth + labelBuffer, y), Tag = record, Text = record.Value.Text, Width = pnl.ClientSize.Width - labelWidth - labelBuffer, Multiline = true, Height = unitHeight * 2, AcceptsReturn = true, ScrollBars = ScrollBars.Vertical, ReadOnly = !this.Editable };
-                            textBox.GotFocus += new EventHandler(delegate(object sender2, EventArgs e2) { ((TextBox)sender2).SelectAll(); });
-                            pnl.Controls.Add(textBox);
-                            yH = textBox.Height;
-                        } break;
+                        case BimilRecordFormat.Password: {
+                                var textBox = new TextBox() { Font = this.Font, Location = new Point(labelWidth + labelBuffer, y), Tag = record, Text = record.Value.Text, Width = pnl.ClientSize.Width - labelWidth - labelBuffer - unitHeight - unitHeight, UseSystemPasswordChar = true, ReadOnly = !this.Editable };
+                                textBox.GotFocus += new EventHandler(delegate(object sender2, EventArgs e2) { ((TextBox)sender2).SelectAll(); });
+                                pnl.Controls.Add(textBox);
+                                var btnShowPass = new Button() { Location = new Point(pnl.ClientSize.Width - unitHeight - unitHeight, y), Size = new Size(unitHeight, unitHeight), TabStop = false, Tag = textBox, Text = "", Image = new Bitmap(Assembly.GetExecutingAssembly().GetManifestResourceStream("Bimil.Resources.RevealPassword_16.png")) };
+                                btnShowPass.Click += new EventHandler(delegate(object sender2, EventArgs e2) {
+                                    var box = (TextBox)(((Control)sender2).Tag);
+                                    box.Select();
+                                    box.UseSystemPasswordChar = !box.UseSystemPasswordChar;
+                                });
+                                pnl.Controls.Add(btnShowPass);
+                                var btnCopy = new Button() { Location = new Point(pnl.ClientSize.Width - unitHeight, y), Size = new Size(unitHeight, unitHeight), TabStop = false, Tag = textBox, Text = "", Image = new Bitmap(Assembly.GetExecutingAssembly().GetManifestResourceStream("Bimil.Resources.Copy_16.png")) };
+                                btnCopy.Click += new EventHandler(delegate(object sender2, EventArgs e2) {
+                                    var box = (TextBox)(((Control)sender2).Tag);
+                                    box.Select();
+                                    var text = box.Text;
+                                    if (text.Length > 0) {
+                                        Clipboard.SetText(text);
+                                    } else {
+                                        Clipboard.Clear();
+                                    }
+                                });
+                                pnl.Controls.Add(btnCopy);
+                                yH = textBox.Height;
+                            } break;
+
+                        case BimilRecordFormat.Url: {
+                                var textBox = new TextBox() { Font = EditItemForm.UnderlineFont, Location = new Point(labelWidth + labelBuffer, y), Tag = record, Text = record.Value.Text, Width = pnl.ClientSize.Width - labelWidth - labelBuffer - unitHeight - unitHeight, ReadOnly = !this.Editable, ForeColor = SystemColors.HotTrack };
+                                textBox.GotFocus += new EventHandler(delegate(object sender2, EventArgs e2) { ((TextBox)sender2).SelectAll(); });
+                                pnl.Controls.Add(textBox);
+                                var btnExecuteUrl = new Button() { Location = new Point(pnl.ClientSize.Width - unitHeight - unitHeight, y), Size = new Size(unitHeight, unitHeight), TabStop = false, Tag = textBox, Text = "", Image = new Bitmap(Assembly.GetExecutingAssembly().GetManifestResourceStream("Bimil.Resources.ExecuteUrl_16.png")) };
+                                btnExecuteUrl.Click += new EventHandler(delegate(object sender2, EventArgs e2) {
+                                    var box = (TextBox)(((Control)sender2).Tag);
+                                    box.Select();
+                                    var text = box.Text;
+                                    if (text.Contains("://")) {
+                                        Process.Start(text);
+                                    } else {
+                                        if (text.Length > 0) {
+                                            Process.Start("http://" + text);
+                                        } else {
+                                            Clipboard.Clear();
+                                        }
+                                    }
+                                });
+                                pnl.Controls.Add(btnExecuteUrl);
+                                var btnCopy = new Button() { Font = this.Font, Location = new Point(pnl.ClientSize.Width - unitHeight, y), Size = new Size(unitHeight, unitHeight), TabStop = false, Tag = textBox, Text = "", Image = new Bitmap(Assembly.GetExecutingAssembly().GetManifestResourceStream("Bimil.Resources.Copy_16.png")) };
+                                btnCopy.Click += new EventHandler(delegate(object sender2, EventArgs e2) {
+                                    var box = (TextBox)(((Control)sender2).Tag);
+                                    box.Select();
+                                    var text = box.Text;
+                                    if (text.Contains("://")) {
+                                        Clipboard.SetText(text);
+                                    } else {
+                                        if (text.Length > 0) {
+                                            Clipboard.SetText("http://" + text);
+                                        } else {
+                                            Clipboard.Clear();
+                                        }
+                                    }
+                                });
+                                pnl.Controls.Add(btnCopy);
+                                yH = textBox.Height;
+                            } break;
+
+                        case BimilRecordFormat.MultilineText:
+                        default: { //behave as multiline text
+                                var textBox = new TextBox() { Location = new Point(labelWidth + labelBuffer, y), Tag = record, Text = record.Value.Text, Width = pnl.ClientSize.Width - labelWidth - labelBuffer, Multiline = true, Height = unitHeight * 2, AcceptsReturn = true, ScrollBars = ScrollBars.Vertical, ReadOnly = !this.Editable };
+                                textBox.GotFocus += new EventHandler(delegate(object sender2, EventArgs e2) { ((TextBox)sender2).SelectAll(); });
+                                pnl.Controls.Add(textBox);
+                                yH = textBox.Height;
+                            } break;
+                    }
+
+                    var label = new Label() { AutoEllipsis = true, Location = new Point(0, y), Size = new Size(labelWidth, unitHeight), Text = record.Key.Text + ":", TextAlign = ContentAlignment.MiddleLeft, UseMnemonic = false };
+                    pnl.Controls.Add(label);
+
+                    y += yH + (label.Height / 4);
                 }
-
-                var label = new Label() { AutoEllipsis = true, Location = new Point(0, y), Size = new Size(labelWidth, unitHeight), Text = record.Key.Text + ":", TextAlign = ContentAlignment.MiddleLeft, UseMnemonic = false };
-                pnl.Controls.Add(label);
-
-                y += yH + (label.Height / 4);
             }
 
             if (pnl.VerticalScroll.Visible == true) {
