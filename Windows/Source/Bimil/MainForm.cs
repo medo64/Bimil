@@ -350,12 +350,19 @@ namespace Bimil {
         #endregion
 
 
+        private void cmbSearch_SelectedIndexChanged(object sender, EventArgs e) {
+            RefreshItems();
+        }
+
+
         private void RefreshItems() {
             lsvPasswords.BeginUpdate();
             lsvPasswords.Items.Clear();
             if (this.Document != null) {
                 foreach (var item in this.Document.Items) {
-                    lsvPasswords.Items.Add(new ListViewItem(item.Title) { Tag = item });
+                    if ((cmbSearch.Text.Length == 0) || (item.Title.IndexOf(cmbSearch.Text, StringComparison.CurrentCultureIgnoreCase) > 0)) {
+                        lsvPasswords.Items.Add(new ListViewItem(item.Title) { Tag = item });
+                    }
                 }
             }
             lsvPasswords.EndUpdate();

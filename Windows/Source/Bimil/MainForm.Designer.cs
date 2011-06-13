@@ -229,6 +229,8 @@
             this.cmbSearch.Name = "cmbSearch";
             this.cmbSearch.Size = new System.Drawing.Size(462, 24);
             this.cmbSearch.TabIndex = 2;
+            this.cmbSearch.SelectedIndexChanged += new System.EventHandler(this.cmbSearch_SelectedIndexChanged);
+            this.cmbSearch.TextChanged += new System.EventHandler(this.cmbSearch_SelectedIndexChanged);
             // 
             // MainForm
             // 
