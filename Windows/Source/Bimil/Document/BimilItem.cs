@@ -13,7 +13,6 @@ namespace Medo.Security.Cryptography.Bimil {
 
         internal BimilItem(BimilDocument document) {
             this.Document = document;
-            this.Name = "";
             this.Records = new List<BimilRecord>();
         }
 
@@ -24,20 +23,40 @@ namespace Medo.Security.Cryptography.Bimil {
         public int IconIndex { get; set; }
 
         /// <summary>
-        /// Gets/sets title.
+        /// Gets/sets name.
         /// </summary>
         public string Name {
-            get {
-                foreach (var record in this.Records) {
-                    if (record.Format == BimilRecordFormat.System) {
-                        if (string.Equals("Name", record.Key.Text, StringComparison.Ordinal)) {
-                            return record.Value.Text;
-                        }
+            get { return this.NameRecord.Value.Text; }
+        }
+
+        /// <summary>
+        /// Gets name record.
+        /// </summary>
+        public BimilRecord NameRecord {
+            get { return GetSystemRecord("Name"); }
+        }
+
+        /// <summary>
+        /// Gets category record.
+        /// </summary>
+        public BimilRecord CategoryRecord {
+            get { return GetSystemRecord("Category"); }
+        }
+
+
+        private void SetSystemRecordValue(string key, string value) {
+            foreach (var record in this.Records) {
+                if (record.Format == BimilRecordFormat.System) {
+                    if (string.Equals(key, record.Key.Text, StringComparison.Ordinal)) {
+                        record.Value.Text = value;
+                        return;
                     }
                 }
-                return null;
             }
-            set { }
+            {
+                var record = new BimilRecord(this.Document, key, value, BimilRecordFormat.System);
+                this.Records.Add(record);
+            }
         }
 
 
@@ -129,7 +148,7 @@ namespace Medo.Security.Cryptography.Bimil {
 
             var res = new BimilItem(document);
 
-            int currOffset = offset ;
+            int currOffset = offset;
             while (currOffset < (offset + count)) {
                 int keyLength = GetInt32(buffer, currOffset);
                 int valueLength = GetInt32(buffer, currOffset + 4);
@@ -162,6 +181,21 @@ namespace Medo.Security.Cryptography.Bimil {
                 return BitConverter.ToInt32(new byte[] { buffer[offset + 3], buffer[offset + 2], buffer[offset + 1], buffer[offset] }, 0);
             } else {
                 return BitConverter.ToInt32(buffer, offset);
+            }
+        }
+
+        private BimilRecord GetSystemRecord(string key) {
+            foreach (var record in this.Records) {
+                if (record.Format == BimilRecordFormat.System) {
+                    if (string.Equals(key, record.Key.Text, StringComparison.Ordinal)) {
+                        return record;
+                    }
+                }
+            }
+            {
+                var record = new BimilRecord(this.Document, key, "", BimilRecordFormat.System);
+                this.Records.Add(record);
+                return record;
             }
         }
 

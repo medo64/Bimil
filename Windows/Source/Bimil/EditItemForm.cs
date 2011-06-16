@@ -60,7 +60,8 @@ namespace Bimil {
             int y = 0;
             TextBox titleTextBox;
             {
-                titleTextBox = new TextBox() { Font = this.Font, Location = new Point(labelWidth + labelBuffer, 0), Tag = this.Item, Text = this.Item.Name, Width = pnl.ClientSize.Width - labelWidth - labelBuffer, ReadOnly = !this.Editable };
+                var record = this.Item.NameRecord;
+                titleTextBox = new TextBox() { Font = this.Font, Location = new Point(labelWidth + labelBuffer, 0), Tag = record, Text = record.Value.Text, Width = pnl.ClientSize.Width - labelWidth - labelBuffer, ReadOnly = !this.Editable };
                 titleTextBox.GotFocus += new EventHandler(delegate(object sender2, EventArgs e2) { ((TextBox)sender2).SelectAll(); });
                 titleTextBox.TextChanged += new EventHandler(delegate(object sender2, EventArgs e2) { btnOK.Enabled = (((Control)sender2).Text.Trim().Length > 0); });
                 pnl.Controls.Add(titleTextBox);
@@ -72,7 +73,8 @@ namespace Bimil {
 
             ComboBox categoryComboBox;
             {
-                categoryComboBox = new ComboBox() { Font = this.Font, Location = new Point(labelWidth + labelBuffer, y), Tag = this.Item, Text = "", Width = pnl.ClientSize.Width - labelWidth - labelBuffer, Enabled = this.Editable };
+                var record = this.Item.CategoryRecord;
+                categoryComboBox = new ComboBox() { Font = this.Font, Location = new Point(labelWidth + labelBuffer, y), Tag = record, Text = record.Value.Text, Width = pnl.ClientSize.Width - labelWidth - labelBuffer, Enabled = this.Editable };
                 categoryComboBox.GotFocus += new EventHandler(delegate(object sender2, EventArgs e2) { ((ComboBox)sender2).SelectAll(); });
                 pnl.Controls.Add(categoryComboBox);
                 var label = new Label() { AutoEllipsis = true, Location = new Point(0, y), Size = new Size(labelWidth, unitHeight), Text = "Category:", TextAlign = ContentAlignment.MiddleLeft, UseMnemonic = false };
@@ -240,11 +242,6 @@ namespace Bimil {
                 var record = control.Tag as BimilRecord;
                 if (record != null) {
                     record.Value.Text = control.Text;
-                } else {
-                    var item = control.Tag as BimilItem;
-                    if (item != null) {
-                        item.Name = control.Text;
-                    }
                 }
             }
         }

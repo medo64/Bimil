@@ -190,10 +190,11 @@ namespace Medo.Security.Cryptography.Bimil {
         /// <summary>
         /// Adds new item.
         /// </summary>
-        /// <param name="title">Title.</param>
+        /// <param name="name">Title.</param>
         /// <param name="iconIndex">Icon index.</param>
-        public BimilItem AddItem(string title, int iconIndex) {
-            var item = new BimilItem(this) { Name = title, IconIndex = iconIndex };
+        public BimilItem AddItem(string name, int iconIndex) {
+            var item = new BimilItem(this) { IconIndex = iconIndex };
+            item.NameRecord.Value.Text = name;
             this.Items.Add(item);
             return item;
         }
