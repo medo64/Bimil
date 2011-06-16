@@ -63,6 +63,7 @@ namespace Bimil {
 
         private void Form_Load(object sender, EventArgs e) {
             RefreshFiles();
+            RefreshCategories();
             RefreshItems();
             UpdateMenu();
         }
@@ -175,6 +176,7 @@ namespace Bimil {
                 this.DocumentFileName = null;
                 this.DocumentChanged = false;
             }
+            RefreshCategories();
             RefreshItems();
             UpdateMenu();
         }
@@ -208,6 +210,7 @@ namespace Bimil {
             } catch (FormatException) {
                 Medo.MessageBox.ShowError(this, "Either password is wrong or file is damaged.");
             }
+            RefreshCategories();
             RefreshItems();
             UpdateMenu();
         }
@@ -279,6 +282,7 @@ namespace Bimil {
 
             this.Document = newDoc;
             this.DocumentChanged = true;
+            RefreshCategories();
             RefreshItems();
             UpdateMenu();
         }
@@ -355,12 +359,25 @@ namespace Bimil {
         }
 
 
+        private void RefreshCategories() {
+            cmbSearch.BeginUpdate();
+            cmbSearch.Items.Clear();
+            if (this.Document != null) {
+                foreach (var item in this.Document.Items) {
+                    if (cmbSearch.Items.Contains(item.CategoryRecord.Value.Text) == false) {
+                        cmbSearch.Items.Add(item.CategoryRecord.Value.Text);
+                    }
+                }
+            }
+            cmbSearch.EndUpdate();
+        }
+
         private void RefreshItems() {
             lsvPasswords.BeginUpdate();
             lsvPasswords.Items.Clear();
             if (this.Document != null) {
                 foreach (var item in this.Document.Items) {
-                    if ((cmbSearch.Text.Length == 0) || (item.Name.IndexOf(cmbSearch.Text, StringComparison.CurrentCultureIgnoreCase) > 0)) {
+                    if ((string.Equals(cmbSearch.Text, item.CategoryRecord.Value.Text, StringComparison.CurrentCultureIgnoreCase)) || (item.Name.IndexOf(cmbSearch.Text, StringComparison.CurrentCultureIgnoreCase) >= 0)) {
                         lsvPasswords.Items.Add(new ListViewItem(item.Name) { Tag = item });
                     }
                 }

@@ -223,11 +223,14 @@
             // 
             // cmbSearch
             // 
+            this.cmbSearch.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
+            this.cmbSearch.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
             this.cmbSearch.Dock = System.Windows.Forms.DockStyle.Top;
             this.cmbSearch.FormattingEnabled = true;
             this.cmbSearch.Location = new System.Drawing.Point(0, 0);
             this.cmbSearch.Name = "cmbSearch";
             this.cmbSearch.Size = new System.Drawing.Size(462, 24);
+            this.cmbSearch.Sorted = true;
             this.cmbSearch.TabIndex = 2;
             this.cmbSearch.SelectedIndexChanged += new System.EventHandler(this.cmbSearch_SelectedIndexChanged);
             this.cmbSearch.TextChanged += new System.EventHandler(this.cmbSearch_SelectedIndexChanged);
