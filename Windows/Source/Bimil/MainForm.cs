@@ -295,7 +295,7 @@ namespace Bimil {
 
                     using (var frm2 = new EditItemForm(this.Document, item, true)) {
                         if (frm2.ShowDialog(this) == DialogResult.OK) {
-                            var listItem = new ListViewItem(item.Title) { Tag = item };
+                            var listItem = new ListViewItem(item.Name) { Tag = item };
                             lsvPasswords.Items.Add(listItem);
                             this.DocumentChanged = true;
                         } else {
@@ -314,7 +314,7 @@ namespace Bimil {
             var item = (BimilItem)(lsvPasswords.SelectedItems[0].Tag);
             using (var frm2 = new EditItemForm(this.Document, item, false)) {
                 if (frm2.ShowDialog(this) == DialogResult.OK) {
-                    lsvPasswords.SelectedItems[0].Text = item.Title;
+                    lsvPasswords.SelectedItems[0].Text = item.Name;
                     this.DocumentChanged = true;
                     UpdateMenu();
                 }
@@ -360,8 +360,8 @@ namespace Bimil {
             lsvPasswords.Items.Clear();
             if (this.Document != null) {
                 foreach (var item in this.Document.Items) {
-                    if ((cmbSearch.Text.Length == 0) || (item.Title.IndexOf(cmbSearch.Text, StringComparison.CurrentCultureIgnoreCase) > 0)) {
-                        lsvPasswords.Items.Add(new ListViewItem(item.Title) { Tag = item });
+                    if ((cmbSearch.Text.Length == 0) || (item.Name.IndexOf(cmbSearch.Text, StringComparison.CurrentCultureIgnoreCase) > 0)) {
+                        lsvPasswords.Items.Add(new ListViewItem(item.Name) { Tag = item });
                     }
                 }
             }

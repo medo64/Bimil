@@ -13,7 +13,7 @@ namespace Medo.Security.Cryptography.Bimil {
 
         internal BimilItem(BimilDocument document) {
             this.Document = document;
-            this.Title = "";
+            this.Name = "";
             this.Records = new List<BimilRecord>();
         }
 
@@ -26,7 +26,19 @@ namespace Medo.Security.Cryptography.Bimil {
         /// <summary>
         /// Gets/sets title.
         /// </summary>
-        public string Title { get; set; }
+        public string Name {
+            get {
+                foreach (var record in this.Records) {
+                    if (record.Format == BimilRecordFormat.System) {
+                        if (string.Equals("Name", record.Key.Text, StringComparison.Ordinal)) {
+                            return record.Value.Text;
+                        }
+                    }
+                }
+                return null;
+            }
+            set { }
+        }
 
 
         /// <summary>
@@ -34,6 +46,13 @@ namespace Medo.Security.Cryptography.Bimil {
         /// </summary>
         public IList<BimilRecord> Records { get; private set; }
 
+        public void ClearNonSystemRecords() {
+            for (int i = this.Records.Count - 1; i >= 0; i--) {
+                if (this.Records[i].Format != BimilRecordFormat.System) {
+                    this.Records.RemoveAt(i);
+                }
+            }
+        }
 
         /// <summary>
         /// Adds new text record.
@@ -94,10 +113,6 @@ namespace Medo.Security.Cryptography.Bimil {
 
         internal byte[] GetBytes() {
             var buffer = new List<byte>(2048);
-            var titleBytes = UTF8Encoding.UTF8.GetBytes(this.Title);
-            buffer.AddRange(GetInt32Bytes(titleBytes.Length));
-            buffer.AddRange(titleBytes);
-            buffer.AddRange(GetInt32Bytes(this.IconIndex));
             foreach (var record in this.Records) {
                 buffer.AddRange(GetInt32Bytes(record.Key.Bytes.Length));
                 buffer.AddRange(GetInt32Bytes(record.Value.Bytes.Length));
@@ -114,12 +129,7 @@ namespace Medo.Security.Cryptography.Bimil {
 
             var res = new BimilItem(document);
 
-            int nameLength = GetInt32(buffer, offset);
-            res.Title = UTF8Encoding.UTF8.GetString(buffer, offset + 4, nameLength);
-
-            res.IconIndex = GetInt32(buffer, offset + 4 + nameLength);
-
-            int currOffset = offset + 4 + nameLength + 4;
+            int currOffset = offset ;
             while (currOffset < (offset + count)) {
                 int keyLength = GetInt32(buffer, currOffset);
                 int valueLength = GetInt32(buffer, currOffset + 4);
@@ -162,11 +172,8 @@ namespace Medo.Security.Cryptography.Bimil {
 
 
 
-// FORMAT
+// FORMAT (A128)
 //--------
-//  4x Title-Length
-//  ?x Title
-//  4x IconIndex
 //  4x Key[0]-Length
 //  4x Value[0]-Length
 //  4x Type[0]

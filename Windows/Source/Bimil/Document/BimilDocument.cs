@@ -88,7 +88,7 @@ namespace Medo.Security.Cryptography.Bimil {
         public void Save(Stream stream, string newPassword) {
             using (var newDoc = new BimilDocument(newPassword)) {
                 foreach (var item in this.Items) {
-                    var newItem = newDoc.AddItem(item.Title, item.IconIndex);
+                    var newItem = newDoc.AddItem(item.Name, item.IconIndex);
                     foreach (var record in item.Records) {
                         newItem.AddRecord(record.Key.Text, record.Value.Text, record.Format);
                     }
@@ -136,8 +136,12 @@ namespace Medo.Security.Cryptography.Bimil {
                     using (var dec = doc.Crypto.CreateDecryptor()) {
                         decBuffer = dec.TransformFinalBlock(encBuffer, 0, encBuffer.Length);
                     }
-                    if ((decBuffer[0] != 0x41) || (decBuffer[1] != 0x31) || (decBuffer[2] != 0x32) || (decBuffer[3] != 0x38)) { throw new FormatException("Invalid primary identifier."); }
-                    if ((decBuffer[decBuffer.Length - 4] != 0x41) || (decBuffer[decBuffer.Length - 3] != 0x31) || (decBuffer[decBuffer.Length - 2] != 0x32) || (decBuffer[decBuffer.Length - 1] != 0x38)) { throw new FormatException("Invalid secondary identifier."); }
+                    if ((decBuffer[0] == 0x41) && (decBuffer[1] == 0x31) && (decBuffer[2] == 0x32) && (decBuffer[3] == 0x38)) {
+                        if ((decBuffer[decBuffer.Length - 4] != 0x41) || (decBuffer[decBuffer.Length - 3] != 0x31) || (decBuffer[decBuffer.Length - 2] != 0x32) || (decBuffer[decBuffer.Length - 1] != 0x38)) { throw new FormatException("Invalid secondary identifier."); }
+                        doc.Id = "A128";
+                    } else {
+                        throw new FormatException("Invalid primary identifier."); 
+                    }
 
                     int currOffset = 4;
                     while (currOffset < (decBuffer.Length - 4)) {
@@ -173,6 +177,11 @@ namespace Medo.Security.Cryptography.Bimil {
 
 
         /// <summary>
+        /// Gets document's ID.
+        /// </summary>
+        public string Id { get; private set; }
+
+        /// <summary>
         /// Gets items.
         /// </summary>
         public IList<BimilItem> Items { get; private set; }
@@ -184,7 +193,7 @@ namespace Medo.Security.Cryptography.Bimil {
         /// <param name="title">Title.</param>
         /// <param name="iconIndex">Icon index.</param>
         public BimilItem AddItem(string title, int iconIndex) {
-            var item = new BimilItem(this) { Title = title, IconIndex = iconIndex };
+            var item = new BimilItem(this) { Name = title, IconIndex = iconIndex };
             this.Items.Add(item);
             return item;
         }

@@ -43,25 +43,29 @@
     /// </summary>
     public enum BimilRecordFormat : int {
         /// <summary>
+        /// System parameter.
+        /// </summary>
+        System = 0,
+        /// <summary>
         /// One-line text.
         /// </summary>
-        Text = 0,
+        Text = 10,
         /// <summary>
         /// Multiline text.
         /// </summary>
-        MultilineText = 1,
+        MultilineText = 11,
         /// <summary>
         /// Fixed-font text.
         /// </summary>
-        MonospacedText = 2,
+        MonospacedText = 12,
         /// <summary>
         /// URL.
         /// </summary>
-        Url = 10,
+        Url = 20,
         /// <summary>
         /// Password text.
         /// </summary>
-        Password = 20,
+        Password = 30,
     }
 
 }

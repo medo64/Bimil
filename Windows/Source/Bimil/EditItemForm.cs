@@ -60,7 +60,7 @@ namespace Bimil {
             int y = 0;
             TextBox titleTextBox;
             {
-                titleTextBox = new TextBox() { Font = this.Font, Location = new Point(labelWidth + labelBuffer, 0), Tag = this.Item, Text = this.Item.Title, Width = pnl.ClientSize.Width - labelWidth - labelBuffer, ReadOnly = !this.Editable };
+                titleTextBox = new TextBox() { Font = this.Font, Location = new Point(labelWidth + labelBuffer, 0), Tag = this.Item, Text = this.Item.Name, Width = pnl.ClientSize.Width - labelWidth - labelBuffer, ReadOnly = !this.Editable };
                 titleTextBox.GotFocus += new EventHandler(delegate(object sender2, EventArgs e2) { ((TextBox)sender2).SelectAll(); });
                 titleTextBox.TextChanged += new EventHandler(delegate(object sender2, EventArgs e2) { btnOK.Enabled = (((Control)sender2).Text.Trim().Length > 0); });
                 pnl.Controls.Add(titleTextBox);
@@ -83,7 +83,7 @@ namespace Bimil {
 
             int yH;
             foreach (var record in this.Item.Records) {
-                if (record.Key.Text.StartsWith(".", StringComparison.Ordinal) == false) {
+                if (record.Format != BimilRecordFormat.System) {
                     switch (record.Format) {
                         case BimilRecordFormat.Text: {
                                 var textBox = new TextBox() { Font = this.Font, Location = new Point(labelWidth + labelBuffer, y), Tag = record, Text = record.Value.Text, Width = pnl.ClientSize.Width - labelWidth - labelBuffer - unitHeight, ReadOnly = !this.Editable };
@@ -243,7 +243,7 @@ namespace Bimil {
                 } else {
                     var item = control.Tag as BimilItem;
                     if (item != null) {
-                        item.Title = control.Text;
+                        item.Name = control.Text;
                     }
                 }
             }

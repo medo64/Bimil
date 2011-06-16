@@ -25,7 +25,7 @@ namespace Bimil {
             lsvFields.Columns[0].Width = lsvFields.Width - SystemInformation.VerticalScrollBarWidth;
 
             foreach (var record in this.Item.Records) {
-                if (record.Key.Text.StartsWith(".", StringComparison.Ordinal) == false) {
+                if (record.Format != BimilRecordFormat.System) {
                     var lvi = new ListViewItem(record.Key.Text) { Tag = record };
                     lsvFields.Items.Add(lvi);
                 }
@@ -123,7 +123,7 @@ namespace Bimil {
         }
 
         private void btnOK_Click(object sender, EventArgs e) {
-            this.Item.Records.Clear();
+            this.Item.ClearNonSystemRecords();
             foreach (ListViewItem lvi in lsvFields.Items) {
                 var record = (BimilRecord)lvi.Tag;
                 record.Key.Text = lvi.Text;
