@@ -107,6 +107,66 @@ namespace Bimil {
             mnuEdit_Click(null, null);
         }
 
+
+        private void cmbSearch_KeyDown(object sender, KeyEventArgs e) {
+            switch (e.KeyData) {
+                case Keys.Down:
+                    if (lsvPasswords.Items.Count > 0) {
+                        if (lsvPasswords.SelectedIndices.Count == 0) {
+                            lsvPasswords.Items[0].Selected = true;
+                        } else {
+                            int index = Math.Min(lsvPasswords.SelectedIndices[lsvPasswords.SelectedIndices.Count - 1] + 1, lsvPasswords.Items.Count - 1);
+                            foreach (ListViewItem item in lsvPasswords.Items) { item.Selected = false; }
+                            lsvPasswords.Items[index].Selected = true;
+                            lsvPasswords.Items[index].Focused = true;
+                        }
+                    }
+                    e.Handled = true;
+                    e.SuppressKeyPress = true;
+                    break;
+
+                case Keys.Up:
+                    if (lsvPasswords.Items.Count > 0) {
+                        if (lsvPasswords.SelectedIndices.Count == 0) {
+                            lsvPasswords.Items[lsvPasswords.Items.Count - 1].Selected = true;
+                        } else {
+                            int index = Math.Max(lsvPasswords.SelectedIndices[0] - 1, 0);
+                            foreach (ListViewItem item in lsvPasswords.Items) { item.Selected = false; }
+                            lsvPasswords.Items[index].Selected = true;
+                            lsvPasswords.Items[index].Focused = true;
+                        }
+                    }
+                    e.Handled = true;
+                    e.SuppressKeyPress = true;
+                    break;
+
+                case Keys.PageDown: {
+                        int index = (cmbSearch.SelectedIndex == -1) ? 0 : cmbSearch.SelectedIndex;
+                        cmbSearch.SelectedIndex = Math.Min(index + 1, cmbSearch.Items.Count - 1);
+                        cmbSearch.SelectAll();
+                        e.Handled = true;
+                        e.SuppressKeyPress = true;
+                    } break;
+
+                case Keys.PageUp: {
+                        int index = (cmbSearch.SelectedIndex == -1) ? cmbSearch.Items.Count - 1 : cmbSearch.SelectedIndex;
+                        cmbSearch.SelectedIndex = Math.Max(index - 1, 0);
+                        cmbSearch.SelectAll();
+                        e.Handled = true;
+                        e.SuppressKeyPress = true;
+                    } break;
+
+                case Keys.Enter:
+                    if (lsvPasswords.Items.Count > 0) {
+                        lsvPasswords_ItemActivate(null, null);
+                    } break;
+
+                default:
+                    lsvPasswords_KeyDown(null, e);
+                    break;
+            }
+        }
+
         private void lsvPasswords_KeyDown(object sender, KeyEventArgs e) {
             switch (e.KeyData) {
                 case Keys.Insert: {
@@ -181,6 +241,7 @@ namespace Bimil {
             RefreshCategories();
             RefreshItems();
             UpdateMenu();
+            cmbSearch.Select();
         }
 
         private void mnuOpen_ButtonClick(object sender, EventArgs e) {
@@ -215,6 +276,7 @@ namespace Bimil {
             RefreshCategories();
             RefreshItems();
             UpdateMenu();
+            cmbSearch.Select();
         }
 
         private void mnuSave_ButtonClick(object sender, EventArgs e) {
@@ -227,6 +289,7 @@ namespace Bimil {
             } else {
                 mnuSaveAs_Click(null, null);
             }
+            cmbSearch.Select();
         }
 
         private void mnuSaveAs_Click(object sender, EventArgs e) {
@@ -243,6 +306,7 @@ namespace Bimil {
                     UpdateMenu();
                 }
             }
+            cmbSearch.Select();
         }
 
         private void mnuChangePassword_Click(object sender, EventArgs e) {
@@ -287,6 +351,7 @@ namespace Bimil {
             RefreshCategories();
             RefreshItems();
             UpdateMenu();
+            cmbSearch.Select();
         }
 
         private void mnuAdd_Click(object sender, EventArgs e) {
@@ -313,6 +378,7 @@ namespace Bimil {
                     UpdateMenu();
                 }
             }
+            cmbSearch.Select();
         }
 
         private void mnuEdit_Click(object sender, EventArgs e) {
@@ -339,20 +405,24 @@ namespace Bimil {
             }
             this.DocumentChanged = true;
             UpdateMenu();
+            cmbSearch.Select();
         }
 
         private void mnuOptions_Click(object sender, EventArgs e) {
             using (var frm = new SettingsForm()) {
                 frm.ShowDialog(this);
             }
+            cmbSearch.Select();
         }
 
         private void mnuReportABug_Click(object sender, EventArgs e) {
             Medo.Diagnostics.ErrorReport.ShowDialog(this, null, new Uri("http://jmedved.com/errorreport/"));
+            cmbSearch.Select();
         }
 
         private void mnuAbout_Click(object sender, EventArgs e) {
             Medo.Windows.Forms.AboutBox.ShowDialog(this, new Uri("http://www.jmedved.com/bimil/"));
+            cmbSearch.Select();
         }
 
         #endregion

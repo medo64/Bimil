@@ -64,7 +64,7 @@
             this.mnu.Name = "mnu";
             this.mnu.Padding = new System.Windows.Forms.Padding(1, 0, 1, 0);
             this.mnu.Size = new System.Drawing.Size(462, 27);
-            this.mnu.TabIndex = 0;
+            this.mnu.TabIndex = 1;
             // 
             // mnuNew
             // 
@@ -105,7 +105,7 @@
             // 
             this.mnuSaveAs.Image = ((System.Drawing.Image)(resources.GetObject("mnuSaveAs.Image")));
             this.mnuSaveAs.Name = "mnuSaveAs";
-            this.mnuSaveAs.Size = new System.Drawing.Size(127, 24);
+            this.mnuSaveAs.Size = new System.Drawing.Size(152, 24);
             this.mnuSaveAs.Text = "Save as";
             this.mnuSaveAs.Click += new System.EventHandler(this.mnuSaveAs_Click);
             // 
@@ -214,7 +214,7 @@
             this.lsvPasswords.ShowGroups = false;
             this.lsvPasswords.Size = new System.Drawing.Size(462, 304);
             this.lsvPasswords.Sorting = System.Windows.Forms.SortOrder.Ascending;
-            this.lsvPasswords.TabIndex = 0;
+            this.lsvPasswords.TabIndex = 1;
             this.lsvPasswords.UseCompatibleStateImageBehavior = false;
             this.lsvPasswords.View = System.Windows.Forms.View.Details;
             this.lsvPasswords.ItemActivate += new System.EventHandler(this.lsvPasswords_ItemActivate);
@@ -231,9 +231,10 @@
             this.cmbSearch.Name = "cmbSearch";
             this.cmbSearch.Size = new System.Drawing.Size(462, 24);
             this.cmbSearch.Sorted = true;
-            this.cmbSearch.TabIndex = 2;
+            this.cmbSearch.TabIndex = 0;
             this.cmbSearch.SelectedIndexChanged += new System.EventHandler(this.cmbSearch_SelectedIndexChanged);
             this.cmbSearch.TextChanged += new System.EventHandler(this.cmbSearch_SelectedIndexChanged);
+            this.cmbSearch.KeyDown += new System.Windows.Forms.KeyEventHandler(this.cmbSearch_KeyDown);
             // 
             // MainForm
             // 
