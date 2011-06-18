@@ -464,6 +464,10 @@ namespace Bimil {
                 }
             }
             lsvPasswords.EndUpdate();
+            if (lsvPasswords.Items.Count > 0) { 
+                lsvPasswords.Items[0].Selected = true;
+                lsvPasswords.Items[0].Focused = true;
+            }
             Form_Resize(null, null);
         }
 
