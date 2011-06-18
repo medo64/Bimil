@@ -4,6 +4,7 @@ using System.IO;
 using System.Windows.Forms;
 using Medo.Security.Cryptography.Bimil;
 using Medo.Configuration;
+using System.Collections.Generic;
 
 namespace Bimil {
     internal partial class MainForm : Form {
@@ -12,6 +13,7 @@ namespace Bimil {
         private string DocumentFileName = null;
         private bool DocumentChanged = false;
         private RecentFiles RecentFiles = new RecentFiles();
+        private readonly List<string> Categories = new List<string>();
 
         public MainForm() {
             InitializeComponent();
@@ -297,11 +299,12 @@ namespace Bimil {
                         item.AddRecord(record.Key, "", record.Value);
                     }
 
-                    using (var frm2 = new EditItemForm(this.Document, item, true)) {
+                    using (var frm2 = new EditItemForm(this.Document, item, true, this.Categories)) {
                         if (frm2.ShowDialog(this) == DialogResult.OK) {
                             var listItem = new ListViewItem(item.Name) { Tag = item };
                             lsvPasswords.Items.Add(listItem);
                             this.DocumentChanged = true;
+                            RefreshCategories();
                         } else {
                             this.Document.Items.Remove(item);
                         }
@@ -316,10 +319,11 @@ namespace Bimil {
             if ((this.Document == null) || (lsvPasswords.SelectedItems.Count != 1)) { return; }
 
             var item = (BimilItem)(lsvPasswords.SelectedItems[0].Tag);
-            using (var frm2 = new EditItemForm(this.Document, item, false)) {
+            using (var frm2 = new EditItemForm(this.Document, item, false, this.Categories)) {
                 if (frm2.ShowDialog(this) == DialogResult.OK) {
                     lsvPasswords.SelectedItems[0].Text = item.Name;
                     this.DocumentChanged = true;
+                    RefreshCategories();
                     UpdateMenu();
                 }
             }
@@ -360,14 +364,21 @@ namespace Bimil {
 
 
         private void RefreshCategories() {
-            cmbSearch.BeginUpdate();
-            cmbSearch.Items.Clear();
+            this.Categories.Clear();
             if (this.Document != null) {
+                this.Categories.Add("");
                 foreach (var item in this.Document.Items) {
-                    if (cmbSearch.Items.Contains(item.CategoryRecord.Value.Text) == false) {
-                        cmbSearch.Items.Add(item.CategoryRecord.Value.Text);
+                    if (this.Categories.Contains(item.CategoryRecord.Value.Text) == false) {
+                        this.Categories.Add(item.CategoryRecord.Value.Text);
                     }
                 }
+            }
+            this.Categories.Sort();
+
+            cmbSearch.BeginUpdate();
+            cmbSearch.Items.Clear();
+            foreach (var category in this.Categories) {
+                cmbSearch.Items.Add(category);
             }
             cmbSearch.EndUpdate();
         }
@@ -377,7 +388,7 @@ namespace Bimil {
             lsvPasswords.Items.Clear();
             if (this.Document != null) {
                 foreach (var item in this.Document.Items) {
-                    if ((string.Equals(cmbSearch.Text, item.CategoryRecord.Value.Text, StringComparison.CurrentCultureIgnoreCase)) || (item.Name.IndexOf(cmbSearch.Text, StringComparison.CurrentCultureIgnoreCase) >= 0)) {
+                    if ((string.Equals(cmbSearch.Text, item.CategoryRecord.Value.Text, StringComparison.CurrentCultureIgnoreCase)) || ((cmbSearch.Text.Length > 0) && (item.Name.IndexOf(cmbSearch.Text, StringComparison.CurrentCultureIgnoreCase) >= 0))) {
                         lsvPasswords.Items.Add(new ListViewItem(item.Name) { Tag = item });
                     }
                 }

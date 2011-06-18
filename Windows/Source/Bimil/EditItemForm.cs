@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Reflection;
 using System.Windows.Forms;
 using Medo.Security.Cryptography.Bimil;
+using System.Collections.Generic;
 
 namespace Bimil {
     public partial class EditItemForm : Form {
@@ -13,14 +14,16 @@ namespace Bimil {
         private bool Editable;
         private static Font FixedFont = new Font(FontFamily.GenericMonospace, SystemFonts.MessageBoxFont.SizeInPoints + 0.5F, SystemFonts.MessageBoxFont.Style);
         private static Font UnderlineFont = new Font(SystemFonts.MessageBoxFont.Name, SystemFonts.MessageBoxFont.SizeInPoints, SystemFonts.MessageBoxFont.Style | FontStyle.Underline);
+        private readonly IList<string> Categories;
 
-        public EditItemForm(BimilDocument document, BimilItem item, bool startsAsEditable) {
+        public EditItemForm(BimilDocument document, BimilItem item, bool startsAsEditable, IList<string> categories) {
             InitializeComponent();
             this.Font = SystemFonts.MessageBoxFont;
 
             this.Document = document;
             this.Item = item;
             this.Editable = startsAsEditable;
+            this.Categories = categories;
         }
 
         private void EditItemForm_Load(object sender, EventArgs e) {
@@ -76,6 +79,9 @@ namespace Bimil {
                 var record = this.Item.CategoryRecord;
                 categoryComboBox = new ComboBox() { Font = this.Font, Location = new Point(labelWidth + labelBuffer, y), Tag = record, Text = record.Value.Text, Width = pnl.ClientSize.Width - labelWidth - labelBuffer, Enabled = this.Editable };
                 categoryComboBox.GotFocus += new EventHandler(delegate(object sender2, EventArgs e2) { ((ComboBox)sender2).SelectAll(); });
+                foreach (var category in this.Categories) {
+                    categoryComboBox.Items.Add(category);
+                }
                 pnl.Controls.Add(categoryComboBox);
                 var label = new Label() { AutoEllipsis = true, Location = new Point(0, y), Size = new Size(labelWidth, unitHeight), Text = "Category:", TextAlign = ContentAlignment.MiddleLeft, UseMnemonic = false };
                 pnl.Controls.Add(label);
