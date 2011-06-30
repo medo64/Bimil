@@ -92,7 +92,13 @@ namespace Bimil {
         }
 
         private void RefreshFiles() {
-            mnuOpen.DropDownItems.Clear();
+            for (int i = mnuOpen.DropDownItems.Count - 1; i >= 0; i--) {
+                if (mnuOpen.DropDownItems[i] is ToolStripMenuItem) {
+                    mnuOpen.DropDownItems.RemoveAt(i);
+                } else {
+                    break;
+                }
+            }
             for (int i = 0; i < this.RecentFiles.Count; i++) {
                 var item = new ToolStripMenuItem(this.RecentFiles[i].Title) { Tag = this.RecentFiles[i].FileName };
                 item.Click += new EventHandler(delegate(object sender2, EventArgs e2) {
@@ -253,14 +259,30 @@ namespace Bimil {
             }
         }
 
-        private void LoadFile(string fileName) {
+        private void mnuOpenFromGoogleDocs_Click(object sender, EventArgs e) {
+            using (var frmAuth = new GoogleDocsAuthForm()) {
+                if (frmAuth.ShowDialog(this) == DialogResult.OK) {
+                    using (var frmDocs = new GoogleDocsOpenForm(frmAuth.AuthorizationToken)) {
+                        if (frmDocs.ShowDialog(this) == DialogResult.OK) {
+                            //frmDocs.ContentBytes 
+                        }
+                    }
+                }
+            }
+        }
+
+        private void LoadFile(string fileName, string password = null) {
             try {
                 BimilDocument doc = null;
                 try {
-                    using (var frm = new PasswordForm()) {
-                        if (frm.ShowDialog(this) == DialogResult.OK) {
-                            doc = BimilDocument.Open(fileName, frm.Password);
+                    if (password == null) {
+                        using (var frm = new PasswordForm()) {
+                            if (frm.ShowDialog(this) == DialogResult.OK) {
+                                doc = BimilDocument.Open(fileName, frm.Password);
+                            }
                         }
+                    } else {
+                        doc = BimilDocument.Open(fileName, password);
                     }
                 } finally {
                     GC.Collect(); //in attempt to kill password string
@@ -308,6 +330,17 @@ namespace Bimil {
             }
             cmbSearch.Select();
         }
+
+        private void mnuSaveToGoogleDocs_Click(object sender, EventArgs e) {
+            using (var frm = new GoogleDocsAuthForm()) {
+                if (frm.ShowDialog(this) == DialogResult.OK) {
+                    using (var frm2 = new GoogleDocsSaveForm(frm.AuthorizationToken)) {
+                        frm2.ShowDialog(this);
+                    }
+                }
+            }
+        }
+
 
         private void mnuChangePassword_Click(object sender, EventArgs e) {
             if (this.Document == null) { return; }
@@ -464,7 +497,7 @@ namespace Bimil {
                 }
             }
             lsvPasswords.EndUpdate();
-            if (lsvPasswords.Items.Count > 0) { 
+            if (lsvPasswords.Items.Count > 0) {
                 lsvPasswords.Items[0].Selected = true;
                 lsvPasswords.Items[0].Focused = true;
             }

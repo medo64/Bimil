@@ -6,5 +6,10 @@
             set { Medo.Configuration.Settings.Write("CloseOnEscape", value); }
         }
 
+        public static string LastGoogleEmail {
+            get { return Medo.Configuration.Settings.Read("LastGoogleEmail", ""); }
+            set { Medo.Configuration.Settings.Write("LastGoogleEmail", value); }
+        }
+
     }
 }
