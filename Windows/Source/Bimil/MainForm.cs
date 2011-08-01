@@ -164,7 +164,7 @@ namespace Bimil {
 
                 case Keys.Enter:
                     if (lsvPasswords.Items.Count > 0) {
-                        lsvPasswords_ItemActivate(null, null);
+                        lsvPasswords.Select();
                     } break;
 
                 default:
@@ -189,6 +189,22 @@ namespace Bimil {
 
                 case Keys.Delete: {
                         mnuRemove_Click(null, null);
+                        e.Handled = true;
+                        e.SuppressKeyPress = true;
+                    } break;
+
+                case Keys.PageDown: {
+                        int index = (cmbSearch.SelectedIndex == -1) ? 0 : cmbSearch.SelectedIndex;
+                        cmbSearch.SelectedIndex = Math.Min(index + 1, cmbSearch.Items.Count - 1);
+                        cmbSearch.SelectAll();
+                        e.Handled = true;
+                        e.SuppressKeyPress = true;
+                    } break;
+
+                case Keys.PageUp: {
+                        int index = (cmbSearch.SelectedIndex == -1) ? cmbSearch.Items.Count - 1 : cmbSearch.SelectedIndex;
+                        cmbSearch.SelectedIndex = Math.Max(index - 1, 0);
+                        cmbSearch.SelectAll();
                         e.Handled = true;
                         e.SuppressKeyPress = true;
                     } break;

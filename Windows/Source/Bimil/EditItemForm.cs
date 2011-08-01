@@ -41,12 +41,34 @@ namespace Bimil {
 
         private void Form_KeyDown(object sender, KeyEventArgs e) {
             switch (e.KeyData) {
-                case Keys.F2:
+                case Keys.F2: //edit, fields
                     if (btnEdit.Visible) {
                         btnEdit_Click(null, null);
                     } else if (btnFields.Visible) {
                         btnFields_Click(null, null);
                     }
+                    e.Handled = true;
+                    e.SuppressKeyPress = true;
+                    break;
+
+                case Keys.F7: //show all
+                    bool alreadyHidden = false;
+                    foreach (var control in this.pnl.Controls) {
+                        var textBox = control as TextBox;
+                        if (textBox != null) {
+                            var record = textBox.Tag as BimilRecord;
+                            if ((record != null) && (record.Format == BimilRecordFormat.Password) && (textBox.UseSystemPasswordChar)) { alreadyHidden = true; break; }
+                        }
+                    }
+                    foreach (var control in this.pnl.Controls) {
+                        var textBox = control as TextBox;
+                        if (textBox != null) {
+                            var record = textBox.Tag as BimilRecord;
+                            if ((record != null) && (record.Format == BimilRecordFormat.Password)) { textBox.UseSystemPasswordChar = !alreadyHidden; }
+                        }
+                    }
+                    e.Handled = true;
+                    e.SuppressKeyPress = true;
                     break;
             }
         }
@@ -88,6 +110,8 @@ namespace Bimil {
 
                 y += titleTextBox.Height + (label.Height / 4);
             }
+
+            y += unitHeight / 2;
 
             int yH;
             foreach (var record in this.Item.Records) {
