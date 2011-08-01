@@ -2,7 +2,7 @@
 AppName=Bimil
 AppVerName=Bimil 1.00 (alpha)
 DefaultDirName={pf}\Josip Medved\Bimil
-OutputBaseFilename=bimil100a3
+OutputBaseFilename=bimil100a4
 OutputDir=..\Releases
 SourceDir=..\Binaries
 AppId=JosipMedved_Bimil
