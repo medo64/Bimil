@@ -103,12 +103,6 @@
     <Compile Include="%28Medo%29\Settings [011].cs" />
     <Compile Include="%28Medo%29\State [015].cs" />
     <Compile Include="%28Medo%29\UnhandledCatch [008].cs" />
-    <Compile Include="GoogleDocsOpenForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="GoogleDocsOpenForm.Designer.cs">
-      <DependentUpon>GoogleDocsOpenForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="EditItemForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -120,18 +114,6 @@
     </Compile>
     <Compile Include="FieldsEditorForm.Designer.cs">
       <DependentUpon>FieldsEditorForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="GoogleDocsAuthForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="GoogleDocsAuthForm.Designer.cs">
-      <DependentUpon>GoogleDocsAuthForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="GoogleDocsSaveForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="GoogleDocsSaveForm.Designer.cs">
-      <DependentUpon>GoogleDocsSaveForm.cs</DependentUpon>
     </Compile>
     <Compile Include="NewRecordForm.cs">
       <SubType>Form</SubType>
@@ -170,11 +152,6 @@
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="App.cs" />
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
     <Compile Include="Properties\SolutionInfo.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="SettingsForm.cs">
@@ -190,15 +167,6 @@
     <EmbeddedResource Include="FieldsEditorForm.resx">
       <DependentUpon>FieldsEditorForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GoogleDocsAuthForm.resx">
-      <DependentUpon>GoogleDocsAuthForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="GoogleDocsOpenForm.resx">
-      <DependentUpon>GoogleDocsOpenForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="GoogleDocsSaveForm.resx">
-      <DependentUpon>GoogleDocsSaveForm.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="NewRecordForm.resx">
       <DependentUpon>NewRecordForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -213,10 +181,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="PasswordForm.resx">
       <DependentUpon>PasswordForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="SettingsForm.resx">
       <DependentUpon>SettingsForm.cs</DependentUpon>

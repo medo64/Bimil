@@ -27,11 +27,8 @@
             this.mnu = new System.Windows.Forms.ToolStrip();
             this.mnuNew = new System.Windows.Forms.ToolStripButton();
             this.mnuOpen = new System.Windows.Forms.ToolStripSplitButton();
-            this.mnuOpenFromGoogleDocs = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuSave = new System.Windows.Forms.ToolStripSplitButton();
             this.mnuSaveAs = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuSaveToGoogleDocs = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuAbout = new System.Windows.Forms.ToolStripButton();
             this.mnuReportABug = new System.Windows.Forms.ToolStripButton();
             this.mnuOptions = new System.Windows.Forms.ToolStripButton();
@@ -83,9 +80,6 @@
             // mnuOpen
             // 
             this.mnuOpen.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.mnuOpen.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.mnuOpenFromGoogleDocs,
-            this.toolStripMenuItem1});
             this.mnuOpen.Image = ((System.Drawing.Image)(resources.GetObject("mnuOpen.Image")));
             this.mnuOpen.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.mnuOpen.Name = "mnuOpen";
@@ -94,25 +88,11 @@
             this.mnuOpen.ToolTipText = "Open (Ctrl+O)";
             this.mnuOpen.ButtonClick += new System.EventHandler(this.mnuOpen_ButtonClick);
             // 
-            // mnuOpenFromGoogleDocs
-            // 
-            this.mnuOpenFromGoogleDocs.Image = ((System.Drawing.Image)(resources.GetObject("mnuOpenFromGoogleDocs.Image")));
-            this.mnuOpenFromGoogleDocs.Name = "mnuOpenFromGoogleDocs";
-            this.mnuOpenFromGoogleDocs.Size = new System.Drawing.Size(240, 24);
-            this.mnuOpenFromGoogleDocs.Text = "Open from Google Docs";
-            this.mnuOpenFromGoogleDocs.Click += new System.EventHandler(this.mnuOpenFromGoogleDocs_Click);
-            // 
-            // toolStripMenuItem1
-            // 
-            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(237, 6);
-            // 
             // mnuSave
             // 
             this.mnuSave.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.mnuSave.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.mnuSaveAs,
-            this.mnuSaveToGoogleDocs});
+            this.mnuSaveAs});
             this.mnuSave.Image = ((System.Drawing.Image)(resources.GetObject("mnuSave.Image")));
             this.mnuSave.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.mnuSave.Name = "mnuSave";
@@ -125,17 +105,9 @@
             // 
             this.mnuSaveAs.Image = ((System.Drawing.Image)(resources.GetObject("mnuSaveAs.Image")));
             this.mnuSaveAs.Name = "mnuSaveAs";
-            this.mnuSaveAs.Size = new System.Drawing.Size(217, 24);
+            this.mnuSaveAs.Size = new System.Drawing.Size(152, 24);
             this.mnuSaveAs.Text = "Save as";
             this.mnuSaveAs.Click += new System.EventHandler(this.mnuSaveAs_Click);
-            // 
-            // mnuSaveToGoogleDocs
-            // 
-            this.mnuSaveToGoogleDocs.Image = ((System.Drawing.Image)(resources.GetObject("mnuSaveToGoogleDocs.Image")));
-            this.mnuSaveToGoogleDocs.Name = "mnuSaveToGoogleDocs";
-            this.mnuSaveToGoogleDocs.Size = new System.Drawing.Size(217, 24);
-            this.mnuSaveToGoogleDocs.Text = "Save to Google Docs";
-            this.mnuSaveToGoogleDocs.Click += new System.EventHandler(this.mnuSaveToGoogleDocs_Click);
             // 
             // mnuAbout
             // 
@@ -308,9 +280,6 @@
         private System.Windows.Forms.ListView lsvPasswords;
         private System.Windows.Forms.ColumnHeader lsvPasswords_colTitle;
         private System.Windows.Forms.ComboBox cmbSearch;
-        private System.Windows.Forms.ToolStripMenuItem mnuOpenFromGoogleDocs;
-        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
-        private System.Windows.Forms.ToolStripMenuItem mnuSaveToGoogleDocs;
     }
 }
 

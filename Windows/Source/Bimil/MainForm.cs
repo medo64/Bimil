@@ -1,10 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
-using Medo.Security.Cryptography.Bimil;
 using Medo.Configuration;
-using System.Collections.Generic;
+using Medo.Security.Cryptography.Bimil;
 
 namespace Bimil {
     internal partial class MainForm : Form {
@@ -275,18 +275,6 @@ namespace Bimil {
             }
         }
 
-        private void mnuOpenFromGoogleDocs_Click(object sender, EventArgs e) {
-            using (var frmAuth = new GoogleDocsAuthForm()) {
-                if (frmAuth.ShowDialog(this) == DialogResult.OK) {
-                    using (var frmDocs = new GoogleDocsOpenForm(frmAuth.AuthorizationToken)) {
-                        if (frmDocs.ShowDialog(this) == DialogResult.OK) {
-                            //frmDocs.ContentBytes 
-                        }
-                    }
-                }
-            }
-        }
-
         private void LoadFile(string fileName, string password = null) {
             try {
                 BimilDocument doc = null;
@@ -345,16 +333,6 @@ namespace Bimil {
                 }
             }
             cmbSearch.Select();
-        }
-
-        private void mnuSaveToGoogleDocs_Click(object sender, EventArgs e) {
-            using (var frm = new GoogleDocsAuthForm()) {
-                if (frm.ShowDialog(this) == DialogResult.OK) {
-                    using (var frm2 = new GoogleDocsSaveForm(frm.AuthorizationToken)) {
-                        frm2.ShowDialog(this);
-                    }
-                }
-            }
         }
 
 
