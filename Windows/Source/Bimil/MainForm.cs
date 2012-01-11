@@ -26,42 +26,73 @@ namespace Bimil {
             Medo.Windows.Forms.State.SetupOnLoadAndClose(this);
         }
 
-        private void Form_KeyDown(object sender, KeyEventArgs e) {
-            switch (e.KeyData) {
-                case Keys.Alt | Keys.Menu: {
-                        mnu.Select();
-                        mnuNew.Select();
-                        e.Handled = true;
-                        e.SuppressKeyPress = true;
-                    } break;
+
+        private bool SuppressMenuKey = false;
+
+        protected override bool ProcessDialogKey(Keys keyData) {
+            if (((keyData & Keys.Alt) == Keys.Alt) && (keyData != (Keys.Alt | Keys.Menu))) { this.SuppressMenuKey = true; }
+
+            switch (keyData) {
+
+                case Keys.F10:
+                    ToggleMenu();
+                    return true;
 
                 case Keys.Escape: {
                         if (Settings.CloseOnEscape) {
                             this.Close();
-                            e.Handled = true;
-                            e.SuppressKeyPress = true;
+                            return true;
                         }
                     } break;
 
-                case Keys.Control | Keys.N: {
-                        mnuNew_Click(null, null);
-                        e.Handled = true;
-                        e.SuppressKeyPress = true;
-                    } break;
+                case Keys.Control | Keys.N:
+                case Keys.Alt | Keys.N:
+                    mnuNew.PerformClick();
+                    return true;
 
-                case Keys.Control | Keys.O: {
-                        mnuOpen_ButtonClick(null, null);
-                        e.Handled = true;
-                        e.SuppressKeyPress = true;
-                    } break;
+                case Keys.Control | Keys.O:
+                    mnuOpen.PerformButtonClick();
+                    return true;
 
-                case Keys.Control | Keys.S: {
-                        mnuSave_ButtonClick(null, null);
-                        e.Handled = true;
-                        e.SuppressKeyPress = true;
-                    } break;
+                case Keys.Alt | Keys.O:
+                    mnuOpen.ShowDropDown();
+                    return true;
+
+                case Keys.Control | Keys.S:
+                    mnuSave.PerformButtonClick();
+                    return true;
+
+                case Keys.Alt | Keys.S:
+                    mnuSave.ShowDropDown();
+                    return true;
+
+            }
+
+            return base.ProcessDialogKey(keyData);
+        }
+
+        protected override void OnKeyDown(KeyEventArgs e) {
+            if (e.KeyData == Keys.Menu) {
+                if (this.SuppressMenuKey) { this.SuppressMenuKey = false; return; }
+                ToggleMenu();
+                e.Handled = true;
+                e.SuppressKeyPress = true;
+            } else {
+                base.OnKeyDown(e);
             }
         }
+
+        protected override void OnKeyUp(KeyEventArgs e) {
+            if (e.KeyData == Keys.Menu) {
+                if (this.SuppressMenuKey) { this.SuppressMenuKey = false; return; }
+                ToggleMenu();
+                e.Handled = true;
+                e.SuppressKeyPress = true;
+            } else {
+                base.OnKeyUp(e);
+            }
+        }
+
 
         private void Form_Load(object sender, EventArgs e) {
             RefreshFiles();
@@ -514,6 +545,20 @@ namespace Bimil {
                 var title = file.Name.Substring(0, file.Name.Length - file.Extension.Length);
 
                 this.Text = title + (this.DocumentChanged ? "*" : "") + " - Bimil";
+            }
+        }
+
+
+        private void ToggleMenu() {
+            if (mnu.ContainsFocus) {
+                if (lsvPasswords.Visible) {
+                    lsvPasswords.Select();
+                } else {
+                    this.Select();
+                }
+            } else {
+                mnu.Select();
+                mnu.Items[0].Select();
             }
         }
 

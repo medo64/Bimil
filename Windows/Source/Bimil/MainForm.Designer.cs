@@ -251,7 +251,6 @@
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form_FormClosing);
             this.Load += new System.EventHandler(this.Form_Load);
             this.Shown += new System.EventHandler(this.Form_Shown);
-            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form_KeyDown);
             this.Resize += new System.EventHandler(this.Form_Resize);
             this.mnu.ResumeLayout(false);
             this.mnu.PerformLayout();
