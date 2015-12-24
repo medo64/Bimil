@@ -4,10 +4,10 @@
 **/obj
 **/TestResults
 
-Binaries/**
-Releases/**
-Backup/**
-Temporary/**
+**/Binaries/**
+**/Releases/**
+**/Backup/**
+**/Temporary/**
 
 *.bak
 *.csproj.user
