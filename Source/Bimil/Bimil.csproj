@@ -85,18 +85,15 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
-    <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="%28Medo%29\AboutBox [010].cs" />
     <Compile Include="%28Medo%29\Args [001].cs" />
     <Compile Include="%28Medo%29\ErrorReport [018].cs" />
-    <Compile Include="%28Medo%29\GDataClientLogin [002].cs" />
-    <Compile Include="%28Medo%29\GDataDocs [000].cs" />
     <Compile Include="%28Medo%29\LifetimeWatch [001].cs" />
     <Compile Include="%28Medo%29\MessageBox [006].cs" />
     <Compile Include="%28Medo%29\RecentFiles [003].cs" />
@@ -121,6 +118,18 @@
     <Compile Include="NewRecordForm.Designer.cs">
       <DependentUpon>NewRecordForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="PasswordSafe\Document.cs" />
+    <Compile Include="PasswordSafe\Entry.cs" />
+    <Compile Include="PasswordSafe\EntryCollection.cs" />
+    <Compile Include="PasswordSafe\Field.cs" />
+    <Compile Include="PasswordSafe\GroupPath.cs" />
+    <Compile Include="PasswordSafe\Header.cs" />
+    <Compile Include="PasswordSafe\HeaderCollection.cs" />
+    <Compile Include="PasswordSafe\HeaderType.cs" />
+    <Compile Include="PasswordSafe\Record.cs" />
+    <Compile Include="PasswordSafe\RecordCollection.cs" />
+    <Compile Include="PasswordSafe\RecordType.cs" />
+    <Compile Include="PasswordSafe\Twofish.cs" />
     <Compile Include="SelectTemplateForm.cs">
       <SubType>Form</SubType>
     </Compile>
