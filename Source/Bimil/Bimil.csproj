@@ -118,18 +118,18 @@
     <Compile Include="NewRecordForm.Designer.cs">
       <DependentUpon>NewRecordForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="PasswordSafe\Document.cs" />
-    <Compile Include="PasswordSafe\Entry.cs" />
-    <Compile Include="PasswordSafe\EntryCollection.cs" />
-    <Compile Include="PasswordSafe\Field.cs" />
-    <Compile Include="PasswordSafe\GroupPath.cs" />
-    <Compile Include="PasswordSafe\Header.cs" />
-    <Compile Include="PasswordSafe\HeaderCollection.cs" />
-    <Compile Include="PasswordSafe\HeaderType.cs" />
-    <Compile Include="PasswordSafe\Record.cs" />
-    <Compile Include="PasswordSafe\RecordCollection.cs" />
-    <Compile Include="PasswordSafe\RecordType.cs" />
-    <Compile Include="PasswordSafe\Twofish.cs" />
+    <Compile Include="%28PasswordSafe%29\Document.cs" />
+    <Compile Include="%28PasswordSafe%29\Entry.cs" />
+    <Compile Include="%28PasswordSafe%29\EntryCollection.cs" />
+    <Compile Include="%28PasswordSafe%29\Field.cs" />
+    <Compile Include="%28PasswordSafe%29\GroupPath.cs" />
+    <Compile Include="%28PasswordSafe%29\Header.cs" />
+    <Compile Include="%28PasswordSafe%29\HeaderCollection.cs" />
+    <Compile Include="%28PasswordSafe%29\HeaderType.cs" />
+    <Compile Include="%28PasswordSafe%29\Record.cs" />
+    <Compile Include="%28PasswordSafe%29\RecordCollection.cs" />
+    <Compile Include="%28PasswordSafe%29\RecordType.cs" />
+    <Compile Include="%28PasswordSafe%29\Twofish.cs" />
     <Compile Include="SelectTemplateForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -142,10 +142,6 @@
     <Compile Include="NewPasswordForm.Designer.cs">
       <DependentUpon>NewPasswordForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Document\BimilDocument.cs" />
-    <Compile Include="Document\BimilItem.cs" />
-    <Compile Include="Document\BimilRecord.cs" />
-    <Compile Include="Document\BimilValue.cs" />
     <Compile Include="Helpers.cs" />
     <Compile Include="PasswordForm.cs">
       <SubType>Form</SubType>
@@ -220,7 +216,9 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="BimilDocument\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

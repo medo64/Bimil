@@ -27,15 +27,13 @@ namespace Bimil {
             this.btnOK = new System.Windows.Forms.Button();
             this.lblRecordType = new System.Windows.Forms.Label();
             this.cmbRecordType = new System.Windows.Forms.ComboBox();
-            this.txtName = new System.Windows.Forms.TextBox();
-            this.lblName = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // btnCancel
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(252, 82);
+            this.btnCancel.Location = new System.Drawing.Point(252, 54);
             this.btnCancel.Margin = new System.Windows.Forms.Padding(3, 15, 3, 3);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(90, 28);
@@ -47,7 +45,7 @@ namespace Bimil {
             // 
             this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOK.Location = new System.Drawing.Point(156, 82);
+            this.btnOK.Location = new System.Drawing.Point(156, 54);
             this.btnOK.Margin = new System.Windows.Forms.Padding(3, 15, 3, 3);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(90, 28);
@@ -59,7 +57,7 @@ namespace Bimil {
             // lblRecordType
             // 
             this.lblRecordType.AutoSize = true;
-            this.lblRecordType.Location = new System.Drawing.Point(12, 43);
+            this.lblRecordType.Location = new System.Drawing.Point(12, 15);
             this.lblRecordType.Name = "lblRecordType";
             this.lblRecordType.Size = new System.Drawing.Size(44, 17);
             this.lblRecordType.TabIndex = 2;
@@ -71,27 +69,10 @@ namespace Bimil {
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cmbRecordType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbRecordType.FormattingEnabled = true;
-            this.cmbRecordType.Location = new System.Drawing.Point(92, 40);
+            this.cmbRecordType.Location = new System.Drawing.Point(92, 12);
             this.cmbRecordType.Name = "cmbRecordType";
             this.cmbRecordType.Size = new System.Drawing.Size(250, 24);
             this.cmbRecordType.TabIndex = 3;
-            // 
-            // txtName
-            // 
-            this.txtName.Location = new System.Drawing.Point(92, 12);
-            this.txtName.Name = "txtName";
-            this.txtName.Size = new System.Drawing.Size(250, 22);
-            this.txtName.TabIndex = 1;
-            this.txtName.Text = "New";
-            // 
-            // lblName
-            // 
-            this.lblName.AutoSize = true;
-            this.lblName.Location = new System.Drawing.Point(12, 15);
-            this.lblName.Name = "lblName";
-            this.lblName.Size = new System.Drawing.Size(49, 17);
-            this.lblName.TabIndex = 0;
-            this.lblName.Text = "Name:";
             // 
             // NewRecordForm
             // 
@@ -99,9 +80,7 @@ namespace Bimil {
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(354, 122);
-            this.Controls.Add(this.lblName);
-            this.Controls.Add(this.txtName);
+            this.ClientSize = new System.Drawing.Size(354, 94);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnOK);
             this.Controls.Add(this.lblRecordType);
@@ -114,11 +93,9 @@ namespace Bimil {
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "New record";
-            this.Activated += new System.EventHandler(this.Form_Activated);
             this.Load += new System.EventHandler(this.Form_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
-
         }
 
         #endregion
@@ -127,7 +104,5 @@ namespace Bimil {
         private System.Windows.Forms.Button btnOK;
         private System.Windows.Forms.Label lblRecordType;
         private System.Windows.Forms.ComboBox cmbRecordType;
-        private System.Windows.Forms.TextBox txtName;
-        private System.Windows.Forms.Label lblName;
     }
 }
