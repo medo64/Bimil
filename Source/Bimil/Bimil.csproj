@@ -100,6 +100,11 @@
     <Compile Include="%28Medo%29\Settings [011].cs" />
     <Compile Include="%28Medo%29\State [015].cs" />
     <Compile Include="%28Medo%29\UnhandledCatch [008].cs" />
+    <Compile Include="BimilDocument\BimilDocument.cs" />
+    <Compile Include="BimilDocument\BimilItem.cs" />
+    <Compile Include="BimilDocument\BimilRecord.cs" />
+    <Compile Include="BimilDocument\BimilValue.cs" />
+    <Compile Include="BimilDocument\DocumentConversion.cs" />
     <Compile Include="EditItemForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -216,9 +221,7 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="BimilDocument\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

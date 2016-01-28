@@ -5,6 +5,7 @@ using System.IO;
 using System.Windows.Forms;
 using Medo.Configuration;
 using Medo.Security.Cryptography.PasswordSafe;
+using LegacyFile = Medo.Security.Cryptography.Bimil;
 
 namespace Bimil {
     internal partial class MainForm : Form {
@@ -313,31 +314,36 @@ namespace Bimil {
         }
 
         private void LoadFile(string fileName, string password = null) {
-            LoadPasswordSafeFile(fileName);
+            try {
+                if (password == null) {
+                    using (var frm = new PasswordForm()) {
+                        if (frm.ShowDialog(this) == DialogResult.OK) {
+                            password = frm.Password;
+                        } else {
+                            return;
+                        }
+                    }
+                }
+
+                if (fileName.EndsWith(".bimil", StringComparison.OrdinalIgnoreCase)) {
+                    try {
+                        LoadBimilFile(fileName, password);
+                    } catch (FormatException) { //try password safe if bimil format fails
+                        LoadPasswordSafeFile(fileName, password);
+                    }
+                } else { //Password Safe
+                    LoadPasswordSafeFile(fileName, password);
+                }
+            } finally {
+                password = null;
+                GC.Collect(); //in attempt to kill password string
+            }
         }
 
         private void LoadPasswordSafeFile(string fileName, string password = null) {
             try {
-                Document doc = null;
-                try {
-                    if (password == null) {
-                        using (var frm = new PasswordForm()) {
-                            if (frm.ShowDialog(this) == DialogResult.OK) {
-                                using (var fileStream = File.OpenRead(fileName)) {
-                                    doc = Document.Load(fileStream, frm.Password);
-                                }
-                            }
-                        }
-                    } else {
-                        using (var fileStream = File.OpenRead(fileName)) {
-                            doc = Document.Load(fileStream, password);
-                        }
-                    }
-                } finally {
-                    GC.Collect(); //in attempt to kill password string
-                }
-                if (doc != null) {
-                    this.Document = doc;
+                using (var fileStream = File.OpenRead(fileName)) {
+                    this.Document = Document.Load(fileStream, password);
                     this.Document.TrackAccess = false;
                     this.DocumentFileName = fileName;
                 }
@@ -347,6 +353,24 @@ namespace Bimil {
 
             this.RecentFiles.Push(fileName);
             RefreshFiles();
+
+            RefreshCategories();
+            RefreshItems();
+            UpdateMenu();
+            cmbSearch.Select();
+        }
+
+        private void LoadBimilFile(string fileName, string password = null) {
+            LegacyFile.BimilDocument legacyDoc = null;
+            try {
+                legacyDoc = LegacyFile.BimilDocument.Open(fileName, password);
+
+                this.Document = DocumentConversion.ConvertFromBimil(legacyDoc, password);
+                this.DocumentFileName = null;
+            } finally {
+                password = null;
+                GC.Collect(); //in attempt to kill password string
+            }
 
             RefreshCategories();
             RefreshItems();
