@@ -106,5 +106,13 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// End of entries.
         /// </summary>
         EndOfEntry = 0xFF,
+
+
+
+        CustomTwoFactorKey = 0xf0,
+        CustomCreditCardNumber = 0xf1,
+        CustomCreditCardExpiration = 0xf2,
+        CustomCreditCardSecurityCode = 0xf3,
+        CustomCreditCardPin = 0xf4,
     }
 }

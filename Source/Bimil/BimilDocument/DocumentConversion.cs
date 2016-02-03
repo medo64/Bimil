@@ -41,7 +41,9 @@ namespace Bimil {
         }
 
         private static Record ConvertBimilRecord(BimilDocument.BimilRecord record) {
-            if (record.Key.Text.Equals("User name", StringComparison.OrdinalIgnoreCase)) {
+            if (record.Key.Text.Equals("User name", StringComparison.OrdinalIgnoreCase)
+                || record.Key.Text.Equals("Username", StringComparison.OrdinalIgnoreCase)
+                || record.Key.Text.Equals("User", StringComparison.OrdinalIgnoreCase)) {
                 return new Record(RecordType.UserName) { Text = record.Value.Text };
             } else if (record.Key.Text.Equals("Password", StringComparison.OrdinalIgnoreCase)) {
                 return new Record(RecordType.Password) { Text = record.Value.Text };
@@ -50,6 +52,20 @@ namespace Bimil {
             } else if (record.Key.Text.Equals("URL", StringComparison.OrdinalIgnoreCase)
                 || record.Key.Text.Equals("Web address", StringComparison.OrdinalIgnoreCase)) {
                 return new Record(RecordType.Url) { Text = record.Value.Text };
+            } else if (record.Key.Text.Equals("Key", StringComparison.OrdinalIgnoreCase)) {
+                return new Record(RecordType.CustomTwoFactorKey) { Text = record.Value.Text };
+            } else if (record.Key.Text.Equals("Card number", StringComparison.OrdinalIgnoreCase)) {
+                return new Record(RecordType.CustomCreditCardNumber) { Text = record.Value.Text };
+            } else if (record.Key.Text.Equals("Expiration date", StringComparison.OrdinalIgnoreCase)) {
+                return new Record(RecordType.CustomCreditCardExpiration) { Text = record.Value.Text };
+            } else if (record.Key.Text.Equals("Security code", StringComparison.OrdinalIgnoreCase)
+                || record.Key.Text.Equals("CVV", StringComparison.OrdinalIgnoreCase)
+                || record.Key.Text.Equals("CVV2", StringComparison.OrdinalIgnoreCase)
+                || record.Key.Text.Equals("CID", StringComparison.OrdinalIgnoreCase)
+                || record.Key.Text.Equals("CSC", StringComparison.OrdinalIgnoreCase)) {
+                return new Record(RecordType.CustomCreditCardSecurityCode) { Text = record.Value.Text };
+            } else if (record.Key.Text.Equals("PIN", StringComparison.OrdinalIgnoreCase)) {
+                return new Record(RecordType.CustomCreditCardPin) { Text = record.Value.Text };
             } else {
                 Debug.WriteLine("Not auto-converting field \"" + record.Key.Text + "\"");
                 if (record.Value.Text.Length > 0) {

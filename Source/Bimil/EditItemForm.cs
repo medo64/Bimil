@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
 using System.Reflection;
 using System.Windows.Forms;
 using Medo.Security.Cryptography.PasswordSafe;
@@ -86,7 +87,7 @@ namespace Bimil {
             TextBox titleTextBox;
             {
                 var record = this.Item[RecordType.Title];
-                titleTextBox = new TextBox() { Font = this.Font, Location = new Point(labelWidth + labelBuffer, 0), Tag = record, Text = record.ToString(), Width = pnl.ClientSize.Width - labelWidth - labelBuffer, ReadOnly = !this.Editable };
+                titleTextBox = new TextBox() { Font = this.Font, Location = new Point(labelWidth + labelBuffer, 0), Tag = record, Text = record.ToString(), Width = pnl.ClientSize.Width - labelWidth - labelBuffer, ReadOnly = !this.Editable, Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right };
                 titleTextBox.GotFocus += new EventHandler(delegate (object sender2, EventArgs e2) { ((TextBox)sender2).SelectAll(); });
                 titleTextBox.TextChanged += new EventHandler(delegate (object sender2, EventArgs e2) { btnOK.Enabled = (((Control)sender2).Text.Trim().Length > 0); });
                 pnl.Controls.Add(titleTextBox);
@@ -99,7 +100,7 @@ namespace Bimil {
             ComboBox categoryComboBox;
             {
                 var record = this.Item[RecordType.Group];
-                categoryComboBox = new ComboBox() { Font = this.Font, Location = new Point(labelWidth + labelBuffer, y), Tag = record, Text = record.ToString(), Width = pnl.ClientSize.Width - labelWidth - labelBuffer, Enabled = this.Editable };
+                categoryComboBox = new ComboBox() { Font = this.Font, Location = new Point(labelWidth + labelBuffer, y), Tag = record, Text = record.ToString(), Width = pnl.ClientSize.Width - labelWidth - labelBuffer, Enabled = this.Editable, Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right };
                 categoryComboBox.GotFocus += new EventHandler(delegate (object sender2, EventArgs e2) { ((ComboBox)sender2).SelectAll(); });
                 foreach (var category in this.Categories) {
                     categoryComboBox.Items.Add(category);
@@ -129,12 +130,15 @@ namespace Bimil {
                     case RecordType.PasswordHistory:
                         continue;
 
-                    case RecordType.UserName: {
-                            var textBox = new TextBox() { Font = this.Font, Location = new Point(labelWidth + labelBuffer, y), Tag = record, Text = record.Text, Width = pnl.ClientSize.Width - labelWidth - labelBuffer - unitHeight, ReadOnly = !this.Editable };
+                    case RecordType.UserName:
+                    case RecordType.CustomCreditCardExpiration:
+                    case RecordType.CustomCreditCardSecurityCode:
+                    case RecordType.CustomCreditCardPin: {
+                            var textBox = new TextBox() { Font = this.Font, Location = new Point(labelWidth + labelBuffer, y), Tag = record, Text = record.Text, Width = pnl.ClientSize.Width - labelWidth - labelBuffer - unitHeight, ReadOnly = !this.Editable, Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right };
                             textBox.GotFocus += new EventHandler(delegate (object sender2, EventArgs e2) { ((TextBox)sender2).SelectAll(); });
                             pnl.Controls.Add(textBox);
 
-                            var btnCopy = new Button() { Location = new Point(pnl.ClientSize.Width - unitHeight, y), Size = new Size(unitHeight, unitHeight), TabStop = false, Tag = textBox, Text = "", Image = new Bitmap(Assembly.GetExecutingAssembly().GetManifestResourceStream("Bimil.Resources.Copy_16.png")) };
+                            var btnCopy = new Button() { Location = new Point(pnl.ClientSize.Width - unitHeight, y), Size = new Size(unitHeight, unitHeight), TabStop = false, Tag = textBox, Text = "", Image = new Bitmap(Assembly.GetExecutingAssembly().GetManifestResourceStream("Bimil.Resources.Copy_16.png")), Anchor = AnchorStyles.Top | AnchorStyles.Right };
                             btnCopy.Click += new EventHandler(delegate (object sender2, EventArgs e2) {
                                 var box = (TextBox)(((Control)sender2).Tag);
                                 box.Select();
@@ -152,11 +156,11 @@ namespace Bimil {
                         break;
 
                     case RecordType.Password: {
-                            var textBox = new TextBox() { Font = this.Font, Location = new Point(labelWidth + labelBuffer, y), Tag = record, Text = record.Text, Width = pnl.ClientSize.Width - labelWidth - labelBuffer - unitHeight - unitHeight, UseSystemPasswordChar = true, ReadOnly = !this.Editable };
+                            var textBox = new TextBox() { Font = this.Font, Location = new Point(labelWidth + labelBuffer, y), Tag = record, Text = record.Text, Width = pnl.ClientSize.Width - labelWidth - labelBuffer - unitHeight - unitHeight, UseSystemPasswordChar = true, ReadOnly = !this.Editable, Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right };
                             textBox.GotFocus += new EventHandler(delegate (object sender2, EventArgs e2) { ((TextBox)sender2).SelectAll(); });
                             pnl.Controls.Add(textBox);
 
-                            var btnShowPass = new Button() { Location = new Point(pnl.ClientSize.Width - unitHeight - unitHeight, y), Size = new Size(unitHeight, unitHeight), TabStop = false, Tag = textBox, Text = "", Image = new Bitmap(Assembly.GetExecutingAssembly().GetManifestResourceStream("Bimil.Resources.RevealPassword_16.png")) };
+                            var btnShowPass = new Button() { Location = new Point(pnl.ClientSize.Width - unitHeight - unitHeight, y), Size = new Size(unitHeight, unitHeight), TabStop = false, Tag = textBox, Text = "", Image = new Bitmap(Assembly.GetExecutingAssembly().GetManifestResourceStream("Bimil.Resources.RevealPassword_16.png")), Anchor = AnchorStyles.Top | AnchorStyles.Right };
                             btnShowPass.Click += new EventHandler(delegate (object sender2, EventArgs e2) {
                                 var box = (TextBox)(((Control)sender2).Tag);
                                 box.Select();
@@ -164,7 +168,7 @@ namespace Bimil {
                             });
                             pnl.Controls.Add(btnShowPass);
 
-                            var btnCopy = new Button() { Location = new Point(pnl.ClientSize.Width - unitHeight, y), Size = new Size(unitHeight, unitHeight), TabStop = false, Tag = textBox, Text = "", Image = new Bitmap(Assembly.GetExecutingAssembly().GetManifestResourceStream("Bimil.Resources.Copy_16.png")) };
+                            var btnCopy = new Button() { Location = new Point(pnl.ClientSize.Width - unitHeight, y), Size = new Size(unitHeight, unitHeight), TabStop = false, Tag = textBox, Text = "", Image = new Bitmap(Assembly.GetExecutingAssembly().GetManifestResourceStream("Bimil.Resources.Copy_16.png")), Anchor = AnchorStyles.Top | AnchorStyles.Right };
                             btnCopy.Click += new EventHandler(delegate (object sender2, EventArgs e2) {
                                 var box = (TextBox)(((Control)sender2).Tag);
                                 box.Select();
@@ -181,32 +185,12 @@ namespace Bimil {
                         }
                         break;
 
-                    //case BimilRecordFormat.MonospacedText: {
-                    //        var textBox = new TextBox() { Font = EditItemForm.FixedFont, Location = new Point(labelWidth + labelBuffer, y), Tag = record, Text = record.Value.Text, Width = pnl.ClientSize.Width - labelWidth - labelBuffer - unitHeight, ReadOnly = !this.Editable };
-                    //        textBox.GotFocus += new EventHandler(delegate (object sender2, EventArgs e2) { ((TextBox)sender2).SelectAll(); });
-                    //        pnl.Controls.Add(textBox);
-                    //        var btnCopy = new Button() { Location = new Point(pnl.ClientSize.Width - unitHeight, y), Size = new Size(unitHeight, textBox.Height), TabStop = false, Tag = textBox, Text = "", Image = new Bitmap(Assembly.GetExecutingAssembly().GetManifestResourceStream("Bimil.Resources.Copy_16.png")) };
-                    //        btnCopy.Click += new EventHandler(delegate (object sender2, EventArgs e2) {
-                    //            var box = (TextBox)(((Control)sender2).Tag);
-                    //            box.Select();
-                    //            var text = box.Text;
-                    //            if (text.Length > 0) {
-                    //                Clipboard.SetText(text);
-                    //            } else {
-                    //                Clipboard.Clear();
-                    //            }
-                    //        });
-                    //        pnl.Controls.Add(btnCopy);
-                    //        yH = textBox.Height;
-                    //    }
-                    //    break;
-
                     case RecordType.Url: {
-                            var textBox = new TextBox() { Font = EditItemForm.UnderlineFont, Location = new Point(labelWidth + labelBuffer, y), Tag = record, Text = record.Text, Width = pnl.ClientSize.Width - labelWidth - labelBuffer - unitHeight - unitHeight, ReadOnly = !this.Editable, ForeColor = SystemColors.HotTrack };
+                            var textBox = new TextBox() { Font = EditItemForm.UnderlineFont, Location = new Point(labelWidth + labelBuffer, y), Tag = record, Text = record.Text, Width = pnl.ClientSize.Width - labelWidth - labelBuffer - unitHeight - unitHeight, ReadOnly = !this.Editable, ForeColor = SystemColors.HotTrack, Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right };
                             textBox.GotFocus += new EventHandler(delegate (object sender2, EventArgs e2) { ((TextBox)sender2).SelectAll(); });
                             pnl.Controls.Add(textBox);
 
-                            var btnExecuteUrl = new Button() { Location = new Point(pnl.ClientSize.Width - unitHeight - unitHeight, y), Size = new Size(unitHeight, unitHeight), TabStop = false, Tag = textBox, Text = "", Image = new Bitmap(Assembly.GetExecutingAssembly().GetManifestResourceStream("Bimil.Resources.ExecuteUrl_16.png")) };
+                            var btnExecuteUrl = new Button() { Location = new Point(pnl.ClientSize.Width - unitHeight - unitHeight, y), Size = new Size(unitHeight, unitHeight), TabStop = false, Tag = textBox, Text = "", Image = new Bitmap(Assembly.GetExecutingAssembly().GetManifestResourceStream("Bimil.Resources.ExecuteUrl_16.png")), Anchor = AnchorStyles.Top | AnchorStyles.Right };
                             btnExecuteUrl.Click += new EventHandler(delegate (object sender2, EventArgs e2) {
                                 var box = (TextBox)(((Control)sender2).Tag);
                                 box.Select();
@@ -223,7 +207,7 @@ namespace Bimil {
                             });
                             pnl.Controls.Add(btnExecuteUrl);
 
-                            var btnCopy = new Button() { Font = this.Font, Location = new Point(pnl.ClientSize.Width - unitHeight, y), Size = new Size(unitHeight, unitHeight), TabStop = false, Tag = textBox, Text = "", Image = new Bitmap(Assembly.GetExecutingAssembly().GetManifestResourceStream("Bimil.Resources.Copy_16.png")) };
+                            var btnCopy = new Button() { Font = this.Font, Location = new Point(pnl.ClientSize.Width - unitHeight, y), Size = new Size(unitHeight, unitHeight), TabStop = false, Tag = textBox, Text = "", Image = new Bitmap(Assembly.GetExecutingAssembly().GetManifestResourceStream("Bimil.Resources.Copy_16.png")), Anchor = AnchorStyles.Top | AnchorStyles.Right };
                             btnCopy.Click += new EventHandler(delegate (object sender2, EventArgs e2) {
                                 var box = (TextBox)(((Control)sender2).Tag);
                                 box.Select();
@@ -245,11 +229,11 @@ namespace Bimil {
                         break;
 
                     case RecordType.EmailAddress: {
-                            var textBox = new TextBox() { Font = EditItemForm.UnderlineFont, Location = new Point(labelWidth + labelBuffer, y), Tag = record, Text = record.Text, Width = pnl.ClientSize.Width - labelWidth - labelBuffer - unitHeight - unitHeight, ReadOnly = !this.Editable, ForeColor = SystemColors.HotTrack };
+                            var textBox = new TextBox() { Font = EditItemForm.UnderlineFont, Location = new Point(labelWidth + labelBuffer, y), Tag = record, Text = record.Text, Width = pnl.ClientSize.Width - labelWidth - labelBuffer - unitHeight - unitHeight, ReadOnly = !this.Editable, ForeColor = SystemColors.HotTrack, Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right };
                             textBox.GotFocus += new EventHandler(delegate (object sender2, EventArgs e2) { ((TextBox)sender2).SelectAll(); });
                             pnl.Controls.Add(textBox);
 
-                            var btnExecuteUrl = new Button() { Location = new Point(pnl.ClientSize.Width - unitHeight - unitHeight, y), Size = new Size(unitHeight, unitHeight), TabStop = false, Tag = textBox, Text = "", Image = new Bitmap(Assembly.GetExecutingAssembly().GetManifestResourceStream("Bimil.Resources.ExecuteUrl_16.png")) };
+                            var btnExecuteUrl = new Button() { Location = new Point(pnl.ClientSize.Width - unitHeight - unitHeight, y), Size = new Size(unitHeight, unitHeight), TabStop = false, Tag = textBox, Text = "", Image = new Bitmap(Assembly.GetExecutingAssembly().GetManifestResourceStream("Bimil.Resources.ExecuteUrl_16.png")), Anchor = AnchorStyles.Top | AnchorStyles.Right };
                             btnExecuteUrl.Click += new EventHandler(delegate (object sender2, EventArgs e2) {
                                 var box = (TextBox)(((Control)sender2).Tag);
                                 box.Select();
@@ -264,7 +248,7 @@ namespace Bimil {
                             });
                             pnl.Controls.Add(btnExecuteUrl);
 
-                            var btnCopy = new Button() { Font = this.Font, Location = new Point(pnl.ClientSize.Width - unitHeight, y), Size = new Size(unitHeight, unitHeight), TabStop = false, Tag = textBox, Text = "", Image = new Bitmap(Assembly.GetExecutingAssembly().GetManifestResourceStream("Bimil.Resources.Copy_16.png")) };
+                            var btnCopy = new Button() { Font = this.Font, Location = new Point(pnl.ClientSize.Width - unitHeight, y), Size = new Size(unitHeight, unitHeight), TabStop = false, Tag = textBox, Text = "", Image = new Bitmap(Assembly.GetExecutingAssembly().GetManifestResourceStream("Bimil.Resources.Copy_16.png")), Anchor = AnchorStyles.Top | AnchorStyles.Right };
                             btnCopy.Click += new EventHandler(delegate (object sender2, EventArgs e2) {
                                 var box = (TextBox)(((Control)sender2).Tag);
                                 box.Select();
@@ -286,9 +270,51 @@ namespace Bimil {
                         break;
 
                     case RecordType.Notes: {
-                            var textBox = new TextBox() { Location = new Point(labelWidth + labelBuffer, y), Tag = record, Text = record.Text, Width = pnl.ClientSize.Width - labelWidth - labelBuffer, Multiline = true, Height = unitHeight * 3, AcceptsReturn = true, ScrollBars = ScrollBars.Vertical, ReadOnly = !this.Editable };
+                            var textBox = new TextBox() { Location = new Point(labelWidth + labelBuffer, y), Tag = record, Text = record.Text, Width = pnl.ClientSize.Width - labelWidth - labelBuffer, Multiline = true, Height = unitHeight * 3, AcceptsReturn = true, ScrollBars = ScrollBars.Vertical, ReadOnly = !this.Editable, Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right };
                             textBox.GotFocus += new EventHandler(delegate (object sender2, EventArgs e2) { ((TextBox)sender2).SelectAll(); });
                             pnl.Controls.Add(textBox);
+
+                            yH = textBox.Height;
+                        }
+                        break;
+
+                    case RecordType.CustomTwoFactorKey: {
+                            var textBox = new TextBox() { Font = EditItemForm.FixedFont, Location = new Point(labelWidth + labelBuffer, y), Tag = record, Text = record.Text, Width = pnl.ClientSize.Width - labelWidth - labelBuffer - unitHeight, ReadOnly = !this.Editable, Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right };
+                            textBox.GotFocus += new EventHandler(delegate (object sender2, EventArgs e2) { ((TextBox)sender2).SelectAll(); });
+                            pnl.Controls.Add(textBox);
+                            var btnCopy = new Button() { Location = new Point(pnl.ClientSize.Width - unitHeight, y), Size = new Size(unitHeight, textBox.Height), TabStop = false, Tag = textBox, Text = "", Image = new Bitmap(Assembly.GetExecutingAssembly().GetManifestResourceStream("Bimil.Resources.Copy_16.png")), Anchor = AnchorStyles.Top | AnchorStyles.Right };
+                            btnCopy.Click += new EventHandler(delegate (object sender2, EventArgs e2) {
+                                var box = (TextBox)(((Control)sender2).Tag);
+                                box.Select();
+                                var key = box.Text.ToUpperInvariant().Replace(" ", "");
+                                if (key.Length > 0) {
+                                    Clipboard.SetText(string.Format(CultureInfo.InvariantCulture, "otpauth://totp/{0}?secret={1}", this.Item.Title, key));
+                                } else {
+                                    Clipboard.Clear();
+                                }
+                            });
+                            pnl.Controls.Add(btnCopy);
+                            yH = textBox.Height;
+                        }
+                        break;
+
+                    case RecordType.CustomCreditCardNumber: {
+                            var textBox = new TextBox() { Font = this.Font, Location = new Point(labelWidth + labelBuffer, y), Tag = record, Text = record.Text, Width = pnl.ClientSize.Width - labelWidth - labelBuffer - unitHeight, ReadOnly = !this.Editable, Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right };
+                            textBox.GotFocus += new EventHandler(delegate (object sender2, EventArgs e2) { ((TextBox)sender2).SelectAll(); });
+                            pnl.Controls.Add(textBox);
+
+                            var btnCopy = new Button() { Location = new Point(pnl.ClientSize.Width - unitHeight, y), Size = new Size(unitHeight, unitHeight), TabStop = false, Tag = textBox, Text = "", Image = new Bitmap(Assembly.GetExecutingAssembly().GetManifestResourceStream("Bimil.Resources.Copy_16.png")), Anchor = AnchorStyles.Top | AnchorStyles.Right };
+                            btnCopy.Click += new EventHandler(delegate (object sender2, EventArgs e2) {
+                                var box = (TextBox)(((Control)sender2).Tag);
+                                box.Select();
+                                var text = box.Text.Replace(" ", "").Replace("-", "");
+                                if (text.Length > 0) {
+                                    Clipboard.SetText(text);
+                                } else {
+                                    Clipboard.Clear();
+                                }
+                            });
+                            pnl.Controls.Add(btnCopy);
 
                             yH = textBox.Height;
                         }

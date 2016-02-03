@@ -30,6 +30,12 @@ namespace Bimil {
                 case RecordType.EmailAddress: return "E-mail";
                 case RecordType.Notes: return "Notes";
 
+                case RecordType.CustomTwoFactorKey: return "Two-factor key";
+                case RecordType.CustomCreditCardNumber: return "Card number";
+                case RecordType.CustomCreditCardExpiration: return "Card expiration";
+                case RecordType.CustomCreditCardSecurityCode: return "Card security code";
+                case RecordType.CustomCreditCardPin: return "Card PIN";
+
                 default: return null; //all other fields are not really supported
             }
         }
