@@ -382,7 +382,7 @@ namespace Bimil {
             if (this.Document == null) { return; }
 
             if (this.DocumentFileName != null) {
-                using (var fileStream = File.OpenWrite(this.DocumentFileName)) {
+                using (var fileStream = new FileStream(this.DocumentFileName, FileMode.Create, FileAccess.Write)) {
                     this.Document.Save(fileStream);
                 }
                 UpdateMenu();
@@ -398,7 +398,7 @@ namespace Bimil {
             using (var frm = new SaveFileDialog() { AddExtension = true, AutoUpgradeEnabled = true, Filter = "Bimil files|*.bimil|Password Safe files|*.psafe3|All files|*.*", RestoreDirectory = true }) {
                 if (this.DocumentFileName != null) { frm.FileName = this.DocumentFileName; }
                 if (frm.ShowDialog(this) == DialogResult.OK) {
-                    using (var fileStream = File.OpenWrite(frm.FileName)) {
+                    using (var fileStream = new FileStream(frm.FileName, FileMode.Create, FileAccess.Write)) {
                         this.Document.Save(fileStream);
                     }
                     this.DocumentFileName = frm.FileName;
