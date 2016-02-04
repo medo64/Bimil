@@ -366,7 +366,7 @@ namespace Bimil {
                 legacyDoc = LegacyFile.BimilDocument.Open(fileName, password);
 
                 this.Document = DocumentConversion.ConvertFromBimil(legacyDoc, password);
-                this.DocumentFileName = null;
+                this.DocumentFileName = fileName;
             } finally {
                 password = null;
                 GC.Collect(); //in attempt to kill password string
