@@ -1,19 +1,17 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
-using Medo.Security.Cryptography.Bimil;
+using Medo.Security.Cryptography.PasswordSafe;
 
 namespace Bimil {
     public partial class FieldsEditorForm : Form {
 
-        private readonly BimilDocument Document;
-        private readonly BimilItem Item;
+        private readonly Document Document;
+        private readonly Entry Item;
 
-        public FieldsEditorForm(BimilDocument document, BimilItem item) {
+        public FieldsEditorForm(Document document, Entry item) {
             InitializeComponent();
             this.Font = SystemFonts.MessageBoxFont;
 
@@ -25,8 +23,9 @@ namespace Bimil {
             lsvFields.Columns[0].Width = lsvFields.Width - SystemInformation.VerticalScrollBarWidth;
 
             foreach (var record in this.Item.Records) {
-                if (record.Format != BimilRecordFormat.System) {
-                    var lvi = new ListViewItem(record.Key.Text) { Tag = record };
+                var caption = Helpers.GetRecordCaption(record);
+                if (caption != null) {
+                    var lvi = new ListViewItem(caption) { Tag = record };
                     lsvFields.Items.Add(lvi);
                 }
             }
@@ -36,25 +35,12 @@ namespace Bimil {
             switch (e.KeyData) {
                 case Keys.Insert: {
                         btnAdd_Click(null, null);
-                    } break;
-                case Keys.F2: {
-                    lsvFields_ItemActivate(null, null);
-                    } break;
+                    }
+                    break;
                 case Keys.Delete: {
                         btnRemove_Click(null, null);
-                    } break;
-            }
-        }
-
-        private void lsvFields_ItemActivate(object sender, EventArgs e) {
-            if (lsvFields.FocusedItem != null) {
-                var record = (BimilRecord)lsvFields.FocusedItem.Tag;
-                using (var frm = new NewRecordForm(this.Document, record)) {
-                    if (frm.ShowDialog(this) == DialogResult.OK) {
-                        lsvFields.FocusedItem.Tag = frm.Record;
-                        lsvFields.FocusedItem.Text = frm.Record.Key.Text;
                     }
-                }
+                    break;
             }
         }
 
@@ -108,9 +94,9 @@ namespace Bimil {
 
 
         private void btnAdd_Click(object sender, EventArgs e) {
-            using (var frm = new NewRecordForm(this.Document, null)) {
+            using (var frm = new NewRecordForm(this.Document)) {
                 if (frm.ShowDialog(this) == DialogResult.OK) {
-                    var lvi = new ListViewItem(frm.Record.Key.Text) { Tag = frm.Record };
+                    var lvi = new ListViewItem(Helpers.GetRecordCaption(frm.Record)) { Tag = frm.Record };
                     lsvFields.Items.Add(lvi);
                 }
             }
@@ -123,11 +109,14 @@ namespace Bimil {
         }
 
         private void btnOK_Click(object sender, EventArgs e) {
-            this.Item.ClearNonSystemRecords();
             foreach (ListViewItem lvi in lsvFields.Items) {
-                var record = (BimilRecord)lvi.Tag;
-                record.Key.Text = lvi.Text;
-                this.Item.Records.Add(record);
+                var record = (Record)lvi.Tag;
+                if (this.Item.Records.Contains(record)) {
+                    this.Item.Records.Remove(record);
+                    this.Item.Records.Add(record);
+                } else {
+                    this.Item.Records.Add(record);
+                }
             }
         }
 

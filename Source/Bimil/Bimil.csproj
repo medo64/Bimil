@@ -85,24 +85,26 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
-    <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="%28Medo%29\AboutBox [010].cs" />
     <Compile Include="%28Medo%29\Args [001].cs" />
     <Compile Include="%28Medo%29\ErrorReport [018].cs" />
-    <Compile Include="%28Medo%29\GDataClientLogin [002].cs" />
-    <Compile Include="%28Medo%29\GDataDocs [000].cs" />
     <Compile Include="%28Medo%29\LifetimeWatch [001].cs" />
     <Compile Include="%28Medo%29\MessageBox [006].cs" />
     <Compile Include="%28Medo%29\RecentFiles [003].cs" />
     <Compile Include="%28Medo%29\Settings [011].cs" />
     <Compile Include="%28Medo%29\State [015].cs" />
     <Compile Include="%28Medo%29\UnhandledCatch [008].cs" />
+    <Compile Include="BimilDocument\BimilDocument.cs" />
+    <Compile Include="BimilDocument\BimilItem.cs" />
+    <Compile Include="BimilDocument\BimilRecord.cs" />
+    <Compile Include="BimilDocument\BimilValue.cs" />
+    <Compile Include="BimilDocument\DocumentConversion.cs" />
     <Compile Include="EditItemForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -121,6 +123,18 @@
     <Compile Include="NewRecordForm.Designer.cs">
       <DependentUpon>NewRecordForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="%28PasswordSafe%29\Document.cs" />
+    <Compile Include="%28PasswordSafe%29\Entry.cs" />
+    <Compile Include="%28PasswordSafe%29\EntryCollection.cs" />
+    <Compile Include="%28PasswordSafe%29\Field.cs" />
+    <Compile Include="%28PasswordSafe%29\GroupPath.cs" />
+    <Compile Include="%28PasswordSafe%29\Header.cs" />
+    <Compile Include="%28PasswordSafe%29\HeaderCollection.cs" />
+    <Compile Include="%28PasswordSafe%29\HeaderType.cs" />
+    <Compile Include="%28PasswordSafe%29\Record.cs" />
+    <Compile Include="%28PasswordSafe%29\RecordCollection.cs" />
+    <Compile Include="%28PasswordSafe%29\RecordType.cs" />
+    <Compile Include="%28PasswordSafe%29\Twofish.cs" />
     <Compile Include="SelectTemplateForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -133,10 +147,6 @@
     <Compile Include="NewPasswordForm.Designer.cs">
       <DependentUpon>NewPasswordForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Document\BimilDocument.cs" />
-    <Compile Include="Document\BimilItem.cs" />
-    <Compile Include="Document\BimilRecord.cs" />
-    <Compile Include="Document\BimilValue.cs" />
     <Compile Include="Helpers.cs" />
     <Compile Include="PasswordForm.cs">
       <SubType>Form</SubType>

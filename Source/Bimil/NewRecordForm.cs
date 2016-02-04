@@ -1,67 +1,54 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
-using Medo.Security.Cryptography.Bimil;
+using Medo.Security.Cryptography.PasswordSafe;
 
 namespace Bimil {
     public partial class NewRecordForm : Form {
 
-        private readonly BimilDocument Document;
+        private readonly Document Document;
 
-        public NewRecordForm(BimilDocument document, BimilRecord record) {
+        public NewRecordForm(Document document) {
             InitializeComponent();
             this.Font = SystemFonts.MessageBoxFont;
 
             this.Document = document;
-            this.Record = record;
         }
 
         private void Form_Load(object sender, EventArgs e) {
-            if (this.Record != null) {
-                txtName.Text = this.Record.Key.Text;
+            foreach (RecordType recordType in Enum.GetValues(typeof(RecordType))) {
+                var caption = Helpers.GetRecordCaption(recordType);
+                if (caption != null) {
+                    cmbRecordType.Items.Add(new BimilFormatWrapper(caption, recordType));
+                }
             }
-            cmbRecordType.Items.Add(new BimilFormatWrapper("Text", BimilRecordFormat.Text));
-            cmbRecordType.Items.Add(new BimilFormatWrapper("Password", BimilRecordFormat.Password));
-            cmbRecordType.Items.Add(new BimilFormatWrapper("Monospaced text", BimilRecordFormat.MonospacedText));
-            cmbRecordType.Items.Add(new BimilFormatWrapper("Multiline text", BimilRecordFormat.MultilineText));
-            cmbRecordType.Items.Add(new BimilFormatWrapper("URL", BimilRecordFormat.Url));
             if (this.Record != null) {
-                cmbRecordType.SelectedItem = this.Record.Format;
+                cmbRecordType.SelectedItem = this.Record.RecordType;
             } else {
                 cmbRecordType.SelectedIndex = 0;
             }
         }
 
-        private void Form_Activated(object sender, EventArgs e) {
-            if (this.Record != null) {
-                txtName.SelectAll();
-            }
-        }
 
-
-        public BimilRecord Record { get; private set; }
+        public Record Record { get; private set; }
 
         private void btnOK_Click(object sender, EventArgs e) {
-            if (this.Record != null) {
-                this.Record = new BimilRecord(this.Document, txtName.Text, this.Record.Value.Text, ((BimilFormatWrapper)cmbRecordType.SelectedItem).Format);
-            } else {
-                this.Record = new BimilRecord(this.Document, txtName.Text, "", ((BimilFormatWrapper)cmbRecordType.SelectedItem).Format);
-            }
+            this.Record = new Record(((BimilFormatWrapper)cmbRecordType.SelectedItem).Format);
         }
 
 
         #region Private
 
         private class BimilFormatWrapper {
-            public BimilFormatWrapper(string text, BimilRecordFormat format) {
+            public BimilFormatWrapper(string text, RecordType format) {
                 this.Text = text;
                 this.Format = format;
             }
             public string Text { get; private set; }
-            public BimilRecordFormat Format { get; private set; }
+            public RecordType Format { get; private set; }
             public override bool Equals(object obj) {
-                if (obj is BimilRecordFormat) {
-                    var otherFormat = (BimilRecordFormat)obj;
+                if (obj is RecordType) {
+                    var otherFormat = (RecordType)obj;
                     return (this.Format == otherFormat);
                 }
                 return base.Equals(obj);

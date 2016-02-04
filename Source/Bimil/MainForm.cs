@@ -4,14 +4,14 @@ using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using Medo.Configuration;
-using Medo.Security.Cryptography.Bimil;
+using Medo.Security.Cryptography.PasswordSafe;
+using LegacyFile = Medo.Security.Cryptography.Bimil;
 
 namespace Bimil {
     internal partial class MainForm : Form {
 
-        private BimilDocument Document = null;
+        private Document Document = null;
         private string DocumentFileName = null;
-        private bool DocumentChanged = false;
         private RecentFiles RecentFiles = new RecentFiles();
         private readonly List<string> Categories = new List<string>();
 
@@ -43,7 +43,8 @@ namespace Bimil {
                             this.Close();
                             return true;
                         }
-                    } break;
+                    }
+                    break;
 
                 case Keys.Control | Keys.N:
                 case Keys.Alt | Keys.N:
@@ -114,7 +115,6 @@ namespace Bimil {
 
             this.Document = null;
             this.DocumentFileName = null;
-            this.DocumentChanged = false;
             Application.Exit();
         }
 
@@ -132,7 +132,7 @@ namespace Bimil {
             }
             for (int i = 0; i < this.RecentFiles.Count; i++) {
                 var item = new ToolStripMenuItem(this.RecentFiles[i].Title) { Tag = this.RecentFiles[i].FileName };
-                item.Click += new EventHandler(delegate(object sender2, EventArgs e2) {
+                item.Click += new EventHandler(delegate (object sender2, EventArgs e2) {
                     if (SaveIfNeeded() != DialogResult.OK) { return; }
                     LoadFile(item.Tag.ToString());
                 });
@@ -183,7 +183,8 @@ namespace Bimil {
                         cmbSearch.SelectAll();
                         e.Handled = true;
                         e.SuppressKeyPress = true;
-                    } break;
+                    }
+                    break;
 
                 case Keys.PageUp: {
                         int index = (cmbSearch.SelectedIndex == -1) ? cmbSearch.Items.Count - 1 : cmbSearch.SelectedIndex;
@@ -191,12 +192,14 @@ namespace Bimil {
                         cmbSearch.SelectAll();
                         e.Handled = true;
                         e.SuppressKeyPress = true;
-                    } break;
+                    }
+                    break;
 
                 case Keys.Enter:
                     if (lsvPasswords.Items.Count > 0) {
                         lsvPasswords.Select();
-                    } break;
+                    }
+                    break;
 
                 default:
                     lsvPasswords_KeyDown(null, e);
@@ -210,19 +213,22 @@ namespace Bimil {
                         mnuAdd_Click(null, null);
                         e.Handled = true;
                         e.SuppressKeyPress = true;
-                    } break;
+                    }
+                    break;
 
                 case Keys.F4: {
                         mnuEdit_Click(null, null);
                         e.Handled = true;
                         e.SuppressKeyPress = true;
-                    } break;
+                    }
+                    break;
 
                 case Keys.Delete: {
                         mnuRemove_Click(null, null);
                         e.Handled = true;
                         e.SuppressKeyPress = true;
-                    } break;
+                    }
+                    break;
 
                 case Keys.PageDown: {
                         int index = (cmbSearch.SelectedIndex == -1) ? 0 : cmbSearch.SelectedIndex;
@@ -230,7 +236,8 @@ namespace Bimil {
                         cmbSearch.SelectAll();
                         e.Handled = true;
                         e.SuppressKeyPress = true;
-                    } break;
+                    }
+                    break;
 
                 case Keys.PageUp: {
                         int index = (cmbSearch.SelectedIndex == -1) ? cmbSearch.Items.Count - 1 : cmbSearch.SelectedIndex;
@@ -238,7 +245,8 @@ namespace Bimil {
                         cmbSearch.SelectAll();
                         e.Handled = true;
                         e.SuppressKeyPress = true;
-                    } break;
+                    }
+                    break;
 
             }
         }
@@ -249,7 +257,7 @@ namespace Bimil {
 
 
         private DialogResult SaveIfNeeded() {
-            if (this.DocumentChanged) {
+            if (this.Document?.HasChanged ?? false) {
                 string question;
                 if (this.DocumentFileName != null) {
                     var file = new FileInfo(this.DocumentFileName);
@@ -261,7 +269,7 @@ namespace Bimil {
                 switch (Medo.MessageBox.ShowQuestion(this, question, MessageBoxButtons.YesNoCancel)) {
                     case DialogResult.Yes:
                         mnuSave_ButtonClick(null, null);
-                        return (this.DocumentChanged == false) ? DialogResult.OK : DialogResult.Cancel;
+                        return (this.Document.HasChanged == false) ? DialogResult.OK : DialogResult.Cancel;
                     case DialogResult.No: return DialogResult.OK;
                     case DialogResult.Cancel: return DialogResult.Cancel;
                     default: return DialogResult.Cancel;
@@ -276,11 +284,11 @@ namespace Bimil {
 
         private void mnuNew_Click(object sender, EventArgs e) {
             if (SaveIfNeeded() != DialogResult.OK) { return; }
-            BimilDocument doc = null;
+            Document doc = null;
             try {
                 using (var frm = new NewPasswordForm()) {
                     if (frm.ShowDialog(this) == DialogResult.OK) {
-                        doc = new BimilDocument(frm.Password);
+                        doc = new Document(frm.Password);
                     }
                 }
             } finally {
@@ -289,7 +297,6 @@ namespace Bimil {
             if (doc != null) {
                 this.Document = doc;
                 this.DocumentFileName = null;
-                this.DocumentChanged = false;
             }
             RefreshCategories();
             RefreshItems();
@@ -299,7 +306,7 @@ namespace Bimil {
 
         private void mnuOpen_ButtonClick(object sender, EventArgs e) {
             if (SaveIfNeeded() != DialogResult.OK) { return; }
-            using (var frm = new OpenFileDialog() { AddExtension = true, AutoUpgradeEnabled = true, Filter = "Bimil files|*.bimil|All files|*.*", RestoreDirectory = true }) {
+            using (var frm = new OpenFileDialog() { AddExtension = true, AutoUpgradeEnabled = true, Filter = "Bimil files|*.bimil|Password Safe files|*.psafe3|All files|*.*", RestoreDirectory = true }) {
                 if (frm.ShowDialog(this) == DialogResult.OK) {
                     LoadFile(frm.FileName);
                 }
@@ -308,28 +315,63 @@ namespace Bimil {
 
         private void LoadFile(string fileName, string password = null) {
             try {
-                BimilDocument doc = null;
-                try {
-                    if (password == null) {
-                        using (var frm = new PasswordForm()) {
-                            if (frm.ShowDialog(this) == DialogResult.OK) {
-                                doc = BimilDocument.Open(fileName, frm.Password);
-                            }
+                if (password == null) {
+                    using (var frm = new PasswordForm()) {
+                        if (frm.ShowDialog(this) == DialogResult.OK) {
+                            password = frm.Password;
+                        } else {
+                            return;
                         }
-                    } else {
-                        doc = BimilDocument.Open(fileName, password);
                     }
-                } finally {
-                    GC.Collect(); //in attempt to kill password string
                 }
-                this.Document = doc;
-                this.DocumentFileName = fileName;
-                this.DocumentChanged = false;
-                this.RecentFiles.Push(this.DocumentFileName);
-                RefreshFiles();
+
+                if (fileName.EndsWith(".bimil", StringComparison.OrdinalIgnoreCase)) {
+                    try {
+                        LoadBimilFile(fileName, password);
+                    } catch (FormatException) { //try password safe if bimil format fails
+                        LoadPasswordSafeFile(fileName, password);
+                    }
+                } else { //Password Safe
+                    LoadPasswordSafeFile(fileName, password);
+                }
+            } finally {
+                password = null;
+                GC.Collect(); //in attempt to kill password string
+            }
+        }
+
+        private void LoadPasswordSafeFile(string fileName, string password = null) {
+            try {
+                using (var fileStream = File.OpenRead(fileName)) {
+                    this.Document = Document.Load(fileStream, password);
+                    this.Document.TrackAccess = false;
+                    this.DocumentFileName = fileName;
+                }
             } catch (FormatException) {
                 Medo.MessageBox.ShowError(this, "Either password is wrong or file is damaged.");
             }
+
+            this.RecentFiles.Push(fileName);
+            RefreshFiles();
+
+            RefreshCategories();
+            RefreshItems();
+            UpdateMenu();
+            cmbSearch.Select();
+        }
+
+        private void LoadBimilFile(string fileName, string password = null) {
+            LegacyFile.BimilDocument legacyDoc = null;
+            try {
+                legacyDoc = LegacyFile.BimilDocument.Open(fileName, password);
+
+                this.Document = DocumentConversion.ConvertFromBimil(legacyDoc, password);
+                this.DocumentFileName = fileName;
+            } finally {
+                password = null;
+                GC.Collect(); //in attempt to kill password string
+            }
+
             RefreshCategories();
             RefreshItems();
             UpdateMenu();
@@ -340,8 +382,9 @@ namespace Bimil {
             if (this.Document == null) { return; }
 
             if (this.DocumentFileName != null) {
-                this.Document.Save(this.DocumentFileName);
-                this.DocumentChanged = false;
+                using (var fileStream = new FileStream(this.DocumentFileName, FileMode.Create, FileAccess.Write)) {
+                    this.Document.Save(fileStream);
+                }
                 UpdateMenu();
             } else {
                 mnuSaveAs_Click(null, null);
@@ -352,12 +395,13 @@ namespace Bimil {
         private void mnuSaveAs_Click(object sender, EventArgs e) {
             if (this.Document == null) { return; }
 
-            using (var frm = new SaveFileDialog() { AddExtension = true, AutoUpgradeEnabled = true, Filter = "Bimil files|*.bimil|All files|*.*", RestoreDirectory = true }) {
+            using (var frm = new SaveFileDialog() { AddExtension = true, AutoUpgradeEnabled = true, Filter = "Bimil files|*.bimil|Password Safe files|*.psafe3|All files|*.*", RestoreDirectory = true }) {
                 if (this.DocumentFileName != null) { frm.FileName = this.DocumentFileName; }
                 if (frm.ShowDialog(this) == DialogResult.OK) {
-                    this.Document.Save(frm.FileName);
+                    using (var fileStream = new FileStream(frm.FileName, FileMode.Create, FileAccess.Write)) {
+                        this.Document.Save(fileStream);
+                    }
                     this.DocumentFileName = frm.FileName;
-                    this.DocumentChanged = false;
                     this.RecentFiles.Push(this.DocumentFileName);
                     RefreshFiles();
                     UpdateMenu();
@@ -370,33 +414,25 @@ namespace Bimil {
         private void mnuChangePassword_Click(object sender, EventArgs e) {
             if (this.Document == null) { return; }
 
-            BimilDocument currDoc = null;
             try {
                 using (var frm = new PasswordForm()) {
                     if (frm.ShowDialog(this) == DialogResult.OK) {
-                        using (var stream = new MemoryStream()) {
-                            this.Document.Save(stream);
-                            stream.Position = 0;
-                            currDoc = BimilDocument.Open(stream, frm.Password);
+                        if (!this.Document.ValidatePassphrase(frm.Password)) {
+                            Medo.MessageBox.ShowError(this, "Old password does not match.");
+                            return;
                         }
                     }
                 }
             } catch (FormatException) {
-                Medo.MessageBox.ShowError(this, "Old password does not match.");
             } finally {
                 GC.Collect(); //in attempt to kill password string
             }
 
-            if (currDoc == null) { return; }
-
-            BimilDocument newDoc = null;
             try {
                 using (var frm = new NewPasswordForm()) {
                     if (frm.ShowDialog(this) == DialogResult.OK) {
                         using (var stream = new MemoryStream()) {
-                            currDoc.Save(stream, frm.Password);
-                            stream.Position = 0;
-                            newDoc = BimilDocument.Open(stream, frm.Password);
+                            this.Document.ChangePassphrase(frm.Password);
                         }
                     }
                 }
@@ -404,8 +440,6 @@ namespace Bimil {
                 GC.Collect(); //in attempt to kill password string
             }
 
-            this.Document = newDoc;
-            this.DocumentChanged = true;
             RefreshCategories();
             RefreshItems();
             UpdateMenu();
@@ -417,19 +451,20 @@ namespace Bimil {
 
             using (var frm = new SelectTemplateForm()) {
                 if (frm.ShowDialog(this) == DialogResult.OK) {
-                    var item = this.Document.AddItem("New item", 0);
-                    foreach (var record in frm.Template.Records) {
-                        item.AddRecord(record.Key, "", record.Value);
+                    var entry = new Entry("New item");
+                    entry.Records[RecordType.Password] = null;
+                    this.Document.Entries.Add(entry);
+                    foreach (var recordType in frm.Template.RecordTypes) {
+                        entry.Records.Add(new Record(recordType));
                     }
 
-                    using (var frm2 = new EditItemForm(this.Document, item, true, this.Categories)) {
+                    using (var frm2 = new EditItemForm(this.Document, entry, true, this.Categories)) {
                         if (frm2.ShowDialog(this) == DialogResult.OK) {
-                            var listItem = new ListViewItem(item.Name) { Tag = item };
+                            var listItem = new ListViewItem(entry.Title) { Tag = entry };
                             lsvPasswords.Items.Add(listItem);
-                            this.DocumentChanged = true;
                             RefreshCategories();
                         } else {
-                            this.Document.Items.Remove(item);
+                            this.Document.Entries.Remove(entry);
                         }
                     }
 
@@ -442,11 +477,10 @@ namespace Bimil {
         private void mnuEdit_Click(object sender, EventArgs e) {
             if ((this.Document == null) || (lsvPasswords.SelectedItems.Count != 1)) { return; }
 
-            var item = (BimilItem)(lsvPasswords.SelectedItems[0].Tag);
+            var item = (Entry)(lsvPasswords.SelectedItems[0].Tag);
             using (var frm2 = new EditItemForm(this.Document, item, false, this.Categories)) {
                 if (frm2.ShowDialog(this) == DialogResult.OK) {
-                    lsvPasswords.SelectedItems[0].Text = item.Name;
-                    this.DocumentChanged = true;
+                    lsvPasswords.SelectedItems[0].Text = item.Title;
                     RefreshCategories();
                     UpdateMenu();
                 }
@@ -457,11 +491,10 @@ namespace Bimil {
             if ((this.Document == null) || (lsvPasswords.SelectedItems.Count == 0)) { return; }
 
             for (int i = lsvPasswords.SelectedItems.Count - 1; i >= 0; i--) {
-                var item = (BimilItem)(lsvPasswords.SelectedItems[i].Tag);
-                this.Document.Items.Remove(item);
+                var item = (Entry)(lsvPasswords.SelectedItems[i].Tag);
+                this.Document.Entries.Remove(item);
                 lsvPasswords.Items.Remove(lsvPasswords.SelectedItems[i]);
             }
-            this.DocumentChanged = true;
             UpdateMenu();
             cmbSearch.Select();
         }
@@ -495,9 +528,9 @@ namespace Bimil {
             this.Categories.Clear();
             if (this.Document != null) {
                 this.Categories.Add("");
-                foreach (var item in this.Document.Items) {
-                    if (this.Categories.Contains(item.CategoryRecord.Value.Text) == false) {
-                        this.Categories.Add(item.CategoryRecord.Value.Text);
+                foreach (var item in this.Document.Entries) {
+                    if (!this.Categories.Contains(item.Group)) {
+                        this.Categories.Add(item.Group);
                     }
                 }
             }
@@ -515,9 +548,9 @@ namespace Bimil {
             lsvPasswords.BeginUpdate();
             lsvPasswords.Items.Clear();
             if (this.Document != null) {
-                foreach (var item in this.Document.Items) {
-                    if ((string.Equals(cmbSearch.Text, item.CategoryRecord.Value.Text, StringComparison.CurrentCultureIgnoreCase)) || ((cmbSearch.Text.Length > 0) && (item.Name.IndexOf(cmbSearch.Text, StringComparison.CurrentCultureIgnoreCase) >= 0))) {
-                        lsvPasswords.Items.Add(new ListViewItem(item.Name) { Tag = item });
+                foreach (var item in this.Document.Entries) {
+                    if ((string.Equals(cmbSearch.Text, item.Group, StringComparison.CurrentCultureIgnoreCase)) || ((cmbSearch.Text.Length > 0) && (item.Title.IndexOf(cmbSearch.Text, StringComparison.CurrentCultureIgnoreCase) >= 0))) {
+                        lsvPasswords.Items.Add(new ListViewItem(item.Title) { Tag = item });
                     }
                 }
             }
@@ -539,12 +572,12 @@ namespace Bimil {
             pnlDocument.Visible = (this.Document != null);
 
             if (this.DocumentFileName == null) {
-                this.Text = this.DocumentChanged ? "Bimil*" : "Bimil";
+                this.Text = (this.Document?.HasChanged ?? false) ? "Bimil*" : "Bimil";
             } else {
                 var file = new FileInfo(this.DocumentFileName);
                 var title = file.Name.Substring(0, file.Name.Length - file.Extension.Length);
 
-                this.Text = title + (this.DocumentChanged ? "*" : "") + " - Bimil";
+                this.Text = title + (this.Document?.HasChanged ?? false ? "*" : "") + " - Bimil";
             }
         }
 
