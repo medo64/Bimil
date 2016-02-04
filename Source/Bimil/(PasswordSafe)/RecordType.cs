@@ -109,10 +109,10 @@ namespace Medo.Security.Cryptography.PasswordSafe {
 
 
 
-        CustomTwoFactorKey = 0xf0,
-        CustomCreditCardNumber = 0xf1,
-        CustomCreditCardExpiration = 0xf2,
-        CustomCreditCardSecurityCode = 0xf3,
-        CustomCreditCardPin = 0xf4,
+        BimilTwoFactorKey = 0xf0,
+        BimilCreditCardNumber = 0xf1,
+        BimilCreditCardExpiration = 0xf2,
+        BimilCreditCardSecurityCode = 0xf3,
+        BimilCreditCardPin = 0xf4,
     }
 }

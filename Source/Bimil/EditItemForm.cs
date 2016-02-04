@@ -131,9 +131,9 @@ namespace Bimil {
                         continue;
 
                     case RecordType.UserName:
-                    case RecordType.CustomCreditCardExpiration:
-                    case RecordType.CustomCreditCardSecurityCode:
-                    case RecordType.CustomCreditCardPin: {
+                    case RecordType.BimilCreditCardExpiration:
+                    case RecordType.BimilCreditCardSecurityCode:
+                    case RecordType.BimilCreditCardPin: {
                             var textBox = new TextBox() { Font = this.Font, Location = new Point(labelWidth + labelBuffer, y), Tag = record, Text = record.Text, Width = pnl.ClientSize.Width - labelWidth - labelBuffer - unitHeight, ReadOnly = !this.Editable, Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right };
                             textBox.GotFocus += new EventHandler(delegate (object sender2, EventArgs e2) { ((TextBox)sender2).SelectAll(); });
                             pnl.Controls.Add(textBox);
@@ -278,7 +278,7 @@ namespace Bimil {
                         }
                         break;
 
-                    case RecordType.CustomTwoFactorKey: {
+                    case RecordType.BimilTwoFactorKey: {
                             var textBox = new TextBox() { Font = EditItemForm.FixedFont, Location = new Point(labelWidth + labelBuffer, y), Tag = record, Text = record.Text, Width = pnl.ClientSize.Width - labelWidth - labelBuffer - unitHeight, ReadOnly = !this.Editable, Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right };
                             textBox.GotFocus += new EventHandler(delegate (object sender2, EventArgs e2) { ((TextBox)sender2).SelectAll(); });
                             pnl.Controls.Add(textBox);
@@ -298,7 +298,7 @@ namespace Bimil {
                         }
                         break;
 
-                    case RecordType.CustomCreditCardNumber: {
+                    case RecordType.BimilCreditCardNumber: {
                             var textBox = new TextBox() { Font = this.Font, Location = new Point(labelWidth + labelBuffer, y), Tag = record, Text = record.Text, Width = pnl.ClientSize.Width - labelWidth - labelBuffer - unitHeight, ReadOnly = !this.Editable, Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right };
                             textBox.GotFocus += new EventHandler(delegate (object sender2, EventArgs e2) { ((TextBox)sender2).SelectAll(); });
                             pnl.Controls.Add(textBox);
