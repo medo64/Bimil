@@ -306,7 +306,7 @@ namespace Bimil {
 
         private void mnuOpen_ButtonClick(object sender, EventArgs e) {
             if (SaveIfNeeded() != DialogResult.OK) { return; }
-            using (var frm = new OpenFileDialog() { AddExtension = true, AutoUpgradeEnabled = true, Filter = "Password Safe files|*.psafe3|Bimil files|*.bimil|All files|*.*", RestoreDirectory = true }) {
+            using (var frm = new OpenFileDialog() { AddExtension = true, AutoUpgradeEnabled = true, Filter = "Bimil files|*.bimil|Password Safe files|*.psafe3|All files|*.*", RestoreDirectory = true }) {
                 if (frm.ShowDialog(this) == DialogResult.OK) {
                     LoadFile(frm.FileName);
                 }
@@ -395,7 +395,7 @@ namespace Bimil {
         private void mnuSaveAs_Click(object sender, EventArgs e) {
             if (this.Document == null) { return; }
 
-            using (var frm = new SaveFileDialog() { AddExtension = true, AutoUpgradeEnabled = true, Filter = "Password Safe files|*.psafe3|All files|*.*", RestoreDirectory = true }) {
+            using (var frm = new SaveFileDialog() { AddExtension = true, AutoUpgradeEnabled = true, Filter = "Bimil files|*.bimil|Password Safe files|*.psafe3|All files|*.*", RestoreDirectory = true }) {
                 if (this.DocumentFileName != null) { frm.FileName = this.DocumentFileName; }
                 if (frm.ShowDialog(this) == DialogResult.OK) {
                     using (var fileStream = File.OpenWrite(frm.FileName)) {
