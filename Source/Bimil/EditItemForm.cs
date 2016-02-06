@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Windows.Forms;
 using Medo.Security.Cryptography.PasswordSafe;
 using System.Collections.Generic;
+using System.Web;
 
 namespace Bimil {
     public partial class EditItemForm : Form {
@@ -288,7 +289,7 @@ namespace Bimil {
                                 box.Select();
                                 var key = box.Text.ToUpperInvariant().Replace(" ", "");
                                 if (key.Length > 0) {
-                                    Clipboard.SetText(string.Format(CultureInfo.InvariantCulture, "otpauth://totp/{0}?secret={1}", this.Item.Title, key));
+                                    Clipboard.SetText(string.Format(CultureInfo.InvariantCulture, "otpauth://totp/{0}?secret={1}", HttpUtility.UrlPathEncode(this.Item.Title), HttpUtility.UrlEncode(key)));
                                 } else {
                                     Clipboard.Clear();
                                 }
