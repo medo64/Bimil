@@ -280,9 +280,22 @@ namespace Bimil {
                         break;
 
                     case RecordType.BimilTwoFactorKey: {
-                            var textBox = new TextBox() { Font = EditItemForm.FixedFont, Location = new Point(labelWidth + labelBuffer, y), Tag = record, Text = record.Text, Width = pnl.ClientSize.Width - labelWidth - labelBuffer - unitHeight, ReadOnly = !this.Editable, Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right };
+                            var textBox = new TextBox() { Font = EditItemForm.FixedFont, Location = new Point(labelWidth + labelBuffer, y), Tag = record, Text = record.Text, Width = pnl.ClientSize.Width - labelWidth - labelBuffer - unitHeight - unitHeight, ReadOnly = !this.Editable, Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right };
                             textBox.GotFocus += new EventHandler(delegate (object sender2, EventArgs e2) { ((TextBox)sender2).SelectAll(); });
                             pnl.Controls.Add(textBox);
+
+                            var btnExecuteUrl = new Button() { Location = new Point(pnl.ClientSize.Width - unitHeight - unitHeight, y), Size = new Size(unitHeight, unitHeight), TabStop = false, Tag = textBox, Text = "", Image = new Bitmap(Assembly.GetExecutingAssembly().GetManifestResourceStream("Bimil.Resources.ExecuteUrl_16.png")), Anchor = AnchorStyles.Top | AnchorStyles.Right };
+                            btnExecuteUrl.Click += new EventHandler(delegate (object sender2, EventArgs e2) {
+                                var box = (TextBox)(((Control)sender2).Tag);
+                                box.Select();
+                                var key = box.Text.ToUpperInvariant().Replace(" ", "");
+                                if (key.Length > 0) {
+                                    var url = string.Format(CultureInfo.InvariantCulture, "otpauth://totp/{0}?secret={1}", HttpUtility.UrlPathEncode(this.Item.Title), HttpUtility.UrlEncode(key));
+                                    Process.Start(string.Format(CultureInfo.InvariantCulture, "https://api.qrserver.com/v1/create-qr-code/?margin=32&data={0}", HttpUtility.UrlEncode(url)));
+                                }
+                            });
+                            pnl.Controls.Add(btnExecuteUrl);
+
                             var btnCopy = new Button() { Location = new Point(pnl.ClientSize.Width - unitHeight, y), Size = new Size(unitHeight, textBox.Height), TabStop = false, Tag = textBox, Text = "", Image = new Bitmap(Assembly.GetExecutingAssembly().GetManifestResourceStream("Bimil.Resources.Copy_16.png")), Anchor = AnchorStyles.Top | AnchorStyles.Right };
                             btnCopy.Click += new EventHandler(delegate (object sender2, EventArgs e2) {
                                 var box = (TextBox)(((Control)sender2).Tag);
