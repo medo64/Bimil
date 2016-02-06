@@ -102,13 +102,19 @@ namespace Bimil {
             }
         }
 
+        private List<Record> RecordsToRemove = new List<Record>();
+
         private void btnRemove_Click(object sender, EventArgs e) {
             if (lsvFields.SelectedItems.Count == 1) {
+                this.RecordsToRemove.Add(lsvFields.SelectedItems[0].Tag as Record);
                 lsvFields.Items.RemoveAt(lsvFields.SelectedItems[0].Index);
             }
         }
 
         private void btnOK_Click(object sender, EventArgs e) {
+            foreach (var record in this.RecordsToRemove) {
+                this.Item.Records.Remove(record);
+            }
             foreach (ListViewItem lvi in lsvFields.Items) {
                 var record = (Record)lvi.Tag;
                 if (this.Item.Records.Contains(record)) {
