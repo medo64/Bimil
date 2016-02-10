@@ -301,10 +301,12 @@ namespace Bimil {
                                 var box = (TextBox)(((Control)sender2).Tag);
                                 box.Select();
                                 var key = box.Text.ToUpperInvariant().Replace(" ", "");
+                                Clipboard.Clear();
                                 if (key.Length > 0) {
-                                    Clipboard.SetText(string.Format(CultureInfo.InvariantCulture, "otpauth://totp/{0}?secret={1}", HttpUtility.UrlPathEncode(this.Item.Title), HttpUtility.UrlEncode(key)));
-                                } else {
-                                    Clipboard.Clear();
+                                    try {
+                                        var otp = new Medo.Security.Cryptography.OneTimePassword(key);
+                                        Clipboard.SetText(otp.GetCode().ToString(new string('0', otp.Digits), CultureInfo.InvariantCulture));
+                                    } catch (ArgumentException) { }
                                 }
                             });
                             pnl.Controls.Add(btnCopy);
