@@ -38,12 +38,14 @@ namespace Bimil {
             this.mnuAppOptions = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuApp0 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuSendFeedback = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuAppUpgrade = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuApp1 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuAppAbout = new System.Windows.Forms.ToolStripMenuItem();
             this.pnlDocument = new System.Windows.Forms.Panel();
             this.lsvPasswords = new System.Windows.Forms.ListView();
             this.lsvPasswords_colTitle = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.cmbSearch = new System.Windows.Forms.ComboBox();
+            this.bwUpgradeCheck = new System.ComponentModel.BackgroundWorker();
             this.mnu.SuspendLayout();
             this.pnlDocument.SuspendLayout();
             this.SuspendLayout();
@@ -165,6 +167,7 @@ namespace Bimil {
             this.mnuAppOptions,
             this.mnuApp0,
             this.mnuSendFeedback,
+            this.mnuAppUpgrade,
             this.mnuApp1,
             this.mnuAppAbout});
             this.mnuApp.Image = global::Bimil.Properties.Resources.mnuApp_16;
@@ -176,31 +179,38 @@ namespace Bimil {
             // mnuAppOptions
             // 
             this.mnuAppOptions.Name = "mnuAppOptions";
-            this.mnuAppOptions.Size = new System.Drawing.Size(182, 26);
+            this.mnuAppOptions.Size = new System.Drawing.Size(206, 26);
             this.mnuAppOptions.Text = "&Options";
             this.mnuAppOptions.Click += new System.EventHandler(this.mnuAppOptions_Click);
             // 
             // mnuApp0
             // 
             this.mnuApp0.Name = "mnuApp0";
-            this.mnuApp0.Size = new System.Drawing.Size(179, 6);
+            this.mnuApp0.Size = new System.Drawing.Size(203, 6);
             // 
             // mnuSendFeedback
             // 
             this.mnuSendFeedback.Name = "mnuSendFeedback";
-            this.mnuSendFeedback.Size = new System.Drawing.Size(182, 26);
+            this.mnuSendFeedback.Size = new System.Drawing.Size(206, 26);
             this.mnuSendFeedback.Text = "Send &feedback";
             this.mnuSendFeedback.Click += new System.EventHandler(this.mnuAppFeedback_Click);
+            // 
+            // mnuAppUpgrade
+            // 
+            this.mnuAppUpgrade.Name = "mnuAppUpgrade";
+            this.mnuAppUpgrade.Size = new System.Drawing.Size(206, 26);
+            this.mnuAppUpgrade.Text = "Check for &upgrade";
+            this.mnuAppUpgrade.Click += new System.EventHandler(this.mnuAppUpgrade_Click);
             // 
             // mnuApp1
             // 
             this.mnuApp1.Name = "mnuApp1";
-            this.mnuApp1.Size = new System.Drawing.Size(179, 6);
+            this.mnuApp1.Size = new System.Drawing.Size(203, 6);
             // 
             // mnuAppAbout
             // 
             this.mnuAppAbout.Name = "mnuAppAbout";
-            this.mnuAppAbout.Size = new System.Drawing.Size(182, 26);
+            this.mnuAppAbout.Size = new System.Drawing.Size(206, 26);
             this.mnuAppAbout.Text = "&About";
             this.mnuAppAbout.Click += new System.EventHandler(this.mnuAppAbout_Click);
             // 
@@ -253,6 +263,12 @@ namespace Bimil {
             this.cmbSearch.TextChanged += new System.EventHandler(this.cmbSearch_SelectedIndexChanged);
             this.cmbSearch.KeyDown += new System.Windows.Forms.KeyEventHandler(this.cmbSearch_KeyDown);
             // 
+            // bwUpgradeCheck
+            // 
+            this.bwUpgradeCheck.WorkerSupportsCancellation = true;
+            this.bwUpgradeCheck.DoWork += new System.ComponentModel.DoWorkEventHandler(this.bwUpgradeCheck_DoWork);
+            this.bwUpgradeCheck.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.bwUpgradeCheck_RunWorkerCompleted);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -299,6 +315,8 @@ namespace Bimil {
         private System.Windows.Forms.ToolStripMenuItem mnuSendFeedback;
         private System.Windows.Forms.ToolStripSeparator mnuApp1;
         private System.Windows.Forms.ToolStripMenuItem mnuAppAbout;
+        private System.ComponentModel.BackgroundWorker bwUpgradeCheck;
+        private System.Windows.Forms.ToolStripMenuItem mnuAppUpgrade;
     }
 }
 

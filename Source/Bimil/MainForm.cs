@@ -7,6 +7,9 @@ using Medo.Configuration;
 using Medo.Security.Cryptography.PasswordSafe;
 using LegacyFile = Medo.Security.Cryptography.Bimil;
 using Medo.Security.Cryptography;
+using System.Diagnostics;
+using System.Threading;
+using System.Reflection;
 
 namespace Bimil {
     internal partial class MainForm : Form {
@@ -107,6 +110,9 @@ namespace Bimil {
         private void Form_Shown(object sender, EventArgs e) {
             var fileName = Medo.Application.Args.Current.GetValue("");
             if (fileName != null) { LoadFile(fileName); }
+
+            var version = Assembly.GetExecutingAssembly().GetName().Version; //don't auto-check for development builds
+            if ((version.Major != 0) || (version.Minor != 0)) { bwUpgradeCheck.RunWorkerAsync(); }
         }
 
         private void Form_FormClosing(object sender, FormClosingEventArgs e) {
@@ -114,6 +120,8 @@ namespace Bimil {
                 e.Cancel = true;
                 return;
             }
+
+            bwUpgradeCheck.CancelAsync();
 
             this.Document = null;
             this.DocumentFileName = null;
@@ -551,12 +559,16 @@ namespace Bimil {
         }
 
         private void mnuAppFeedback_Click(object sender, EventArgs e) {
-            Medo.Diagnostics.ErrorReport.ShowDialog(this, null, new Uri("http://jmedved.com/errorreport/"));
+            Medo.Diagnostics.ErrorReport.ShowDialog(this, null, new Uri("http://medo64.com/errorreport/"));
             cmbSearch.Select();
         }
 
+        private void mnuAppUpgrade_Click(object sender, EventArgs e) {
+            Medo.Services.Upgrade.ShowDialog(this, new Uri("http://medo64.com/upgrade/"));
+        }
+
         private void mnuAppAbout_Click(object sender, EventArgs e) {
-            Medo.Windows.Forms.AboutBox.ShowDialog(this, new Uri("http://www.jmedved.com/bimil/"));
+            Medo.Windows.Forms.AboutBox.ShowDialog(this, new Uri("http://www.medo64.com/bimil/"));
             cmbSearch.Select();
         }
 
@@ -638,6 +650,34 @@ namespace Bimil {
                 mnu.Items[0].Select();
             }
         }
+
+
+        #region Upgrade
+
+        private void bwUpgradeCheck_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e) {
+            e.Cancel = true;
+
+            var sw = Stopwatch.StartNew();
+            while (sw.ElapsedMilliseconds < 3000) { //wait for three seconds
+                Thread.Sleep(100);
+                if (bwUpgradeCheck.CancellationPending) { return; }
+            }
+
+            var file = Medo.Services.Upgrade.GetUpgradeFile(new Uri("https://medo64.com/upgrade/"));
+            if (file != null) {
+                if (bwUpgradeCheck.CancellationPending) { return; }
+                e.Cancel = false;
+            }
+        }
+
+        private void bwUpgradeCheck_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e) {
+            if (!e.Cancelled) {
+                Helpers.ScaleToolstripItem(mnuApp, "mnuAppUpgrade");
+                mnuAppUpgrade.Text = "Upgrade is available";
+            }
+        }
+
+        #endregion
 
     }
 }

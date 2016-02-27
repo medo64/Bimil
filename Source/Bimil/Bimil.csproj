@@ -102,6 +102,7 @@
     <Compile Include="%28Medo%29\Settings [011].cs" />
     <Compile Include="%28Medo%29\State [015].cs" />
     <Compile Include="%28Medo%29\UnhandledCatch [008].cs" />
+    <Compile Include="%28Medo%29\Upgrade.cs" />
     <Compile Include="BimilDocument\BimilDocument.cs" />
     <Compile Include="BimilDocument\BimilItem.cs" />
     <Compile Include="BimilDocument\BimilRecord.cs" />
