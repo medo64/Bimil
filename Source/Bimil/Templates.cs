@@ -11,8 +11,9 @@ namespace Bimil {
                 var list = new List<Template>();
 
                 list.Add(new Template("User name and password", RecordType.UserName, RecordType.Password, RecordType.Url, RecordType.Notes));
+                list.Add(new Template("User name and password with 2FA", RecordType.UserName, RecordType.Password, RecordType.TwoFactorKey, RecordType.Url, RecordType.Notes));
                 list.Add(new Template("Just password", RecordType.Password, RecordType.Notes));
-                //list.Add(new Template("Credit card", "Card number", BimilRecordFormat.Text, "Expiration date", BimilRecordFormat.Text, "Security code", BimilRecordFormat.Password, "PIN", BimilRecordFormat.Password, "Notes", BimilRecordFormat.MultilineText));
+                list.Add(new Template("Credit card", RecordType.CreditCardNumber, RecordType.CreditCardExpiration, RecordType.CreditCardVerificationValue, RecordType.CreditCardPin, RecordType.Notes));
                 //list.Add(new Template("Bank card", "Card number", BimilRecordFormat.Text, "Expiration date", BimilRecordFormat.Text, "Account number", BimilRecordFormat.Text, "PIN", BimilRecordFormat.Password, "Notes", BimilRecordFormat.MultilineText));
 
                 Templates.TemplatesCache = list.ToArray();
