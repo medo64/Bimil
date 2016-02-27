@@ -326,7 +326,7 @@ namespace Medo.Security.Cryptography {
         private static readonly IList<char> Base32Alphabet = new List<char>("ABCDEFGHIJKLMNOPQRSTUVWXYZ234567").AsReadOnly();
         private static readonly byte[] Base32Bitmask = new byte[] { 0x00, 0x01, 0x03, 0x07, 0x0F, 0x1F };
 
-        private static void FromBase32(string text, byte[] buffer, out int length) {
+        internal static void FromBase32(string text, byte[] buffer, out int length) {
             var index = 0;
 
             var bitPosition = 0;
@@ -365,7 +365,7 @@ namespace Medo.Security.Cryptography {
             length = index;
         }
 
-        private static string ToBase32(byte[] bytes, int length, SecretFormatFlags format) {
+        internal static string ToBase32(byte[] bytes, int length, SecretFormatFlags format) {
             if (length == 0) { return string.Empty; }
 
             var hasSpacing = (format & SecretFormatFlags.Spacing) == SecretFormatFlags.Spacing;

@@ -79,12 +79,17 @@ namespace Medo.Security.Cryptography.PasswordSafe {
                     case RecordType.RunCommand:
                     case RecordType.EmailAddress:
                     case RecordType.OwnSymbolsForPassword:
-                    case RecordType.PasswordPolicyName: return PasswordSafeFieldDataType.Text;
+                    case RecordType.PasswordPolicyName:
+                    case RecordType.CreditCardNumber:
+                    case RecordType.CreditCardExpiration:
+                    case RecordType.CreditCardVerificationValue:
+                    case RecordType.CreditCardPin: return PasswordSafeFieldDataType.Text;
                     case RecordType.CreationTime:
                     case RecordType.PasswordModificationTime:
                     case RecordType.LastAccessTime:
                     case RecordType.PasswordExpiryTime:
                     case RecordType.LastModificationTime: return PasswordSafeFieldDataType.Time;
+                    case RecordType.TwoFactorKey: return PasswordSafeFieldDataType.Binary;
                     default: return PasswordSafeFieldDataType.Unknown;
                 }
             }

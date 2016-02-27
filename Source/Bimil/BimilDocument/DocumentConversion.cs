@@ -53,19 +53,19 @@ namespace Bimil {
                 || record.Key.Text.Equals("Web address", StringComparison.OrdinalIgnoreCase)) {
                 return new Record(RecordType.Url) { Text = record.Value.Text };
             } else if (record.Key.Text.Equals("Key", StringComparison.OrdinalIgnoreCase)) {
-                return new Record(RecordType.BimilTwoFactorKey) { Text = record.Value.Text };
+                return new Record(RecordType.TwoFactorKey) { Text = record.Value.Text };
             } else if (record.Key.Text.Equals("Card number", StringComparison.OrdinalIgnoreCase)) {
-                return new Record(RecordType.BimilCreditCardNumber) { Text = record.Value.Text };
+                return new Record(RecordType.CreditCardNumber) { Text = record.Value.Text };
             } else if (record.Key.Text.Equals("Expiration date", StringComparison.OrdinalIgnoreCase)) {
-                return new Record(RecordType.BimilCreditCardExpiration) { Text = record.Value.Text };
+                return new Record(RecordType.CreditCardExpiration) { Text = record.Value.Text };
             } else if (record.Key.Text.Equals("Security code", StringComparison.OrdinalIgnoreCase)
                 || record.Key.Text.Equals("CVV", StringComparison.OrdinalIgnoreCase)
                 || record.Key.Text.Equals("CVV2", StringComparison.OrdinalIgnoreCase)
                 || record.Key.Text.Equals("CID", StringComparison.OrdinalIgnoreCase)
                 || record.Key.Text.Equals("CSC", StringComparison.OrdinalIgnoreCase)) {
-                return new Record(RecordType.BimilCreditCardSecurityCode) { Text = record.Value.Text };
+                return new Record(RecordType.CreditCardVerificationValue) { Text = record.Value.Text };
             } else if (record.Key.Text.Equals("PIN", StringComparison.OrdinalIgnoreCase)) {
-                return new Record(RecordType.BimilCreditCardPin) { Text = record.Value.Text };
+                return new Record(RecordType.CreditCardPin) { Text = record.Value.Text };
             } else {
                 Debug.WriteLine("Not auto-converting field \"" + record.Key.Text + "\"");
                 if (record.Value.Text.Length > 0) {

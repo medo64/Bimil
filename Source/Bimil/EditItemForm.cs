@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using Medo.Security.Cryptography.PasswordSafe;
 using System.Collections.Generic;
 using System.Web;
+using Medo.Security.Cryptography;
 
 namespace Bimil {
     public partial class EditItemForm : Form {
@@ -132,9 +133,9 @@ namespace Bimil {
                         continue;
 
                     case RecordType.UserName:
-                    case RecordType.BimilCreditCardExpiration:
-                    case RecordType.BimilCreditCardSecurityCode:
-                    case RecordType.BimilCreditCardPin: {
+                    case RecordType.CreditCardExpiration:
+                    case RecordType.CreditCardVerificationValue:
+                    case RecordType.CreditCardPin: {
                             var textBox = new TextBox() { Font = this.Font, Location = new Point(labelWidth + labelBuffer, y), Tag = record, Text = record.Text, Width = pnl.ClientSize.Width - labelWidth - labelBuffer - unitHeight, ReadOnly = !this.Editable, Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right };
                             textBox.GotFocus += new EventHandler(delegate (object sender2, EventArgs e2) { ((TextBox)sender2).SelectAll(); });
                             pnl.Controls.Add(textBox);
@@ -279,10 +280,12 @@ namespace Bimil {
                         }
                         break;
 
-                    case RecordType.BimilTwoFactorKey: {
-                            var textBox = new TextBox() { Font = EditItemForm.FixedFont, Location = new Point(labelWidth + labelBuffer, y), Tag = record, Text = record.Text, Width = pnl.ClientSize.Width - labelWidth - labelBuffer - unitHeight - unitHeight, ReadOnly = !this.Editable, Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right };
+                    case RecordType.TwoFactorKey: {
+                            var bytes = record.GetBytes();
+                            var textBox = new TextBox() { Font = EditItemForm.FixedFont, Location = new Point(labelWidth + labelBuffer, y), Tag = record, Text = OneTimePassword.ToBase32(bytes, bytes.Length, SecretFormatFlags.Spacing | SecretFormatFlags.Padding), Width = pnl.ClientSize.Width - labelWidth - labelBuffer - unitHeight - unitHeight, ReadOnly = !this.Editable, Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right };
                             textBox.GotFocus += new EventHandler(delegate (object sender2, EventArgs e2) { ((TextBox)sender2).SelectAll(); });
                             pnl.Controls.Add(textBox);
+                            Array.Clear(bytes, 0, bytes.Length);
 
                             var btnExecuteUrl = new Button() { Location = new Point(pnl.ClientSize.Width - unitHeight - unitHeight, y), Size = new Size(unitHeight, unitHeight), TabStop = false, Tag = textBox, Text = "", Image = new Bitmap(Assembly.GetExecutingAssembly().GetManifestResourceStream("Bimil.Resources.ExecuteUrl_16.png")), Anchor = AnchorStyles.Top | AnchorStyles.Right };
                             btnExecuteUrl.Click += new EventHandler(delegate (object sender2, EventArgs e2) {
@@ -314,7 +317,7 @@ namespace Bimil {
                         }
                         break;
 
-                    case RecordType.BimilCreditCardNumber: {
+                    case RecordType.CreditCardNumber: {
                             var textBox = new TextBox() { Font = this.Font, Location = new Point(labelWidth + labelBuffer, y), Tag = record, Text = record.Text, Width = pnl.ClientSize.Width - labelWidth - labelBuffer - unitHeight, ReadOnly = !this.Editable, Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right };
                             textBox.GotFocus += new EventHandler(delegate (object sender2, EventArgs e2) { ((TextBox)sender2).SelectAll(); });
                             pnl.Controls.Add(textBox);
@@ -381,7 +384,26 @@ namespace Bimil {
             foreach (Control control in pnl.Controls) {
                 var record = control.Tag as Record;
                 if (record != null) {
-                    record.Text = control.Text;
+                    if (record.RecordType == RecordType.TwoFactorKey) {
+                        var buffer = new byte[1024];
+                        int bytesLength;
+                        try {
+                            OneTimePassword.FromBase32(control.Text, buffer, out bytesLength);
+                            var bytes = new byte[bytesLength];
+                            try {
+                                Buffer.BlockCopy(buffer, 0, bytes, 0, bytes.Length);
+                                record.SetBytes(bytes);
+                            } finally {
+                                Array.Clear(bytes, 0, bytes.Length);
+                            }
+                        } catch (FormatException) {
+                            Medo.MessageBox.ShowWarning(this, string.Format("2-factor key {0} is not a valid base-32 string.", control.Text));
+                        } finally {
+                            Array.Clear(buffer, 0, buffer.Length);
+                        }
+                    } else {
+                        record.Text = control.Text;
+                    }
                 }
             }
         }

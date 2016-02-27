@@ -154,6 +154,54 @@ namespace Medo.Security.Cryptography.PasswordSafe {
 
 
         /// <summary>
+        /// Gets/sets two factor key.
+        /// Should be encoded as base 32.
+        /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1819:PropertiesShouldNotReturnArrays", Justification = "Property returns copy of the array (in Field.GetBytes() and Field.SetBytes()).")]
+        public byte[] TwoFactorKey {
+            get { return this.Records.Contains(RecordType.TwoFactorKey) ? this.Records[RecordType.TwoFactorKey].GetBytes() : new byte[0]; }
+            set { this.Records[RecordType.TwoFactorKey].SetBytes(value); }
+        }
+
+
+        /// <summary>
+        /// Gets/sets credit card number.
+        /// Number should consist of digits and spaces.
+        /// </summary>
+        public string CreditCardNumber {
+            get { return this.Records.Contains(RecordType.CreditCardNumber) ? this.Records[RecordType.CreditCardNumber].Text : ""; }
+            set { this.Records[RecordType.CreditCardNumber].Text = value; }
+        }
+
+        /// <summary>
+        /// Gets/sets credit card expiration.
+        /// Format should be MM/YY, where MM is 01-12, and YY 00-99.
+        /// </summary>
+        public string CreditCardExpiration {
+            get { return this.Records.Contains(RecordType.CreditCardExpiration) ? this.Records[RecordType.CreditCardExpiration].Text : ""; }
+            set { this.Records[RecordType.CreditCardExpiration].Text = value; }
+        }
+
+        /// <summary>
+        /// Gets/sets credit card verification value.
+        /// CVV (CVV2) is three or four digits.
+        /// </summary>
+        public string CreditCardVerificationValue {
+            get { return this.Records.Contains(RecordType.CreditCardVerificationValue) ? this.Records[RecordType.CreditCardVerificationValue].Text : ""; }
+            set { this.Records[RecordType.CreditCardVerificationValue].Text = value; }
+        }
+
+        /// <summary>
+        /// Gets/sets credit card PIN.
+        /// PIN is four to twelve digits long (ISO-9564).
+        /// </summary>
+        public string CreditCardPin {
+            get { return this.Records.Contains(RecordType.CreditCardPin) ? this.Records[RecordType.CreditCardPin].Text : ""; }
+            set { this.Records[RecordType.CreditCardPin].Text = value; }
+        }
+
+
+        /// <summary>
         /// Gets list of records.
         /// </summary>
         public RecordCollection Records { get; }

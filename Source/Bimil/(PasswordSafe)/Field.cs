@@ -138,6 +138,38 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         }
 
 
+        /// <summary>
+        /// Gets data as bytes.
+        /// </summary>
+        public byte[] GetBytes() {
+            var data = this.RawData;
+            try {
+                var dataCopy = new byte[data.Length];
+                Buffer.BlockCopy(data, 0, dataCopy, 0, dataCopy.Length);
+                return dataCopy;
+            } finally {
+                Array.Clear(data, 0, data.Length);
+            }
+        }
+
+        /// <summary>
+        /// Sets data as bytes.
+        /// </summary>
+        /// <param name="value">Bytes.</param>
+        /// <exception cref="System.ArgumentNullException">Value cannot be null.</exception>
+        public void SetBytes(byte[] value) {
+            if (value == null) { throw new ArgumentNullException(nameof(value), "Value cannot be null."); }
+            var valueCopy = new byte[value.Length];
+            try {
+                Buffer.BlockCopy(value, 0, valueCopy, 0, valueCopy.Length);
+                this.RawData = valueCopy;
+            } finally {
+                Array.Clear(valueCopy, 0, valueCopy.Length);
+            }
+            this.MarkAsChanged();
+        }
+
+
         private static RandomNumberGenerator Rnd = RandomNumberGenerator.Create();
         private byte[] RawDataEntropy = new byte[16];
 
@@ -207,6 +239,10 @@ namespace Medo.Security.Cryptography.PasswordSafe {
             /// Time.
             /// </summary>
             Time,
+            /// <summary>
+            /// Bytes.
+            /// </summary>
+            Binary,
         }
 
 

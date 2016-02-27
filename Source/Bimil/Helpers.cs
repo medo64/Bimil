@@ -30,11 +30,17 @@ namespace Bimil {
                 case RecordType.EmailAddress: return "E-mail";
                 case RecordType.Notes: return "Notes";
 
-                case RecordType.BimilTwoFactorKey: return "Two-factor key";
-                case RecordType.BimilCreditCardNumber: return "Card number";
-                case RecordType.BimilCreditCardExpiration: return "Card expiration";
-                case RecordType.BimilCreditCardSecurityCode: return "Card security code";
-                case RecordType.BimilCreditCardPin: return "Card PIN";
+                case RecordType.TwoFactorKey: return "Two-factor key";
+                case RecordType.CreditCardNumber: return "Card number";
+                case RecordType.CreditCardExpiration: return "Card expiration";
+                case RecordType.CreditCardVerificationValue: return "Card security code";
+                case RecordType.CreditCardPin: return "Card PIN";
+
+                case RecordType.TemporaryBimilTwoFactorKey: return "Two-factor key*";
+                case RecordType.TemporaryBimilCreditCardNumber: return "Card number*";
+                case RecordType.TemporaryBimilCreditCardExpiration: return "Card expiration*";
+                case RecordType.TemporaryBimilCreditCardSecurityCode: return "Card security code*";
+                case RecordType.TemporaryBimilCreditCardPin: return "Card PIN*";
 
                 default: return null; //all other fields are not really supported
             }

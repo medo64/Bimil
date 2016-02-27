@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using Medo.Configuration;
 using Medo.Security.Cryptography.PasswordSafe;
 using LegacyFile = Medo.Security.Cryptography.Bimil;
+using Medo.Security.Cryptography;
 
 namespace Bimil {
     internal partial class MainForm : Form {
@@ -346,6 +347,44 @@ namespace Bimil {
                     this.Document = Document.Load(fileStream, password);
                     this.Document.TrackAccess = false;
                     this.DocumentFileName = fileName;
+
+                    if (this.Document.LastSaveApplication.StartsWith("Bimil ")) { //convert temporary password safe fields to permanent ones
+                        foreach (var entry in this.Document.Entries) {
+                            if (entry.Records.Contains(RecordType.TemporaryBimilTwoFactorKey)) {
+                                var buffer = new byte[1024];
+                                int bytesLength;
+                                try {
+                                    OneTimePassword.FromBase32(entry[RecordType.TemporaryBimilTwoFactorKey].Text, buffer, out bytesLength);
+                                    var bytes = new byte[bytesLength];
+                                    try {
+                                        Buffer.BlockCopy(buffer, 0, bytes, 0, bytes.Length);
+                                        entry.TwoFactorKey = bytes;
+                                    } finally {
+                                        Array.Clear(bytes, 0, bytes.Length);
+                                    }
+                                } catch (FormatException) {
+                                    Medo.MessageBox.ShowWarning(this, string.Format("Cannot convert 2-factor key {0} in entry {1}", entry[RecordType.TemporaryBimilTwoFactorKey].Text, entry.Title));
+                                    if (entry.Notes.Length > 0) { entry.Notes += "\n"; }
+                                    entry.Notes += "Two factor key: " + entry[RecordType.TemporaryBimilTwoFactorKey].Text;
+                                } finally {
+                                    Array.Clear(buffer, 0, buffer.Length);
+                                }
+                                entry[RecordType.TemporaryBimilTwoFactorKey] = null;
+                            } else if (entry.Records.Contains(RecordType.TemporaryBimilCreditCardNumber)) {
+                                entry.CreditCardNumber = entry[RecordType.TemporaryBimilCreditCardNumber].Text;
+                                entry[RecordType.TemporaryBimilCreditCardNumber] = null;
+                            } else if (entry.Records.Contains(RecordType.TemporaryBimilCreditCardExpiration)) {
+                                entry.CreditCardExpiration = entry[RecordType.TemporaryBimilCreditCardExpiration].Text;
+                                entry[RecordType.TemporaryBimilCreditCardExpiration] = null;
+                            } else if (entry.Records.Contains(RecordType.TemporaryBimilCreditCardSecurityCode)) {
+                                entry.CreditCardVerificationValue = entry[RecordType.TemporaryBimilCreditCardSecurityCode].Text;
+                                entry[RecordType.TemporaryBimilCreditCardSecurityCode] = null;
+                            } else if (entry.Records.Contains(RecordType.TemporaryBimilCreditCardPin)) {
+                                entry.CreditCardPin = entry[RecordType.TemporaryBimilCreditCardPin].Text;
+                                entry[RecordType.TemporaryBimilCreditCardPin] = null;
+                            }
+                        }
+                    }
                 }
             } catch (FormatException) {
                 Medo.MessageBox.ShowError(this, "Either password is wrong or file is damaged.");
