@@ -36,12 +36,6 @@ namespace Bimil {
                 case RecordType.CreditCardVerificationValue: return "Card security code";
                 case RecordType.CreditCardPin: return "Card PIN";
 
-                case RecordType.TemporaryBimilTwoFactorKey: return "Two-factor key*";
-                case RecordType.TemporaryBimilCreditCardNumber: return "Card number*";
-                case RecordType.TemporaryBimilCreditCardExpiration: return "Card expiration*";
-                case RecordType.TemporaryBimilCreditCardSecurityCode: return "Card security code*";
-                case RecordType.TemporaryBimilCreditCardPin: return "Card PIN*";
-
                 default: return null; //all other fields are not really supported
             }
         }
