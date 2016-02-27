@@ -370,16 +370,20 @@ namespace Bimil {
                                     Array.Clear(buffer, 0, buffer.Length);
                                 }
                                 entry[RecordType.TemporaryBimilTwoFactorKey] = null;
-                            } else if (entry.Records.Contains(RecordType.TemporaryBimilCreditCardNumber)) {
+                            }
+                            if (entry.Records.Contains(RecordType.TemporaryBimilCreditCardNumber)) {
                                 entry.CreditCardNumber = entry[RecordType.TemporaryBimilCreditCardNumber].Text;
                                 entry[RecordType.TemporaryBimilCreditCardNumber] = null;
-                            } else if (entry.Records.Contains(RecordType.TemporaryBimilCreditCardExpiration)) {
+                            }
+                            if (entry.Records.Contains(RecordType.TemporaryBimilCreditCardExpiration)) {
                                 entry.CreditCardExpiration = entry[RecordType.TemporaryBimilCreditCardExpiration].Text;
                                 entry[RecordType.TemporaryBimilCreditCardExpiration] = null;
-                            } else if (entry.Records.Contains(RecordType.TemporaryBimilCreditCardSecurityCode)) {
+                            }
+                            if (entry.Records.Contains(RecordType.TemporaryBimilCreditCardSecurityCode)) {
                                 entry.CreditCardVerificationValue = entry[RecordType.TemporaryBimilCreditCardSecurityCode].Text;
                                 entry[RecordType.TemporaryBimilCreditCardSecurityCode] = null;
-                            } else if (entry.Records.Contains(RecordType.TemporaryBimilCreditCardPin)) {
+                            }
+                            if (entry.Records.Contains(RecordType.TemporaryBimilCreditCardPin)) {
                                 entry.CreditCardPin = entry[RecordType.TemporaryBimilCreditCardPin].Text;
                                 entry[RecordType.TemporaryBimilCreditCardPin] = null;
                             }
