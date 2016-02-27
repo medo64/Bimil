@@ -137,6 +137,11 @@
     <Compile Include="%28PasswordSafe%29\RecordCollection.cs" />
     <Compile Include="%28PasswordSafe%29\RecordType.cs" />
     <Compile Include="%28PasswordSafe%29\Twofish.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="SelectTemplateForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -182,6 +187,10 @@
     <EmbeddedResource Include="NewRecordForm.resx">
       <DependentUpon>NewRecordForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="SelectTemplateForm.resx">
       <DependentUpon>SelectTemplateForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -202,9 +211,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Properties\App.ico" />
-    <EmbeddedResource Include="Resources\Copy_16.png" />
-    <EmbeddedResource Include="Resources\ExecuteUrl_16.png" />
-    <EmbeddedResource Include="Resources\RevealPassword_16.png" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

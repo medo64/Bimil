@@ -23,6 +23,7 @@ namespace Bimil {
             lsvPasswords.Font = SystemFonts.MessageBoxFont;
 
             mnu.Renderer = Helpers.ToolStripBorderlessSystemRendererInstance;
+            Helpers.ScaleToolstrip(mnu);
 
             Medo.Windows.Forms.State.SetupOnLoadAndClose(this);
         }
@@ -542,19 +543,19 @@ namespace Bimil {
             cmbSearch.Select();
         }
 
-        private void mnuOptions_Click(object sender, EventArgs e) {
+        private void mnuAppOptions_Click(object sender, EventArgs e) {
             using (var frm = new SettingsForm()) {
                 frm.ShowDialog(this);
             }
             cmbSearch.Select();
         }
 
-        private void mnuReportABug_Click(object sender, EventArgs e) {
+        private void mnuAppFeedback_Click(object sender, EventArgs e) {
             Medo.Diagnostics.ErrorReport.ShowDialog(this, null, new Uri("http://jmedved.com/errorreport/"));
             cmbSearch.Select();
         }
 
-        private void mnuAbout_Click(object sender, EventArgs e) {
+        private void mnuAppAbout_Click(object sender, EventArgs e) {
             Medo.Windows.Forms.AboutBox.ShowDialog(this, new Uri("http://www.jmedved.com/bimil/"));
             cmbSearch.Select();
         }

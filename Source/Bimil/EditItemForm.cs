@@ -2,7 +2,6 @@ using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
-using System.Reflection;
 using System.Windows.Forms;
 using Medo.Security.Cryptography.PasswordSafe;
 using System.Collections.Generic;
@@ -140,7 +139,8 @@ namespace Bimil {
                             textBox.GotFocus += new EventHandler(delegate (object sender2, EventArgs e2) { ((TextBox)sender2).SelectAll(); });
                             pnl.Controls.Add(textBox);
 
-                            var btnCopy = new Button() { Location = new Point(pnl.ClientSize.Width - unitHeight, y), Size = new Size(unitHeight, unitHeight), TabStop = false, Tag = textBox, Text = "", Image = new Bitmap(Assembly.GetExecutingAssembly().GetManifestResourceStream("Bimil.Resources.Copy_16.png")), Anchor = AnchorStyles.Top | AnchorStyles.Right };
+                            var btnCopy = new Button() { Name = "btnCopy", Location = new Point(pnl.ClientSize.Width - unitHeight, y), Size = new Size(unitHeight, unitHeight), TabStop = false, Tag = textBox, Text = "", Anchor = AnchorStyles.Top | AnchorStyles.Right };
+                            Helpers.ScaleButton(btnCopy);
                             btnCopy.Click += new EventHandler(delegate (object sender2, EventArgs e2) {
                                 var box = (TextBox)(((Control)sender2).Tag);
                                 box.Select();
@@ -162,7 +162,8 @@ namespace Bimil {
                             textBox.GotFocus += new EventHandler(delegate (object sender2, EventArgs e2) { ((TextBox)sender2).SelectAll(); });
                             pnl.Controls.Add(textBox);
 
-                            var btnShowPass = new Button() { Location = new Point(pnl.ClientSize.Width - unitHeight - unitHeight, y), Size = new Size(unitHeight, unitHeight), TabStop = false, Tag = textBox, Text = "", Image = new Bitmap(Assembly.GetExecutingAssembly().GetManifestResourceStream("Bimil.Resources.RevealPassword_16.png")), Anchor = AnchorStyles.Top | AnchorStyles.Right };
+                            var btnShowPass = new Button() { Name = "btnRevealPassword", Location = new Point(pnl.ClientSize.Width - unitHeight - unitHeight, y), Size = new Size(unitHeight, unitHeight), TabStop = false, Tag = textBox, Text = "", Anchor = AnchorStyles.Top | AnchorStyles.Right };
+                            Helpers.ScaleButton(btnShowPass);
                             btnShowPass.Click += new EventHandler(delegate (object sender2, EventArgs e2) {
                                 var box = (TextBox)(((Control)sender2).Tag);
                                 box.Select();
@@ -170,7 +171,8 @@ namespace Bimil {
                             });
                             pnl.Controls.Add(btnShowPass);
 
-                            var btnCopy = new Button() { Location = new Point(pnl.ClientSize.Width - unitHeight, y), Size = new Size(unitHeight, unitHeight), TabStop = false, Tag = textBox, Text = "", Image = new Bitmap(Assembly.GetExecutingAssembly().GetManifestResourceStream("Bimil.Resources.Copy_16.png")), Anchor = AnchorStyles.Top | AnchorStyles.Right };
+                            var btnCopy = new Button() { Name = "btnCopy", Location = new Point(pnl.ClientSize.Width - unitHeight, y), Size = new Size(unitHeight, unitHeight), TabStop = false, Tag = textBox, Text = "", Anchor = AnchorStyles.Top | AnchorStyles.Right };
+                            Helpers.ScaleButton(btnCopy);
                             btnCopy.Click += new EventHandler(delegate (object sender2, EventArgs e2) {
                                 var box = (TextBox)(((Control)sender2).Tag);
                                 box.Select();
@@ -192,7 +194,8 @@ namespace Bimil {
                             textBox.GotFocus += new EventHandler(delegate (object sender2, EventArgs e2) { ((TextBox)sender2).SelectAll(); });
                             pnl.Controls.Add(textBox);
 
-                            var btnExecuteUrl = new Button() { Location = new Point(pnl.ClientSize.Width - unitHeight - unitHeight, y), Size = new Size(unitHeight, unitHeight), TabStop = false, Tag = textBox, Text = "", Image = new Bitmap(Assembly.GetExecutingAssembly().GetManifestResourceStream("Bimil.Resources.ExecuteUrl_16.png")), Anchor = AnchorStyles.Top | AnchorStyles.Right };
+                            var btnExecuteUrl = new Button() { Name = "btnExecuteUrl", Location = new Point(pnl.ClientSize.Width - unitHeight - unitHeight, y), Size = new Size(unitHeight, unitHeight), TabStop = false, Tag = textBox, Text = "", Anchor = AnchorStyles.Top | AnchorStyles.Right };
+                            Helpers.ScaleButton(btnExecuteUrl);
                             btnExecuteUrl.Click += new EventHandler(delegate (object sender2, EventArgs e2) {
                                 var box = (TextBox)(((Control)sender2).Tag);
                                 box.Select();
@@ -209,7 +212,8 @@ namespace Bimil {
                             });
                             pnl.Controls.Add(btnExecuteUrl);
 
-                            var btnCopy = new Button() { Font = this.Font, Location = new Point(pnl.ClientSize.Width - unitHeight, y), Size = new Size(unitHeight, unitHeight), TabStop = false, Tag = textBox, Text = "", Image = new Bitmap(Assembly.GetExecutingAssembly().GetManifestResourceStream("Bimil.Resources.Copy_16.png")), Anchor = AnchorStyles.Top | AnchorStyles.Right };
+                            var btnCopy = new Button() { Name = "btnCopy", Font = this.Font, Location = new Point(pnl.ClientSize.Width - unitHeight, y), Size = new Size(unitHeight, unitHeight), TabStop = false, Tag = textBox, Text = "", Anchor = AnchorStyles.Top | AnchorStyles.Right };
+                            Helpers.ScaleButton(btnCopy);
                             btnCopy.Click += new EventHandler(delegate (object sender2, EventArgs e2) {
                                 var box = (TextBox)(((Control)sender2).Tag);
                                 box.Select();
@@ -235,7 +239,8 @@ namespace Bimil {
                             textBox.GotFocus += new EventHandler(delegate (object sender2, EventArgs e2) { ((TextBox)sender2).SelectAll(); });
                             pnl.Controls.Add(textBox);
 
-                            var btnExecuteUrl = new Button() { Location = new Point(pnl.ClientSize.Width - unitHeight - unitHeight, y), Size = new Size(unitHeight, unitHeight), TabStop = false, Tag = textBox, Text = "", Image = new Bitmap(Assembly.GetExecutingAssembly().GetManifestResourceStream("Bimil.Resources.ExecuteUrl_16.png")), Anchor = AnchorStyles.Top | AnchorStyles.Right };
+                            var btnExecuteUrl = new Button() { Name = "btnExecuteUrl", Location = new Point(pnl.ClientSize.Width - unitHeight - unitHeight, y), Size = new Size(unitHeight, unitHeight), TabStop = false, Tag = textBox, Text = "", Anchor = AnchorStyles.Top | AnchorStyles.Right };
+                            Helpers.ScaleButton(btnExecuteUrl);
                             btnExecuteUrl.Click += new EventHandler(delegate (object sender2, EventArgs e2) {
                                 var box = (TextBox)(((Control)sender2).Tag);
                                 box.Select();
@@ -250,7 +255,8 @@ namespace Bimil {
                             });
                             pnl.Controls.Add(btnExecuteUrl);
 
-                            var btnCopy = new Button() { Font = this.Font, Location = new Point(pnl.ClientSize.Width - unitHeight, y), Size = new Size(unitHeight, unitHeight), TabStop = false, Tag = textBox, Text = "", Image = new Bitmap(Assembly.GetExecutingAssembly().GetManifestResourceStream("Bimil.Resources.Copy_16.png")), Anchor = AnchorStyles.Top | AnchorStyles.Right };
+                            var btnCopy = new Button() { Name = "btnCopy", Font = this.Font, Location = new Point(pnl.ClientSize.Width - unitHeight, y), Size = new Size(unitHeight, unitHeight), TabStop = false, Tag = textBox, Text = "", Anchor = AnchorStyles.Top | AnchorStyles.Right };
+                            Helpers.ScaleButton(btnCopy);
                             btnCopy.Click += new EventHandler(delegate (object sender2, EventArgs e2) {
                                 var box = (TextBox)(((Control)sender2).Tag);
                                 box.Select();
@@ -287,7 +293,8 @@ namespace Bimil {
                             pnl.Controls.Add(textBox);
                             Array.Clear(bytes, 0, bytes.Length);
 
-                            var btnExecuteUrl = new Button() { Location = new Point(pnl.ClientSize.Width - unitHeight - unitHeight, y), Size = new Size(unitHeight, unitHeight), TabStop = false, Tag = textBox, Text = "", Image = new Bitmap(Assembly.GetExecutingAssembly().GetManifestResourceStream("Bimil.Resources.ExecuteUrl_16.png")), Anchor = AnchorStyles.Top | AnchorStyles.Right };
+                            var btnExecuteUrl = new Button() { Name = "btnExecuteUrl", Location = new Point(pnl.ClientSize.Width - unitHeight - unitHeight, y), Size = new Size(unitHeight, unitHeight), TabStop = false, Tag = textBox, Text = "", Anchor = AnchorStyles.Top | AnchorStyles.Right };
+                            Helpers.ScaleButton(btnExecuteUrl);
                             btnExecuteUrl.Click += new EventHandler(delegate (object sender2, EventArgs e2) {
                                 var box = (TextBox)(((Control)sender2).Tag);
                                 box.Select();
@@ -299,7 +306,8 @@ namespace Bimil {
                             });
                             pnl.Controls.Add(btnExecuteUrl);
 
-                            var btnCopy = new Button() { Location = new Point(pnl.ClientSize.Width - unitHeight, y), Size = new Size(unitHeight, textBox.Height), TabStop = false, Tag = textBox, Text = "", Image = new Bitmap(Assembly.GetExecutingAssembly().GetManifestResourceStream("Bimil.Resources.Copy_16.png")), Anchor = AnchorStyles.Top | AnchorStyles.Right };
+                            var btnCopy = new Button() { Name = "btnCopy", Location = new Point(pnl.ClientSize.Width - unitHeight, y), Size = new Size(unitHeight, textBox.Height), TabStop = false, Tag = textBox, Text = "", Anchor = AnchorStyles.Top | AnchorStyles.Right };
+                            Helpers.ScaleButton(btnCopy);
                             btnCopy.Click += new EventHandler(delegate (object sender2, EventArgs e2) {
                                 var box = (TextBox)(((Control)sender2).Tag);
                                 box.Select();
@@ -322,7 +330,8 @@ namespace Bimil {
                             textBox.GotFocus += new EventHandler(delegate (object sender2, EventArgs e2) { ((TextBox)sender2).SelectAll(); });
                             pnl.Controls.Add(textBox);
 
-                            var btnCopy = new Button() { Location = new Point(pnl.ClientSize.Width - unitHeight, y), Size = new Size(unitHeight, unitHeight), TabStop = false, Tag = textBox, Text = "", Image = new Bitmap(Assembly.GetExecutingAssembly().GetManifestResourceStream("Bimil.Resources.Copy_16.png")), Anchor = AnchorStyles.Top | AnchorStyles.Right };
+                            var btnCopy = new Button() { Name = "btnCopy", Location = new Point(pnl.ClientSize.Width - unitHeight, y), Size = new Size(unitHeight, unitHeight), TabStop = false, Tag = textBox, Text = "", Anchor = AnchorStyles.Top | AnchorStyles.Right };
+                            Helpers.ScaleButton(btnCopy);
                             btnCopy.Click += new EventHandler(delegate (object sender2, EventArgs e2) {
                                 var box = (TextBox)(((Control)sender2).Tag);
                                 box.Select();
