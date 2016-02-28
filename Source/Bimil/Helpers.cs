@@ -104,6 +104,8 @@ namespace Bimil {
             var bitmap = resources.GetObject(item.Name + set) as Bitmap;
 #if DEBUG
             item.Image = (bitmap != null) ? new Bitmap(bitmap, size, size) : new Bitmap(size, size, PixelFormat.Format8bppIndexed);
+#else
+            item.Image = (bitmap != null) ? new Bitmap(bitmap, size, size) : null;
 #endif
         }
 
