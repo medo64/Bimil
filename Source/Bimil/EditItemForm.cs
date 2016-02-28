@@ -7,6 +7,7 @@ using Medo.Security.Cryptography.PasswordSafe;
 using System.Collections.Generic;
 using System.Web;
 using Medo.Security.Cryptography;
+using System.Text;
 
 namespace Bimil {
     public partial class EditItemForm : Form {
@@ -135,151 +136,51 @@ namespace Bimil {
                     case RecordType.CreditCardExpiration:
                     case RecordType.CreditCardVerificationValue:
                     case RecordType.CreditCardPin: {
-                            var textBox = new TextBox() { Font = this.Font, Location = new Point(labelWidth + labelBuffer, y), Tag = record, Text = record.Text, Width = pnl.ClientSize.Width - labelWidth - labelBuffer - unitHeight, ReadOnly = !this.Editable, Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right };
-                            textBox.GotFocus += new EventHandler(delegate (object sender2, EventArgs e2) { ((TextBox)sender2).SelectAll(); });
+                            var textBox = NewTextBox(labelWidth, y, record);
                             pnl.Controls.Add(textBox);
 
-                            var btnCopy = new Button() { Name = "btnCopy", Location = new Point(pnl.ClientSize.Width - unitHeight, y), Size = new Size(unitHeight, unitHeight), TabStop = false, Tag = textBox, Text = "", Anchor = AnchorStyles.Top | AnchorStyles.Right };
-                            Helpers.ScaleButton(btnCopy);
-                            btnCopy.Click += new EventHandler(delegate (object sender2, EventArgs e2) {
-                                var box = (TextBox)(((Control)sender2).Tag);
-                                box.Select();
-                                var text = box.Text;
-                                if (text.Length > 0) {
-                                    Clipboard.SetText(text);
-                                } else {
-                                    Clipboard.Clear();
-                                }
-                            });
-                            pnl.Controls.Add(btnCopy);
+                            pnl.Controls.Add(NewCopyButton(textBox));
 
                             yH = textBox.Height;
                         }
                         break;
 
                     case RecordType.Password: {
-                            var textBox = new TextBox() { Font = this.Font, Location = new Point(labelWidth + labelBuffer, y), Tag = record, Text = record.Text, Width = pnl.ClientSize.Width - labelWidth - labelBuffer - unitHeight - unitHeight, UseSystemPasswordChar = true, ReadOnly = !this.Editable, Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right };
-                            textBox.GotFocus += new EventHandler(delegate (object sender2, EventArgs e2) { ((TextBox)sender2).SelectAll(); });
+                            var textBox = NewTextBox(labelWidth, y, record);
+                            textBox.UseSystemPasswordChar = true;
                             pnl.Controls.Add(textBox);
 
-                            var btnShowPass = new Button() { Name = "btnRevealPassword", Location = new Point(pnl.ClientSize.Width - unitHeight - unitHeight, y), Size = new Size(unitHeight, unitHeight), TabStop = false, Tag = textBox, Text = "", Anchor = AnchorStyles.Top | AnchorStyles.Right };
-                            Helpers.ScaleButton(btnShowPass);
-                            btnShowPass.Click += new EventHandler(delegate (object sender2, EventArgs e2) {
-                                var box = (TextBox)(((Control)sender2).Tag);
-                                box.Select();
-                                box.UseSystemPasswordChar = !box.UseSystemPasswordChar;
-                            });
-                            pnl.Controls.Add(btnShowPass);
-
-                            var btnCopy = new Button() { Name = "btnCopy", Location = new Point(pnl.ClientSize.Width - unitHeight, y), Size = new Size(unitHeight, unitHeight), TabStop = false, Tag = textBox, Text = "", Anchor = AnchorStyles.Top | AnchorStyles.Right };
-                            Helpers.ScaleButton(btnCopy);
-                            btnCopy.Click += new EventHandler(delegate (object sender2, EventArgs e2) {
-                                var box = (TextBox)(((Control)sender2).Tag);
-                                box.Select();
-                                var text = box.Text;
-                                if (text.Length > 0) {
-                                    Clipboard.SetText(text);
-                                } else {
-                                    Clipboard.Clear();
-                                }
-                            });
-                            pnl.Controls.Add(btnCopy);
+                            pnl.Controls.Add(NewCopyButton(textBox));
+                            pnl.Controls.Add(NewShowPasswordButton(textBox));
 
                             yH = textBox.Height;
                         }
                         break;
 
                     case RecordType.Url: {
-                            var textBox = new TextBox() { Font = EditItemForm.UnderlineFont, Location = new Point(labelWidth + labelBuffer, y), Tag = record, Text = record.Text, Width = pnl.ClientSize.Width - labelWidth - labelBuffer - unitHeight - unitHeight, ReadOnly = !this.Editable, ForeColor = SystemColors.HotTrack, Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right };
-                            textBox.GotFocus += new EventHandler(delegate (object sender2, EventArgs e2) { ((TextBox)sender2).SelectAll(); });
+                            var textBox = NewTextBox(labelWidth, y, record, urlLookAndFeel: true);
                             pnl.Controls.Add(textBox);
 
-                            var btnExecuteUrl = new Button() { Name = "btnExecuteUrl", Location = new Point(pnl.ClientSize.Width - unitHeight - unitHeight, y), Size = new Size(unitHeight, unitHeight), TabStop = false, Tag = textBox, Text = "", Anchor = AnchorStyles.Top | AnchorStyles.Right };
-                            Helpers.ScaleButton(btnExecuteUrl);
-                            btnExecuteUrl.Click += new EventHandler(delegate (object sender2, EventArgs e2) {
-                                var box = (TextBox)(((Control)sender2).Tag);
-                                box.Select();
-                                var text = box.Text;
-                                if (text.Contains("://")) {
-                                    Process.Start(text);
-                                } else {
-                                    if (text.Length > 0) {
-                                        Process.Start("http://" + text);
-                                    } else {
-                                        Clipboard.Clear();
-                                    }
-                                }
-                            });
-                            pnl.Controls.Add(btnExecuteUrl);
-
-                            var btnCopy = new Button() { Name = "btnCopy", Font = this.Font, Location = new Point(pnl.ClientSize.Width - unitHeight, y), Size = new Size(unitHeight, unitHeight), TabStop = false, Tag = textBox, Text = "", Anchor = AnchorStyles.Top | AnchorStyles.Right };
-                            Helpers.ScaleButton(btnCopy);
-                            btnCopy.Click += new EventHandler(delegate (object sender2, EventArgs e2) {
-                                var box = (TextBox)(((Control)sender2).Tag);
-                                box.Select();
-                                var text = box.Text;
-                                if (text.Contains("://")) {
-                                    Clipboard.SetText(text);
-                                } else {
-                                    if (text.Length > 0) {
-                                        Clipboard.SetText("http://" + text);
-                                    } else {
-                                        Clipboard.Clear();
-                                    }
-                                }
-                            });
-                            pnl.Controls.Add(btnCopy);
+                            pnl.Controls.Add(NewCopyButton(textBox, "http://", "://"));
+                            pnl.Controls.Add(NewExecuteUrlButton(textBox, "http://", "://"));
 
                             yH = textBox.Height;
                         }
                         break;
 
                     case RecordType.EmailAddress: {
-                            var textBox = new TextBox() { Font = EditItemForm.UnderlineFont, Location = new Point(labelWidth + labelBuffer, y), Tag = record, Text = record.Text, Width = pnl.ClientSize.Width - labelWidth - labelBuffer - unitHeight - unitHeight, ReadOnly = !this.Editable, ForeColor = SystemColors.HotTrack, Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right };
-                            textBox.GotFocus += new EventHandler(delegate (object sender2, EventArgs e2) { ((TextBox)sender2).SelectAll(); });
+                            var textBox = NewTextBox(labelWidth, y, record, urlLookAndFeel: true);
                             pnl.Controls.Add(textBox);
 
-                            var btnExecuteUrl = new Button() { Name = "btnExecuteUrl", Location = new Point(pnl.ClientSize.Width - unitHeight - unitHeight, y), Size = new Size(unitHeight, unitHeight), TabStop = false, Tag = textBox, Text = "", Anchor = AnchorStyles.Top | AnchorStyles.Right };
-                            Helpers.ScaleButton(btnExecuteUrl);
-                            btnExecuteUrl.Click += new EventHandler(delegate (object sender2, EventArgs e2) {
-                                var box = (TextBox)(((Control)sender2).Tag);
-                                box.Select();
-                                var text = box.Text;
-                                if (text.Length > 0) {
-                                    if (text.StartsWith("mailto:", StringComparison.OrdinalIgnoreCase)) {
-                                        Process.Start(text);
-                                    } else {
-                                        Process.Start("mailto:" + text);
-                                    }
-                                }
-                            });
-                            pnl.Controls.Add(btnExecuteUrl);
-
-                            var btnCopy = new Button() { Name = "btnCopy", Font = this.Font, Location = new Point(pnl.ClientSize.Width - unitHeight, y), Size = new Size(unitHeight, unitHeight), TabStop = false, Tag = textBox, Text = "", Anchor = AnchorStyles.Top | AnchorStyles.Right };
-                            Helpers.ScaleButton(btnCopy);
-                            btnCopy.Click += new EventHandler(delegate (object sender2, EventArgs e2) {
-                                var box = (TextBox)(((Control)sender2).Tag);
-                                box.Select();
-                                var text = box.Text;
-                                if (text.Contains("://")) {
-                                    Clipboard.SetText(text);
-                                } else {
-                                    if (text.Length > 0) {
-                                        Clipboard.SetText("http://" + text);
-                                    } else {
-                                        Clipboard.Clear();
-                                    }
-                                }
-                            });
-                            pnl.Controls.Add(btnCopy);
+                            pnl.Controls.Add(NewCopyButton(textBox, "mailto:"));
+                            pnl.Controls.Add(NewExecuteUrlButton(textBox, "mailto:"));
 
                             yH = textBox.Height;
                         }
                         break;
 
                     case RecordType.Notes: {
-                            var textBox = new TextBox() { Location = new Point(labelWidth + labelBuffer, y), Tag = record, Text = record.Text, Width = pnl.ClientSize.Width - labelWidth - labelBuffer, Multiline = true, Height = unitHeight * 3, AcceptsReturn = true, ScrollBars = ScrollBars.Vertical, ReadOnly = !this.Editable, Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right };
-                            textBox.GotFocus += new EventHandler(delegate (object sender2, EventArgs e2) { ((TextBox)sender2).SelectAll(); });
+                            var textBox = NewTextBox(labelWidth, y, record, multiline: true);
                             pnl.Controls.Add(textBox);
 
                             yH = textBox.Height;
@@ -288,13 +189,11 @@ namespace Bimil {
 
                     case RecordType.TwoFactorKey: {
                             var bytes = record.GetBytes();
-                            var textBox = new TextBox() { Font = EditItemForm.FixedFont, Location = new Point(labelWidth + labelBuffer, y), Tag = record, Text = OneTimePassword.ToBase32(bytes, bytes.Length, SecretFormatFlags.Spacing | SecretFormatFlags.Padding), Width = pnl.ClientSize.Width - labelWidth - labelBuffer - unitHeight - unitHeight, ReadOnly = !this.Editable, Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right };
-                            textBox.GotFocus += new EventHandler(delegate (object sender2, EventArgs e2) { ((TextBox)sender2).SelectAll(); });
+                            var textBox = NewTextBox(labelWidth, y, record, text: OneTimePassword.ToBase32(bytes, bytes.Length, SecretFormatFlags.Spacing | SecretFormatFlags.Padding));
                             pnl.Controls.Add(textBox);
                             Array.Clear(bytes, 0, bytes.Length);
 
-                            var btnExecuteUrl = new Button() { Name = "btnExecuteUrl", Location = new Point(pnl.ClientSize.Width - unitHeight - unitHeight, y), Size = new Size(unitHeight, unitHeight), TabStop = false, Tag = textBox, Text = "", Anchor = AnchorStyles.Top | AnchorStyles.Right };
-                            Helpers.ScaleButton(btnExecuteUrl);
+                            var btnExecuteUrl = NewExecuteUrlButton(textBox, noClickHandler: true);
                             btnExecuteUrl.Click += new EventHandler(delegate (object sender2, EventArgs e2) {
                                 var box = (TextBox)(((Control)sender2).Tag);
                                 box.Select();
@@ -306,8 +205,7 @@ namespace Bimil {
                             });
                             pnl.Controls.Add(btnExecuteUrl);
 
-                            var btnCopy = new Button() { Name = "btnCopy", Location = new Point(pnl.ClientSize.Width - unitHeight, y), Size = new Size(unitHeight, textBox.Height), TabStop = false, Tag = textBox, Text = "", Anchor = AnchorStyles.Top | AnchorStyles.Right };
-                            Helpers.ScaleButton(btnCopy);
+                            var btnCopy = NewCopyButton(textBox, noClickHandler: true);
                             btnCopy.Click += new EventHandler(delegate (object sender2, EventArgs e2) {
                                 var box = (TextBox)(((Control)sender2).Tag);
                                 box.Select();
@@ -315,7 +213,7 @@ namespace Bimil {
                                 Clipboard.Clear();
                                 if (key.Length > 0) {
                                     try {
-                                        var otp = new Medo.Security.Cryptography.OneTimePassword(key);
+                                        var otp = new OneTimePassword(key);
                                         Clipboard.SetText(otp.GetCode().ToString(new string('0', otp.Digits), CultureInfo.InvariantCulture));
                                     } catch (ArgumentException) { }
                                 }
@@ -326,23 +224,10 @@ namespace Bimil {
                         break;
 
                     case RecordType.CreditCardNumber: {
-                            var textBox = new TextBox() { Font = this.Font, Location = new Point(labelWidth + labelBuffer, y), Tag = record, Text = record.Text, Width = pnl.ClientSize.Width - labelWidth - labelBuffer - unitHeight, ReadOnly = !this.Editable, Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right };
-                            textBox.GotFocus += new EventHandler(delegate (object sender2, EventArgs e2) { ((TextBox)sender2).SelectAll(); });
+                            var textBox = NewTextBox(labelWidth, y, record);
                             pnl.Controls.Add(textBox);
 
-                            var btnCopy = new Button() { Name = "btnCopy", Location = new Point(pnl.ClientSize.Width - unitHeight, y), Size = new Size(unitHeight, unitHeight), TabStop = false, Tag = textBox, Text = "", Anchor = AnchorStyles.Top | AnchorStyles.Right };
-                            Helpers.ScaleButton(btnCopy);
-                            btnCopy.Click += new EventHandler(delegate (object sender2, EventArgs e2) {
-                                var box = (TextBox)(((Control)sender2).Tag);
-                                box.Select();
-                                var text = box.Text.Replace(" ", "").Replace("-", "");
-                                if (text.Length > 0) {
-                                    Clipboard.SetText(text);
-                                } else {
-                                    Clipboard.Clear();
-                                }
-                            });
-                            pnl.Controls.Add(btnCopy);
+                            pnl.Controls.Add(NewCopyButton(textBox, allowedCopyCharacters: new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' }));
 
                             yH = textBox.Height;
                         }
@@ -369,7 +254,6 @@ namespace Bimil {
 
             pnl.Visible = true;
         }
-
 
         private void btnEdit_Click(object sender, EventArgs e) {
             foreach (Control control in pnl.Controls) {
@@ -425,6 +309,121 @@ namespace Bimil {
                 }
             }
         }
+
+
+        #region Controls
+
+        private TextBox NewTextBox(int x, int y, Record record, string text = null, bool urlLookAndFeel = false, bool multiline = false) {
+            var padding = SystemInformation.VerticalScrollBarWidth + 1;
+
+            var textBox = new TextBox() { Font = this.Font, Location = new Point(x + padding, y), Tag = record, Width = pnl.ClientSize.Width - x - padding, ReadOnly = !this.Editable, Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right };
+            textBox.Text = (text != null) ? text : record.Text;
+
+            if (urlLookAndFeel) {
+                textBox.Font = EditItemForm.UnderlineFont;
+                textBox.ForeColor = SystemColors.HotTrack;
+            }
+
+            if (multiline) {
+                textBox.Multiline = true;
+                textBox.Height *= 3;
+                textBox.AcceptsReturn = true;
+                textBox.ScrollBars = ScrollBars.Vertical;
+            }
+
+            textBox.GotFocus += new EventHandler(delegate (object sender, EventArgs e) {
+                ((TextBox)sender).SelectAll();
+            });
+
+            textBox.KeyDown += new KeyEventHandler(delegate (object sender, KeyEventArgs e) {
+                switch (e.KeyData) {
+                    case Keys.Control | Keys.A: ((TextBox)sender).SelectAll(); break;
+                }
+            });
+
+            return textBox;
+        }
+
+        private Button NewCopyButton(TextBox parentTextBox, string defaultPrefix = null, string prefixToCheck = null, bool noClickHandler = false, char[] allowedCopyCharacters = null) {
+            parentTextBox.Width -= parentTextBox.Height;
+            var button = new Button() { Name = "btnCopy", Location = new Point(parentTextBox.Right, parentTextBox.Top), Size = new Size(parentTextBox.Height, parentTextBox.Height), TabStop = false, Tag = parentTextBox, Text = "", Anchor = AnchorStyles.Top | AnchorStyles.Right };
+            Helpers.ScaleButton(button);
+
+            if (!noClickHandler) {
+                button.Click += new EventHandler(delegate (object sender, EventArgs e) {
+                    var textBox = (TextBox)(((Control)sender).Tag);
+                    textBox.Select();
+
+                    var text = textBox.Text;
+                    if (allowedCopyCharacters != null) {
+                        var allowedCharacters = new List<char>(allowedCopyCharacters);
+                        var sb = new StringBuilder();
+                        foreach (var ch in text) {
+                            if (allowedCharacters.Contains(ch)) {
+                                sb.Append(ch);
+                            }
+                        }
+                        text = sb.ToString();
+                    }
+
+                    Clipboard.Clear();
+                    if (text.Length > 0) {
+                        if (defaultPrefix == null) {
+                            Clipboard.SetText(text);
+                        } else if (text.IndexOf((prefixToCheck != null) ? prefixToCheck : defaultPrefix, StringComparison.OrdinalIgnoreCase) >= 0) {
+                            Clipboard.SetText(text);
+                        } else {
+                            Clipboard.SetText(defaultPrefix + text);
+                        }
+                    }
+                });
+            }
+
+            return button;
+        }
+
+        private Button NewShowPasswordButton(TextBox parentTextBox) {
+            parentTextBox.Width -= parentTextBox.Height;
+            var button = new Button() { Name = "btnRevealPassword", Location = new Point(parentTextBox.Right, parentTextBox.Top), Size = new Size(parentTextBox.Height, parentTextBox.Height), TabStop = false, Tag = parentTextBox, Text = "", Anchor = AnchorStyles.Top | AnchorStyles.Right };
+            Helpers.ScaleButton(button);
+
+            button.Click += new EventHandler(delegate (object sender, EventArgs e) {
+                var textBox = (TextBox)(((Control)sender).Tag);
+                textBox.Select();
+
+                textBox.UseSystemPasswordChar = !textBox.UseSystemPasswordChar;
+            });
+
+            return button;
+        }
+
+        private Button NewExecuteUrlButton(TextBox parentTextBox, string defaultPrefix = null, string prefixToCheck = null, bool noClickHandler = false) {
+            parentTextBox.Width -= parentTextBox.Height;
+            var button = new Button() { Name = "btnExecuteUrl", Location = new Point(parentTextBox.Right, parentTextBox.Top), Size = new Size(parentTextBox.Height, parentTextBox.Height), TabStop = false, Tag = parentTextBox, Text = "", Anchor = AnchorStyles.Top | AnchorStyles.Right };
+            Helpers.ScaleButton(button);
+
+            if (!noClickHandler) {
+                button.Click += new EventHandler(delegate (object sender, EventArgs e) {
+                    var textBox = (TextBox)(((Control)sender).Tag);
+                    textBox.Select();
+
+                    var text = textBox.Text;
+                    if (text.Length > 0) {
+                        if (defaultPrefix == null) {
+                            Process.Start(text);
+                        } else if (text.IndexOf((prefixToCheck != null) ? prefixToCheck : defaultPrefix, StringComparison.OrdinalIgnoreCase) >= 0) {
+                            Process.Start(text);
+                        } else {
+                            Process.Start(defaultPrefix + text);
+                        }
+                    }
+                });
+            }
+
+            return button;
+        }
+
+        #endregion
 
     }
 }
