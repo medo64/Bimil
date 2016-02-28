@@ -190,20 +190,9 @@ namespace Bimil {
                     case RecordType.TwoFactorKey: {
                             var bytes = record.GetBytes();
                             var textBox = NewTextBox(labelWidth, y, record, text: OneTimePassword.ToBase32(bytes, bytes.Length, SecretFormatFlags.Spacing | SecretFormatFlags.Padding));
+                            textBox.UseSystemPasswordChar = true;
                             pnl.Controls.Add(textBox);
                             Array.Clear(bytes, 0, bytes.Length);
-
-                            var btnExecuteUrl = NewExecuteUrlButton(textBox, noClickHandler: true);
-                            btnExecuteUrl.Click += new EventHandler(delegate (object sender2, EventArgs e2) {
-                                var box = (TextBox)(((Control)sender2).Tag);
-                                box.Select();
-                                var key = box.Text.ToUpperInvariant().Replace(" ", "");
-                                if (key.Length > 0) {
-                                    var url = string.Format(CultureInfo.InvariantCulture, "otpauth://totp/{0}?secret={1}", HttpUtility.UrlPathEncode(this.Item.Title), HttpUtility.UrlEncode(key));
-                                    Process.Start(string.Format(CultureInfo.InvariantCulture, "https://api.qrserver.com/v1/create-qr-code/?margin=32&data={0}", HttpUtility.UrlEncode(url)));
-                                }
-                            });
-                            pnl.Controls.Add(btnExecuteUrl);
 
                             var btnCopy = NewCopyButton(textBox, noClickHandler: true);
                             btnCopy.Click += new EventHandler(delegate (object sender2, EventArgs e2) {
@@ -219,6 +208,21 @@ namespace Bimil {
                                 }
                             });
                             pnl.Controls.Add(btnCopy);
+
+                            pnl.Controls.Add(NewShowPasswordButton(textBox));
+
+                            var btnExecuteUrl = NewExecuteUrlButton(textBox, noClickHandler: true);
+                            btnExecuteUrl.Click += new EventHandler(delegate (object sender2, EventArgs e2) {
+                                var box = (TextBox)(((Control)sender2).Tag);
+                                box.Select();
+                                var key = box.Text.ToUpperInvariant().Replace(" ", "");
+                                if (key.Length > 0) {
+                                    var url = string.Format(CultureInfo.InvariantCulture, "otpauth://totp/{0}?secret={1}", HttpUtility.UrlPathEncode(this.Item.Title), HttpUtility.UrlEncode(key));
+                                    Process.Start(string.Format(CultureInfo.InvariantCulture, "https://api.qrserver.com/v1/create-qr-code/?margin=32&data={0}", HttpUtility.UrlEncode(url)));
+                                }
+                            });
+                            pnl.Controls.Add(btnExecuteUrl);
+
                             yH = textBox.Height;
                         }
                         break;
