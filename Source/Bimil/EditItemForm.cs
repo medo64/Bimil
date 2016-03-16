@@ -485,7 +485,7 @@ namespace Bimil {
                 var textBox = (TextBox)(((Control)sender).Tag);
                 textBox.Select();
 
-                var code = GetTwoFactorCode(textBox.Text);
+                var code = GetTwoFactorCode(textBox.Text, space: true);
                 if (code != "") { Medo.MessageBox.ShowInformation(this, code); }
             });
 
@@ -511,12 +511,18 @@ namespace Bimil {
             }
         }
 
-        private string GetTwoFactorCode(string text) {
+        private string GetTwoFactorCode(string text, bool space = false) {
             var key = FilterText(text.ToUpperInvariant(), Base32Characters);
             if (key.Length > 0) {
                 try {
                     var otp = new OneTimePassword(key);
-                    return otp.GetCode().ToString(new string('0', otp.Digits), CultureInfo.InvariantCulture);
+                    var code = otp.GetCode().ToString(new string('0', otp.Digits), CultureInfo.InvariantCulture);
+                    if (space) {
+                        var mid = code.Length / 2;
+                        return code.Substring(0, mid) + " " + code.Substring(mid);
+                    } else {
+                        return code;
+                    }
                 } catch (ArgumentException) { }
             }
             return "";
