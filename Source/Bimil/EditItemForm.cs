@@ -209,19 +209,8 @@ namespace Bimil {
                             });
                             pnl.Controls.Add(btnCopy);
 
+                            pnl.Controls.Add(NewExecuteQRButton(textBox));
                             pnl.Controls.Add(NewShowPasswordButton(textBox));
-
-                            var btnExecuteUrl = NewExecuteUrlButton(textBox, noClickHandler: true);
-                            btnExecuteUrl.Click += new EventHandler(delegate (object sender2, EventArgs e2) {
-                                var box = (TextBox)(((Control)sender2).Tag);
-                                box.Select();
-                                var key = box.Text.ToUpperInvariant().Replace(" ", "");
-                                if (key.Length > 0) {
-                                    var url = string.Format(CultureInfo.InvariantCulture, "otpauth://totp/{0}?secret={1}", HttpUtility.UrlPathEncode(this.Item.Title), HttpUtility.UrlEncode(key));
-                                    Process.Start(string.Format(CultureInfo.InvariantCulture, "https://api.qrserver.com/v1/create-qr-code/?margin=32&data={0}", HttpUtility.UrlEncode(url)));
-                                }
-                            });
-                            pnl.Controls.Add(btnExecuteUrl);
 
                             yH = textBox.Height;
                         }
@@ -443,6 +432,35 @@ namespace Bimil {
                         } else {
                             Process.Start(defaultPrefix + text);
                         }
+                    }
+                });
+            }
+
+            return button;
+        }
+
+        private Button NewExecuteQRButton(TextBox parentTextBox,bool noClickHandler = false) {
+            parentTextBox.Width -= parentTextBox.Height;
+            var button = new Button() {
+                Name = "btnExecuteQR",
+                Location = new Point(parentTextBox.Right, parentTextBox.Top),
+                Size = new Size(parentTextBox.Height, parentTextBox.Height),
+                TabStop = false,
+                Tag = parentTextBox,
+                Text = "",
+                Anchor = AnchorStyles.Top | AnchorStyles.Right
+            };
+            Helpers.ScaleButton(button);
+
+            if (!noClickHandler) {
+                button.Click += new EventHandler(delegate (object sender, EventArgs e) {
+                    var textBox = (TextBox)(((Control)sender).Tag);
+                    textBox.Select();
+
+                    var key = textBox.Text.ToUpperInvariant().Replace(" ", "");
+                    if (key.Length > 0) {
+                        var url = string.Format(CultureInfo.InvariantCulture, "otpauth://totp/{0}?secret={1}", HttpUtility.UrlPathEncode(this.Item.Title), HttpUtility.UrlEncode(key));
+                        Process.Start(string.Format(CultureInfo.InvariantCulture, "https://api.qrserver.com/v1/create-qr-code/?margin=32&data={0}", HttpUtility.UrlEncode(url)));
                     }
                 });
             }

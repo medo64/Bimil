@@ -103,6 +103,46 @@ namespace Bimil.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap btnExecuteQR_16 {
+            get {
+                object obj = ResourceManager.GetObject("btnExecuteQR_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap btnExecuteQR_24 {
+            get {
+                object obj = ResourceManager.GetObject("btnExecuteQR_24", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap btnExecuteQR_32 {
+            get {
+                object obj = ResourceManager.GetObject("btnExecuteQR_32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap btnExecuteQR_48 {
+            get {
+                object obj = ResourceManager.GetObject("btnExecuteQR_48", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap btnExecuteUrl_16 {
             get {
                 object obj = ResourceManager.GetObject("btnExecuteUrl_16", resourceCulture);
