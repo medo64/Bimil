@@ -350,7 +350,15 @@ namespace Bimil {
 
         private Button NewCopyButton(TextBox parentTextBox, string defaultPrefix = null, string prefixToCheck = null, bool noClickHandler = false, char[] allowedCopyCharacters = null) {
             parentTextBox.Width -= parentTextBox.Height;
-            var button = new Button() { Name = "btnCopy", Location = new Point(parentTextBox.Right, parentTextBox.Top), Size = new Size(parentTextBox.Height, parentTextBox.Height), TabStop = false, Tag = parentTextBox, Text = "", Anchor = AnchorStyles.Top | AnchorStyles.Right };
+            var button = new Button() {
+                Name = "btnCopy",
+                Location = new Point(parentTextBox.Right, parentTextBox.Top),
+                Size = new Size(parentTextBox.Height, parentTextBox.Height),
+                TabStop = false,
+                Tag = parentTextBox,
+                Text = "",
+                Anchor = AnchorStyles.Top | AnchorStyles.Right
+            };
             Helpers.ScaleButton(button);
 
             if (!noClickHandler) {
@@ -388,7 +396,14 @@ namespace Bimil {
 
         private Button NewShowPasswordButton(TextBox parentTextBox) {
             parentTextBox.Width -= parentTextBox.Height;
-            var button = new Button() { Name = "btnRevealPassword", Location = new Point(parentTextBox.Right, parentTextBox.Top), Size = new Size(parentTextBox.Height, parentTextBox.Height), TabStop = false, Tag = parentTextBox, Text = "", Anchor = AnchorStyles.Top | AnchorStyles.Right };
+            var button = new Button() {
+                Name = "btnRevealPassword",
+                Location = new Point(parentTextBox.Right, parentTextBox.Top),
+                Size = new Size(parentTextBox.Height, parentTextBox.Height),
+                TabStop = false,
+                Tag = parentTextBox, Text = "",
+                Anchor = AnchorStyles.Top | AnchorStyles.Right
+            };
             Helpers.ScaleButton(button);
 
             button.Click += new EventHandler(delegate (object sender, EventArgs e) {
@@ -403,7 +418,15 @@ namespace Bimil {
 
         private Button NewExecuteUrlButton(TextBox parentTextBox, string defaultPrefix = null, string prefixToCheck = null, bool noClickHandler = false) {
             parentTextBox.Width -= parentTextBox.Height;
-            var button = new Button() { Name = "btnExecuteUrl", Location = new Point(parentTextBox.Right, parentTextBox.Top), Size = new Size(parentTextBox.Height, parentTextBox.Height), TabStop = false, Tag = parentTextBox, Text = "", Anchor = AnchorStyles.Top | AnchorStyles.Right };
+            var button = new Button() {
+                Name = "btnExecuteUrl",
+                Location = new Point(parentTextBox.Right, parentTextBox.Top),
+                Size = new Size(parentTextBox.Height, parentTextBox.Height),
+                TabStop = false,
+                Tag = parentTextBox,
+                Text = "",
+                Anchor = AnchorStyles.Top | AnchorStyles.Right
+            };
             Helpers.ScaleButton(button);
 
             if (!noClickHandler) {
