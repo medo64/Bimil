@@ -173,7 +173,7 @@ namespace Bimil {
                             pnl.Controls.Add(textBox);
 
                             pnl.Controls.Add(NewCopyButton(textBox, "mailto:"));
-                            pnl.Controls.Add(NewExecuteUrlButton(textBox, "mailto:"));
+                            pnl.Controls.Add(NewExecuteEmailButton(textBox));
 
                             yH = textBox.Height;
                         }
@@ -439,7 +439,39 @@ namespace Bimil {
             return button;
         }
 
-        private Button NewExecuteQRButton(TextBox parentTextBox,bool noClickHandler = false) {
+        private Button NewExecuteEmailButton(TextBox parentTextBox, bool noClickHandler = false) {
+            parentTextBox.Width -= parentTextBox.Height;
+            var button = new Button() {
+                Name = "btnExecuteEmail",
+                Location = new Point(parentTextBox.Right, parentTextBox.Top),
+                Size = new Size(parentTextBox.Height, parentTextBox.Height),
+                TabStop = false,
+                Tag = parentTextBox,
+                Text = "",
+                Anchor = AnchorStyles.Top | AnchorStyles.Right
+            };
+            Helpers.ScaleButton(button);
+
+            if (!noClickHandler) {
+                button.Click += new EventHandler(delegate (object sender, EventArgs e) {
+                    var textBox = (TextBox)(((Control)sender).Tag);
+                    textBox.Select();
+
+                    var email = textBox.Text.Trim();
+                    if (email.Length > 0) {
+                        if (email.StartsWith("mailto:", StringComparison.OrdinalIgnoreCase)) {
+                            Process.Start(email);
+                        } else {
+                            Process.Start("mailto:" + email);
+                        }
+                    }
+                });
+            }
+
+            return button;
+        }
+
+        private Button NewExecuteQRButton(TextBox parentTextBox, bool noClickHandler = false) {
             parentTextBox.Width -= parentTextBox.Height;
             var button = new Button() {
                 Name = "btnExecuteQR",
