@@ -223,9 +223,9 @@ namespace Bimil.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap btnRevealPassword_16 {
+        internal static System.Drawing.Bitmap btnViewCode_16 {
             get {
-                object obj = ResourceManager.GetObject("btnRevealPassword_16", resourceCulture);
+                object obj = ResourceManager.GetObject("btnViewCode_16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -233,9 +233,9 @@ namespace Bimil.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap btnRevealPassword_24 {
+        internal static System.Drawing.Bitmap btnViewCode_24 {
             get {
-                object obj = ResourceManager.GetObject("btnRevealPassword_24", resourceCulture);
+                object obj = ResourceManager.GetObject("btnViewCode_24", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -243,9 +243,9 @@ namespace Bimil.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap btnRevealPassword_32 {
+        internal static System.Drawing.Bitmap btnViewCode_32 {
             get {
-                object obj = ResourceManager.GetObject("btnRevealPassword_32", resourceCulture);
+                object obj = ResourceManager.GetObject("btnViewCode_32", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -253,9 +253,49 @@ namespace Bimil.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap btnRevealPassword_48 {
+        internal static System.Drawing.Bitmap btnViewCode_48 {
             get {
-                object obj = ResourceManager.GetObject("btnRevealPassword_48", resourceCulture);
+                object obj = ResourceManager.GetObject("btnViewCode_48", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap btnViewPassword_16 {
+            get {
+                object obj = ResourceManager.GetObject("btnViewPassword_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap btnViewPassword_24 {
+            get {
+                object obj = ResourceManager.GetObject("btnViewPassword_24", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap btnViewPassword_32 {
+            get {
+                object obj = ResourceManager.GetObject("btnViewPassword_32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap btnViewPassword_48 {
+            get {
+                object obj = ResourceManager.GetObject("btnViewPassword_48", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

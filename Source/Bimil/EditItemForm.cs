@@ -194,21 +194,8 @@ namespace Bimil {
                             pnl.Controls.Add(textBox);
                             Array.Clear(bytes, 0, bytes.Length);
 
-                            var btnCopy = NewCopyButton(textBox, noClickHandler: true);
-                            btnCopy.Click += new EventHandler(delegate (object sender2, EventArgs e2) {
-                                var box = (TextBox)(((Control)sender2).Tag);
-                                box.Select();
-                                var key = box.Text.ToUpperInvariant().Replace(" ", "");
-                                Clipboard.Clear();
-                                if (key.Length > 0) {
-                                    try {
-                                        var otp = new OneTimePassword(key);
-                                        Clipboard.SetText(otp.GetCode().ToString(new string('0', otp.Digits), CultureInfo.InvariantCulture));
-                                    } catch (ArgumentException) { }
-                                }
-                            });
-                            pnl.Controls.Add(btnCopy);
-
+                            pnl.Controls.Add(NewCopyButton(textBox, GetTwoFactorCode(textBox.Text)));
+                            pnl.Controls.Add(NewViewTwoFactorCode(textBox));
                             pnl.Controls.Add(NewExecuteQRButton(textBox));
                             pnl.Controls.Add(NewShowPasswordButton(textBox));
 
@@ -380,7 +367,7 @@ namespace Bimil {
         private Button NewShowPasswordButton(TextBox parentTextBox) {
             parentTextBox.Width -= parentTextBox.Height;
             var button = new Button() {
-                Name = "btnRevealPassword",
+                Name = "btnViewPassword",
                 Location = new Point(parentTextBox.Right, parentTextBox.Top),
                 Size = new Size(parentTextBox.Height, parentTextBox.Height),
                 TabStop = false,
@@ -480,6 +467,32 @@ namespace Bimil {
             return button;
         }
 
+        private Button NewViewTwoFactorCode(TextBox parentTextBox, bool noClickHandler = false) {
+            parentTextBox.Width -= parentTextBox.Height;
+            var button = new Button() {
+                Name = "btnViewCode",
+                Location = new Point(parentTextBox.Right, parentTextBox.Top),
+                Size = new Size(parentTextBox.Height, parentTextBox.Height),
+                TabStop = false,
+                Tag = parentTextBox,
+                Text = "",
+                Anchor = AnchorStyles.Top | AnchorStyles.Right
+            };
+            Helpers.ScaleButton(button);
+
+            if (!noClickHandler) {
+                button.Click += new EventHandler(delegate (object sender, EventArgs e) {
+                    var textBox = (TextBox)(((Control)sender).Tag);
+                    textBox.Select();
+
+                    var code = GetTwoFactorCode(textBox.Text);
+                    if (code != "") { Medo.MessageBox.ShowInformation(this, code); }
+                });
+            }
+
+            return button;
+        }
+
 
         private string GetUrl(string text) {
             var url = text.Trim();
@@ -497,6 +510,17 @@ namespace Bimil {
             } else {
                 return "";
             }
+        }
+
+        private string GetTwoFactorCode(string text) {
+            var key = text.ToUpperInvariant().Replace(" ", "");
+            if (key.Length > 0) {
+                try {
+                    var otp = new OneTimePassword(key);
+                    return otp.GetCode().ToString(new string('0', otp.Digits), CultureInfo.InvariantCulture);
+                } catch (ArgumentException) { }
+            }
+            return "";
         }
 
         #endregion
