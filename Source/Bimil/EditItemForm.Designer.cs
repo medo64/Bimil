@@ -23,11 +23,13 @@ namespace Bimil {
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
+            this.components = new System.ComponentModel.Container();
             this.pnl = new System.Windows.Forms.Panel();
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnOK = new System.Windows.Forms.Button();
             this.btnEdit = new System.Windows.Forms.Button();
             this.btnFields = new System.Windows.Forms.Button();
+            this.tip = new System.Windows.Forms.ToolTip(this.components);
             this.SuspendLayout();
             // 
             // pnl
@@ -126,5 +128,6 @@ namespace Bimil {
         private System.Windows.Forms.Button btnOK;
         private System.Windows.Forms.Button btnEdit;
         private System.Windows.Forms.Button btnFields;
+        private System.Windows.Forms.ToolTip tip;
     }
 }

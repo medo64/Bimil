@@ -194,10 +194,10 @@ namespace Bimil {
                             pnl.Controls.Add(textBox);
                             Array.Clear(bytes, 0, bytes.Length);
 
-                            pnl.Controls.Add(NewCopyButton(textBox, GetTwoFactorCode(textBox.Text)));
+                            pnl.Controls.Add(NewCopyButton(textBox, GetTwoFactorCode(textBox.Text), tipText: "Copy two-factor key to clipboard."));
                             pnl.Controls.Add(NewViewTwoFactorCode(textBox));
                             pnl.Controls.Add(NewExecuteQRButton(textBox));
-                            pnl.Controls.Add(NewShowPasswordButton(textBox));
+                            pnl.Controls.Add(NewShowPasswordButton(textBox, tipText: "Show two-factor key."));
 
                             yH = textBox.Height;
                         }
@@ -324,7 +324,7 @@ namespace Bimil {
             return textBox;
         }
 
-        private Button NewCopyButton(TextBox parentTextBox, string copyText = null, bool noClickHandler = false, char[] allowedCopyCharacters = null) {
+        private Button NewCopyButton(TextBox parentTextBox, string copyText = null, string tipText = null, bool noClickHandler = false, char[] allowedCopyCharacters = null) {
             parentTextBox.Width -= parentTextBox.Height;
             var button = new Button() {
                 Name = "btnCopy",
@@ -336,6 +336,8 @@ namespace Bimil {
                 Anchor = AnchorStyles.Top | AnchorStyles.Right
             };
             Helpers.ScaleButton(button);
+
+            tip.SetToolTip(button, (tipText != null) ? tipText : "Copy to clipboard.");
 
             if (!noClickHandler) {
                 button.Click += new EventHandler(delegate (object sender, EventArgs e) {
@@ -364,7 +366,7 @@ namespace Bimil {
             return button;
         }
 
-        private Button NewShowPasswordButton(TextBox parentTextBox) {
+        private Button NewShowPasswordButton(TextBox parentTextBox, string tipText = null) {
             parentTextBox.Width -= parentTextBox.Height;
             var button = new Button() {
                 Name = "btnViewPassword",
@@ -375,6 +377,8 @@ namespace Bimil {
                 Anchor = AnchorStyles.Top | AnchorStyles.Right
             };
             Helpers.ScaleButton(button);
+
+            tip.SetToolTip(button, (tipText != null) ? tipText : "Show password.");
 
             button.Click += new EventHandler(delegate (object sender, EventArgs e) {
                 var textBox = (TextBox)(((Control)sender).Tag);
@@ -398,6 +402,8 @@ namespace Bimil {
                 Anchor = AnchorStyles.Top | AnchorStyles.Right
             };
             Helpers.ScaleButton(button);
+
+            tip.SetToolTip(button, "Go to URL.");
 
             if (!noClickHandler) {
                 button.Click += new EventHandler(delegate (object sender, EventArgs e) {
@@ -425,6 +431,8 @@ namespace Bimil {
             };
             Helpers.ScaleButton(button);
 
+            tip.SetToolTip(button, "E-mail.");
+
             if (!noClickHandler) {
                 button.Click += new EventHandler(delegate (object sender, EventArgs e) {
                     var textBox = (TextBox)(((Control)sender).Tag);
@@ -450,6 +458,8 @@ namespace Bimil {
                 Anchor = AnchorStyles.Top | AnchorStyles.Right
             };
             Helpers.ScaleButton(button);
+
+            tip.SetToolTip(button, "Create QR code on Internet.");
 
             if (!noClickHandler) {
                 button.Click += new EventHandler(delegate (object sender, EventArgs e) {
@@ -479,6 +489,8 @@ namespace Bimil {
                 Anchor = AnchorStyles.Top | AnchorStyles.Right
             };
             Helpers.ScaleButton(button);
+
+            tip.SetToolTip(button, "View two-factor code.");
 
             if (!noClickHandler) {
                 button.Click += new EventHandler(delegate (object sender, EventArgs e) {
