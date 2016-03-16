@@ -161,7 +161,7 @@ namespace Bimil {
                             var textBox = NewTextBox(labelWidth, y, record, urlLookAndFeel: true);
                             pnl.Controls.Add(textBox);
 
-                            pnl.Controls.Add(NewCopyButton(textBox, copyText: GetUrl(textBox.Text)));
+                            pnl.Controls.Add(NewCopyButton(textBox, copyText: delegate () { return GetUrl(textBox.Text); }));
                             pnl.Controls.Add(NewExecuteUrlButton(textBox));
 
                             yH = textBox.Height;
@@ -194,7 +194,7 @@ namespace Bimil {
                             pnl.Controls.Add(textBox);
                             Array.Clear(bytes, 0, bytes.Length);
 
-                            pnl.Controls.Add(NewCopyButton(textBox, GetTwoFactorCode(textBox.Text), tipText: "Copy two-factor key to clipboard."));
+                            pnl.Controls.Add(NewCopyButton(textBox, tipText: "Copy two-factor key to clipboard.", copyText: delegate () { return FilterText(GetTwoFactorCode(textBox.Text), Base32Characters); }));
                             pnl.Controls.Add(NewViewTwoFactorCode(textBox));
                             pnl.Controls.Add(NewExecuteQRButton(textBox));
                             pnl.Controls.Add(NewShowPasswordButton(textBox, tipText: "Show two-factor key."));
@@ -207,7 +207,7 @@ namespace Bimil {
                             var textBox = NewTextBox(labelWidth, y, record);
                             pnl.Controls.Add(textBox);
 
-                            pnl.Controls.Add(NewCopyButton(textBox, allowedCopyCharacters: new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' }));
+                            pnl.Controls.Add(NewCopyButton(textBox, allowedCopyCharacters: NumberCharacters));
 
                             yH = textBox.Height;
                         }
@@ -324,7 +324,7 @@ namespace Bimil {
             return textBox;
         }
 
-        private Button NewCopyButton(TextBox parentTextBox, string copyText = null, string tipText = null, bool noClickHandler = false, char[] allowedCopyCharacters = null) {
+        private Button NewCopyButton(TextBox parentTextBox, string tipText = null, char[] allowedCopyCharacters = null, GetText copyText = null) {
             parentTextBox.Width -= parentTextBox.Height;
             var button = new Button() {
                 Name = "btnCopy",
@@ -339,29 +339,23 @@ namespace Bimil {
 
             tip.SetToolTip(button, (tipText != null) ? tipText : "Copy to clipboard.");
 
-            if (!noClickHandler) {
-                button.Click += new EventHandler(delegate (object sender, EventArgs e) {
-                    var textBox = (TextBox)(((Control)sender).Tag);
-                    textBox.Select();
+            button.Click += new EventHandler(delegate (object sender, EventArgs e) {
+                var textBox = (TextBox)(((Control)sender).Tag);
+                textBox.Select();
 
-                    var text = (copyText != null) ? copyText : textBox.Text;
-                    if (allowedCopyCharacters != null) {
-                        var allowedCharacters = new List<char>(allowedCopyCharacters);
-                        var sb = new StringBuilder();
-                        foreach (var ch in text) {
-                            if (allowedCharacters.Contains(ch)) {
-                                sb.Append(ch);
-                            }
-                        }
-                        text = sb.ToString();
-                    }
+                string text;
+                if (copyText != null) {
+                    text = copyText.Invoke();
+                } else {
+                    text = textBox.Text;
+                }
+                text = FilterText(text, allowedCopyCharacters);
 
-                    Clipboard.Clear();
-                    if (text.Length > 0) {
-                        Clipboard.SetText(text);
-                    }
-                });
-            }
+                Clipboard.Clear();
+                if (text.Length > 0) {
+                    Clipboard.SetText(text);
+                }
+            });
 
             return button;
         }
@@ -390,7 +384,7 @@ namespace Bimil {
             return button;
         }
 
-        private Button NewExecuteUrlButton(TextBox parentTextBox, bool noClickHandler = false) {
+        private Button NewExecuteUrlButton(TextBox parentTextBox) {
             parentTextBox.Width -= parentTextBox.Height;
             var button = new Button() {
                 Name = "btnExecuteUrl",
@@ -405,20 +399,18 @@ namespace Bimil {
 
             tip.SetToolTip(button, "Go to URL.");
 
-            if (!noClickHandler) {
-                button.Click += new EventHandler(delegate (object sender, EventArgs e) {
-                    var textBox = (TextBox)(((Control)sender).Tag);
-                    textBox.Select();
+            button.Click += new EventHandler(delegate (object sender, EventArgs e) {
+                var textBox = (TextBox)(((Control)sender).Tag);
+                textBox.Select();
 
-                    var url = GetUrl(textBox.Text);
-                    if (url != "") { Process.Start(url); }
-                });
-            }
+                var url = GetUrl(textBox.Text);
+                if (url != "") { Process.Start(url); }
+            });
 
             return button;
         }
 
-        private Button NewExecuteEmailButton(TextBox parentTextBox, bool noClickHandler = false) {
+        private Button NewExecuteEmailButton(TextBox parentTextBox) {
             parentTextBox.Width -= parentTextBox.Height;
             var button = new Button() {
                 Name = "btnExecuteEmail",
@@ -433,20 +425,19 @@ namespace Bimil {
 
             tip.SetToolTip(button, "E-mail.");
 
-            if (!noClickHandler) {
-                button.Click += new EventHandler(delegate (object sender, EventArgs e) {
-                    var textBox = (TextBox)(((Control)sender).Tag);
-                    textBox.Select();
+            button.Click += new EventHandler(delegate (object sender, EventArgs e) {
+                var textBox = (TextBox)(((Control)sender).Tag);
+                textBox.Select();
 
-                    var email = GetEmailUrl(textBox.Text);
-                    if (email != "") { Process.Start(email); }
-                });
-            }
+                var email = GetEmailUrl(textBox.Text);
+                if (email != "") { Process.Start(email); }
+            });
+
 
             return button;
         }
 
-        private Button NewExecuteQRButton(TextBox parentTextBox, bool noClickHandler = false) {
+        private Button NewExecuteQRButton(TextBox parentTextBox) {
             parentTextBox.Width -= parentTextBox.Height;
             var button = new Button() {
                 Name = "btnExecuteQR",
@@ -461,23 +452,21 @@ namespace Bimil {
 
             tip.SetToolTip(button, "Create QR code on Internet.");
 
-            if (!noClickHandler) {
-                button.Click += new EventHandler(delegate (object sender, EventArgs e) {
-                    var textBox = (TextBox)(((Control)sender).Tag);
-                    textBox.Select();
+            button.Click += new EventHandler(delegate (object sender, EventArgs e) {
+                var textBox = (TextBox)(((Control)sender).Tag);
+                textBox.Select();
 
-                    var key = textBox.Text.ToUpperInvariant().Replace(" ", "");
-                    if (key.Length > 0) {
-                        var url = string.Format(CultureInfo.InvariantCulture, "otpauth://totp/{0}?secret={1}", HttpUtility.UrlPathEncode(this.Item.Title), HttpUtility.UrlEncode(key));
-                        Process.Start(string.Format(CultureInfo.InvariantCulture, "https://api.qrserver.com/v1/create-qr-code/?margin=32&data={0}", HttpUtility.UrlEncode(url)));
-                    }
-                });
-            }
+                var key = FilterText(textBox.Text.ToUpperInvariant(), Base32Characters);
+                if (key.Length > 0) {
+                    var url = string.Format(CultureInfo.InvariantCulture, "otpauth://totp/{0}?secret={1}", HttpUtility.UrlPathEncode(this.Item.Title), HttpUtility.UrlEncode(key));
+                    Process.Start(string.Format(CultureInfo.InvariantCulture, "https://api.qrserver.com/v1/create-qr-code/?margin=32&data={0}", HttpUtility.UrlEncode(url)));
+                }
+            });
 
             return button;
         }
 
-        private Button NewViewTwoFactorCode(TextBox parentTextBox, bool noClickHandler = false) {
+        private Button NewViewTwoFactorCode(TextBox parentTextBox) {
             parentTextBox.Width -= parentTextBox.Height;
             var button = new Button() {
                 Name = "btnViewCode",
@@ -492,15 +481,13 @@ namespace Bimil {
 
             tip.SetToolTip(button, "View two-factor code.");
 
-            if (!noClickHandler) {
-                button.Click += new EventHandler(delegate (object sender, EventArgs e) {
-                    var textBox = (TextBox)(((Control)sender).Tag);
-                    textBox.Select();
+            button.Click += new EventHandler(delegate (object sender, EventArgs e) {
+                var textBox = (TextBox)(((Control)sender).Tag);
+                textBox.Select();
 
-                    var code = GetTwoFactorCode(textBox.Text);
-                    if (code != "") { Medo.MessageBox.ShowInformation(this, code); }
-                });
-            }
+                var code = GetTwoFactorCode(textBox.Text);
+                if (code != "") { Medo.MessageBox.ShowInformation(this, code); }
+            });
 
             return button;
         }
@@ -525,7 +512,7 @@ namespace Bimil {
         }
 
         private string GetTwoFactorCode(string text) {
-            var key = text.ToUpperInvariant().Replace(" ", "");
+            var key = FilterText(text.ToUpperInvariant(), Base32Characters);
             if (key.Length > 0) {
                 try {
                     var otp = new OneTimePassword(key);
@@ -534,6 +521,28 @@ namespace Bimil {
             }
             return "";
         }
+
+
+        private static string FilterText(string text, char[] allowedCopyCharacters) {
+            if (allowedCopyCharacters != null) {
+                var allowedCharacters = new List<char>(allowedCopyCharacters);
+                var sb = new StringBuilder();
+                foreach (var ch in text) {
+                    if (allowedCharacters.Contains(ch)) {
+                        sb.Append(ch);
+                    }
+                }
+                return sb.ToString();
+            } else {
+                return text;
+            }
+        }
+
+        private static readonly char[] Base32Characters = new char[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '2', '3', '4', '5', '6', '7' };
+        private static readonly char[] NumberCharacters = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
+
+
+        private delegate string GetText();
 
         #endregion
 
