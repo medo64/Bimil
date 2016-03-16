@@ -161,8 +161,8 @@ namespace Bimil {
                             var textBox = NewTextBox(labelWidth, y, record, urlLookAndFeel: true);
                             pnl.Controls.Add(textBox);
 
-                            pnl.Controls.Add(NewCopyButton(textBox, "http://", "://"));
-                            pnl.Controls.Add(NewExecuteUrlButton(textBox, "http://", "://"));
+                            pnl.Controls.Add(NewCopyButton(textBox, copyText: GetUrl(textBox.Text)));
+                            pnl.Controls.Add(NewExecuteUrlButton(textBox));
 
                             yH = textBox.Height;
                         }
@@ -172,7 +172,7 @@ namespace Bimil {
                             var textBox = NewTextBox(labelWidth, y, record, urlLookAndFeel: true);
                             pnl.Controls.Add(textBox);
 
-                            pnl.Controls.Add(NewCopyButton(textBox, "mailto:"));
+                            pnl.Controls.Add(NewCopyButton(textBox));
                             pnl.Controls.Add(NewExecuteEmailButton(textBox));
 
                             yH = textBox.Height;
@@ -337,7 +337,7 @@ namespace Bimil {
             return textBox;
         }
 
-        private Button NewCopyButton(TextBox parentTextBox, string defaultPrefix = null, string prefixToCheck = null, bool noClickHandler = false, char[] allowedCopyCharacters = null) {
+        private Button NewCopyButton(TextBox parentTextBox, string copyText = null, bool noClickHandler = false, char[] allowedCopyCharacters = null) {
             parentTextBox.Width -= parentTextBox.Height;
             var button = new Button() {
                 Name = "btnCopy",
@@ -355,7 +355,7 @@ namespace Bimil {
                     var textBox = (TextBox)(((Control)sender).Tag);
                     textBox.Select();
 
-                    var text = textBox.Text;
+                    var text = (copyText != null) ? copyText : textBox.Text;
                     if (allowedCopyCharacters != null) {
                         var allowedCharacters = new List<char>(allowedCopyCharacters);
                         var sb = new StringBuilder();
@@ -369,13 +369,7 @@ namespace Bimil {
 
                     Clipboard.Clear();
                     if (text.Length > 0) {
-                        if (defaultPrefix == null) {
-                            Clipboard.SetText(text);
-                        } else if (text.IndexOf((prefixToCheck != null) ? prefixToCheck : defaultPrefix, StringComparison.OrdinalIgnoreCase) >= 0) {
-                            Clipboard.SetText(text);
-                        } else {
-                            Clipboard.SetText(defaultPrefix + text);
-                        }
+                        Clipboard.SetText(text);
                     }
                 });
             }
@@ -405,7 +399,7 @@ namespace Bimil {
             return button;
         }
 
-        private Button NewExecuteUrlButton(TextBox parentTextBox, string defaultPrefix = null, string prefixToCheck = null, bool noClickHandler = false) {
+        private Button NewExecuteUrlButton(TextBox parentTextBox, bool noClickHandler = false) {
             parentTextBox.Width -= parentTextBox.Height;
             var button = new Button() {
                 Name = "btnExecuteUrl",
@@ -423,16 +417,8 @@ namespace Bimil {
                     var textBox = (TextBox)(((Control)sender).Tag);
                     textBox.Select();
 
-                    var text = textBox.Text;
-                    if (text.Length > 0) {
-                        if (defaultPrefix == null) {
-                            Process.Start(text);
-                        } else if (text.IndexOf((prefixToCheck != null) ? prefixToCheck : defaultPrefix, StringComparison.OrdinalIgnoreCase) >= 0) {
-                            Process.Start(text);
-                        } else {
-                            Process.Start(defaultPrefix + text);
-                        }
-                    }
+                    var url = GetUrl(textBox.Text);
+                    if (url != "") { Process.Start(url); }
                 });
             }
 
@@ -457,14 +443,8 @@ namespace Bimil {
                     var textBox = (TextBox)(((Control)sender).Tag);
                     textBox.Select();
 
-                    var email = textBox.Text.Trim();
-                    if (email.Length > 0) {
-                        if (email.StartsWith("mailto:", StringComparison.OrdinalIgnoreCase)) {
-                            Process.Start(email);
-                        } else {
-                            Process.Start("mailto:" + email);
-                        }
-                    }
+                    var email = GetEmailUrl(textBox.Text);
+                    if (email != "") { Process.Start(email); }
                 });
             }
 
@@ -498,6 +478,25 @@ namespace Bimil {
             }
 
             return button;
+        }
+
+
+        private string GetUrl(string text) {
+            var url = text.Trim();
+            if (url.Length > 0) {
+                return (url.IndexOf("://", StringComparison.OrdinalIgnoreCase) > 0) ? url : ("http:" + url);
+            } else {
+                return "";
+            }
+        }
+
+        private string GetEmailUrl(string text) {
+            var email = text.Trim();
+            if (email.Length > 0) {
+                return email.StartsWith("mailto:", StringComparison.OrdinalIgnoreCase) ? email : ("mailto:" + email);
+            } else {
+                return "";
+            }
         }
 
         #endregion
