@@ -559,12 +559,12 @@ namespace Bimil {
         }
 
         private void mnuAppFeedback_Click(object sender, EventArgs e) {
-            Medo.Diagnostics.ErrorReport.ShowDialog(this, null, new Uri("http://medo64.com/errorreport/"));
+            Medo.Diagnostics.ErrorReport.ShowDialog(this, null, new Uri("https://medo64.com/feedback/"));
             cmbSearch.Select();
         }
 
         private void mnuAppUpgrade_Click(object sender, EventArgs e) {
-            Medo.Services.Upgrade.ShowDialog(this, new Uri("http://medo64.com/upgrade/"));
+            Medo.Services.Upgrade.ShowDialog(this, new Uri("https://medo64.com/upgrade/"));
         }
 
         private void mnuAppAbout_Click(object sender, EventArgs e) {
