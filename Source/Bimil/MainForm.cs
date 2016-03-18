@@ -10,6 +10,7 @@ using Medo.Security.Cryptography;
 using System.Diagnostics;
 using System.Threading;
 using System.Reflection;
+using System.Security;
 
 namespace Bimil {
     internal partial class MainForm : Form {
@@ -144,7 +145,13 @@ namespace Bimil {
                 var item = new ToolStripMenuItem(this.RecentFiles[i].Title) { Tag = this.RecentFiles[i].FileName };
                 item.Click += new EventHandler(delegate (object sender2, EventArgs e2) {
                     if (SaveIfNeeded() != DialogResult.OK) { return; }
-                    LoadFile(item.Tag.ToString());
+                    var fileName = item.Tag.ToString();
+                    if (!File.Exists(fileName) || !LoadFile(fileName)) {
+                        if (Medo.MessageBox.ShowQuestion(this, "File " + Path.GetFileName(fileName) + " could not be open.\nDo you wish to remove it from the recent list?", MessageBoxButtons.YesNo) == DialogResult.Yes) {
+                            this.RecentFiles.Remove(fileName);
+                            this.RefreshFiles();
+                        }
+                    }
                 });
                 mnuOpen.DropDownItems.Add(item);
             }
@@ -323,14 +330,16 @@ namespace Bimil {
             }
         }
 
-        private void LoadFile(string fileName, string password = null) {
+        private bool LoadFile(string fileName, string password = null) { //return false if file cannot be open
             try {
+                if (!File.Exists(fileName)) { return false; }
+
                 if (password == null) {
                     using (var frm = new PasswordForm()) {
                         if (frm.ShowDialog(this) == DialogResult.OK) {
                             password = frm.Password;
                         } else {
-                            return;
+                            return true; //don't signal file doesn't exist just because password has been canceled
                         }
                     }
                 }
@@ -344,6 +353,13 @@ namespace Bimil {
                 } else { //Password Safe
                     LoadPasswordSafeFile(fileName, password);
                 }
+                return true; //don't signal file doesn't exist just because password check failed
+            } catch (IOException ex) {
+                Medo.MessageBox.ShowError(this, "Cannot open file.\n\n" + ex.Message);
+                return false;
+            } catch (SecurityException ex) {
+                Medo.MessageBox.ShowError(this, "Cannot open file.\n\n" + ex.Message);
+                return false;
             } finally {
                 password = null;
                 GC.Collect(); //in attempt to kill password string
