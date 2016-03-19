@@ -584,7 +584,7 @@ namespace Bimil {
         }
 
         private void mnuAppAbout_Click(object sender, EventArgs e) {
-            Medo.Windows.Forms.AboutBox.ShowDialog(this, new Uri("http://www.medo64.com/bimil/"));
+            Medo.Windows.Forms.AboutBox.ShowDialog(this, new Uri("https://www.medo64.com/bimil/"));
             cmbSearch.Select();
         }
 
