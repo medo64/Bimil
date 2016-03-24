@@ -245,6 +245,13 @@ namespace Bimil {
                     }
                     break;
 
+                case Keys.F2: {
+                        if ((lsvPasswords.SelectedItems.Count == 1) && !this.Document.IsReadOnly) {
+                            lsvPasswords.SelectedItems[0].BeginEdit();
+                        }
+                    }
+                    break;
+
                 case Keys.F4: {
                         if (mnuEdit.Enabled) { mnuEdit_Click(null, null); }
                         e.Handled = true;
