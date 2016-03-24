@@ -29,6 +29,7 @@ namespace Bimil {
             this.btnOK = new System.Windows.Forms.Button();
             this.txtPassword2 = new System.Windows.Forms.TextBox();
             this.lblPassword2 = new System.Windows.Forms.Label();
+            this.lblNoMatch = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // lblPassword
@@ -98,6 +99,17 @@ namespace Bimil {
             this.lblPassword2.TabIndex = 2;
             this.lblPassword2.Text = "Repeat:";
             // 
+            // lblNoMatch
+            // 
+            this.lblNoMatch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.lblNoMatch.AutoSize = true;
+            this.lblNoMatch.Location = new System.Drawing.Point(12, 86);
+            this.lblNoMatch.Name = "lblNoMatch";
+            this.lblNoMatch.Size = new System.Drawing.Size(71, 17);
+            this.lblNoMatch.TabIndex = 6;
+            this.lblNoMatch.Text = "No match!";
+            this.lblNoMatch.Visible = false;
+            // 
             // NewPasswordForm
             // 
             this.AcceptButton = this.btnOK;
@@ -105,6 +117,7 @@ namespace Bimil {
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(314, 120);
+            this.Controls.Add(this.lblNoMatch);
             this.Controls.Add(this.txtPassword2);
             this.Controls.Add(this.lblPassword2);
             this.Controls.Add(this.btnCancel);
@@ -132,5 +145,6 @@ namespace Bimil {
         private System.Windows.Forms.Button btnOK;
         private System.Windows.Forms.TextBox txtPassword2;
         private System.Windows.Forms.Label lblPassword2;
+        private System.Windows.Forms.Label lblNoMatch;
     }
 }

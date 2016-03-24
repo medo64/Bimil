@@ -27,7 +27,13 @@ namespace Bimil {
         }
 
         private void txtPassword_TextChanged(object sender, EventArgs e) {
-            btnOK.Enabled = string.Equals(txtPassword.Text, txtPassword2.Text, StringComparison.Ordinal);
+            if (string.Equals(txtPassword.Text, txtPassword2.Text, StringComparison.Ordinal)) {
+                btnOK.Enabled = true;
+                lblNoMatch.Visible = false;
+            } else {
+                lblNoMatch.Visible = (txtPassword2.Text.Length > 0);
+                btnOK.Enabled = false;
+            }
             this.AcceptButton = btnOK.Enabled ? btnOK : null;
         }
 
