@@ -10,7 +10,7 @@ using Medo.Security.Cryptography;
 using System.Text;
 
 namespace Bimil {
-    public partial class EditItemForm : Form {
+    public partial class ItemForm : Form {
 
         private readonly Document Document;
         private readonly Entry Item;
@@ -19,14 +19,18 @@ namespace Bimil {
         private static Font UnderlineFont = new Font(SystemFonts.MessageBoxFont.Name, SystemFonts.MessageBoxFont.SizeInPoints, SystemFonts.MessageBoxFont.Style | FontStyle.Underline);
         private readonly IList<string> Categories;
 
-        public EditItemForm(Document document, Entry item, bool startsAsEditable, IList<string> categories) {
+        public ItemForm(Document document, Entry item, bool startsAsEditable, IList<string> categories) {
             InitializeComponent();
             this.Font = SystemFonts.MessageBoxFont;
 
             this.Document = document;
             this.Item = item;
-            this.Editable = startsAsEditable;
+            this.Editable = startsAsEditable && !this.Document.IsReadOnly;
             this.Categories = categories;
+
+            btnEdit.Visible = !this.Document.IsReadOnly;
+
+            this.Text = this.Document.IsReadOnly ? "View" : "Edit";
         }
 
         private void EditItemForm_Load(object sender, EventArgs e) {
@@ -300,7 +304,7 @@ namespace Bimil {
             textBox.Text = (text != null) ? text : record.Text;
 
             if (urlLookAndFeel) {
-                textBox.Font = EditItemForm.UnderlineFont;
+                textBox.Font = ItemForm.UnderlineFont;
                 textBox.ForeColor = SystemColors.HotTrack;
             }
 

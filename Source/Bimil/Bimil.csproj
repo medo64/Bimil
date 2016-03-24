@@ -110,11 +110,11 @@
     <Compile Include="BimilDocument\BimilRecord.cs" />
     <Compile Include="BimilDocument\BimilValue.cs" />
     <Compile Include="BimilDocument\DocumentConversion.cs" />
-    <Compile Include="EditItemForm.cs">
+    <Compile Include="ItemForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="EditItemForm.Designer.cs">
-      <DependentUpon>EditItemForm.cs</DependentUpon>
+    <Compile Include="ItemForm.Designer.cs">
+      <DependentUpon>ItemForm.cs</DependentUpon>
     </Compile>
     <Compile Include="FieldsEditorForm.cs">
       <SubType>Form</SubType>
@@ -187,8 +187,8 @@
       <DependentUpon>StartForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Templates.cs" />
-    <EmbeddedResource Include="EditItemForm.resx">
-      <DependentUpon>EditItemForm.cs</DependentUpon>
+    <EmbeddedResource Include="ItemForm.resx">
+      <DependentUpon>ItemForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FieldsEditorForm.resx">
       <DependentUpon>FieldsEditorForm.cs</DependentUpon>

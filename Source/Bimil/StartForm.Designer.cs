@@ -30,6 +30,7 @@ namespace Bimil {
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnNew = new System.Windows.Forms.Button();
             this.tip = new System.Windows.Forms.ToolTip(this.components);
+            this.btnOpenReadOnly = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // lsvRecent
@@ -81,7 +82,7 @@ namespace Bimil {
             this.btnCancel.Margin = new System.Windows.Forms.Padding(3, 12, 3, 3);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(100, 30);
-            this.btnCancel.TabIndex = 3;
+            this.btnCancel.TabIndex = 4;
             this.btnCancel.Text = "Cancel";
             this.tip.SetToolTip(this.btnCancel, "Close dialog");
             this.btnCancel.UseVisualStyleBackColor = true;
@@ -90,15 +91,29 @@ namespace Bimil {
             // 
             this.btnNew.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnNew.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnNew.Location = new System.Drawing.Point(127, 311);
+            this.btnNew.Location = new System.Drawing.Point(233, 311);
             this.btnNew.Margin = new System.Windows.Forms.Padding(12, 12, 3, 3);
             this.btnNew.Name = "btnNew";
             this.btnNew.Size = new System.Drawing.Size(100, 30);
-            this.btnNew.TabIndex = 2;
+            this.btnNew.TabIndex = 3;
             this.btnNew.Text = "&New";
             this.tip.SetToolTip(this.btnNew, "Create a new file");
             this.btnNew.UseVisualStyleBackColor = true;
             this.btnNew.Click += new System.EventHandler(this.btnNew_Click);
+            // 
+            // btnOpenReadOnly
+            // 
+            this.btnOpenReadOnly.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnOpenReadOnly.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.btnOpenReadOnly.Location = new System.Drawing.Point(118, 311);
+            this.btnOpenReadOnly.Margin = new System.Windows.Forms.Padding(3, 12, 3, 3);
+            this.btnOpenReadOnly.Name = "btnOpenReadOnly";
+            this.btnOpenReadOnly.Size = new System.Drawing.Size(100, 30);
+            this.btnOpenReadOnly.TabIndex = 2;
+            this.btnOpenReadOnly.Text = "Open (&r/o)";
+            this.tip.SetToolTip(this.btnOpenReadOnly, "Open read/only");
+            this.btnOpenReadOnly.UseVisualStyleBackColor = true;
+            this.btnOpenReadOnly.Click += new System.EventHandler(this.btnOpenReadOnly_Click);
             // 
             // StartForm
             // 
@@ -107,6 +122,7 @@ namespace Bimil {
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(482, 353);
+            this.Controls.Add(this.btnOpenReadOnly);
             this.Controls.Add(this.btnNew);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnOpen);
@@ -133,5 +149,6 @@ namespace Bimil {
         private System.Windows.Forms.Button btnNew;
         private System.Windows.Forms.ColumnHeader lsvRecent_colFile;
         private System.Windows.Forms.ToolTip tip;
+        private System.Windows.Forms.Button btnOpenReadOnly;
     }
 }

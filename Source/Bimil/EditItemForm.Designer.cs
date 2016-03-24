@@ -1,5 +1,5 @@
 namespace Bimil {
-    partial class EditItemForm {
+    partial class ItemForm {
         /// <summary>
         /// Required designer variable.
         /// </summary>
