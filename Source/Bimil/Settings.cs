@@ -6,6 +6,11 @@ namespace Bimil {
             set { Medo.Configuration.Settings.Write("CloseOnEscape", value); }
         }
 
+        public static bool ShowStart {
+            get { return Medo.Configuration.Settings.Read("ShowStart", true); }
+            set { Medo.Configuration.Settings.Write("ShowStart", value); }
+        }
+
 
         public static double ScaleBoost {
             get { return Medo.Configuration.Settings.Read("ScaleBoost", 0.00); }

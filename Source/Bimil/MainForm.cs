@@ -110,7 +110,19 @@ namespace Bimil {
 
         private void Form_Shown(object sender, EventArgs e) {
             var fileName = Medo.Application.Args.Current.GetValue("");
-            if (fileName != null) { LoadFile(fileName); }
+            if (fileName != null) {
+                LoadFile(fileName);
+            } else if (Settings.ShowStart) {
+                using (var frm = new StartForm(this.RecentFiles)) {
+                    if (frm.ShowDialog(this) == DialogResult.OK) {
+                        if (frm.FileName != null) {
+                            LoadFile(frm.FileName);
+                        } else {
+                            mnuNew_Click(null, null);
+                        }
+                    }
+                }
+            }
 
             var version = Assembly.GetExecutingAssembly().GetName().Version; //don't auto-check for development builds
             if ((version.Major != 0) || (version.Minor != 0)) { bwUpgradeCheck.RunWorkerAsync(); }
@@ -575,7 +587,7 @@ namespace Bimil {
         }
 
         private void mnuAppFeedback_Click(object sender, EventArgs e) {
-            Medo.Diagnostics.ErrorReport.ShowDialog(this, null, new Uri("https://medo64.com/feedback/"));
+            Medo.Diagnostics.ErrorReport.ShowDialog(this, null, new Uri("https://medo64.com/feesdback/"));
             cmbSearch.Select();
         }
 
