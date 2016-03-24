@@ -344,7 +344,7 @@ namespace Bimil {
             if (SaveIfNeeded() != DialogResult.OK) { return; }
             using (var frm = new OpenFileDialog() { AddExtension = true, AutoUpgradeEnabled = true, Filter = "Bimil files|*.bimil|Password Safe files|*.psafe3|All files|*.*", RestoreDirectory = true, ShowReadOnly = true }) {
                 if (frm.ShowDialog(this) == DialogResult.OK) {
-                    LoadFile(frm.FileName, frm.ReadOnlyChecked);
+                    LoadFile(frm.FileName, isReadOnly: frm.ReadOnlyChecked);
                 }
             }
         }
@@ -389,10 +389,12 @@ namespace Bimil {
 
                 if (this.Document != null) {
                     this.Document.IsReadOnly = isReadOnly;
+
                     cmbSearch.BackColor = isReadOnly ? SystemColors.Control : SystemColors.Window;
                     lsvPasswords.BackColor = isReadOnly ? SystemColors.Control : SystemColors.Window;
                     lsvPasswords.LabelEdit = !isReadOnly;
 
+                    cmbSearch.Text = "";
                     mnuEdit.Text = isReadOnly ? "View" : "Edit";
                     mnuEdit.ToolTipText = mnuEdit.Text + " (F4)";
                 }
