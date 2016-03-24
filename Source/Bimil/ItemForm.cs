@@ -287,7 +287,7 @@ namespace Bimil {
 
         private void btnFields_Click(object sender, EventArgs e) {
             btnOK_Click(null, null);
-            using (var frm = new FieldsEditorForm(this.Document, this.Item)) {
+            using (var frm = new RecordEditorForm(this.Document, this.Item)) {
                 if (frm.ShowDialog(this) == DialogResult.OK) {
                     FillRecords();
                 }

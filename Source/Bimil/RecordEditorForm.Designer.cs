@@ -1,5 +1,5 @@
 namespace Bimil {
-    partial class FieldsEditorForm {
+    partial class RecordEditorForm {
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -120,7 +120,7 @@ namespace Bimil {
             this.btnRemove.UseVisualStyleBackColor = true;
             this.btnRemove.Click += new System.EventHandler(this.btnRemove_Click);
             // 
-            // FieldsEditorForm
+            // RecordEditorForm
             // 
             this.AcceptButton = this.btnOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -135,11 +135,11 @@ namespace Bimil {
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "FieldsEditorForm";
+            this.Name = "RecordEditorForm";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Fields editor";
+            this.Text = "Field editor";
             this.Load += new System.EventHandler(this.Form_Load);
             this.pnlFields.ResumeLayout(false);
             this.ResumeLayout(false);

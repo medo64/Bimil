@@ -116,11 +116,11 @@
     <Compile Include="ItemForm.Designer.cs">
       <DependentUpon>ItemForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="FieldsEditorForm.cs">
+    <Compile Include="RecordEditorForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FieldsEditorForm.Designer.cs">
-      <DependentUpon>FieldsEditorForm.cs</DependentUpon>
+    <Compile Include="RecordEditorForm.Designer.cs">
+      <DependentUpon>RecordEditorForm.cs</DependentUpon>
     </Compile>
     <Compile Include="NewRecordForm.cs">
       <SubType>Form</SubType>
@@ -190,8 +190,8 @@
     <EmbeddedResource Include="ItemForm.resx">
       <DependentUpon>ItemForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FieldsEditorForm.resx">
-      <DependentUpon>FieldsEditorForm.cs</DependentUpon>
+    <EmbeddedResource Include="RecordEditorForm.resx">
+      <DependentUpon>RecordEditorForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="NewRecordForm.resx">
       <DependentUpon>NewRecordForm.cs</DependentUpon>

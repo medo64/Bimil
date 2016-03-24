@@ -6,12 +6,12 @@ using System.Windows.Forms;
 using Medo.Security.Cryptography.PasswordSafe;
 
 namespace Bimil {
-    public partial class FieldsEditorForm : Form {
+    public partial class RecordEditorForm : Form {
 
         private readonly Document Document;
         private readonly Entry Item;
 
-        public FieldsEditorForm(Document document, Entry item) {
+        public RecordEditorForm(Document document, Entry item) {
             InitializeComponent();
             this.Font = SystemFonts.MessageBoxFont;
 
