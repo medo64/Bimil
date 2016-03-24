@@ -52,6 +52,7 @@ namespace Bimil {
             this.lsvRecent.TabIndex = 0;
             this.lsvRecent.UseCompatibleStateImageBehavior = false;
             this.lsvRecent.View = System.Windows.Forms.View.Details;
+            this.lsvRecent.ItemActivate += new System.EventHandler(this.lsvRecent_ItemActivate);
             this.lsvRecent.SelectedIndexChanged += new System.EventHandler(this.lsvRecent_SelectedIndexChanged);
             // 
             // lsvRecent_colFile

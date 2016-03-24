@@ -32,10 +32,15 @@ namespace Bimil {
             lsvRecent_colFile.Width = lsvRecent.ClientSize.Width - SystemInformation.VerticalScrollBarWidth;
         }
 
+
         private void lsvRecent_SelectedIndexChanged(object sender, EventArgs e) {
             btnOpen.Enabled = (lsvRecent.SelectedItems.Count == 1);
         }
 
+        private void lsvRecent_ItemActivate(object sender, EventArgs e) {
+            this.FileName = ((RecentFile)lsvRecent.SelectedItems[0].Tag).FileName;
+            this.DialogResult = DialogResult.OK;
+        }
 
 
         public string FileName { get; private set; }
