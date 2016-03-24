@@ -342,11 +342,12 @@ namespace Bimil {
             }
         }
 
-        private bool LoadFile(string fileName, string password = null) { //return false if file cannot be open
+        private bool LoadFile(string fileName) { //return false if file cannot be open
+            string password;
             try {
                 if (!File.Exists(fileName)) { return false; }
 
-                if (password == null) {
+                while (true) {
                     using (var frm = new PasswordForm()) {
                         if (frm.ShowDialog(this) == DialogResult.OK) {
                             password = frm.Password;
@@ -354,18 +355,21 @@ namespace Bimil {
                             return true; //don't signal file doesn't exist just because password has been canceled
                         }
                     }
-                }
 
-                if (fileName.EndsWith(".bimil", StringComparison.OrdinalIgnoreCase)) {
-                    try {
-                        LoadBimilFile(fileName, password);
-                    } catch (FormatException) { //try password safe if bimil format fails
-                        LoadPasswordSafeFile(fileName, password);
+                    if (fileName.EndsWith(".bimil", StringComparison.OrdinalIgnoreCase)) {
+                        if (LoadBimilFile(fileName, password)) {
+                            return true;
+                        } else if (LoadPasswordSafeFile(fileName, password)) {
+                            return true;
+                        }
+                    } else { //Password Safe
+                        if (LoadPasswordSafeFile(fileName, password)) {
+                            return true;
+                        }
                     }
-                } else { //Password Safe
-                    LoadPasswordSafeFile(fileName, password);
+
+                    Medo.MessageBox.ShowError(this, "Either password is wrong or file is damaged.");
                 }
-                return true; //don't signal file doesn't exist just because password check failed
             } catch (IOException ex) {
                 Medo.MessageBox.ShowError(this, "Cannot open file.\n\n" + ex.Message);
                 return false;
@@ -375,10 +379,15 @@ namespace Bimil {
             } finally {
                 password = null;
                 GC.Collect(); //in attempt to kill password string
+
+                RefreshCategories();
+                RefreshItems();
+                UpdateMenu();
+                cmbSearch.Select();
             }
         }
 
-        private void LoadPasswordSafeFile(string fileName, string password = null) {
+        private bool LoadPasswordSafeFile(string fileName, string password = null) {
             try {
                 using (var fileStream = File.OpenRead(fileName)) {
                     this.Document = Document.Load(fileStream, password);
@@ -427,35 +436,31 @@ namespace Bimil {
                         }
                     }
                 }
+
+                this.RecentFiles.Push(fileName);
+                RefreshFiles();
+
+                return true;
             } catch (FormatException) {
-                Medo.MessageBox.ShowError(this, "Either password is wrong or file is damaged.");
+                return false;
             }
-
-            this.RecentFiles.Push(fileName);
-            RefreshFiles();
-
-            RefreshCategories();
-            RefreshItems();
-            UpdateMenu();
-            cmbSearch.Select();
         }
 
-        private void LoadBimilFile(string fileName, string password = null) {
+        private bool LoadBimilFile(string fileName, string password = null) {
             LegacyFile.BimilDocument legacyDoc = null;
             try {
                 legacyDoc = LegacyFile.BimilDocument.Open(fileName, password);
 
                 this.Document = DocumentConversion.ConvertFromBimil(legacyDoc, password);
                 this.DocumentFileName = fileName;
+
+                return true;
+            } catch (FormatException) {
+                return false;
             } finally {
                 password = null;
                 GC.Collect(); //in attempt to kill password string
             }
-
-            RefreshCategories();
-            RefreshItems();
-            UpdateMenu();
-            cmbSearch.Select();
         }
 
         private void mnuSave_ButtonClick(object sender, EventArgs e) {
