@@ -350,7 +350,9 @@ namespace Bimil {
         }
 
         private bool LoadFile(string fileName, bool isReadOnly = false) { //return false if file cannot be open
+            DocumentResult document = null;
             string password;
+
             try {
                 if (!File.Exists(fileName)) { return false; }
 
@@ -364,13 +366,13 @@ namespace Bimil {
                     }
 
                     if (fileName.EndsWith(".bimil", StringComparison.OrdinalIgnoreCase)) {
-                        if (LoadBimilFile(fileName, password)) {
+                        if ((document = LoadPasswordSafeFile(fileName, password)) != null) {
                             return true;
-                        } else if (LoadPasswordSafeFile(fileName, password)) {
+                        } else if ((document = LoadBimilFile(fileName, password)) != null) {
                             return true;
                         }
                     } else { //Password Safe
-                        if (LoadPasswordSafeFile(fileName, password)) {
+                        if ((document = LoadPasswordSafeFile(fileName, password)) != null) {
                             return true;
                         }
                     }
@@ -387,7 +389,9 @@ namespace Bimil {
                 password = null;
                 GC.Collect(); //in attempt to kill password string
 
-                if (this.Document != null) {
+                if (document != null) {
+                    this.Document = document.Document;
+                    this.DocumentFileName = document.FileName;
                     this.Document.IsReadOnly = isReadOnly;
 
                     cmbSearch.BackColor = isReadOnly ? SystemColors.Control : SystemColors.Window;
@@ -406,15 +410,15 @@ namespace Bimil {
             }
         }
 
-        private bool LoadPasswordSafeFile(string fileName, string password = null) {
+        private DocumentResult LoadPasswordSafeFile(string fileName, string password = null) {
             try {
+                Document document;
                 using (var fileStream = File.OpenRead(fileName)) {
-                    this.Document = Document.Load(fileStream, password);
-                    this.Document.TrackAccess = false;
-                    this.DocumentFileName = fileName;
+                    document = Document.Load(fileStream, password);
+                    document.TrackAccess = false;
 
-                    if (this.Document.LastSaveApplication.StartsWith("Bimil ")) { //convert temporary password safe fields to permanent ones
-                        foreach (var entry in this.Document.Entries) {
+                    if (document.LastSaveApplication.StartsWith("Bimil ")) { //convert temporary password safe fields to permanent ones
+                        foreach (var entry in document.Entries) {
                             if (entry.Records.Contains(RecordType.TemporaryBimilTwoFactorKey)) {
                                 var buffer = new byte[1024];
                                 int bytesLength;
@@ -459,26 +463,18 @@ namespace Bimil {
                 this.RecentFiles.Push(fileName);
                 RefreshFiles();
 
-                return true;
+                return new DocumentResult(document, fileName);
             } catch (FormatException) {
-                return false;
+                return null;
             }
         }
 
-        private bool LoadBimilFile(string fileName, string password = null) {
-            LegacyFile.BimilDocument legacyDoc = null;
+        private DocumentResult LoadBimilFile(string fileName, string password = null) {
             try {
-                legacyDoc = LegacyFile.BimilDocument.Open(fileName, password);
-
-                this.Document = DocumentConversion.ConvertFromBimil(legacyDoc, password);
-                this.DocumentFileName = fileName;
-
-                return true;
+                var legacyDoc = LegacyFile.BimilDocument.Open(fileName, password);
+                return new DocumentResult(DocumentConversion.ConvertFromBimil(legacyDoc, password), fileName);
             } catch (FormatException) {
-                return false;
-            } finally {
-                password = null;
-                GC.Collect(); //in attempt to kill password string
+                return null;
             }
         }
 
@@ -730,6 +726,20 @@ namespace Bimil {
         }
 
         #endregion
+
+
+        private class DocumentResult {
+
+            public DocumentResult(Document document, string fileName) {
+                this.Document = document;
+                this.FileName = fileName;
+            }
+
+
+            public Document Document { get; }
+            public String FileName { get; }
+
+        }
 
     }
 }
