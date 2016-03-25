@@ -64,14 +64,14 @@ namespace Bimil {
                         var textBox = control as TextBox;
                         if (textBox != null) {
                             var record = textBox.Tag as Record;
-                            if ((record != null) && (record.RecordType == RecordType.Password) && (textBox.UseSystemPasswordChar)) { alreadyHidden = true; break; }
+                            if ((record != null) && Helpers.GetIsHideable(record.RecordType) && (textBox.UseSystemPasswordChar)) { alreadyHidden = true; break; }
                         }
                     }
                     foreach (var control in this.pnl.Controls) {
                         var textBox = control as TextBox;
                         if (textBox != null) {
                             var record = textBox.Tag as Record;
-                            if ((record != null) && (record.RecordType == RecordType.Password)) { textBox.UseSystemPasswordChar = !alreadyHidden; }
+                            if ((record != null) && Helpers.GetIsHideable(record.RecordType)) { textBox.UseSystemPasswordChar = !alreadyHidden; }
                         }
                     }
                     e.Handled = true;
@@ -137,9 +137,7 @@ namespace Bimil {
                         continue;
 
                     case RecordType.UserName:
-                    case RecordType.CreditCardExpiration:
-                    case RecordType.CreditCardVerificationValue:
-                    case RecordType.CreditCardPin: {
+                    case RecordType.CreditCardExpiration: {
                             var textBox = NewTextBox(labelWidth, y, record);
                             pnl.Controls.Add(textBox);
 
@@ -149,6 +147,8 @@ namespace Bimil {
                         }
                         break;
 
+                    case RecordType.CreditCardVerificationValue:
+                    case RecordType.CreditCardPin:
                     case RecordType.Password: {
                             var textBox = NewTextBox(labelWidth, y, record);
                             textBox.UseSystemPasswordChar = true;

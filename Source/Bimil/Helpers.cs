@@ -44,6 +44,17 @@ namespace Bimil {
             }
         }
 
+        public static bool GetIsHideable(RecordType recordType) {
+            switch (recordType) {
+                case RecordType.Password:
+                case RecordType.TwoFactorKey:
+                case RecordType.CreditCardVerificationValue:
+                case RecordType.CreditCardPin: return true;
+
+                default: return false; //all other fields are visible by default
+            }
+        }
+
 
         #region Toolstrip images
 
