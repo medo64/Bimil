@@ -1,16 +1,21 @@
-//Copyright (c) 2009 Josip Medved <jmedved@jmedved.com>
+//Josip Medved <jmedved@jmedved.com>   www.medo64.com
 
-//2009-05-23: New version.
-//2009-07-04: Compatibility with Mono 2.4.
+//2016-03-24: Added IEnumerable interface.
+//2012-08-20: Fixed crash when HideFileExt cannot be found in registry.
+//2012-05-31: Refactoring.
 //2010-10-31: Added option to skip registry writes (NoRegistryWrites).
+//2009-07-04: Compatibility with Mono 2.4.
+//2009-05-23: New version.
 
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using Microsoft.Win32;
+using System.IO;
 using System.Reflection;
-using System.Text;
+using System.Security;
+using Microsoft.Win32;
 
 namespace Medo.Configuration {
 
@@ -18,7 +23,8 @@ namespace Medo.Configuration {
     /// Enables loading and saving of files list.
     /// It is written in State key at HKEY_CURRENT_USER branch withing defined SubKeyPath.
     /// </summary>
-    public class RecentFiles {
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix", Justification = "While this class offers IEnumerable interface, it is not a collection as such.")]
+    public class RecentFiles : IEnumerable<RecentFile> {
 
         /// <summary>
         /// Creates new instance with "Default" as group name and maximum of 16 files.
@@ -41,8 +47,8 @@ namespace Medo.Configuration {
         /// <param name="maximumCount">Maximum number of items to load or save.</param>
         /// <param name="groupName">Name of group. If omitted, "Default" is used.</param>
         public RecentFiles(int maximumCount, string groupName) {
-            //get paths
             Assembly assembly = Assembly.GetEntryAssembly();
+            if (assembly == null) { assembly = Assembly.GetCallingAssembly(); } //e.g. when running unit tests
 
             string company = null;
             object[] companyAttributes = assembly.GetCustomAttributes(typeof(AssemblyCompanyAttribute), true);
@@ -113,10 +119,22 @@ namespace Medo.Configuration {
         }
 
         /// <summary>
-        /// Gets read-only collection of recent files.
+        /// Returns read-only collection of recent files.
         /// </summary>
+        [Obsolete("Use Items property instead.")]
         public ReadOnlyCollection<RecentFile> AsReadOnly() {
             return this._items.AsReadOnly();
+        }
+
+        /// <summary>
+        /// Returns each recent file.
+        /// </summary>
+        public IEnumerable<RecentFile> Items {
+            get {
+                foreach (var item in this._items) {
+                    yield return item;
+                }
+            }
         }
 
         /// <summary>
@@ -125,16 +143,18 @@ namespace Medo.Configuration {
         /// </summary>
         /// <param name="fileName">File name.</param>
         public void Push(string fileName) {
-            _items.Insert(0, new RecentFile(fileName));
+            var item = RecentFile.GetRecentFile(fileName);
+            if (item != null) {
+                _items.Insert(0, item);
 
-            //remove duplicate of it
-            for (int i = _items.Count - 1; i >= 1; --i) {
-                if (_items[i].Equals(fileName)) {
-                    this._items.RemoveAt(i);
+                for (int i = _items.Count - 1; i >= 1; --i) { //remove duplicate of it
+                    if (_items[i].Equals(fileName)) {
+                        this._items.RemoveAt(i);
+                    }
                 }
-            }
 
-            this.Save();
+                this.Save();
+            }
         }
 
         /// <summary>
@@ -166,28 +186,30 @@ namespace Medo.Configuration {
         /// </summary>
         public void Load() {
             this._items.Clear();
-            using (RegistryKey rk = Registry.CurrentUser.OpenSubKey(this.SubkeyPath, false)) {
-                if (rk != null) {
-
-                    object valueCU = rk.GetValue(this.GroupName, null);
-                    if (valueCU != null) {
-                        var valueKind = RegistryValueKind.MultiString;
-                        if (!RecentFiles.IsRunningOnMono) { valueKind = rk.GetValueKind(this.GroupName); }
-                        if (valueKind == RegistryValueKind.MultiString) {
-                            string[] valueArr = valueCU as string[];
-                            if (valueArr != null) {
-                                for (int i = 0; i < valueArr.Length; ++i) {
-                                    if (!string.IsNullOrEmpty(valueArr[i])) {
-                                        _items.Add(new RecentFile(valueArr[i]));
+            try {
+                using (var rk = Registry.CurrentUser.OpenSubKey(this.SubkeyPath, false)) {
+                    if (rk != null) {
+                        object valueCU = rk.GetValue(this.GroupName, null);
+                        if (valueCU != null) {
+                            var valueKind = RegistryValueKind.MultiString;
+                            if (!RecentFiles.IsRunningOnMono) { valueKind = rk.GetValueKind(this.GroupName); }
+                            if (valueKind == RegistryValueKind.MultiString) {
+                                string[] valueArr = valueCU as string[];
+                                if (valueArr != null) {
+                                    for (int i = 0; i < valueArr.Length; ++i) {
+                                        if (!string.IsNullOrEmpty(valueArr[i])) {
+                                            var item = RecentFile.GetRecentFile(valueArr[i]);
+                                            if (item != null) {
+                                                _items.Add(item);
+                                            }
+                                        }
                                     }
                                 }
                             }
                         }
-
-
                     }
                 }
-            }
+            } catch (SecurityException) { }
         }
 
         /// <summary>
@@ -210,7 +232,6 @@ namespace Medo.Configuration {
         }
 
 
-
         /// <summary>
         /// Gets/sets subkey used for registry storage.
         /// </summary>
@@ -222,6 +243,23 @@ namespace Medo.Configuration {
             }
         }
 
+
+        #region IEnumerable
+
+        /// <summary>
+        /// Returns an IEnumerator for the recent files.
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerator<RecentFile> GetEnumerator() {
+            return this.Items.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator() {
+            return this.Items.GetEnumerator();
+        }
+
+        #endregion
+
     }
 
 
@@ -231,12 +269,9 @@ namespace Medo.Configuration {
     /// </summary>
     public class RecentFile {
 
-        /// <summary>
-        /// Creates new instance.
-        /// </summary>
-        /// <param name="fileName">Full file name.</param>
-        internal RecentFile(string fileName) {
+        private RecentFile(string fileName, string title) {
             this.FileName = fileName;
+            this.Title = title;
         }
 
         /// <summary>
@@ -247,26 +282,7 @@ namespace Medo.Configuration {
         /// <summary>
         /// Gets title of current file.
         /// </summary>
-        public string Title {
-            get {
-                var info = new System.IO.FileInfo(this.FileName);
-
-                    using (RegistryKey rk = Registry.CurrentUser.OpenSubKey(@"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced", false)) {
-                        if (rk != null) {
-                            var valueKind = RegistryValueKind.DWord;
-                            if (!RecentFile.IsRunningOnMono) { valueKind = rk.GetValueKind("HideFileExt"); }
-                            if (valueKind == RegistryValueKind.DWord) {
-                                int hideFileExt = (int)(rk.GetValue("HideFileExt", 1));
-                                if (hideFileExt != 0) {
-                                    return info.Name.Substring(0, info.Name.Length - info.Extension.Length);
-                                }
-                            }
-                        }
-                }
-
-                return info.Name;
-            }
-        }
+        public string Title { get; private set; }
 
         /// <summary>
         /// Determines whether the specified object is equal to the current object.
@@ -275,11 +291,11 @@ namespace Medo.Configuration {
         public override bool Equals(object obj) {
             var other = obj as RecentFile;
             if (other != null) {
-                return (string.Compare(this.FileName, other.FileName, System.StringComparison.OrdinalIgnoreCase) == 0);
+                return string.Equals(this.FileName, other.FileName, StringComparison.OrdinalIgnoreCase);
             }
             var otherString = obj as string;
             if (otherString != null) {
-                return (string.Compare(this.FileName, otherString, StringComparison.OrdinalIgnoreCase) == 0);
+                return string.Equals(this.FileName, otherString, StringComparison.OrdinalIgnoreCase);
             }
             return false;
         }
@@ -299,11 +315,49 @@ namespace Medo.Configuration {
         }
 
 
+        #region Static
+
+        /// <summary>
+        /// Gets recent file object or null if such object cannot be found.
+        /// </summary>
+        /// <param name="fileName">File name.</param>
+        internal static RecentFile GetRecentFile(string fileName) {
+            try {
+                var title = HideExtension ? Path.GetFileNameWithoutExtension(fileName) : Path.GetFileName(fileName);
+                return new RecentFile(fileName, title);
+            } catch (ArgumentException) {
+                return null;
+            }
+        }
+
+
+        private static bool HideExtension {
+            get {
+                try {
+                    using (RegistryKey rk = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced", false)) {
+                        if (rk != null) {
+                            var valueKind = IsRunningOnMono ? RegistryValueKind.DWord : rk.GetValueKind("HideFileExt");
+                            if (valueKind == RegistryValueKind.DWord) {
+                                int hideFileExt = (int)(rk.GetValue("HideFileExt", 1));
+                                return (hideFileExt != 0);
+                            }
+                        }
+                    }
+                } catch (SecurityException) {
+                } catch (IOException) { //key does not exist
+                }
+                return false;
+            }
+        }
+
         private static bool IsRunningOnMono {
             get {
                 return (Type.GetType("Mono.Runtime") != null);
             }
         }
+
+
+        #endregion
 
     }
 

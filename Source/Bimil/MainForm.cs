@@ -153,8 +153,8 @@ namespace Bimil {
                     break;
                 }
             }
-            for (int i = 0; i < this.RecentFiles.Count; i++) {
-                var item = new ToolStripMenuItem(this.RecentFiles[i].Title) { Tag = this.RecentFiles[i].FileName, ToolTipText = this.RecentFiles[i].FileName };
+            foreach (var file in this.RecentFiles) {
+                var item = new ToolStripMenuItem(file.Title) { Tag = file.FileName, ToolTipText = file.FileName };
                 item.Click += new EventHandler(delegate (object sender2, EventArgs e2) {
                     if (SaveIfNeeded() != DialogResult.OK) { return; }
                     var fileName = item.Tag.ToString();

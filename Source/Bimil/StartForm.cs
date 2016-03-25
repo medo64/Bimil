@@ -9,8 +9,7 @@ namespace Bimil {
             InitializeComponent();
             Medo.Windows.Forms.State.SetupOnLoadAndClose(this);
 
-            for (int i = 0; i < recentFiles.Count; i++) {
-                var file = recentFiles[i];
+            foreach (var file in recentFiles) {
                 var lvi = new ListViewItem(file.Title) { Tag = file, ToolTipText = file.FileName };
                 lsvRecent.Items.Add(lvi);
             }
