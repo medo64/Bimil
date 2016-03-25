@@ -154,7 +154,7 @@ namespace Bimil {
                 }
             }
             for (int i = 0; i < this.RecentFiles.Count; i++) {
-                var item = new ToolStripMenuItem(this.RecentFiles[i].Title) { Tag = this.RecentFiles[i].FileName };
+                var item = new ToolStripMenuItem(this.RecentFiles[i].Title) { Tag = this.RecentFiles[i].FileName, ToolTipText = this.RecentFiles[i].FileName };
                 item.Click += new EventHandler(delegate (object sender2, EventArgs e2) {
                     if (SaveIfNeeded() != DialogResult.OK) { return; }
                     var fileName = item.Tag.ToString();

@@ -11,7 +11,7 @@ namespace Bimil {
 
             for (int i = 0; i < recentFiles.Count; i++) {
                 var file = recentFiles[i];
-                var lvi = new ListViewItem(file.Title) { Tag = file };
+                var lvi = new ListViewItem(file.Title) { Tag = file, ToolTipText = file.FileName };
                 lsvRecent.Items.Add(lvi);
             }
             if (lsvRecent.Items.Count > 0) {
