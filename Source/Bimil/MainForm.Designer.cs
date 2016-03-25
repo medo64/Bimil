@@ -91,6 +91,7 @@ namespace Bimil {
             this.mnuOpen.Text = "Open";
             this.mnuOpen.ToolTipText = "Open (Ctrl+O)";
             this.mnuOpen.ButtonClick += new System.EventHandler(this.mnuOpen_ButtonClick);
+            this.mnuOpen.DropDownOpening += new System.EventHandler(this.mnuOpen_DropDownOpening);
             // 
             // mnuSave
             // 

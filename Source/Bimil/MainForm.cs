@@ -349,6 +349,20 @@ namespace Bimil {
             }
         }
 
+        private void mnuOpen_DropDownOpening(object sender, EventArgs e) {
+            foreach (ToolStripDropDownItem item in mnuOpen.DropDownItems) {
+                var fileName = item.Tag as string;
+                if (fileName != null) {
+                    if (!File.Exists(fileName)) {
+                        Helpers.ScaleToolstripItem(item, "picNonexistent");
+                    } else {
+                        item.Image = null;
+                    }
+                }
+            }
+        }
+
+
         private bool LoadFile(string fileName, bool isReadOnly = false) { //return false if file cannot be open
             DocumentResult document = null;
             string password;

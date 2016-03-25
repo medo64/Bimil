@@ -120,6 +120,22 @@ namespace Bimil {
 #endif
         }
 
+        internal static ImageList GetImageList(Form form, params string[] names) {
+            var sizeAndSet = GetSizeAndSet(form);
+            var size = sizeAndSet.Key;
+            var set = sizeAndSet.Value;
+
+            var imageList = new ImageList() { ColorDepth = ColorDepth.Depth32Bit, ImageSize = new Size(size, size) };
+
+            var resources = Bimil.Properties.Resources.ResourceManager;
+            foreach (var name in names) {
+                var bitmap = resources.GetObject(name + set) as Bitmap;
+                imageList.Images.Add(bitmap);
+            }
+
+            return imageList;
+        }
+
         private static KeyValuePair<int, string> GetSizeAndSet(params Control[] controls) {
             using (var g = controls[0].CreateGraphics()) {
                 var scale = Math.Max(Math.Max(g.DpiX, g.DpiY), 96.0) / 96.0;

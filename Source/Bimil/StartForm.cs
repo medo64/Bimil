@@ -1,6 +1,7 @@
 using Medo.Configuration;
 using System;
 using System.Drawing;
+using System.IO;
 using System.Windows.Forms;
 
 namespace Bimil {
@@ -9,8 +10,11 @@ namespace Bimil {
             InitializeComponent();
             Medo.Windows.Forms.State.SetupOnLoadAndClose(this);
 
+            lsvRecent.SmallImageList = Helpers.GetImageList(this, "picNonexistent");
+
             foreach (var file in recentFiles) {
                 var lvi = new ListViewItem(file.Title) { Tag = file, ToolTipText = file.FileName };
+                if (!File.Exists(file.FileName)) { lvi.ImageIndex = 0; }
                 lsvRecent.Items.Add(lvi);
             }
             if (lsvRecent.Items.Count > 0) {
