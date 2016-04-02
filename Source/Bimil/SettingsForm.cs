@@ -10,10 +10,12 @@ namespace Bimil {
         }
 
         private void SettingsForm_Load(object sender, EventArgs e) {
+            chbShowStart.Checked = Settings.ShowStart;
             chbCloseOnEscape.Checked = Settings.CloseOnEscape;
         }
 
         private void btnOK_Click(object sender, EventArgs e) {
+            Settings.ShowStart = chbShowStart.Checked;
             Settings.CloseOnEscape = chbCloseOnEscape.Checked;
         }
 
