@@ -23,6 +23,7 @@ namespace Bimil {
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.mnu = new System.Windows.Forms.ToolStrip();
             this.mnuNew = new System.Windows.Forms.ToolStripButton();
@@ -46,6 +47,7 @@ namespace Bimil {
             this.lsvPasswords_colTitle = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.cmbSearch = new System.Windows.Forms.ComboBox();
             this.bwUpgradeCheck = new System.ComponentModel.BackgroundWorker();
+            this.tmrClose = new System.Windows.Forms.Timer(this.components);
             this.mnu.SuspendLayout();
             this.pnlDocument.SuspendLayout();
             this.SuspendLayout();
@@ -270,6 +272,10 @@ namespace Bimil {
             this.bwUpgradeCheck.DoWork += new System.ComponentModel.DoWorkEventHandler(this.bwUpgradeCheck_DoWork);
             this.bwUpgradeCheck.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.bwUpgradeCheck_RunWorkerCompleted);
             // 
+            // tmrClose
+            // 
+            this.tmrClose.Tick += new System.EventHandler(this.tmrClose_Tick);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -282,6 +288,8 @@ namespace Bimil {
             this.MinimumSize = new System.Drawing.Size(320, 200);
             this.Name = "MainForm";
             this.Text = "Bimil";
+            this.Activated += new System.EventHandler(this.Form_Activated);
+            this.Deactivate += new System.EventHandler(this.Form_Deactivate);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form_FormClosing);
             this.Load += new System.EventHandler(this.Form_Load);
             this.Shown += new System.EventHandler(this.Form_Shown);
@@ -318,6 +326,7 @@ namespace Bimil {
         private System.Windows.Forms.ToolStripMenuItem mnuAppAbout;
         private System.ComponentModel.BackgroundWorker bwUpgradeCheck;
         private System.Windows.Forms.ToolStripMenuItem mnuAppUpgrade;
+        private System.Windows.Forms.Timer tmrClose;
     }
 }
 

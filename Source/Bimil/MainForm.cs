@@ -145,6 +145,39 @@ namespace Bimil {
             lsvPasswords.Columns[0].Width = lsvPasswords.ClientSize.Width;
         }
 
+        private void Form_Deactivate(object sender, EventArgs e) {
+            if (Settings.AutoCloseTimeout > 0) {
+                tmrClose.Interval = Settings.AutoCloseTimeout * 1000;
+                tmrClose.Enabled = true;
+            }
+        }
+
+        private void Form_Activated(object sender, EventArgs e) {
+            if (this.Focused) {
+                tmrClose.Enabled = false;
+            } else if (tmrClose.Enabled) { //because damn Activated gets triggered after ShowDialog exists - even if application is not in focus
+                tmrClose.Enabled = false;
+                tmrClose.Enabled = true;
+            }
+        }
+
+
+        private void tmrClose_Tick(object sender, EventArgs e) {
+            if (Application.OpenForms.Count <= 1) {
+                tmrClose.Enabled = false;
+
+                if (this.Document != null) {
+                    var fileName = this.DocumentFileName;
+                    var readOnly = this.Document.IsReadOnly;
+
+                    this.Document = null;
+                    this.DocumentFileName = null;
+                    LoadFile(fileName, readOnly);
+                }
+            }
+        }
+
+
         private void RefreshFiles() {
             for (int i = mnuOpen.DropDownItems.Count - 1; i >= 0; i--) {
                 if (mnuOpen.DropDownItems[i] is ToolStripMenuItem) {

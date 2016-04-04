@@ -30,6 +30,7 @@ namespace Bimil {
             this.btnEdit = new System.Windows.Forms.Button();
             this.btnFields = new System.Windows.Forms.Button();
             this.tip = new System.Windows.Forms.ToolTip(this.components);
+            this.tmrClose = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
             // 
             // pnl
@@ -94,7 +95,11 @@ namespace Bimil {
             this.btnFields.Visible = false;
             this.btnFields.Click += new System.EventHandler(this.btnFields_Click);
             // 
-            // EditItemForm
+            // tmrClose
+            // 
+            this.tmrClose.Tick += new System.EventHandler(this.tmrClose_Tick);
+            // 
+            // ItemForm
             // 
             this.AcceptButton = this.btnOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -109,11 +114,13 @@ namespace Bimil {
             this.KeyPreview = true;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "EditItemForm";
+            this.Name = "ItemForm";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Edit item";
+            this.Activated += new System.EventHandler(this.Form_Activated);
+            this.Deactivate += new System.EventHandler(this.Form_Deactivate);
             this.Load += new System.EventHandler(this.EditItemForm_Load);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form_KeyDown);
             this.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.Form_PreviewKeyDown);
@@ -129,5 +136,6 @@ namespace Bimil {
         private System.Windows.Forms.Button btnEdit;
         private System.Windows.Forms.Button btnFields;
         private System.Windows.Forms.ToolTip tip;
+        private System.Windows.Forms.Timer tmrClose;
     }
 }

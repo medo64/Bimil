@@ -80,6 +80,28 @@ namespace Bimil {
             }
         }
 
+        private void Form_Deactivate(object sender, EventArgs e) {
+            if (Settings.AutoCloseItemTimeout > 0) {
+                tmrClose.Interval = Settings.AutoCloseItemTimeout * 1000;
+                tmrClose.Enabled = true;
+            }
+        }
+
+        private void Form_Activated(object sender, EventArgs e) {
+            tmrClose.Enabled = false;
+        }
+
+
+        private void tmrClose_Tick(object sender, EventArgs e) {
+            foreach (var form in this.OwnedForms) {
+                foreach (var innerForm in form.OwnedForms) {
+                    innerForm.Close();
+                }
+                form.Close();
+            }
+            this.Close();
+        }
+
 
         private void FillRecords() {
             pnl.Visible = false;
