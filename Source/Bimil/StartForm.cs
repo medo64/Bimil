@@ -38,6 +38,7 @@ namespace Bimil {
 
         private void lsvRecent_SelectedIndexChanged(object sender, EventArgs e) {
             btnOpen.Enabled = (lsvRecent.SelectedItems.Count == 1);
+            btnOpenReadOnly.Enabled = (lsvRecent.SelectedItems.Count == 1);
         }
 
         private void lsvRecent_ItemActivate(object sender, EventArgs e) {
