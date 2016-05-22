@@ -607,8 +607,7 @@ namespace Bimil {
 
                     using (var frm2 = new ItemForm(this.Document, entry, true, this.Categories)) {
                         if (frm2.ShowDialog(this) == DialogResult.OK) {
-                            var listItem = new ListViewItem(entry.Title) { Tag = entry };
-                            lsvPasswords.Items.Add(listItem);
+                            RefreshItems(entry);
                             RefreshCategories();
                         } else {
                             this.Document.Entries.Remove(entry);
@@ -695,7 +694,11 @@ namespace Bimil {
             cmbSearch.EndUpdate();
         }
 
-        private void RefreshItems() {
+        private void RefreshItems(Entry entryToSelect = null) {
+            if ((entryToSelect == null) && (lsvPasswords.SelectedItems.Count > 0)) { //to keep same item selected
+                entryToSelect = (Entry)(lsvPasswords.SelectedItems[0].Tag);
+            }
+
             lsvPasswords.BeginUpdate();
             lsvPasswords.Items.Clear();
             if (this.Document != null) {
@@ -706,10 +709,37 @@ namespace Bimil {
                 }
             }
             lsvPasswords.EndUpdate();
+
             if (lsvPasswords.Items.Count > 0) {
-                lsvPasswords.Items[0].Selected = true;
-                lsvPasswords.Items[0].Focused = true;
+                lsvPasswords.Enabled = true;
+                lsvPasswords.ForeColor = SystemColors.WindowText;
+
+                if (entryToSelect != null) {
+                    foreach (ListViewItem item in lsvPasswords.Items) {
+                        var entry = (Entry)(item.Tag);
+                        if (entry.Equals(entryToSelect)) {
+                            item.Selected = true;
+                            item.Focused = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (lsvPasswords.SelectedItems.Count == 0) {
+                    lsvPasswords.Items[0].Selected = true;
+                    lsvPasswords.Items[0].Focused = true;
+                }
+            } else {
+                lsvPasswords.Enabled = false;
+                lsvPasswords.ForeColor = SystemColors.GrayText;
+
+                if ((this.Document == null) || (this.Document.Entries.Count == 0)) {
+                    lsvPasswords.Items.Add("No items.");
+                } else {
+                    lsvPasswords.Items.Add("No matching items found.");
+                }
             }
+
             Form_Resize(null, null);
         }
 
