@@ -702,11 +702,26 @@ namespace Bimil {
             lsvPasswords.BeginUpdate();
             lsvPasswords.Items.Clear();
             if (this.Document != null) {
+                //check group only
+                var foundGroupEntries = new Dictionary<Guid, Entry>();
                 foreach (var item in this.Document.Entries) {
-                    if ((string.Equals(cmbSearch.Text, item.Group, StringComparison.CurrentCultureIgnoreCase)) || ((cmbSearch.Text.Length > 0) && (item.Title.IndexOf(cmbSearch.Text, StringComparison.CurrentCultureIgnoreCase) >= 0))) {
+                    if ((string.Equals(cmbSearch.Text, item.Group, StringComparison.CurrentCultureIgnoreCase))) {
                         lsvPasswords.Items.Add(new ListViewItem(item.Title) { Tag = item });
+                        foundGroupEntries.Add(item.Uuid, item);
                     }
                 }
+
+                //find other matches
+                foreach (var item in this.Document.Entries) {
+                    if ((cmbSearch.Text.Length > 0) && (item.Title.IndexOf(cmbSearch.Text, StringComparison.CurrentCultureIgnoreCase) >= 0)) {
+                        if (foundGroupEntries.Count == 0) { //if nothing was found under group, add anyhow
+                            lsvPasswords.Items.Add(new ListViewItem(item.Title) { Tag = item });
+                        } else if (!foundGroupEntries.ContainsKey(item.Uuid)) { //add only if not added before
+                            lsvPasswords.Items.Add(new ListViewItem(item.Title) { Tag = item, ForeColor = SystemColors.GrayText });
+                        }
+                    }
+                }
+
             }
             lsvPasswords.EndUpdate();
 
