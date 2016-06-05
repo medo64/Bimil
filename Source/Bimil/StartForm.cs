@@ -52,16 +52,21 @@ namespace Bimil {
 
 
         private void btnOpen_Click(object sender, EventArgs e) {
-            this.FileName = ((RecentFile)lsvRecent.SelectedItems[0].Tag).FileName;
+            SelectFileName(((RecentFile)lsvRecent.SelectedItems[0].Tag).FileName);
         }
 
         private void btnOpenReadOnly_Click(object sender, EventArgs e) {
-            this.FileName = ((RecentFile)lsvRecent.SelectedItems[0].Tag).FileName;
-            this.IsReadOnly = true;
+            SelectFileName(((RecentFile)lsvRecent.SelectedItems[0].Tag).FileName, readOnly: true);
         }
 
         private void btnNew_Click(object sender, EventArgs e) {
             this.FileName = null;
+        }
+
+
+        private void SelectFileName(string fileName, bool readOnly = false) {
+            this.FileName = fileName;
+            this.IsReadOnly = readOnly;
         }
 
     }

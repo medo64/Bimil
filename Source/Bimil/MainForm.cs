@@ -191,12 +191,7 @@ namespace Bimil {
                 item.Click += new EventHandler(delegate (object sender2, EventArgs e2) {
                     if (SaveIfNeeded() != DialogResult.OK) { return; }
                     var fileName = item.Tag.ToString();
-                    if (!File.Exists(fileName) || !LoadFile(fileName)) {
-                        if (Medo.MessageBox.ShowQuestion(this, "File " + Path.GetFileName(fileName) + " could not be open.\nDo you wish to remove it from the recent list?", MessageBoxButtons.YesNo) == DialogResult.Yes) {
-                            this.RecentFiles.Remove(fileName);
-                            this.RefreshFiles();
-                        }
-                    }
+                    LoadFile(fileName);
                 });
                 mnuOpen.DropDownItems.Add(item);
             }
@@ -401,7 +396,18 @@ namespace Bimil {
             string password;
 
             try {
-                if (!File.Exists(fileName)) { return false; }
+                if (!File.Exists(fileName)) {
+                    foreach (var recentFile in this.RecentFiles) {
+                        if (string.Equals(fileName, recentFile.FileName, StringComparison.OrdinalIgnoreCase)) {
+                            if (Medo.MessageBox.ShowQuestion(this, "File " + Path.GetFileName(fileName) + " could not be open.\nDo you wish to remove it from the recent list?", MessageBoxButtons.YesNo) == DialogResult.Yes) {
+                                this.RecentFiles.Remove(recentFile.FileName);
+                                this.RefreshFiles();
+                                break;
+                            }
+                        }
+                    }
+                    return false;
+                }
 
                 while (true) {
                     using (var frm = new PasswordForm()) {
