@@ -27,7 +27,7 @@ namespace Bimil {
             this.lsvRecent = new System.Windows.Forms.ListView();
             this.lsvRecent_colFile = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.btnOpen = new System.Windows.Forms.Button();
-            this.btnCancel = new System.Windows.Forms.Button();
+            this.btnClose = new System.Windows.Forms.Button();
             this.btnNew = new System.Windows.Forms.Button();
             this.tip = new System.Windows.Forms.ToolTip(this.components);
             this.btnOpenReadOnly = new System.Windows.Forms.Button();
@@ -75,18 +75,18 @@ namespace Bimil {
             this.btnOpen.UseVisualStyleBackColor = true;
             this.btnOpen.Click += new System.EventHandler(this.btnOpen_Click);
             // 
-            // btnCancel
+            // btnClose
             // 
-            this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(370, 311);
-            this.btnCancel.Margin = new System.Windows.Forms.Padding(3, 12, 3, 3);
-            this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(100, 30);
-            this.btnCancel.TabIndex = 4;
-            this.btnCancel.Text = "Cancel";
-            this.tip.SetToolTip(this.btnCancel, "Close dialog");
-            this.btnCancel.UseVisualStyleBackColor = true;
+            this.btnClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnClose.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.btnClose.Location = new System.Drawing.Point(370, 311);
+            this.btnClose.Margin = new System.Windows.Forms.Padding(3, 12, 3, 3);
+            this.btnClose.Name = "btnClose";
+            this.btnClose.Size = new System.Drawing.Size(100, 30);
+            this.btnClose.TabIndex = 4;
+            this.btnClose.Text = "Close";
+            this.tip.SetToolTip(this.btnClose, "Close dialog");
+            this.btnClose.UseVisualStyleBackColor = true;
             // 
             // btnNew
             // 
@@ -106,6 +106,7 @@ namespace Bimil {
             // 
             this.btnOpenReadOnly.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnOpenReadOnly.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.btnOpenReadOnly.Enabled = false;
             this.btnOpenReadOnly.Location = new System.Drawing.Point(118, 311);
             this.btnOpenReadOnly.Margin = new System.Windows.Forms.Padding(3, 12, 3, 3);
             this.btnOpenReadOnly.Name = "btnOpenReadOnly";
@@ -121,11 +122,11 @@ namespace Bimil {
             this.AcceptButton = this.btnOpen;
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.CancelButton = this.btnCancel;
+            this.CancelButton = this.btnClose;
             this.ClientSize = new System.Drawing.Size(482, 353);
             this.Controls.Add(this.btnOpenReadOnly);
             this.Controls.Add(this.btnNew);
-            this.Controls.Add(this.btnCancel);
+            this.Controls.Add(this.btnClose);
             this.Controls.Add(this.btnOpen);
             this.Controls.Add(this.lsvRecent);
             this.MaximizeBox = false;
@@ -146,7 +147,7 @@ namespace Bimil {
 
         private System.Windows.Forms.ListView lsvRecent;
         private System.Windows.Forms.Button btnOpen;
-        private System.Windows.Forms.Button btnCancel;
+        private System.Windows.Forms.Button btnClose;
         private System.Windows.Forms.Button btnNew;
         private System.Windows.Forms.ColumnHeader lsvRecent_colFile;
         private System.Windows.Forms.ToolTip tip;
