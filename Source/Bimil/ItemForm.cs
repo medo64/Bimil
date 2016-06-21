@@ -476,7 +476,7 @@ namespace Bimil {
             };
             Helpers.ScaleButton(button);
 
-            tip.SetToolTip(button, "Create QR code on Internet.");
+            tip.SetToolTip(button, "Create QR code.");
 
             button.Click += new EventHandler(delegate (object sender, EventArgs e) {
                 var textBox = (TextBox)(((Control)sender).Tag);
@@ -484,8 +484,10 @@ namespace Bimil {
 
                 var key = FilterText(textBox.Text.ToUpperInvariant(), Base32Characters);
                 if (key.Length > 0) {
-                    var url = string.Format(CultureInfo.InvariantCulture, "otpauth://totp/{0}?secret={1}", HttpUtility.UrlPathEncode(this.Item.Title), HttpUtility.UrlEncode(key));
-                    Process.Start(string.Format(CultureInfo.InvariantCulture, "https://api.qrserver.com/v1/create-qr-code/?margin=32&data={0}", HttpUtility.UrlEncode(url)));
+                    var keyUrl = string.Format(CultureInfo.InvariantCulture, "otpauth://totp/{0}?secret={1}", HttpUtility.UrlPathEncode(this.Item.Title), HttpUtility.UrlEncode(key));
+                    using (var frm = new QRCodeForm(keyUrl)) {
+                        frm.ShowDialog(this);
+                    }
                 }
             });
 

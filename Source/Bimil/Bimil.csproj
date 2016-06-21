@@ -116,6 +116,13 @@
     <Compile Include="ItemForm.Designer.cs">
       <DependentUpon>ItemForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="QRCode.cs" />
+    <Compile Include="QRCodeForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="QRCodeForm.Designer.cs">
+      <DependentUpon>QRCodeForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="RecordEditorForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -189,6 +196,9 @@
     <Compile Include="Templates.cs" />
     <EmbeddedResource Include="ItemForm.resx">
       <DependentUpon>ItemForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="QRCodeForm.resx">
+      <DependentUpon>QRCodeForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="RecordEditorForm.resx">
       <DependentUpon>RecordEditorForm.cs</DependentUpon>
