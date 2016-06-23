@@ -9,7 +9,7 @@ namespace Bimil {
             this.Font = SystemFonts.MessageBoxFont;
         }
 
-        private void SettingsForm_Load(object sender, EventArgs e) {
+        private void Form_Load(object sender, EventArgs e) {
             chbShowStart.Checked = Settings.ShowStart;
             chbCloseOnEscape.Checked = Settings.CloseOnEscape;
 
@@ -18,6 +18,8 @@ namespace Bimil {
 
             chbAppTimeout.Checked = (Settings.AutoCloseTimeout > 0);
             if (Settings.AutoCloseTimeout > 0) { nudAppTimeout.Value = Settings.AutoCloseTimeout; }
+
+            chbPasswordSafeWarnings.Checked = Settings.ShowPasswordSafeWarnings;
         }
 
         private void btnOK_Click(object sender, EventArgs e) {
@@ -25,6 +27,7 @@ namespace Bimil {
             Settings.CloseOnEscape = chbCloseOnEscape.Checked;
             Settings.AutoCloseItemTimeout = chbItemTimeout.Checked ? (int)nudItemTimeout.Value : 0;
             Settings.AutoCloseTimeout = chbAppTimeout.Checked ? (int)nudAppTimeout.Value : 0;
+            Settings.ShowPasswordSafeWarnings = chbPasswordSafeWarnings.Checked;
         }
 
         private void chbItemTimeout_CheckedChanged(object sender, EventArgs e) {

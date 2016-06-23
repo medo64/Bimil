@@ -41,6 +41,16 @@ namespace Bimil {
         }
 
 
+        [Category("Compatibility")]
+        [DisplayName("Show PasswordSafe warnings")]
+        [Description("If true, warning will be shown upon adding fields not compatible with PasswordSafe.")]
+        [DefaultValue(false)]
+        public static bool ShowPasswordSafeWarnings {
+            get { return Medo.Configuration.Settings.Read("ShowPasswordSafeWarnings", false); }
+            set { Medo.Configuration.Settings.Write("ShowPasswordSafeWarnings", value); }
+        }
+
+
         [Category("Visual")]
         [DisplayName("Scale boost")]
         [Description("Additional value to determine toolbar scaling.")]

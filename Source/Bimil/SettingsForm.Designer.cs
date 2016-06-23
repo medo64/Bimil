@@ -33,6 +33,7 @@ namespace Bimil {
             this.chbAppTimeout = new System.Windows.Forms.CheckBox();
             this.nudAppTimeout = new System.Windows.Forms.NumericUpDown();
             this.tip = new System.Windows.Forms.ToolTip(this.components);
+            this.chbPasswordSafeWarnings = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.nudItemTimeout)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudAppTimeout)).BeginInit();
             this.SuspendLayout();
@@ -41,7 +42,7 @@ namespace Bimil {
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(170, 134);
+            this.btnCancel.Location = new System.Drawing.Point(180, 161);
             this.btnCancel.Margin = new System.Windows.Forms.Padding(3, 15, 3, 3);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(90, 28);
@@ -53,11 +54,11 @@ namespace Bimil {
             // 
             this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOK.Location = new System.Drawing.Point(74, 134);
+            this.btnOK.Location = new System.Drawing.Point(84, 161);
             this.btnOK.Margin = new System.Windows.Forms.Padding(3, 15, 3, 3);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(90, 28);
-            this.btnOK.TabIndex = 7;
+            this.btnOK.TabIndex = 8;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
@@ -93,7 +94,7 @@ namespace Bimil {
             0,
             0,
             0});
-            this.nudItemTimeout.Location = new System.Drawing.Point(195, 66);
+            this.nudItemTimeout.Location = new System.Drawing.Point(205, 66);
             this.nudItemTimeout.Maximum = new decimal(new int[] {
             3600,
             0,
@@ -147,7 +148,7 @@ namespace Bimil {
             0,
             0,
             0});
-            this.nudAppTimeout.Location = new System.Drawing.Point(195, 94);
+            this.nudAppTimeout.Location = new System.Drawing.Point(205, 94);
             this.nudAppTimeout.Maximum = new decimal(new int[] {
             3600,
             0,
@@ -168,13 +169,26 @@ namespace Bimil {
             0,
             0});
             // 
+            // chbPasswordSafeWarnings
+            // 
+            this.chbPasswordSafeWarnings.AutoSize = true;
+            this.chbPasswordSafeWarnings.Location = new System.Drawing.Point(12, 122);
+            this.chbPasswordSafeWarnings.Name = "chbPasswordSafeWarnings";
+            this.chbPasswordSafeWarnings.Size = new System.Drawing.Size(261, 21);
+            this.chbPasswordSafeWarnings.TabIndex = 7;
+            this.chbPasswordSafeWarnings.Text = "PasswordSafe compatibility warnings";
+            this.tip.SetToolTip(this.chbPasswordSafeWarnings, "If true, warning will be shown upon adding fields not compatible with PasswordSaf" +
+        "e.");
+            this.chbPasswordSafeWarnings.UseVisualStyleBackColor = true;
+            // 
             // SettingsForm
             // 
             this.AcceptButton = this.btnOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(272, 174);
+            this.ClientSize = new System.Drawing.Size(282, 201);
+            this.Controls.Add(this.chbPasswordSafeWarnings);
             this.Controls.Add(this.nudAppTimeout);
             this.Controls.Add(this.nudItemTimeout);
             this.Controls.Add(this.chbAppTimeout);
@@ -191,7 +205,7 @@ namespace Bimil {
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Options";
-            this.Load += new System.EventHandler(this.SettingsForm_Load);
+            this.Load += new System.EventHandler(this.Form_Load);
             ((System.ComponentModel.ISupportInitialize)(this.nudItemTimeout)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudAppTimeout)).EndInit();
             this.ResumeLayout(false);
@@ -210,5 +224,6 @@ namespace Bimil {
         private System.Windows.Forms.CheckBox chbAppTimeout;
         private System.Windows.Forms.NumericUpDown nudAppTimeout;
         private System.Windows.Forms.ToolTip tip;
+        private System.Windows.Forms.CheckBox chbPasswordSafeWarnings;
     }
 }

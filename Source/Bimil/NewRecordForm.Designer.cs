@@ -23,10 +23,14 @@ namespace Bimil {
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(NewRecordForm));
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnOK = new System.Windows.Forms.Button();
             this.lblRecordType = new System.Windows.Forms.Label();
             this.cmbRecordType = new System.Windows.Forms.ComboBox();
+            this.erp = new System.Windows.Forms.ErrorProvider(this.components);
+            ((System.ComponentModel.ISupportInitialize)(this.erp)).BeginInit();
             this.SuspendLayout();
             // 
             // btnCancel
@@ -73,6 +77,12 @@ namespace Bimil {
             this.cmbRecordType.Name = "cmbRecordType";
             this.cmbRecordType.Size = new System.Drawing.Size(250, 24);
             this.cmbRecordType.TabIndex = 3;
+            this.cmbRecordType.SelectedIndexChanged += new System.EventHandler(this.cmbRecordType_SelectedIndexChanged);
+            // 
+            // erp
+            // 
+            this.erp.ContainerControl = this;
+            this.erp.Icon = ((System.Drawing.Icon)(resources.GetObject("erp.Icon")));
             // 
             // NewRecordForm
             // 
@@ -94,8 +104,10 @@ namespace Bimil {
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "New record";
             this.Load += new System.EventHandler(this.Form_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.erp)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
+
         }
 
         #endregion
@@ -104,5 +116,6 @@ namespace Bimil {
         private System.Windows.Forms.Button btnOK;
         private System.Windows.Forms.Label lblRecordType;
         private System.Windows.Forms.ComboBox cmbRecordType;
+        private System.Windows.Forms.ErrorProvider erp;
     }
 }

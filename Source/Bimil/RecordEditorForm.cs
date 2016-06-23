@@ -94,7 +94,11 @@ namespace Bimil {
 
 
         private void btnAdd_Click(object sender, EventArgs e) {
-            using (var frm = new NewRecordForm(this.Document)) {
+            var records = new List<Record>();
+            foreach (ListViewItem item in lsvFields.Items) {
+                records.Add((Record)item.Tag);
+            }
+            using (var frm = new NewRecordForm(this.Document, records.AsReadOnly())) {
                 if (frm.ShowDialog(this) == DialogResult.OK) {
                     var lvi = new ListViewItem(Helpers.GetRecordCaption(frm.Record)) { Tag = frm.Record };
                     lsvFields.Items.Add(lvi);

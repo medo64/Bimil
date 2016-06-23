@@ -2,18 +2,24 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 using Medo.Security.Cryptography.PasswordSafe;
+using System.Collections.Generic;
 
 namespace Bimil {
     public partial class NewRecordForm : Form {
-
-        private readonly Document Document;
-
-        public NewRecordForm(Document document) {
+        public NewRecordForm(Document document, IEnumerable<Record> recordsInUse) {
             InitializeComponent();
             this.Font = SystemFonts.MessageBoxFont;
 
+            erp.SetIconAlignment(cmbRecordType, ErrorIconAlignment.MiddleLeft);
+            erp.SetIconPadding(cmbRecordType, cmbRecordType.Height / 6);
+
             this.Document = document;
+            this.RecordsInUse = recordsInUse;
         }
+
+        private readonly Document Document;
+        private readonly IEnumerable<Record> RecordsInUse;
+
 
         private void Form_Load(object sender, EventArgs e) {
             foreach (RecordType recordType in Enum.GetValues(typeof(RecordType))) {
@@ -62,6 +68,33 @@ namespace Bimil {
         }
 
         #endregion
+
+        private void cmbRecordType_SelectedIndexChanged(object sender, EventArgs e) {
+            if (!Settings.ShowPasswordSafeWarnings) { return; }
+
+            var wrap = (BimilFormatWrapper)cmbRecordType.SelectedItem;
+            erp.SetError(cmbRecordType, null);
+
+            switch (wrap.Format) {
+                case RecordType.TwoFactorKey:
+                case RecordType.CreditCardNumber:
+                case RecordType.CreditCardExpiration:
+                case RecordType.CreditCardVerificationValue:
+                case RecordType.CreditCardPin:
+                    erp.SetError(cmbRecordType, "This record type is not supported by PasswordSafe.");
+                    break;
+
+                default:
+                    var recordTypeCount = 0;
+                    foreach (var item in this.RecordsInUse) {
+                        if (item.RecordType == wrap.Format) { recordTypeCount++; }
+                    }
+                    if (recordTypeCount >= 1) {
+                        erp.SetError(cmbRecordType, "Repeating record type is not supported by PasswordSafe.");
+                    }
+                    break;
+            }
+        }
 
     }
 }
