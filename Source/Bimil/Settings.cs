@@ -4,8 +4,8 @@ using System.ComponentModel;
 namespace Bimil {
     internal static class Settings {
 
-        [Category("Auto-close")]
-        [DisplayName("Show start")]
+        [Category("Behavior")]
+        [DisplayName("Close on escape")]
         [Description("If true, escape will close application.")]
         [DefaultValue(false)]
         public static bool CloseOnEscape {
@@ -13,7 +13,7 @@ namespace Bimil {
             set { Medo.Configuration.Settings.Write("CloseOnEscape", value); }
         }
 
-        [Category("Auto-close")]
+        [Category("Behavior")]
         [DisplayName("Show start")]
         [Description("If true, Start window will be shown.")]
         [DefaultValue(true)]
@@ -22,8 +22,8 @@ namespace Bimil {
             set { Medo.Configuration.Settings.Write("ShowStart", value); }
         }
 
-        [Category("Auto-close")]
-        [DisplayName("Auto-close application")]
+        [Category("Behavior")]
+        [DisplayName("Auto-close application timeout")]
         [Description("Time in seconds before window will close if it loses focus. Value 0 disables auto-close.")]
         [DefaultValue(900)]
         public static int AutoCloseTimeout {
@@ -31,8 +31,8 @@ namespace Bimil {
             set { Medo.Configuration.Settings.Write("AutoCloseTimeout", LimitBetween(value, minValue: 10, maxValue: 3600, allowZero: true)); }
         }
 
-        [Category("Auto-close")]
-        [DisplayName("Auto-close window")]
+        [Category("Behavior")]
+        [DisplayName("Auto-close window timeout")]
         [Description("Time in seconds before item window will close if it loses focus. Value 0 disables auto-close. Note that auto-close will cancel any edit in progress.")]
         [DefaultValue(120)]
         public static int AutoCloseItemTimeout {
@@ -41,6 +41,10 @@ namespace Bimil {
         }
 
 
+        [Category("Visual")]
+        [DisplayName("Scale boost")]
+        [Description("Additional value to determine toolbar scaling.")]
+        [DefaultValue(120)]
         public static double ScaleBoost {
             get { return Medo.Configuration.Settings.Read("ScaleBoost", 0.00); }
             set {
