@@ -370,9 +370,14 @@ namespace Bimil {
 
         private void mnuOpen_ButtonClick(object sender, EventArgs e) {
             if (SaveIfNeeded() != DialogResult.OK) { return; }
-            using (var frm = new OpenFileDialog() { AddExtension = true, AutoUpgradeEnabled = true, Filter = "Bimil files|*.bimil|Password Safe files|*.psafe3|All files|*.*", RestoreDirectory = true, ShowReadOnly = true }) {
+            using (var frm = new OpenFileDialog() { AddExtension = true, AutoUpgradeEnabled = true, Filter = "Bimil and PasswordSafe files|*.bimil;*.psafe3|Bimil files|*.bimil|Password Safe files|*.psafe3|All files|*.*", RestoreDirectory = true, ShowReadOnly = true }) {
                 if (frm.ShowDialog(this) == DialogResult.OK) {
-                    LoadFile(frm.FileName, isReadOnly: frm.ReadOnlyChecked);
+                    if (LoadFile(frm.FileName, isReadOnly: frm.ReadOnlyChecked)) {
+                        if ((this.Document.LastSaveApplication == null) || !this.Document.LastSaveApplication.StartsWith("Bimil ")) {
+                            var application = string.IsNullOrEmpty(this.Document.LastSaveApplication) ? "unknown" : this.Document.LastSaveApplication;
+                            Medo.MessageBox.ShowWarning(this, "Be careful when saving files not created by Bimil.\n\nWhile such files can be used, not necessarily all the features of the original software will be supported. Likewise, files edited by Bimil won't be necessarily fully readable by other software; e.g. two-factor keys are only supported in Bimil.\n\nLast edited by:\n" + application);
+                        }
+                    }
                 }
             }
         }
