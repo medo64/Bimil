@@ -24,7 +24,7 @@ namespace Bimil {
 
         [Category("Behavior")]
         [DisplayName("Auto-close application timeout")]
-        [Description("Time in seconds before window will close if it loses focus. Value 0 disables auto-close.")]
+        [Description("Time in seconds for main window to automatically close if it loses focus. Value 0 disables auto-close.")]
         [DefaultValue(900)]
         public static int AutoCloseTimeout {
             get { return LimitBetween(Medo.Configuration.Settings.Read("AutoCloseTimeout", 900), minValue: 10, maxValue: 3600, allowZero: true); }
@@ -33,7 +33,7 @@ namespace Bimil {
 
         [Category("Behavior")]
         [DisplayName("Auto-close window timeout")]
-        [Description("Time in seconds before item window will close if it loses focus. Value 0 disables auto-close. Note that auto-close will cancel any edit in progress.")]
+        [Description("Time in seconds for item window to automatically close if it loses focus. Value 0 disables auto-close. Note that auto-close will cancel any edit in progress.")]
         [DefaultValue(120)]
         public static int AutoCloseItemTimeout {
             get { return LimitBetween(Medo.Configuration.Settings.Read("AutoCloseItemTimeout", 120), minValue: 10, maxValue: 3600, allowZero: true); }
