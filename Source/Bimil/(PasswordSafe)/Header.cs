@@ -66,8 +66,12 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         protected override PasswordSafeFieldDataType DataType {
             get {
                 switch (this.HeaderType) {
-                    case HeaderType.Version: return PasswordSafeFieldDataType.Version;
-                    case HeaderType.Uuid: return PasswordSafeFieldDataType.Uuid;
+                    case HeaderType.Version:
+                        return PasswordSafeFieldDataType.Version;
+
+                    case HeaderType.Uuid:
+                        return PasswordSafeFieldDataType.Uuid;
+
                     case HeaderType.NonDefaultPreferences:
                     case HeaderType.TreeDisplayStatus:
                     case HeaderType.WhoPerformedLastSave:
@@ -80,8 +84,12 @@ namespace Medo.Security.Cryptography.PasswordSafe {
                     case HeaderType.RecentlyUsedEntries:
                     case HeaderType.NamedPasswordPolicies:
                     case HeaderType.EmptyGroups:
-                    case HeaderType.Yubico: return PasswordSafeFieldDataType.Text;
-                    case HeaderType.TimestampOfLastSave: return PasswordSafeFieldDataType.Time;
+                    case HeaderType.Yubico:
+                        return PasswordSafeFieldDataType.Text;
+
+                    case HeaderType.TimestampOfLastSave:
+                        return PasswordSafeFieldDataType.Time;
+
                     default: return PasswordSafeFieldDataType.Unknown;
                 }
             }

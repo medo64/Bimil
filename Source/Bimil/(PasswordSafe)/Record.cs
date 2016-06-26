@@ -66,7 +66,9 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         protected override PasswordSafeFieldDataType DataType {
             get {
                 switch (this.RecordType) {
-                    case RecordType.Uuid: return PasswordSafeFieldDataType.Uuid;
+                    case RecordType.Uuid:
+                        return PasswordSafeFieldDataType.Uuid;
+
                     case RecordType.Group:
                     case RecordType.Title:
                     case RecordType.UserName:
@@ -83,13 +85,19 @@ namespace Medo.Security.Cryptography.PasswordSafe {
                     case RecordType.CreditCardNumber:
                     case RecordType.CreditCardExpiration:
                     case RecordType.CreditCardVerificationValue:
-                    case RecordType.CreditCardPin: return PasswordSafeFieldDataType.Text;
+                    case RecordType.CreditCardPin:
+                        return PasswordSafeFieldDataType.Text;
+
                     case RecordType.CreationTime:
                     case RecordType.PasswordModificationTime:
                     case RecordType.LastAccessTime:
                     case RecordType.PasswordExpiryTime:
-                    case RecordType.LastModificationTime: return PasswordSafeFieldDataType.Time;
-                    case RecordType.TwoFactorKey: return PasswordSafeFieldDataType.Binary;
+                    case RecordType.LastModificationTime:
+                        return PasswordSafeFieldDataType.Time;
+
+                    case RecordType.TwoFactorKey:
+                        return PasswordSafeFieldDataType.Binary;
+
                     default: return PasswordSafeFieldDataType.Unknown;
                 }
             }
