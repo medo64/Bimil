@@ -196,6 +196,7 @@ namespace Bimil {
 
                             pnl.Controls.Add(NewCopyButton(textBox, copyText: delegate () { return GetUrl(textBox.Text); }));
                             pnl.Controls.Add(NewExecuteUrlButton(textBox));
+                            pnl.Controls.Add(NewExecuteUrlQRButton(textBox));
 
                             yH = textBox.Height;
                         }
@@ -476,6 +477,36 @@ namespace Bimil {
 
                 var url = GetUrl(textBox.Text);
                 if (url != "") { Process.Start(url); }
+            });
+
+            return button;
+        }
+
+        private Button NewExecuteUrlQRButton(TextBox parentTextBox) {
+            parentTextBox.Width -= parentTextBox.Height;
+            var button = new Button() {
+                Name = "btnExecuteQR",
+                Location = new Point(parentTextBox.Right, parentTextBox.Top),
+                Size = new Size(parentTextBox.Height, parentTextBox.Height),
+                TabStop = false,
+                Tag = parentTextBox,
+                Text = "",
+                Anchor = AnchorStyles.Top | AnchorStyles.Right
+            };
+            Helpers.ScaleButton(button);
+
+            tip.SetToolTip(button, "Create URL QR code.");
+
+            button.Click += new EventHandler(delegate (object sender, EventArgs e) {
+                var textBox = (TextBox)(((Control)sender).Tag);
+                textBox.Select();
+
+                var url = GetUrl(textBox.Text);
+                if (url != "") {
+                    using (var frm = new QRCodeForm(url)) {
+                        frm.ShowDialog(this);
+                    }
+                }
             });
 
             return button;
