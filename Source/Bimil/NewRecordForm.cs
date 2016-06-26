@@ -40,6 +40,7 @@ namespace Bimil {
 
         private void btnOK_Click(object sender, EventArgs e) {
             this.Record = new Record(((BimilFormatWrapper)cmbRecordType.SelectedItem).Format);
+            if (this.Record.RecordType == RecordType.PasswordHistory) { this.Record.Text = "10300"; } //enable by default
         }
 
 

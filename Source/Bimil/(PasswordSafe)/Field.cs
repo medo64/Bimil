@@ -77,7 +77,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// Null will be returned if conversion cannot be performed.
         /// For unknown field types, conversion will always be attempted.
         /// </summary>
-        public string Text {
+        public virtual string Text {
             get {
                 if ((this.DataType == PasswordSafeFieldDataType.Text) || (this.DataType == PasswordSafeFieldDataType.Unknown)) {
                     var data = this.RawData;

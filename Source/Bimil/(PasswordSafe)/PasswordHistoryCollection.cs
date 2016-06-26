@@ -12,11 +12,11 @@ namespace Medo.Security.Cryptography.PasswordSafe {
     [DebuggerDisplay("{Count} historical passwords")]
     public sealed class PasswordHistoryCollection : IEnumerable<PasswordHistoryItem> {
 
-        internal PasswordHistoryCollection(Entry entry) {
-            this.Entry = entry;
+        internal PasswordHistoryCollection(RecordCollection records) {
+            this.Records = records;
 
-            if (this.Entry.Records.Contains(RecordType.PasswordHistory)) {
-                var text = this.Entry.Records[RecordType.PasswordHistory].Text;
+            if (this.Records.Contains(RecordType.PasswordHistory)) {
+                var text = this.Records[RecordType.PasswordHistory].Text;
                 if (text.Length >= 5) {
                     this._enabled = text[0] == '0' ? false : true;
                     if (!int.TryParse(text.Substring(1, 2), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out this._maximumCount)) {
@@ -50,14 +50,14 @@ namespace Medo.Security.Cryptography.PasswordSafe {
             }
         }
 
-        private readonly Entry Entry;
+        private readonly RecordCollection Records;
 
 
         /// <summary>
         /// Used to mark document as changed.
         /// </summary>
         internal void MarkAsChanged() {
-            var record = this.Entry[RecordType.PasswordHistory];
+            var record = this.Records[RecordType.PasswordHistory];
 
             var sb = new StringBuilder();
             sb.Append(this.Enabled ? "1" : "0");
@@ -117,7 +117,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
 
 
         internal void AddPasswordToHistory(DateTime time, string password) {
-            if (this.Enabled) { //change only if enabled
+            if (this.Enabled && !string.IsNullOrEmpty(password)) { //change only if enabled and not empty
                 this.BaseCollection.Add(new PasswordHistoryItem(this, time, password));
                 while (this.BaseCollection.Count > this.MaximumCount) {
                     this.BaseCollection.RemoveAt(0);

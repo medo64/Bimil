@@ -155,7 +155,6 @@ namespace Bimil {
                     case RecordType.LastModificationTime:
                     case RecordType.PasswordExpiryTime:
                     case RecordType.PasswordModificationTime:
-                    case RecordType.PasswordHistory:
                         continue;
 
                     case RecordType.UserName:
@@ -180,6 +179,14 @@ namespace Bimil {
                             pnl.Controls.Add(NewShowPasswordButton(textBox));
 
                             yH = textBox.Height;
+                        }
+                        break;
+
+                    case RecordType.PasswordHistory: {
+                            var control = NewPasswordHistoryComboBox(labelWidth, y, this.Item);
+                            pnl.Controls.Add(control);
+
+                            yH = control.Height;
                         }
                         break;
 
@@ -301,7 +308,9 @@ namespace Bimil {
                             Array.Clear(buffer, 0, buffer.Length);
                         }
                     } else {
-                        record.Text = control.Text;
+                        if (!string.Equals(record.Text, control.Text, StringComparison.Ordinal)) {
+                            record.Text = control.Text;
+                        }
                     }
                 }
             }
@@ -350,6 +359,41 @@ namespace Bimil {
             return textBox;
         }
 
+        private ComboBox NewPasswordHistoryComboBox(int x, int y, Entry entry) {
+            var padding = SystemInformation.VerticalScrollBarWidth + 1;
+
+            var control = new ComboBox() { BackColor = SystemColors.Control, Font = this.Font, Location = new Point(x + padding, y), DropDownStyle = ComboBoxStyle.DropDownList, Width = pnl.ClientSize.Width - x - padding, Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right };
+            control.Items.Add("Open dropdown to show passwords");
+            control.SelectedIndex = 0;
+
+            control.DropDownClosed += new EventHandler(delegate (object sender, EventArgs e) {
+                control.Items.Clear();
+                control.Items.Add("Open dropdown to show password history");
+                control.SelectedIndex = 0;
+            });
+
+            control.DropDown += new EventHandler(delegate (object sender, EventArgs e) {
+                control.ForeColor = SystemColors.ControlText;
+                control.Items.Clear();
+                if (entry.PasswordHistory.Count == 0) {
+                    control.Items.Add("No password history");
+                } else {
+                    foreach (var item in entry.PasswordHistory) {
+                        var timeString = item.TimeFirstUsed.ToShortDateString() + " " + item.TimeFirstUsed.ToShortTimeString();
+                        control.Items.Add(timeString + ": " + item.HistoricalPassword);
+                    }
+                }
+            });
+
+            control.KeyDown += new KeyEventHandler(delegate (object sender, KeyEventArgs e) {
+                switch (e.KeyData) {
+                    case Keys.Down: control.DroppedDown = true; break;
+                }
+            });
+
+            return control;
+        }
+
         private Button NewCopyButton(TextBox parentTextBox, string tipText = null, char[] allowedCopyCharacters = null, GetText copyText = null) {
             parentTextBox.Width -= parentTextBox.Height;
             var button = new Button() {
@@ -393,7 +437,8 @@ namespace Bimil {
                 Location = new Point(parentTextBox.Right, parentTextBox.Top),
                 Size = new Size(parentTextBox.Height, parentTextBox.Height),
                 TabStop = false,
-                Tag = parentTextBox, Text = "",
+                Tag = parentTextBox,
+                Text = "",
                 Anchor = AnchorStyles.Top | AnchorStyles.Right
             };
             Helpers.ScaleButton(button);

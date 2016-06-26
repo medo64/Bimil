@@ -40,6 +40,8 @@ namespace Bimil {
                 case RecordType.CreditCardVerificationValue: return "Card security code";
                 case RecordType.CreditCardPin: return "Card PIN";
 
+                case RecordType.PasswordHistory: return "Password history";
+
                 default: return null; //all other fields are not really supported
             }
         }
