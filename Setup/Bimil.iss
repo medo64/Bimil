@@ -7,8 +7,10 @@
 #define AppSetupFile   AppBase + StringChange(AppVersion, '.', '')
 
 #define AppVersionEx   StringChange(AppVersion, '0.00', '')
-#if "" != VersionHash
-#  define AppVersionEx AppVersionEx + " (" + VersionHash + ")"
+#ifdef VersionHash
+#  if "" != VersionHash
+#    define AppVersionEx AppVersionEx + " (" + VersionHash + ")"
+#  endif
 #endif
 
 
