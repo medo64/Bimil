@@ -50,6 +50,10 @@ SetupWindowTitle=Setup {#AppName} {#AppVersionEx}
 BeveledLabel=jmedved.com
 
 
+[Tasks]
+Name: extension_psafe3;  GroupDescription: "Associate additional extension:";  Description: "Password Safe 3.x (.psafe3)";  Flags: unchecked;
+
+
 [Files]
 Source: "Bimil.exe";   DestDir: "{app}";  Flags: ignoreversion;
 Source: "Bimil.pdb";   DestDir: "{app}";  Flags: ignoreversion;
@@ -65,6 +69,7 @@ Root: HKCU; Subkey: "Software\Josip Medved\Bimil"; ValueType: dword; ValueName: 
 Root: HKCU; Subkey: "Software\Josip Medved"; Flags: uninsdeletekeyifempty
 
 Root: HKCR; Subkey: ".bimil"; ValueType: string; ValueName: ""; ValueData: "BimilFile"; Flags: uninsclearvalue;
+Root: HKCR; Subkey: ".psafe3"; ValueType: string; ValueName: ""; ValueData: "BimilFile"; Flags: uninsclearvalue; Tasks: extension_psafe3;
 
 Root: HKCR; Subkey: "BimilFile";                     ValueType: none;                                                                             Flags: uninsdeletekey;
 Root: HKCR; Subkey: "BimilFile";                     ValueType: string; ValueName: "";                  ValueData: "Bimil";
