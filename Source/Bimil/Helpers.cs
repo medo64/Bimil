@@ -146,7 +146,7 @@ namespace Bimil {
             foreach (var item in resultList) {
                 ListViewGroup group;
                 if (!groupDictionary.TryGetValue(item.Group, out group)) {
-                    group = new ListViewGroup(item.Group);
+                    group = new ListViewGroup(string.IsNullOrEmpty(item.Group) ? "(no group)" : item.Group);
                     lsvEntries.Groups.Add(group);
                     groupDictionary.Add(item.Group, group);
                 }
