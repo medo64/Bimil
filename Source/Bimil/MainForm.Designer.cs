@@ -225,7 +225,7 @@ namespace Bimil {
             this.pnlDocument.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlDocument.Location = new System.Drawing.Point(0, 27);
             this.pnlDocument.Name = "pnlDocument";
-            this.pnlDocument.Size = new System.Drawing.Size(462, 328);
+            this.pnlDocument.Size = new System.Drawing.Size(462, 366);
             this.pnlDocument.TabIndex = 0;
             // 
             // lsvPasswords
@@ -241,9 +241,7 @@ namespace Bimil {
             this.lsvPasswords.LabelWrap = false;
             this.lsvPasswords.Location = new System.Drawing.Point(0, 24);
             this.lsvPasswords.Name = "lsvPasswords";
-            this.lsvPasswords.ShowGroups = false;
-            this.lsvPasswords.Size = new System.Drawing.Size(462, 304);
-            this.lsvPasswords.Sorting = System.Windows.Forms.SortOrder.Ascending;
+            this.lsvPasswords.Size = new System.Drawing.Size(462, 342);
             this.lsvPasswords.TabIndex = 1;
             this.lsvPasswords.UseCompatibleStateImageBehavior = false;
             this.lsvPasswords.View = System.Windows.Forms.View.Details;
@@ -280,7 +278,7 @@ namespace Bimil {
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(462, 355);
+            this.ClientSize = new System.Drawing.Size(462, 393);
             this.Controls.Add(this.pnlDocument);
             this.Controls.Add(this.mnu);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));

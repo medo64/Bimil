@@ -710,30 +710,52 @@ namespace Bimil {
                 entryToSelect = (Entry)(lsvPasswords.SelectedItems[0].Tag);
             }
 
+            //search for matches
+            var text = cmbSearch.Text;
+            var resultList = new List<Entry>();
+            if (this.Document != null) {
+                foreach (var item in this.Document.Entries) {
+                    if (string.Equals(item.Group, text, StringComparison.CurrentCultureIgnoreCase)) {
+                        resultList.Add(item);
+                    } else if ((text.Length > 0) && (item.Title.IndexOf(text, StringComparison.CurrentCultureIgnoreCase) >= 0)) {
+                        resultList.Add(item);
+                    }
+                }
+            }
+
+            //sort, preferring the same group
+            resultList.Sort((item1, item2) => {
+                if (string.Equals(item1.Group, text, StringComparison.CurrentCultureIgnoreCase) && !string.Equals(item2.Group, text, StringComparison.CurrentCultureIgnoreCase)) {
+                    return -1; //item1 is before item2
+                } else if (!string.Equals(item1.Group, text, StringComparison.CurrentCultureIgnoreCase) && string.Equals(item2.Group, text, StringComparison.CurrentCultureIgnoreCase)) {
+                    return +1; //item2 is before item1
+                } else {
+                    var groupCompare = string.Compare(item1.Group, item2.Group, StringComparison.CurrentCultureIgnoreCase);
+                    return (groupCompare != 0) ? groupCompare : string.Compare(item1.Title, item2.Title, StringComparison.CurrentCultureIgnoreCase);
+                }
+            });
+
+            //show items
             lsvPasswords.BeginUpdate();
             lsvPasswords.Items.Clear();
-            if (this.Document != null) {
-                //check group only
-                var foundGroupEntries = new Dictionary<Guid, Entry>();
-                foreach (var item in this.Document.Entries) {
-                    if ((string.Equals(cmbSearch.Text, item.Group, StringComparison.CurrentCultureIgnoreCase))) {
-                        lsvPasswords.Items.Add(new ListViewItem(item.Title) { Tag = item });
-                        foundGroupEntries.Add(item.Uuid, item);
-                    }
-                }
+            lsvPasswords.Groups.Clear();
 
-                //find other matches
-                foreach (var item in this.Document.Entries) {
-                    if ((cmbSearch.Text.Length > 0) && (item.Title.IndexOf(cmbSearch.Text, StringComparison.CurrentCultureIgnoreCase) >= 0)) {
-                        if (foundGroupEntries.Count == 0) { //if nothing was found under group, add anyhow
-                            lsvPasswords.Items.Add(new ListViewItem(item.Title) { Tag = item });
-                        } else if (!foundGroupEntries.ContainsKey(item.Uuid)) { //add only if not added before
-                            lsvPasswords.Items.Add(new ListViewItem(item.Title) { Tag = item, ForeColor = SystemColors.GrayText });
-                        }
-                    }
+            var groupDictionary = new Dictionary<string, ListViewGroup>();
+            foreach (var entry in resultList) {
+                var groupParts = entry.Group.GetSegments();
+                for (var i = 0; i < groupParts.Length; i++) {
+                    groupParts[i] = groupParts[i].Trim();
+                } //remove extra spaces
+                var groupText = string.Join(" / ", groupParts);
+                ListViewGroup group;
+                if (!groupDictionary.TryGetValue(groupText, out group)) {
+                    group = new ListViewGroup(groupText);
+                    lsvPasswords.Groups.Add(group);
+                    groupDictionary.Add(groupText, group);
                 }
-
+                lsvPasswords.Items.Add(new ListViewItem(entry.Title, group) { Tag = entry });
             }
+
             lsvPasswords.EndUpdate();
 
             if (lsvPasswords.Items.Count > 0) {
