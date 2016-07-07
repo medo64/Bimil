@@ -69,7 +69,7 @@ namespace Bimil {
             this.mnu.Location = new System.Drawing.Point(0, 0);
             this.mnu.Name = "mnu";
             this.mnu.Padding = new System.Windows.Forms.Padding(1, 0, 1, 0);
-            this.mnu.Size = new System.Drawing.Size(462, 27);
+            this.mnu.Size = new System.Drawing.Size(542, 27);
             this.mnu.TabIndex = 1;
             // 
             // mnuNew
@@ -225,7 +225,7 @@ namespace Bimil {
             this.pnlDocument.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlDocument.Location = new System.Drawing.Point(0, 27);
             this.pnlDocument.Name = "pnlDocument";
-            this.pnlDocument.Size = new System.Drawing.Size(462, 366);
+            this.pnlDocument.Size = new System.Drawing.Size(542, 366);
             this.pnlDocument.TabIndex = 0;
             // 
             // lsvEntries
@@ -241,7 +241,7 @@ namespace Bimil {
             this.lsvEntries.LabelWrap = false;
             this.lsvEntries.Location = new System.Drawing.Point(0, 24);
             this.lsvEntries.Name = "lsvEntries";
-            this.lsvEntries.Size = new System.Drawing.Size(462, 342);
+            this.lsvEntries.Size = new System.Drawing.Size(542, 342);
             this.lsvEntries.TabIndex = 1;
             this.lsvEntries.UseCompatibleStateImageBehavior = false;
             this.lsvEntries.View = System.Windows.Forms.View.Details;
@@ -255,7 +255,7 @@ namespace Bimil {
             this.cmbSearch.FormattingEnabled = true;
             this.cmbSearch.Location = new System.Drawing.Point(0, 0);
             this.cmbSearch.Name = "cmbSearch";
-            this.cmbSearch.Size = new System.Drawing.Size(462, 24);
+            this.cmbSearch.Size = new System.Drawing.Size(542, 24);
             this.cmbSearch.Sorted = true;
             this.cmbSearch.TabIndex = 0;
             this.cmbSearch.SelectedIndexChanged += new System.EventHandler(this.cmbSearch_SelectedIndexChanged);
@@ -276,12 +276,12 @@ namespace Bimil {
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(462, 393);
+            this.ClientSize = new System.Drawing.Size(542, 393);
             this.Controls.Add(this.pnlDocument);
             this.Controls.Add(this.mnu);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.KeyPreview = true;
-            this.MinimumSize = new System.Drawing.Size(320, 200);
+            this.MinimumSize = new System.Drawing.Size(400, 300);
             this.Name = "MainForm";
             this.Text = "Bimil";
             this.Activated += new System.EventHandler(this.Form_Activated);
