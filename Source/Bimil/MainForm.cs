@@ -211,7 +211,7 @@ namespace Bimil {
                 switch (e.KeyData) {
                     case Keys.PageDown: {
                             if (cmbSearch.Items.Count > 0) {
-                                int newIndex = (cmbSearch.SelectedIndex > -1) ? cmbSearch.SelectedIndex + 1 : Helpers.GetNearestComboIndex(cmbSearch.Text, cmbSearch.Items, 0);
+                                int newIndex = (cmbSearch.SelectedIndex > -1) ? cmbSearch.SelectedIndex + 1 : Helpers.GetNearestComboIndex(cmbSearch.Text, cmbSearch.Items, 1);
                                 cmbSearch.SelectedIndex = Math.Min(newIndex, cmbSearch.Items.Count - 1);
                                 cmbSearch.SelectAll();
                             }
