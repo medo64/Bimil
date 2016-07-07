@@ -633,7 +633,7 @@ namespace Bimil {
         private void mnuSearch_Click(object sender, EventArgs e) {
             if (this.Document == null) { return; }
 
-            using (var frm = new SearchForm(this.Document, this.Categories)) {
+            using (var frm = new SearchForm(this.Document, this.Categories, cmbSearch.Text)) {
                 frm.ShowDialog(this);
             }
         }

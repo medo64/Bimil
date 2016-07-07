@@ -5,15 +5,17 @@ using System.Collections.Generic;
 
 namespace Bimil {
     internal partial class SearchForm : Form {
-        public SearchForm(Document document, IList<string> categories) {
+        public SearchForm(Document document, IList<string> categories, string defaultText) {
             InitializeComponent();
 
             this.Document = document;
             this.Categories = categories;
+            this.DefaultText = defaultText;
         }
 
         private readonly Document Document;
         private readonly IList<string> Categories;
+        private readonly string DefaultText;
 
         protected override bool ProcessDialogKey(Keys keyData) {
             switch (keyData) {
@@ -25,6 +27,11 @@ namespace Bimil {
             return base.ProcessDialogKey(keyData);
         }
 
+
+        private void Form_Shown(object sender, EventArgs e) {
+            cmbSearch.Text = this.DefaultText;
+            cmbSearch.SelectAll();
+        }
 
         private void Form_Resize(object sender, EventArgs e) {
             lsvEntries.Columns[0].Width = lsvEntries.ClientSize.Width;
@@ -68,5 +75,6 @@ namespace Bimil {
                 e.Handled = true;
             }
         }
+
     }
 }
