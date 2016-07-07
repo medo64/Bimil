@@ -42,7 +42,7 @@ namespace Bimil {
             this.pnl.Location = new System.Drawing.Point(12, 12);
             this.pnl.Name = "pnl";
             this.pnl.Size = new System.Drawing.Size(558, 325);
-            this.pnl.TabIndex = 0;
+            this.pnl.TabIndex = 1;
             // 
             // btnCancel
             // 
@@ -52,7 +52,7 @@ namespace Bimil {
             this.btnCancel.Margin = new System.Windows.Forms.Padding(3, 15, 3, 3);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(90, 28);
-            this.btnCancel.TabIndex = 4;
+            this.btnCancel.TabIndex = 0;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             // 
@@ -64,7 +64,7 @@ namespace Bimil {
             this.btnOK.Margin = new System.Windows.Forms.Padding(3, 15, 3, 3);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(90, 28);
-            this.btnOK.TabIndex = 3;
+            this.btnOK.TabIndex = 4;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Visible = false;
@@ -77,7 +77,7 @@ namespace Bimil {
             this.btnEdit.Margin = new System.Windows.Forms.Padding(3, 15, 3, 3);
             this.btnEdit.Name = "btnEdit";
             this.btnEdit.Size = new System.Drawing.Size(90, 28);
-            this.btnEdit.TabIndex = 1;
+            this.btnEdit.TabIndex = 3;
             this.btnEdit.Text = "Edit";
             this.btnEdit.UseVisualStyleBackColor = true;
             this.btnEdit.Click += new System.EventHandler(this.btnEdit_Click);
