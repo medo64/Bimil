@@ -11,7 +11,6 @@ using System.Diagnostics;
 using System.Threading;
 using System.Reflection;
 using System.Security;
-using System.Globalization;
 
 namespace Bimil {
     internal partial class MainForm : Form {

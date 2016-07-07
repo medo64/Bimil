@@ -5,7 +5,7 @@ using Medo.Security.Cryptography.PasswordSafe;
 using System.Collections.Generic;
 
 namespace Bimil {
-    public partial class NewRecordForm : Form {
+    internal partial class NewRecordForm : Form {
         public NewRecordForm(Document document, IEnumerable<Record> recordsInUse) {
             InitializeComponent();
             this.Font = SystemFonts.MessageBoxFont;

@@ -6,7 +6,7 @@ using System.Windows.Forms;
 using Medo.Security.Cryptography.PasswordSafe;
 
 namespace Bimil {
-    public partial class RecordEditorForm : Form {
+    internal partial class RecordEditorForm : Form {
 
         private readonly Document Document;
         private readonly Entry Item;

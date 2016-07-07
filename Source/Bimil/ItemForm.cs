@@ -10,7 +10,7 @@ using Medo.Security.Cryptography;
 using System.Text;
 
 namespace Bimil {
-    public partial class ItemForm : Form {
+    internal partial class ItemForm : Form {
 
         private readonly Document Document;
         private readonly Entry Item;
