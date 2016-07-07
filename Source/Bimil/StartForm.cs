@@ -8,6 +8,7 @@ namespace Bimil {
     internal partial class StartForm : Form {
         public StartForm(RecentFiles recentFiles) {
             InitializeComponent();
+            this.Font = SystemFonts.MessageBoxFont;
             Medo.Windows.Forms.State.SetupOnLoadAndClose(this);
 
             lsvRecent.SmallImageList = Helpers.GetImageList(this, "picNonexistent");

@@ -6,6 +6,7 @@ namespace Bimil {
     internal partial class QRCodeForm : Form {
         public QRCodeForm(string text) {
             InitializeComponent();
+            this.Font = SystemFonts.MessageBoxFont;
 
             this.Coder = new QRCoder.QRCode(text);
 
