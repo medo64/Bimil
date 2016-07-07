@@ -24,7 +24,7 @@ namespace Bimil {
             InitializeComponent();
             this.Font = SystemFonts.MessageBoxFont;
             mnu.Font = SystemFonts.MessageBoxFont;
-            lsvPasswords.Font = SystemFonts.MessageBoxFont;
+            lsvEntries.Font = SystemFonts.MessageBoxFont;
 
             mnu.Renderer = Helpers.ToolStripBorderlessSystemRendererInstance;
             Helpers.ScaleToolstrip(mnu);
@@ -142,7 +142,7 @@ namespace Bimil {
         }
 
         private void Form_Resize(object sender, EventArgs e) {
-            lsvPasswords.Columns[0].Width = lsvPasswords.ClientSize.Width;
+            lsvEntries.Columns[0].Width = lsvEntries.ClientSize.Width;
         }
 
         private void Form_Deactivate(object sender, EventArgs e) {
@@ -205,14 +205,14 @@ namespace Bimil {
         private void cmbSearch_KeyDown(object sender, KeyEventArgs e) {
             switch (e.KeyData) {
                 case Keys.Down:
-                    if (lsvPasswords.Items.Count > 0) {
-                        if (lsvPasswords.SelectedIndices.Count == 0) {
-                            lsvPasswords.Items[0].Selected = true;
+                    if (lsvEntries.Items.Count > 0) {
+                        if (lsvEntries.SelectedIndices.Count == 0) {
+                            lsvEntries.Items[0].Selected = true;
                         } else {
-                            int index = Math.Min(lsvPasswords.SelectedIndices[lsvPasswords.SelectedIndices.Count - 1] + 1, lsvPasswords.Items.Count - 1);
-                            foreach (ListViewItem item in lsvPasswords.Items) { item.Selected = false; }
-                            lsvPasswords.Items[index].Selected = true;
-                            lsvPasswords.Items[index].Focused = true;
+                            int index = Math.Min(lsvEntries.SelectedIndices[lsvEntries.SelectedIndices.Count - 1] + 1, lsvEntries.Items.Count - 1);
+                            foreach (ListViewItem item in lsvEntries.Items) { item.Selected = false; }
+                            lsvEntries.Items[index].Selected = true;
+                            lsvEntries.Items[index].Focused = true;
                         }
                     }
                     e.Handled = true;
@@ -220,14 +220,14 @@ namespace Bimil {
                     break;
 
                 case Keys.Up:
-                    if (lsvPasswords.Items.Count > 0) {
-                        if (lsvPasswords.SelectedIndices.Count == 0) {
-                            lsvPasswords.Items[lsvPasswords.Items.Count - 1].Selected = true;
+                    if (lsvEntries.Items.Count > 0) {
+                        if (lsvEntries.SelectedIndices.Count == 0) {
+                            lsvEntries.Items[lsvEntries.Items.Count - 1].Selected = true;
                         } else {
-                            int index = Math.Max(lsvPasswords.SelectedIndices[0] - 1, 0);
-                            foreach (ListViewItem item in lsvPasswords.Items) { item.Selected = false; }
-                            lsvPasswords.Items[index].Selected = true;
-                            lsvPasswords.Items[index].Focused = true;
+                            int index = Math.Max(lsvEntries.SelectedIndices[0] - 1, 0);
+                            foreach (ListViewItem item in lsvEntries.Items) { item.Selected = false; }
+                            lsvEntries.Items[index].Selected = true;
+                            lsvEntries.Items[index].Focused = true;
                         }
                     }
                     e.Handled = true;
@@ -253,8 +253,8 @@ namespace Bimil {
                     break;
 
                 case Keys.Enter:
-                    if (lsvPasswords.Items.Count > 0) {
-                        lsvPasswords.Select();
+                    if (lsvEntries.Items.Count > 0) {
+                        lsvEntries.Select();
                     }
                     break;
 
@@ -274,8 +274,8 @@ namespace Bimil {
                     break;
 
                 case Keys.F2: {
-                        if ((lsvPasswords.SelectedItems.Count == 1) && !this.Document.IsReadOnly) {
-                            lsvPasswords.SelectedItems[0].BeginEdit();
+                        if ((lsvEntries.SelectedItems.Count == 1) && !this.Document.IsReadOnly) {
+                            lsvEntries.SelectedItems[0].BeginEdit();
                         }
                     }
                     break;
@@ -453,8 +453,8 @@ namespace Bimil {
                     this.Document.IsReadOnly = isReadOnly;
 
                     cmbSearch.BackColor = isReadOnly ? SystemColors.Control : SystemColors.Window;
-                    lsvPasswords.BackColor = isReadOnly ? SystemColors.Control : SystemColors.Window;
-                    lsvPasswords.LabelEdit = !isReadOnly;
+                    lsvEntries.BackColor = isReadOnly ? SystemColors.Control : SystemColors.Window;
+                    lsvEntries.LabelEdit = !isReadOnly;
 
                     cmbSearch.Text = "";
                     mnuEdit.Text = isReadOnly ? "View" : "Edit";
@@ -632,12 +632,12 @@ namespace Bimil {
         }
 
         private void mnuEdit_Click(object sender, EventArgs e) {
-            if ((this.Document == null) || (lsvPasswords.SelectedItems.Count != 1)) { return; }
+            if ((this.Document == null) || (lsvEntries.SelectedItems.Count != 1)) { return; }
 
-            var item = (Entry)(lsvPasswords.SelectedItems[0].Tag);
+            var item = (Entry)(lsvEntries.SelectedItems[0].Tag);
             using (var frm2 = new ItemForm(this.Document, item, false, this.Categories)) {
                 if (frm2.ShowDialog(this) == DialogResult.OK) {
-                    lsvPasswords.SelectedItems[0].Text = item.Title;
+                    lsvEntries.SelectedItems[0].Text = item.Title;
                     RefreshCategories();
                     UpdateMenu();
                 }
@@ -645,12 +645,12 @@ namespace Bimil {
         }
 
         private void mnuRemove_Click(object sender, EventArgs e) {
-            if ((this.Document == null) || (lsvPasswords.SelectedItems.Count == 0)) { return; }
+            if ((this.Document == null) || (lsvEntries.SelectedItems.Count == 0)) { return; }
 
-            for (int i = lsvPasswords.SelectedItems.Count - 1; i >= 0; i--) {
-                var item = (Entry)(lsvPasswords.SelectedItems[i].Tag);
+            for (int i = lsvEntries.SelectedItems.Count - 1; i >= 0; i--) {
+                var item = (Entry)(lsvEntries.SelectedItems[i].Tag);
                 this.Document.Entries.Remove(item);
-                lsvPasswords.Items.Remove(lsvPasswords.SelectedItems[i]);
+                lsvEntries.Items.Remove(lsvEntries.SelectedItems[i]);
             }
             UpdateMenu();
             cmbSearch.Select();
@@ -706,8 +706,8 @@ namespace Bimil {
         }
 
         private void RefreshItems(Entry entryToSelect = null) {
-            if ((entryToSelect == null) && (lsvPasswords.SelectedItems.Count > 0)) { //to keep same item selected
-                entryToSelect = (Entry)(lsvPasswords.SelectedItems[0].Tag);
+            if ((entryToSelect == null) && (lsvEntries.SelectedItems.Count > 0)) { //to keep same item selected
+                entryToSelect = (Entry)(lsvEntries.SelectedItems[0].Tag);
             }
 
             //search for matches
@@ -736,9 +736,9 @@ namespace Bimil {
             });
 
             //show items
-            lsvPasswords.BeginUpdate();
-            lsvPasswords.Items.Clear();
-            lsvPasswords.Groups.Clear();
+            lsvEntries.BeginUpdate();
+            lsvEntries.Items.Clear();
+            lsvEntries.Groups.Clear();
 
             var groupDictionary = new Dictionary<string, ListViewGroup>();
             foreach (var entry in resultList) {
@@ -750,20 +750,20 @@ namespace Bimil {
                 ListViewGroup group;
                 if (!groupDictionary.TryGetValue(groupText, out group)) {
                     group = new ListViewGroup(groupText);
-                    lsvPasswords.Groups.Add(group);
+                    lsvEntries.Groups.Add(group);
                     groupDictionary.Add(groupText, group);
                 }
-                lsvPasswords.Items.Add(new ListViewItem(entry.Title, group) { Tag = entry });
+                lsvEntries.Items.Add(new ListViewItem(entry.Title, group) { Tag = entry });
             }
 
-            lsvPasswords.EndUpdate();
+            lsvEntries.EndUpdate();
 
-            if (lsvPasswords.Items.Count > 0) {
-                lsvPasswords.Enabled = true;
-                lsvPasswords.ForeColor = SystemColors.WindowText;
+            if (lsvEntries.Items.Count > 0) {
+                lsvEntries.Enabled = true;
+                lsvEntries.ForeColor = SystemColors.WindowText;
 
                 if (entryToSelect != null) {
-                    foreach (ListViewItem item in lsvPasswords.Items) {
+                    foreach (ListViewItem item in lsvEntries.Items) {
                         var entry = (Entry)(item.Tag);
                         if (entry.Equals(entryToSelect)) {
                             item.Selected = true;
@@ -773,18 +773,18 @@ namespace Bimil {
                     }
                 }
 
-                if (lsvPasswords.SelectedItems.Count == 0) {
-                    lsvPasswords.Items[0].Selected = true;
-                    lsvPasswords.Items[0].Focused = true;
+                if (lsvEntries.SelectedItems.Count == 0) {
+                    lsvEntries.Items[0].Selected = true;
+                    lsvEntries.Items[0].Focused = true;
                 }
             } else {
-                lsvPasswords.Enabled = false;
-                lsvPasswords.ForeColor = SystemColors.GrayText;
+                lsvEntries.Enabled = false;
+                lsvEntries.ForeColor = SystemColors.GrayText;
 
                 if ((this.Document == null) || (this.Document.Entries.Count == 0)) {
-                    lsvPasswords.Items.Add("No items.");
+                    lsvEntries.Items.Add("No items.");
                 } else {
-                    lsvPasswords.Items.Add("No matching items found.");
+                    lsvEntries.Items.Add("No matching items found.");
                 }
             }
 
@@ -795,8 +795,8 @@ namespace Bimil {
             mnuSave.Enabled = (this.Document != null) && (!this.Document.IsReadOnly);
             mnuChangePassword.Enabled = (this.Document != null) && (!this.Document.IsReadOnly);
             mnuAdd.Enabled = (this.Document != null) && (!this.Document.IsReadOnly);
-            mnuEdit.Enabled = (this.Document != null) && (lsvPasswords.SelectedItems.Count == 1);
-            mnuRemove.Enabled = (this.Document != null) && (lsvPasswords.SelectedItems.Count > 0) && (!this.Document.IsReadOnly);
+            mnuEdit.Enabled = (this.Document != null) && (lsvEntries.SelectedItems.Count == 1);
+            mnuRemove.Enabled = (this.Document != null) && (lsvEntries.SelectedItems.Count > 0) && (!this.Document.IsReadOnly);
 
             pnlDocument.Visible = (this.Document != null);
 
@@ -813,8 +813,8 @@ namespace Bimil {
 
         private void ToggleMenu() {
             if (mnu.ContainsFocus) {
-                if (lsvPasswords.Visible) {
-                    lsvPasswords.Select();
+                if (lsvEntries.Visible) {
+                    lsvEntries.Select();
                 } else {
                     this.Select();
                 }

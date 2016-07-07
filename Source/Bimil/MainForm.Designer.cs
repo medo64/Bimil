@@ -43,8 +43,8 @@ namespace Bimil {
             this.mnuApp1 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuAppAbout = new System.Windows.Forms.ToolStripMenuItem();
             this.pnlDocument = new System.Windows.Forms.Panel();
-            this.lsvPasswords = new System.Windows.Forms.ListView();
-            this.lsvPasswords_colTitle = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.lsvEntries = new System.Windows.Forms.ListView();
+            this.lsvEntries_colTitle = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.cmbSearch = new System.Windows.Forms.ComboBox();
             this.bwUpgradeCheck = new System.ComponentModel.BackgroundWorker();
             this.tmrClose = new System.Windows.Forms.Timer(this.components);
@@ -220,7 +220,7 @@ namespace Bimil {
             // pnlDocument
             // 
             this.pnlDocument.BackColor = System.Drawing.SystemColors.Window;
-            this.pnlDocument.Controls.Add(this.lsvPasswords);
+            this.pnlDocument.Controls.Add(this.lsvEntries);
             this.pnlDocument.Controls.Add(this.cmbSearch);
             this.pnlDocument.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlDocument.Location = new System.Drawing.Point(0, 27);
@@ -228,26 +228,26 @@ namespace Bimil {
             this.pnlDocument.Size = new System.Drawing.Size(462, 366);
             this.pnlDocument.TabIndex = 0;
             // 
-            // lsvPasswords
+            // lsvEntries
             // 
-            this.lsvPasswords.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.lsvPasswords.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.lsvPasswords_colTitle});
-            this.lsvPasswords.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lsvPasswords.FullRowSelect = true;
-            this.lsvPasswords.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
-            this.lsvPasswords.HideSelection = false;
-            this.lsvPasswords.LabelEdit = true;
-            this.lsvPasswords.LabelWrap = false;
-            this.lsvPasswords.Location = new System.Drawing.Point(0, 24);
-            this.lsvPasswords.Name = "lsvPasswords";
-            this.lsvPasswords.Size = new System.Drawing.Size(462, 342);
-            this.lsvPasswords.TabIndex = 1;
-            this.lsvPasswords.UseCompatibleStateImageBehavior = false;
-            this.lsvPasswords.View = System.Windows.Forms.View.Details;
-            this.lsvPasswords.ItemActivate += new System.EventHandler(this.lsvPasswords_ItemActivate);
-            this.lsvPasswords.SelectedIndexChanged += new System.EventHandler(this.lsvPasswords_SelectedIndexChanged);
-            this.lsvPasswords.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lsvPasswords_KeyDown);
+            this.lsvEntries.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.lsvEntries.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.lsvEntries_colTitle});
+            this.lsvEntries.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lsvEntries.FullRowSelect = true;
+            this.lsvEntries.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+            this.lsvEntries.HideSelection = false;
+            this.lsvEntries.LabelEdit = true;
+            this.lsvEntries.LabelWrap = false;
+            this.lsvEntries.Location = new System.Drawing.Point(0, 24);
+            this.lsvEntries.Name = "lsvEntries";
+            this.lsvEntries.Size = new System.Drawing.Size(462, 342);
+            this.lsvEntries.TabIndex = 1;
+            this.lsvEntries.UseCompatibleStateImageBehavior = false;
+            this.lsvEntries.View = System.Windows.Forms.View.Details;
+            this.lsvEntries.ItemActivate += new System.EventHandler(this.lsvPasswords_ItemActivate);
+            this.lsvEntries.SelectedIndexChanged += new System.EventHandler(this.lsvPasswords_SelectedIndexChanged);
+            this.lsvEntries.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lsvPasswords_KeyDown);
             // 
             // cmbSearch
             // 
@@ -313,8 +313,8 @@ namespace Bimil {
         private System.Windows.Forms.ToolStripButton mnuAdd;
         private System.Windows.Forms.ToolStripButton mnuChangePassword;
         private System.Windows.Forms.Panel pnlDocument;
-        private System.Windows.Forms.ListView lsvPasswords;
-        private System.Windows.Forms.ColumnHeader lsvPasswords_colTitle;
+        private System.Windows.Forms.ListView lsvEntries;
+        private System.Windows.Forms.ColumnHeader lsvEntries_colTitle;
         private System.Windows.Forms.ComboBox cmbSearch;
         private System.Windows.Forms.ToolStripDropDownButton mnuApp;
         private System.Windows.Forms.ToolStripMenuItem mnuAppOptions;
