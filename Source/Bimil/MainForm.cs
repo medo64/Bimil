@@ -11,6 +11,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Reflection;
 using System.Security;
+using System.Globalization;
 
 namespace Bimil {
     internal partial class MainForm : Form {
@@ -691,9 +692,10 @@ namespace Bimil {
             this.Categories.Clear();
             if (this.Document != null) {
                 this.Categories.Add("");
-                foreach (var item in this.Document.Entries) {
-                    if (!this.Categories.Contains(item.Group)) {
-                        this.Categories.Add(item.Group);
+                foreach (var entry in this.Document.Entries) {
+                    var cached = new EntryCache(entry);
+                    if (!this.Categories.Contains(cached.Group)) {
+                        this.Categories.Add(cached.Group);
                     }
                 }
             }
@@ -708,11 +710,14 @@ namespace Bimil {
         }
 
         private void RefreshItems(Entry entryToSelect = null) {
+            var sw = Stopwatch.StartNew();
+
             //search for matches
             var text = cmbSearch.Text;
-            var resultList = new List<Entry>();
+            var resultList = new List<EntryCache>();
             if (this.Document != null) {
-                foreach (var item in this.Document.Entries) {
+                foreach (var entry in this.Document.Entries) {
+                    var item = new EntryCache(entry);
                     if (string.Equals(item.Group, text, StringComparison.CurrentCultureIgnoreCase)) {
                         resultList.Add(item);
                     } else if ((text.Length > 0) && (item.Title.IndexOf(text, StringComparison.CurrentCultureIgnoreCase) >= 0)) {
@@ -720,6 +725,7 @@ namespace Bimil {
                     }
                 }
             }
+            Debug.WriteLine(string.Format(CultureInfo.InvariantCulture, "Items searched at {0:0.0} ms", sw.ElapsedMilliseconds));
 
             //sort, preferring the same group
             resultList.Sort((item1, item2) => {
@@ -732,6 +738,7 @@ namespace Bimil {
                     return (groupCompare != 0) ? groupCompare : string.Compare(item1.Title, item2.Title, StringComparison.CurrentCultureIgnoreCase);
                 }
             });
+            Debug.WriteLine(string.Format(CultureInfo.InvariantCulture, "Items sorted at {0:0.0} ms", sw.ElapsedMilliseconds));
 
             //show items
             lsvEntries.BeginUpdate();
@@ -739,22 +746,18 @@ namespace Bimil {
             lsvEntries.Groups.Clear();
 
             var groupDictionary = new Dictionary<string, ListViewGroup>();
-            foreach (var entry in resultList) {
-                var groupParts = entry.Group.GetSegments();
-                for (var i = 0; i < groupParts.Length; i++) {
-                    groupParts[i] = groupParts[i].Trim();
-                } //remove extra spaces
-                var groupText = string.Join(" / ", groupParts);
+            foreach (var item in resultList) {
                 ListViewGroup group;
-                if (!groupDictionary.TryGetValue(groupText, out group)) {
-                    group = new ListViewGroup(groupText);
+                if (!groupDictionary.TryGetValue(item.Group, out group)) {
+                    group = new ListViewGroup(item.Group);
                     lsvEntries.Groups.Add(group);
-                    groupDictionary.Add(groupText, group);
+                    groupDictionary.Add(item.Group, group);
                 }
-                lsvEntries.Items.Add(new ListViewItem(entry.Title, group) { Tag = entry });
+                lsvEntries.Items.Add(new ListViewItem(item.Title, group) { Tag = item.Entry });
             }
 
             lsvEntries.EndUpdate();
+            Debug.WriteLine(string.Format(CultureInfo.InvariantCulture, "Items updated at {0:0.0} ms", sw.ElapsedMilliseconds));
 
             if (lsvEntries.Items.Count > 0) {
                 lsvEntries.Enabled = true;
@@ -788,7 +791,10 @@ namespace Bimil {
                 }
             }
 
+            Debug.WriteLine(string.Format(CultureInfo.InvariantCulture, "Items refreshed at {0:0.0} ms", sw.ElapsedMilliseconds));
+
             Form_Resize(null, null);
+            Debug.WriteLine(string.Format(CultureInfo.InvariantCulture, "Form refreshed at {0:0.0} ms", sw.ElapsedMilliseconds));
         }
 
         private void UpdateMenu() {

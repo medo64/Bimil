@@ -112,6 +112,7 @@
     <Compile Include="BimilDocument\BimilRecord.cs" />
     <Compile Include="BimilDocument\BimilValue.cs" />
     <Compile Include="BimilDocument\DocumentConversion.cs" />
+    <Compile Include="EntryCache.cs" />
     <Compile Include="ItemForm.cs">
       <SubType>Form</SubType>
     </Compile>
