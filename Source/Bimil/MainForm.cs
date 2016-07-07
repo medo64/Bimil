@@ -238,18 +238,22 @@ namespace Bimil {
                     break;
 
                 case Keys.PageDown: {
-                        int index = (cmbSearch.SelectedIndex == -1) ? 0 : cmbSearch.SelectedIndex;
-                        cmbSearch.SelectedIndex = Math.Min(index + 1, cmbSearch.Items.Count - 1);
-                        cmbSearch.SelectAll();
+                        if (cmbSearch.Items.Count > 0) {
+                            int newIndex = (cmbSearch.SelectedIndex > -1) ? cmbSearch.SelectedIndex + 1 : Helpers.GetNearestComboIndex(cmbSearch.Text, cmbSearch.Items, 0);
+                            cmbSearch.SelectedIndex = Math.Min(newIndex, cmbSearch.Items.Count - 1);
+                            cmbSearch.SelectAll();
+                        }
                         e.Handled = true;
                         e.SuppressKeyPress = true;
                     }
                     break;
 
                 case Keys.PageUp: {
-                        int index = (cmbSearch.SelectedIndex == -1) ? cmbSearch.Items.Count - 1 : cmbSearch.SelectedIndex;
-                        cmbSearch.SelectedIndex = Math.Max(index - 1, 0);
-                        cmbSearch.SelectAll();
+                        if (cmbSearch.Items.Count > 0) {
+                            int newIndex = (cmbSearch.SelectedIndex > -1) ? cmbSearch.SelectedIndex - 1 : Helpers.GetNearestComboIndex(cmbSearch.Text, cmbSearch.Items, 0);
+                            cmbSearch.SelectedIndex = Math.Max(newIndex, 0);
+                            cmbSearch.SelectAll();
+                        }
                         e.Handled = true;
                         e.SuppressKeyPress = true;
                     }

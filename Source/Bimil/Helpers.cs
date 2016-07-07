@@ -57,6 +57,26 @@ namespace Bimil {
             }
         }
 
+        public static int GetNearestComboIndex(string text, ComboBox.ObjectCollection items, int defaultIndex = -1) {
+            //check for full match
+            for (var i = 0; i < items.Count; i++) {
+                if (items[i].ToString().Equals(text, StringComparison.CurrentCultureIgnoreCase)) { return i; }
+            }
+
+            //check for prefix match
+            for (var i = 0; i < items.Count; i++) {
+                if (items[i].ToString().StartsWith(text, StringComparison.CurrentCultureIgnoreCase)) { return i; }
+            }
+
+            //check for any
+            for (var i = 0; i < items.Count; i++) {
+                if (items[i].ToString().IndexOf(text, StringComparison.CurrentCultureIgnoreCase) >= 0) { return i; }
+            }
+
+            //give up and return default
+            return defaultIndex;
+        }
+
 
         #region Toolstrip images
 

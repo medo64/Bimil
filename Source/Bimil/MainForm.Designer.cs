@@ -251,8 +251,6 @@ namespace Bimil {
             // 
             // cmbSearch
             // 
-            this.cmbSearch.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
-            this.cmbSearch.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
             this.cmbSearch.Dock = System.Windows.Forms.DockStyle.Top;
             this.cmbSearch.FormattingEnabled = true;
             this.cmbSearch.Location = new System.Drawing.Point(0, 0);
