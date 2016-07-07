@@ -1,8 +1,10 @@
 using Medo.Security.Cryptography.PasswordSafe;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Globalization;
 using System.Windows.Forms;
 
 namespace Bimil {
@@ -21,6 +23,8 @@ namespace Bimil {
 
         #endregion
 
+
+        #region Record
 
         public static string GetRecordCaption(Record record) {
             return GetRecordCaption(record.RecordType);
@@ -57,6 +61,8 @@ namespace Bimil {
             }
         }
 
+        #endregion
+
         public static int GetNearestComboIndex(string text, ComboBox.ObjectCollection items, int defaultIndex = -1) {
             //check for full match
             for (var i = 0; i < items.Count; i++) {
@@ -76,6 +82,197 @@ namespace Bimil {
             //give up and return default
             return defaultIndex;
         }
+
+
+        #region Entry search
+
+        public static void PerformEntrySearch(Document document, ListView lsvEntries, String text, Entry entryToSelect = null, bool extendedSearch = false, bool addMatchDescription = false) {
+            var sw = Stopwatch.StartNew();
+
+            //search for matches
+            var resultList = new List<EntryCache>();
+            if (document != null) {
+                foreach (var entry in document.Entries) {
+                    var item = new EntryCache(entry);
+                    if (string.Equals(item.Group, text, StringComparison.CurrentCultureIgnoreCase)) {
+                        resultList.Add(item);
+                        item.TagMatched = "Group";
+                    } else if ((text.Length > 0) && (item.Title.IndexOf(text, StringComparison.CurrentCultureIgnoreCase) >= 0)) {
+                        resultList.Add(item);
+                        item.TagMatched = "Title";
+                    } else if ((text.Length > 0) && extendedSearch) {
+                        foreach (var record in entry.Records) {
+                            if (record.RecordType == RecordType.Title) { continue; }
+                            if (record.RecordType == RecordType.Group) { continue; }
+                            var recordCaption = Helpers.GetRecordCaption(record.RecordType);
+                            if (recordCaption != null) { //so we know it is supported
+                                if (!Helpers.GetIsHideable(record.RecordType)) { //also check it is not hidden by default (e.g. password field)
+                                    var recordText = record.Text;
+                                    if (recordText != null) { //we have something searchable
+                                        if (recordText.IndexOf(text, StringComparison.CurrentCultureIgnoreCase) >= 0) {
+                                            resultList.Add(item);
+                                            item.TagMatched = recordCaption;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            Debug.WriteLine(string.Format(CultureInfo.InvariantCulture, "Items searched at {0:0.0} ms", sw.ElapsedMilliseconds));
+
+            //sort, preferring the same group
+            resultList.Sort((item1, item2) => {
+                if (string.Equals(item1.Group, text, StringComparison.CurrentCultureIgnoreCase) && !string.Equals(item2.Group, text, StringComparison.CurrentCultureIgnoreCase)) {
+                    return -1; //item1 is before item2
+                } else if (!string.Equals(item1.Group, text, StringComparison.CurrentCultureIgnoreCase) && string.Equals(item2.Group, text, StringComparison.CurrentCultureIgnoreCase)) {
+                    return +1; //item2 is before item1
+                } else {
+                    var groupCompare = string.Compare(item1.Group, item2.Group, StringComparison.CurrentCultureIgnoreCase);
+                    return (groupCompare != 0) ? groupCompare : string.Compare(item1.Title, item2.Title, StringComparison.CurrentCultureIgnoreCase);
+                }
+            });
+            Debug.WriteLine(string.Format(CultureInfo.InvariantCulture, "Items sorted at {0:0.0} ms", sw.ElapsedMilliseconds));
+
+            //show items
+            lsvEntries.BeginUpdate();
+            lsvEntries.Items.Clear();
+            lsvEntries.Groups.Clear();
+
+            var groupDictionary = new Dictionary<string, ListViewGroup>();
+            foreach (var item in resultList) {
+                ListViewGroup group;
+                if (!groupDictionary.TryGetValue(item.Group, out group)) {
+                    group = new ListViewGroup(item.Group);
+                    lsvEntries.Groups.Add(group);
+                    groupDictionary.Add(item.Group, group);
+                }
+                var lvi = new ListViewItem(item.Title, group) { Tag = item.Entry };
+                if (addMatchDescription && !string.IsNullOrEmpty(item.TagMatched)) { lvi.ToolTipText = item.TagMatched + " matched"; }
+                lsvEntries.Items.Add(lvi);
+            }
+
+            lsvEntries.EndUpdate();
+            Debug.WriteLine(string.Format(CultureInfo.InvariantCulture, "Items updated at {0:0.0} ms", sw.ElapsedMilliseconds));
+
+            if (lsvEntries.Items.Count > 0) {
+                lsvEntries.Enabled = true;
+                lsvEntries.ForeColor = SystemColors.WindowText;
+
+                if (entryToSelect != null) {
+                    foreach (ListViewItem item in lsvEntries.Items) {
+                        var entry = (Entry)(item.Tag);
+                        if (entry.Equals(entryToSelect)) {
+                            item.Selected = true;
+                            item.Focused = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (lsvEntries.SelectedItems.Count == 0) {
+                    lsvEntries.Items[0].Selected = true;
+                    lsvEntries.Items[0].Focused = true;
+                }
+
+                lsvEntries.EnsureVisible(lsvEntries.SelectedItems[0].Index);
+            } else {
+                lsvEntries.Enabled = false;
+                lsvEntries.ForeColor = SystemColors.GrayText;
+
+                if ((document == null) || (document.Entries.Count == 0)) {
+                    lsvEntries.Items.Add("No items.");
+                } else {
+                    lsvEntries.Items.Add("No matching items found.");
+                }
+            }
+
+            Debug.WriteLine(string.Format(CultureInfo.InvariantCulture, "Items refreshed at {0:0.0} ms", sw.ElapsedMilliseconds));
+        }
+
+        public static bool HandleSearchKeyDown(KeyEventArgs e, ListView lsvEntries, bool processPageUpDown = false) {
+            switch (e.KeyData) {
+                case Keys.Down:
+                    if (lsvEntries.Items.Count > 0) {
+                        if (lsvEntries.SelectedIndices.Count == 0) {
+                            lsvEntries.Items[0].Selected = true;
+                        } else {
+                            int index = Math.Min(lsvEntries.SelectedIndices[lsvEntries.SelectedIndices.Count - 1] + 1, lsvEntries.Items.Count - 1);
+                            foreach (ListViewItem item in lsvEntries.Items) { item.Selected = false; }
+                            lsvEntries.Items[index].Selected = true;
+                            lsvEntries.Items[index].Focused = true;
+                        }
+                        lsvEntries.EnsureVisible(lsvEntries.SelectedItems[0].Index);
+                    }
+                    e.Handled = true;
+                    e.SuppressKeyPress = true;
+                    return true;
+
+                case Keys.Up:
+                    if (lsvEntries.Items.Count > 0) {
+                        if (lsvEntries.SelectedIndices.Count == 0) {
+                            lsvEntries.Items[lsvEntries.Items.Count - 1].Selected = true;
+                        } else {
+                            int index = Math.Max(lsvEntries.SelectedIndices[0] - 1, 0);
+                            foreach (ListViewItem item in lsvEntries.Items) { item.Selected = false; }
+                            lsvEntries.Items[index].Selected = true;
+                            lsvEntries.Items[index].Focused = true;
+                        }
+                        lsvEntries.EnsureVisible(lsvEntries.SelectedItems[0].Index);
+                    }
+                    e.Handled = true;
+                    e.SuppressKeyPress = true;
+                    return true;
+
+                case Keys.PageDown:
+                    if (!processPageUpDown) { return false; }
+                    if (lsvEntries.Items.Count > 0) {
+                        var delta = lsvEntries.ClientSize.Height / (lsvEntries.Items[0].Bounds.Height * 2);
+                        if (lsvEntries.SelectedIndices.Count == 0) {
+                            lsvEntries.Items[0].Selected = true;
+                        } else {
+                            int index = Math.Min(lsvEntries.SelectedIndices[lsvEntries.SelectedIndices.Count - 1] + delta, lsvEntries.Items.Count - 1);
+                            foreach (ListViewItem item in lsvEntries.Items) { item.Selected = false; }
+                            lsvEntries.Items[index].Selected = true;
+                            lsvEntries.Items[index].Focused = true;
+                        }
+                        lsvEntries.EnsureVisible(lsvEntries.SelectedItems[0].Index);
+                    }
+                    e.Handled = true;
+                    e.SuppressKeyPress = true;
+                    return true;
+
+                case Keys.PageUp:
+                    if (!processPageUpDown) { return false; }
+                    if (lsvEntries.Items.Count > 0) {
+                        var delta = lsvEntries.ClientSize.Height / (lsvEntries.Items[0].Bounds.Height * 2);
+                        if (lsvEntries.SelectedIndices.Count == 0) {
+                            lsvEntries.Items[lsvEntries.Items.Count - 1].Selected = true;
+                        } else {
+                            int index = Math.Max(lsvEntries.SelectedIndices[0] - delta, 0);
+                            foreach (ListViewItem item in lsvEntries.Items) { item.Selected = false; }
+                            lsvEntries.Items[index].Selected = true;
+                            lsvEntries.Items[index].Focused = true;
+                        }
+                        lsvEntries.EnsureVisible(lsvEntries.SelectedItems[0].Index);
+                    }
+                    e.Handled = true;
+                    e.SuppressKeyPress = true;
+                    return true;
+
+                case Keys.Enter:
+                    if (lsvEntries.Items.Count > 0) {
+                        lsvEntries.Select();
+                        e.SuppressKeyPress = true;
+                    }
+                    return true;
+            }
+
+            return false;
+        }
+
+        #endregion
 
 
         #region Toolstrip images

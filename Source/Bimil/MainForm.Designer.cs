@@ -31,7 +31,7 @@ namespace Bimil {
             this.mnuSave = new System.Windows.Forms.ToolStripSplitButton();
             this.mnuSaveAs = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuChangePassword = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.mnu0 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuAdd = new System.Windows.Forms.ToolStripButton();
             this.mnuEdit = new System.Windows.Forms.ToolStripButton();
             this.mnuRemove = new System.Windows.Forms.ToolStripButton();
@@ -42,6 +42,8 @@ namespace Bimil {
             this.mnuAppUpgrade = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuApp1 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuAppAbout = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnu1 = new System.Windows.Forms.ToolStripSeparator();
+            this.mnuSearch = new System.Windows.Forms.ToolStripButton();
             this.pnlDocument = new System.Windows.Forms.Panel();
             this.lsvEntries = new System.Windows.Forms.ListView();
             this.lsvEntries_colTitle = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -61,11 +63,13 @@ namespace Bimil {
             this.mnuOpen,
             this.mnuSave,
             this.mnuChangePassword,
-            this.toolStripSeparator1,
+            this.mnu0,
             this.mnuAdd,
             this.mnuEdit,
             this.mnuRemove,
-            this.mnuApp});
+            this.mnuApp,
+            this.mnu1,
+            this.mnuSearch});
             this.mnu.Location = new System.Drawing.Point(0, 0);
             this.mnu.Name = "mnu";
             this.mnu.Padding = new System.Windows.Forms.Padding(1, 0, 1, 0);
@@ -127,10 +131,10 @@ namespace Bimil {
             this.mnuChangePassword.Text = "Change password";
             this.mnuChangePassword.Click += new System.EventHandler(this.mnuChangePassword_Click);
             // 
-            // toolStripSeparator1
+            // mnu0
             // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 27);
+            this.mnu0.Name = "mnu0";
+            this.mnu0.Size = new System.Drawing.Size(6, 27);
             // 
             // mnuAdd
             // 
@@ -217,6 +221,22 @@ namespace Bimil {
             this.mnuAppAbout.Text = "&About";
             this.mnuAppAbout.Click += new System.EventHandler(this.mnuAppAbout_Click);
             // 
+            // mnu1
+            // 
+            this.mnu1.Name = "mnu1";
+            this.mnu1.Size = new System.Drawing.Size(6, 27);
+            // 
+            // mnuSearch
+            // 
+            this.mnuSearch.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.mnuSearch.Image = global::Bimil.Properties.Resources.mnuSearch_16;
+            this.mnuSearch.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.mnuSearch.Name = "mnuSearch";
+            this.mnuSearch.Size = new System.Drawing.Size(24, 24);
+            this.mnuSearch.Text = "Search";
+            this.mnuSearch.ToolTipText = "Search (Ctrl+F)";
+            this.mnuSearch.Click += new System.EventHandler(this.mnuSearch_Click);
+            // 
             // pnlDocument
             // 
             this.pnlDocument.BackColor = System.Drawing.SystemColors.Window;
@@ -245,9 +265,9 @@ namespace Bimil {
             this.lsvEntries.TabIndex = 1;
             this.lsvEntries.UseCompatibleStateImageBehavior = false;
             this.lsvEntries.View = System.Windows.Forms.View.Details;
-            this.lsvEntries.ItemActivate += new System.EventHandler(this.lsvPasswords_ItemActivate);
-            this.lsvEntries.SelectedIndexChanged += new System.EventHandler(this.lsvPasswords_SelectedIndexChanged);
-            this.lsvEntries.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lsvPasswords_KeyDown);
+            this.lsvEntries.ItemActivate += new System.EventHandler(this.lsvEntries_ItemActivate);
+            this.lsvEntries.SelectedIndexChanged += new System.EventHandler(this.lsvEntries_SelectedIndexChanged);
+            this.lsvEntries.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lsvEntries_KeyDown);
             // 
             // cmbSearch
             // 
@@ -305,7 +325,7 @@ namespace Bimil {
         private System.Windows.Forms.ToolStripSplitButton mnuOpen;
         private System.Windows.Forms.ToolStripSplitButton mnuSave;
         private System.Windows.Forms.ToolStripMenuItem mnuSaveAs;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripSeparator mnu0;
         private System.Windows.Forms.ToolStripButton mnuEdit;
         private System.Windows.Forms.ToolStripButton mnuRemove;
         private System.Windows.Forms.ToolStripButton mnuAdd;
@@ -323,6 +343,8 @@ namespace Bimil {
         private System.ComponentModel.BackgroundWorker bwUpgradeCheck;
         private System.Windows.Forms.ToolStripMenuItem mnuAppUpgrade;
         private System.Windows.Forms.Timer tmrClose;
+        private System.Windows.Forms.ToolStripSeparator mnu1;
+        private System.Windows.Forms.ToolStripButton mnuSearch;
     }
 }
 

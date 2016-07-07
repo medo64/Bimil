@@ -14,5 +14,7 @@ namespace Bimil {
         public string Title { get; }
         public string Group { get; }
 
+        public string TagMatched { get; set; }
+
     }
 }

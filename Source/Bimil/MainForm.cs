@@ -74,6 +74,9 @@ namespace Bimil {
                     mnuSave.ShowDropDown();
                     return true;
 
+                case Keys.Control | Keys.F:
+                    mnuSearch.PerformClick();
+                    return true;
             }
 
             return base.ProcessDialogKey(keyData);
@@ -198,80 +201,44 @@ namespace Bimil {
             }
         }
 
-        private void lsvPasswords_ItemActivate(object sender, EventArgs e) {
+        private void lsvEntries_ItemActivate(object sender, EventArgs e) {
             mnuEdit_Click(null, null);
         }
 
 
         private void cmbSearch_KeyDown(object sender, KeyEventArgs e) {
-            switch (e.KeyData) {
-                case Keys.Down:
-                    if (lsvEntries.Items.Count > 0) {
-                        if (lsvEntries.SelectedIndices.Count == 0) {
-                            lsvEntries.Items[0].Selected = true;
-                        } else {
-                            int index = Math.Min(lsvEntries.SelectedIndices[lsvEntries.SelectedIndices.Count - 1] + 1, lsvEntries.Items.Count - 1);
-                            foreach (ListViewItem item in lsvEntries.Items) { item.Selected = false; }
-                            lsvEntries.Items[index].Selected = true;
-                            lsvEntries.Items[index].Focused = true;
+            if (!Helpers.HandleSearchKeyDown(e, lsvEntries)) {
+                switch (e.KeyData) {
+                    case Keys.PageDown: {
+                            if (cmbSearch.Items.Count > 0) {
+                                int newIndex = (cmbSearch.SelectedIndex > -1) ? cmbSearch.SelectedIndex + 1 : Helpers.GetNearestComboIndex(cmbSearch.Text, cmbSearch.Items, 0);
+                                cmbSearch.SelectedIndex = Math.Min(newIndex, cmbSearch.Items.Count - 1);
+                                cmbSearch.SelectAll();
+                            }
+                            e.Handled = true;
+                            e.SuppressKeyPress = true;
                         }
-                        lsvEntries.EnsureVisible(lsvEntries.SelectedItems[0].Index);
-                    }
-                    e.Handled = true;
-                    e.SuppressKeyPress = true;
-                    break;
+                        break;
 
-                case Keys.Up:
-                    if (lsvEntries.Items.Count > 0) {
-                        if (lsvEntries.SelectedIndices.Count == 0) {
-                            lsvEntries.Items[lsvEntries.Items.Count - 1].Selected = true;
-                        } else {
-                            int index = Math.Max(lsvEntries.SelectedIndices[0] - 1, 0);
-                            foreach (ListViewItem item in lsvEntries.Items) { item.Selected = false; }
-                            lsvEntries.Items[index].Selected = true;
-                            lsvEntries.Items[index].Focused = true;
+                    case Keys.PageUp: {
+                            if (cmbSearch.Items.Count > 0) {
+                                int newIndex = (cmbSearch.SelectedIndex > -1) ? cmbSearch.SelectedIndex - 1 : Helpers.GetNearestComboIndex(cmbSearch.Text, cmbSearch.Items, 0);
+                                cmbSearch.SelectedIndex = Math.Max(newIndex, 0);
+                                cmbSearch.SelectAll();
+                            }
+                            e.Handled = true;
+                            e.SuppressKeyPress = true;
                         }
-                        lsvEntries.EnsureVisible(lsvEntries.SelectedItems[0].Index);
-                    }
-                    e.Handled = true;
-                    e.SuppressKeyPress = true;
-                    break;
+                        break;
 
-                case Keys.PageDown: {
-                        if (cmbSearch.Items.Count > 0) {
-                            int newIndex = (cmbSearch.SelectedIndex > -1) ? cmbSearch.SelectedIndex + 1 : Helpers.GetNearestComboIndex(cmbSearch.Text, cmbSearch.Items, 0);
-                            cmbSearch.SelectedIndex = Math.Min(newIndex, cmbSearch.Items.Count - 1);
-                            cmbSearch.SelectAll();
-                        }
-                        e.Handled = true;
-                        e.SuppressKeyPress = true;
-                    }
-                    break;
-
-                case Keys.PageUp: {
-                        if (cmbSearch.Items.Count > 0) {
-                            int newIndex = (cmbSearch.SelectedIndex > -1) ? cmbSearch.SelectedIndex - 1 : Helpers.GetNearestComboIndex(cmbSearch.Text, cmbSearch.Items, 0);
-                            cmbSearch.SelectedIndex = Math.Max(newIndex, 0);
-                            cmbSearch.SelectAll();
-                        }
-                        e.Handled = true;
-                        e.SuppressKeyPress = true;
-                    }
-                    break;
-
-                case Keys.Enter:
-                    if (lsvEntries.Items.Count > 0) {
-                        lsvEntries.Select();
-                    }
-                    break;
-
-                default:
-                    lsvPasswords_KeyDown(null, e);
-                    break;
+                    default:
+                        lsvEntries_KeyDown(null, e);
+                        break;
+                }
             }
         }
 
-        private void lsvPasswords_KeyDown(object sender, KeyEventArgs e) {
+        private void lsvEntries_KeyDown(object sender, KeyEventArgs e) {
             switch (e.KeyData) {
                 case Keys.Insert: {
                         if (mnuAdd.Enabled) { mnuAdd_Click(null, null); }
@@ -322,7 +289,7 @@ namespace Bimil {
             }
         }
 
-        private void lsvPasswords_SelectedIndexChanged(object sender, EventArgs e) {
+        private void lsvEntries_SelectedIndexChanged(object sender, EventArgs e) {
             UpdateMenu();
         }
 
@@ -663,6 +630,15 @@ namespace Bimil {
             cmbSearch.Select();
         }
 
+        private void mnuSearch_Click(object sender, EventArgs e) {
+            if (this.Document == null) { return; }
+
+            using (var frm = new SearchForm(this.Document, this.Categories)) {
+                frm.ShowDialog(this);
+            }
+        }
+
+
         private void mnuAppOptions_Click(object sender, EventArgs e) {
             using (var frm = new SettingsForm()) {
                 frm.ShowDialog(this);
@@ -714,92 +690,10 @@ namespace Bimil {
         }
 
         private void RefreshItems(Entry entryToSelect = null) {
-            var sw = Stopwatch.StartNew();
-
-            //search for matches
-            var text = cmbSearch.Text;
-            var resultList = new List<EntryCache>();
-            if (this.Document != null) {
-                foreach (var entry in this.Document.Entries) {
-                    var item = new EntryCache(entry);
-                    if (string.Equals(item.Group, text, StringComparison.CurrentCultureIgnoreCase)) {
-                        resultList.Add(item);
-                    } else if ((text.Length > 0) && (item.Title.IndexOf(text, StringComparison.CurrentCultureIgnoreCase) >= 0)) {
-                        resultList.Add(item);
-                    }
-                }
-            }
-            Debug.WriteLine(string.Format(CultureInfo.InvariantCulture, "Items searched at {0:0.0} ms", sw.ElapsedMilliseconds));
-
-            //sort, preferring the same group
-            resultList.Sort((item1, item2) => {
-                if (string.Equals(item1.Group, text, StringComparison.CurrentCultureIgnoreCase) && !string.Equals(item2.Group, text, StringComparison.CurrentCultureIgnoreCase)) {
-                    return -1; //item1 is before item2
-                } else if (!string.Equals(item1.Group, text, StringComparison.CurrentCultureIgnoreCase) && string.Equals(item2.Group, text, StringComparison.CurrentCultureIgnoreCase)) {
-                    return +1; //item2 is before item1
-                } else {
-                    var groupCompare = string.Compare(item1.Group, item2.Group, StringComparison.CurrentCultureIgnoreCase);
-                    return (groupCompare != 0) ? groupCompare : string.Compare(item1.Title, item2.Title, StringComparison.CurrentCultureIgnoreCase);
-                }
-            });
-            Debug.WriteLine(string.Format(CultureInfo.InvariantCulture, "Items sorted at {0:0.0} ms", sw.ElapsedMilliseconds));
-
-            //show items
-            lsvEntries.BeginUpdate();
-            lsvEntries.Items.Clear();
-            lsvEntries.Groups.Clear();
-
-            var groupDictionary = new Dictionary<string, ListViewGroup>();
-            foreach (var item in resultList) {
-                ListViewGroup group;
-                if (!groupDictionary.TryGetValue(item.Group, out group)) {
-                    group = new ListViewGroup(item.Group);
-                    lsvEntries.Groups.Add(group);
-                    groupDictionary.Add(item.Group, group);
-                }
-                lsvEntries.Items.Add(new ListViewItem(item.Title, group) { Tag = item.Entry });
-            }
-
-            lsvEntries.EndUpdate();
-            Debug.WriteLine(string.Format(CultureInfo.InvariantCulture, "Items updated at {0:0.0} ms", sw.ElapsedMilliseconds));
-
-            if (lsvEntries.Items.Count > 0) {
-                lsvEntries.Enabled = true;
-                lsvEntries.ForeColor = SystemColors.WindowText;
-
-                if (entryToSelect != null) {
-                    foreach (ListViewItem item in lsvEntries.Items) {
-                        var entry = (Entry)(item.Tag);
-                        if (entry.Equals(entryToSelect)) {
-                            item.Selected = true;
-                            item.Focused = true;
-                            break;
-                        }
-                    }
-                }
-
-                if (lsvEntries.SelectedItems.Count == 0) {
-                    lsvEntries.Items[0].Selected = true;
-                    lsvEntries.Items[0].Focused = true;
-                }
-
-                lsvEntries.EnsureVisible(lsvEntries.SelectedItems[0].Index);
-            } else {
-                lsvEntries.Enabled = false;
-                lsvEntries.ForeColor = SystemColors.GrayText;
-
-                if ((this.Document == null) || (this.Document.Entries.Count == 0)) {
-                    lsvEntries.Items.Add("No items.");
-                } else {
-                    lsvEntries.Items.Add("No matching items found.");
-                }
-            }
-
-            Debug.WriteLine(string.Format(CultureInfo.InvariantCulture, "Items refreshed at {0:0.0} ms", sw.ElapsedMilliseconds));
-
-            Form_Resize(null, null);
-            Debug.WriteLine(string.Format(CultureInfo.InvariantCulture, "Form refreshed at {0:0.0} ms", sw.ElapsedMilliseconds));
+            Helpers.PerformEntrySearch(this.Document, lsvEntries, cmbSearch.Text, entryToSelect);
+            Form_Resize(null, null); //to support both ListView full row with and without scrollbar
         }
+
 
         private void UpdateMenu() {
             mnuSave.Enabled = (this.Document != null) && (!this.Document.IsReadOnly);
@@ -807,6 +701,7 @@ namespace Bimil {
             mnuAdd.Enabled = (this.Document != null) && (!this.Document.IsReadOnly);
             mnuEdit.Enabled = (this.Document != null) && (lsvEntries.SelectedItems.Count == 1);
             mnuRemove.Enabled = (this.Document != null) && (lsvEntries.SelectedItems.Count > 0) && (!this.Document.IsReadOnly);
+            mnuSearch.Enabled = (this.Document != null);
 
             pnlDocument.Visible = (this.Document != null);
 
@@ -875,6 +770,5 @@ namespace Bimil {
             public String FileName { get; }
 
         }
-
     }
 }
