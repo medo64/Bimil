@@ -601,7 +601,7 @@ namespace Bimil {
             }
 
             RefreshCategories();
-            RefreshItems();
+            RefreshItems((lsvEntries.SelectedItems.Count > 0) ? (Entry)(lsvEntries.SelectedItems[0].Tag) : null);
             UpdateMenu();
             cmbSearch.Select();
         }
@@ -708,10 +708,6 @@ namespace Bimil {
         }
 
         private void RefreshItems(Entry entryToSelect = null) {
-            if ((entryToSelect == null) && (lsvEntries.SelectedItems.Count > 0)) { //to keep same item selected
-                entryToSelect = (Entry)(lsvEntries.SelectedItems[0].Tag);
-            }
-
             //search for matches
             var text = cmbSearch.Text;
             var resultList = new List<Entry>();
