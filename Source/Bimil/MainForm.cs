@@ -214,6 +214,7 @@ namespace Bimil {
                             lsvEntries.Items[index].Selected = true;
                             lsvEntries.Items[index].Focused = true;
                         }
+                        lsvEntries.EnsureVisible(lsvEntries.SelectedItems[0].Index);
                     }
                     e.Handled = true;
                     e.SuppressKeyPress = true;
@@ -229,6 +230,7 @@ namespace Bimil {
                             lsvEntries.Items[index].Selected = true;
                             lsvEntries.Items[index].Focused = true;
                         }
+                        lsvEntries.EnsureVisible(lsvEntries.SelectedItems[0].Index);
                     }
                     e.Handled = true;
                     e.SuppressKeyPress = true;
@@ -777,6 +779,8 @@ namespace Bimil {
                     lsvEntries.Items[0].Selected = true;
                     lsvEntries.Items[0].Focused = true;
                 }
+
+                lsvEntries.EnsureVisible(lsvEntries.SelectedItems[0].Index);
             } else {
                 lsvEntries.Enabled = false;
                 lsvEntries.ForeColor = SystemColors.GrayText;
