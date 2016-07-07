@@ -2,11 +2,14 @@ using Medo.Security.Cryptography.PasswordSafe;
 using System.Windows.Forms;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 
 namespace Bimil {
     internal partial class SearchForm : Form {
         public SearchForm(Document document, IList<string> categories, string defaultText) {
             InitializeComponent();
+            this.Font = SystemFonts.MessageBoxFont;
+            Medo.Windows.Forms.State.SetupOnLoadAndClose(this);
 
             this.Document = document;
             this.Categories = categories;
