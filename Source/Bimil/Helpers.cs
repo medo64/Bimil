@@ -55,7 +55,9 @@ namespace Bimil {
                 case RecordType.Password:
                 case RecordType.TwoFactorKey:
                 case RecordType.CreditCardVerificationValue:
-                case RecordType.CreditCardPin: return true;
+                case RecordType.CreditCardPin:
+                case RecordType.PasswordHistory:
+                    return true;
 
                 default: return false; //all other fields are visible by default
             }
@@ -97,12 +99,12 @@ namespace Bimil {
                 foreach (var entry in document.Entries) {
                     var item = new EntryCache(entry);
                     if (string.Equals(item.Group, text, StringComparison.CurrentCultureIgnoreCase)) {
-                        resultList.Add(item);
-                        item.TagMatched = "Group";
-                    } else if ((text.Length > 0) && (item.Title.IndexOf(text, StringComparison.CurrentCultureIgnoreCase) >= 0)) {
-                        resultList.Add(item);
-                        item.TagMatched = "Title";
-                    } else if ((text.Length > 0) && extendedSearch) {
+                        item.AddMatch("Group");
+                    }
+                    if ((text.Length > 0) && (item.Title.IndexOf(text, StringComparison.CurrentCultureIgnoreCase) >= 0)) {
+                        item.AddMatch("Title");
+                    }
+                    if ((text.Length > 0) && extendedSearch) {
                         foreach (var record in entry.Records) {
                             if (record.RecordType == RecordType.Title) { continue; }
                             if (record.RecordType == RecordType.Group) { continue; }
@@ -112,13 +114,15 @@ namespace Bimil {
                                     var recordText = record.Text;
                                     if (recordText != null) { //we have something searchable
                                         if (recordText.IndexOf(text, StringComparison.CurrentCultureIgnoreCase) >= 0) {
-                                            resultList.Add(item);
-                                            item.TagMatched = recordCaption;
+                                            item.AddMatch(recordCaption);
                                         }
                                     }
                                 }
                             }
                         }
+                    }
+                    if (!string.IsNullOrEmpty(item.MatchedText)) {
+                        resultList.Add(item);
                     }
                 }
             }
@@ -151,7 +155,7 @@ namespace Bimil {
                     groupDictionary.Add(item.Group, group);
                 }
                 var lvi = new ListViewItem(item.Title, group) { Tag = item.Entry };
-                if (addMatchDescription && !string.IsNullOrEmpty(item.TagMatched)) { lvi.ToolTipText = item.TagMatched + " matched"; }
+                if (addMatchDescription && !string.IsNullOrEmpty(item.MatchedText)) { lvi.ToolTipText = "Matched: " + item.MatchedText; }
                 lsvEntries.Items.Add(lvi);
             }
 

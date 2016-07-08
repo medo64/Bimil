@@ -14,7 +14,15 @@ namespace Bimil {
         public string Title { get; }
         public string Group { get; }
 
-        public string TagMatched { get; set; }
+        public string MatchedText { get; private set; }
+
+        public void AddMatch(string text) {
+            if (string.IsNullOrEmpty(this.MatchedText)) {
+                this.MatchedText = text;
+            } else {
+                this.MatchedText += ", " + text;
+            }
+        }
 
     }
 }
