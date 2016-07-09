@@ -169,7 +169,18 @@ namespace Bimil {
                         break;
 
                     case RecordType.CreditCardVerificationValue:
-                    case RecordType.CreditCardPin:
+                    case RecordType.CreditCardPin: {
+                            var textBox = NewTextBox(labelWidth, y, record);
+                            textBox.UseSystemPasswordChar = true;
+                            pnl.Controls.Add(textBox);
+
+                            pnl.Controls.Add(NewCopyButton(textBox));
+                            pnl.Controls.Add(NewShowPasswordButton(textBox));
+
+                            yH = textBox.Height;
+                        }
+                        break;
+
                     case RecordType.Password: {
                             var textBox = NewTextBox(labelWidth, y, record);
                             textBox.UseSystemPasswordChar = true;
@@ -177,6 +188,7 @@ namespace Bimil {
 
                             pnl.Controls.Add(NewCopyButton(textBox));
                             pnl.Controls.Add(NewShowPasswordButton(textBox));
+                            pnl.Controls.Add(NewGeneratePasswordButton(textBox));
 
                             yH = textBox.Height;
                         }
@@ -451,6 +463,41 @@ namespace Bimil {
                 textBox.Select();
 
                 textBox.UseSystemPasswordChar = !textBox.UseSystemPasswordChar;
+            });
+
+            return button;
+        }
+
+        private Button NewGeneratePasswordButton(TextBox parentTextBox) {
+            parentTextBox.Width -= parentTextBox.Height;
+            var button = new Button() {
+                Name = "mnuGeneratePassword",
+                Location = new Point(parentTextBox.Right, parentTextBox.Top),
+                Size = new Size(parentTextBox.Height, parentTextBox.Height),
+                TabStop = false,
+                Tag = parentTextBox,
+                Text = "",
+                Anchor = AnchorStyles.Top | AnchorStyles.Right,
+                Enabled = (parentTextBox.TextLength == 0)
+            };
+            Helpers.ScaleButton(button);
+
+            tip.SetToolTip(button, "Generate password (available only when no password already present).");
+
+            parentTextBox.TextChanged += new EventHandler(delegate (object sender, EventArgs e) {
+                var textBox = (TextBox)sender;
+                button.Enabled = (textBox.TextLength == 0);
+            });
+
+            button.Click += new EventHandler(delegate (object sender, EventArgs e) {
+                var textBox = (TextBox)(((Control)sender).Tag);
+                textBox.Select();
+
+                using (var frm = new PasswordGeneratorForm(useCopyAsSave: true)) {
+                    if (frm.ShowDialog(this) == DialogResult.OK) {
+                        textBox.Text = frm.Password;
+                    }
+                }
             });
 
             return button;

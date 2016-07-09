@@ -8,10 +8,17 @@ using System.Windows.Forms;
 
 namespace Bimil {
     internal partial class PasswordGeneratorForm : Form {
-        public PasswordGeneratorForm() {
+        public PasswordGeneratorForm(bool useCopyAsSave = false) {
             InitializeComponent();
             this.Font = SystemFonts.MessageBoxFont;
+
+            this.UseCopyAsSave = useCopyAsSave;
+
+            btnCopy.Text = useCopyAsSave ? "Save" : "Copy";
+            tip.SetToolTip(btnCopy, useCopyAsSave ? "Save password" : "Copy to clipboard");
         }
+
+        private readonly bool UseCopyAsSave;
 
         protected override bool ProcessDialogKey(Keys keyData) {
             if (keyData == Keys.Escape) {
@@ -123,9 +130,15 @@ namespace Bimil {
         }
 
 
+        public string Password { get; private set; }
+
         private void btnCopy_Click(object sender, EventArgs e) {
-            Clipboard.Clear();
-            Clipboard.SetText(txtPassword.Text, TextDataFormat.Text);
+            if (this.UseCopyAsSave) {
+                this.Password = txtPassword.Text;
+            } else {
+                Clipboard.Clear();
+                Clipboard.SetText(txtPassword.Text, TextDataFormat.Text);
+            }
         }
 
 

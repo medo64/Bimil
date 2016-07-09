@@ -207,11 +207,11 @@ namespace Bimil {
             // btnGenerate
             // 
             this.btnGenerate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnGenerate.Location = new System.Drawing.Point(337, 194);
+            this.btnGenerate.Location = new System.Drawing.Point(241, 194);
             this.btnGenerate.Margin = new System.Windows.Forms.Padding(3, 15, 3, 3);
             this.btnGenerate.Name = "btnGenerate";
             this.btnGenerate.Size = new System.Drawing.Size(90, 28);
-            this.btnGenerate.TabIndex = 0;
+            this.btnGenerate.TabIndex = 7;
             this.btnGenerate.Text = "Generate";
             this.tip.SetToolTip(this.btnGenerate, "Generate new password");
             this.btnGenerate.UseVisualStyleBackColor = true;
@@ -220,14 +220,14 @@ namespace Bimil {
             // btnCopy
             // 
             this.btnCopy.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnCopy.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.btnCopy.Enabled = false;
-            this.btnCopy.Location = new System.Drawing.Point(241, 194);
+            this.btnCopy.Location = new System.Drawing.Point(337, 194);
             this.btnCopy.Margin = new System.Windows.Forms.Padding(3, 15, 3, 3);
             this.btnCopy.Name = "btnCopy";
             this.btnCopy.Size = new System.Drawing.Size(90, 28);
-            this.btnCopy.TabIndex = 7;
+            this.btnCopy.TabIndex = 0;
             this.btnCopy.Text = "Copy";
-            this.tip.SetToolTip(this.btnCopy, "Copy to clipboard");
             this.btnCopy.UseVisualStyleBackColor = true;
             this.btnCopy.Click += new System.EventHandler(this.btnCopy_Click);
             // 
