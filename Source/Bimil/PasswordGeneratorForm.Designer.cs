@@ -277,6 +277,7 @@ namespace Bimil {
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Password generator";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form_FormClosed);
             this.Load += new System.EventHandler(this.Form_Load);
             this.grpInclude.ResumeLayout(false);
             this.grpInclude.PerformLayout();

@@ -7,7 +7,7 @@ using System.Text;
 using System.Windows.Forms;
 
 namespace Bimil {
-    public partial class PasswordGeneratorForm : Form {
+    internal partial class PasswordGeneratorForm : Form {
         public PasswordGeneratorForm() {
             InitializeComponent();
             this.Font = SystemFonts.MessageBoxFont;
@@ -24,7 +24,32 @@ namespace Bimil {
 
 
         private void Form_Load(object sender, EventArgs e) {
+            chbIncludeUpperCase.Checked = Settings.PasswordGeneratorIncludeUpperCase;
+            chbIncludeLowerCase.Checked = Settings.PasswordGeneratorIncludeLowerCase;
+            chbIncludeNumbers.Checked = Settings.PasswordGeneratorIncludeNumbers;
+            chbIncludeSpecialCharacters.Checked = Settings.PasswordGeneratorIncludeSpecialCharacters;
+            chbRestrictSimilar.Checked = Settings.PasswordGeneratorRestrictSimilar;
+            chbRestrictMovable.Checked = Settings.PasswordGeneratorRestrictMovable;
+            chbRestrictPronounceable.Checked = Settings.PasswordGeneratorRestrictPronounceable;
+            chbRestrictRepeated.Checked = Settings.PasswordGeneratorRestrictRepeated;
+            txtLength.Text = Settings.PasswordGeneratorLength.ToString("0", CultureInfo.CurrentCulture);
             btnGenerate_Click(null, null);
+        }
+
+        private void Form_FormClosed(object sender, FormClosedEventArgs e) {
+            Settings.PasswordGeneratorIncludeUpperCase = chbIncludeUpperCase.Checked;
+            Settings.PasswordGeneratorIncludeLowerCase = chbIncludeLowerCase.Checked;
+            Settings.PasswordGeneratorIncludeNumbers = chbIncludeNumbers.Checked;
+            Settings.PasswordGeneratorIncludeSpecialCharacters = chbIncludeSpecialCharacters.Checked;
+            Settings.PasswordGeneratorRestrictSimilar = chbRestrictSimilar.Checked;
+            Settings.PasswordGeneratorRestrictMovable = chbRestrictMovable.Checked;
+            Settings.PasswordGeneratorRestrictPronounceable = chbRestrictPronounceable.Checked;
+            Settings.PasswordGeneratorRestrictRepeated = chbRestrictRepeated.Checked;
+
+            int length;
+            if (int.TryParse(txtLength.Text, NumberStyles.Integer, CultureInfo.CurrentCulture, out length)) {
+                Settings.PasswordGeneratorLength = length;
+            }
         }
 
 
@@ -65,12 +90,12 @@ namespace Bimil {
                     break;
 
                 case Keys.PageUp:
-                    ChangeTimeout(textBox, -10);
+                    ChangeLength(textBox, -10);
                     e.SuppressKeyPress = true;
                     break;
 
                 case Keys.PageDown:
-                    ChangeTimeout(textBox, +10);
+                    ChangeLength(textBox, +10);
                     e.SuppressKeyPress = true;
                     break;
 
@@ -83,16 +108,16 @@ namespace Bimil {
         private void txtLength_Leave(object sender, EventArgs e) {
             int length;
             if (!int.TryParse(txtLength.Text, NumberStyles.Integer, CultureInfo.CurrentCulture, out length)) {
-                length = 12;
+                length = Settings.PasswordGeneratorLength;
             }
             txtLength.Text = Math.Min(Math.Max(length, 1), 99).ToString(CultureInfo.CurrentCulture);
         }
 
-        private void ChangeTimeout(TextBox textBox, int delta) {
-            int seconds;
-            if (int.TryParse(textBox.Text, NumberStyles.Integer, CultureInfo.CurrentCulture, out seconds)) {
-                var newSeconds = Math.Min(Math.Max(seconds + delta, 1), 99);
-                textBox.Text = newSeconds.ToString(CultureInfo.CurrentCulture);
+        private void ChangeLength(TextBox textBox, int delta) {
+            int length;
+            if (int.TryParse(textBox.Text, NumberStyles.Integer, CultureInfo.CurrentCulture, out length)) {
+                var newLength = Math.Min(Math.Max(length + delta, 1), 99);
+                textBox.Text = newLength.ToString(CultureInfo.CurrentCulture);
                 textBox.SelectAll();
             }
         }
