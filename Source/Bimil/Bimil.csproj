@@ -119,6 +119,12 @@
     <Compile Include="ItemForm.Designer.cs">
       <DependentUpon>ItemForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="PasswordGeneratorForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PasswordGeneratorForm.Designer.cs">
+      <DependentUpon>PasswordGeneratorForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="QRCode.cs" />
     <Compile Include="QRCodeForm.cs">
       <SubType>Form</SubType>
@@ -205,6 +211,9 @@
     <Compile Include="Templates.cs" />
     <EmbeddedResource Include="ItemForm.resx">
       <DependentUpon>ItemForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PasswordGeneratorForm.resx">
+      <DependentUpon>PasswordGeneratorForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="QRCodeForm.resx">
       <DependentUpon>QRCodeForm.cs</DependentUpon>

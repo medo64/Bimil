@@ -44,6 +44,7 @@ namespace Bimil {
             this.mnuAppAbout = new System.Windows.Forms.ToolStripMenuItem();
             this.mnu1 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuSearch = new System.Windows.Forms.ToolStripButton();
+            this.mnuGeneratePassword = new System.Windows.Forms.ToolStripButton();
             this.pnlDocument = new System.Windows.Forms.Panel();
             this.lsvEntries = new System.Windows.Forms.ListView();
             this.lsvEntries_colTitle = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -69,7 +70,8 @@ namespace Bimil {
             this.mnuRemove,
             this.mnuApp,
             this.mnu1,
-            this.mnuSearch});
+            this.mnuSearch,
+            this.mnuGeneratePassword});
             this.mnu.Location = new System.Drawing.Point(0, 0);
             this.mnu.Name = "mnu";
             this.mnu.Padding = new System.Windows.Forms.Padding(1, 0, 1, 0);
@@ -237,6 +239,16 @@ namespace Bimil {
             this.mnuSearch.ToolTipText = "Search (Ctrl+F)";
             this.mnuSearch.Click += new System.EventHandler(this.mnuSearch_Click);
             // 
+            // mnuGeneratePassword
+            // 
+            this.mnuGeneratePassword.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.mnuGeneratePassword.Image = global::Bimil.Properties.Resources.mnuGeneratePassword_16;
+            this.mnuGeneratePassword.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.mnuGeneratePassword.Name = "mnuGeneratePassword";
+            this.mnuGeneratePassword.Size = new System.Drawing.Size(24, 24);
+            this.mnuGeneratePassword.Text = "Generate password";
+            this.mnuGeneratePassword.Click += new System.EventHandler(this.mnuGeneratePassword_Click);
+            // 
             // pnlDocument
             // 
             this.pnlDocument.BackColor = System.Drawing.SystemColors.Window;
@@ -345,6 +357,7 @@ namespace Bimil {
         private System.Windows.Forms.Timer tmrClose;
         private System.Windows.Forms.ToolStripSeparator mnu1;
         private System.Windows.Forms.ToolStripButton mnuSearch;
+        private System.Windows.Forms.ToolStripButton mnuGeneratePassword;
     }
 }
 

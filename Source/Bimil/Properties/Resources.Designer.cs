@@ -503,6 +503,46 @@ namespace Bimil.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap mnuGeneratePassword_16 {
+            get {
+                object obj = ResourceManager.GetObject("mnuGeneratePassword_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap mnuGeneratePassword_24 {
+            get {
+                object obj = ResourceManager.GetObject("mnuGeneratePassword_24", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap mnuGeneratePassword_32 {
+            get {
+                object obj = ResourceManager.GetObject("mnuGeneratePassword_32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap mnuGeneratePassword_48 {
+            get {
+                object obj = ResourceManager.GetObject("mnuGeneratePassword_48", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap mnuNew_16 {
             get {
                 object obj = ResourceManager.GetObject("mnuNew_16", resourceCulture);

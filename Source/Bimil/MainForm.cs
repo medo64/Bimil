@@ -629,10 +629,17 @@ namespace Bimil {
             cmbSearch.Select();
         }
 
+
         private void mnuSearch_Click(object sender, EventArgs e) {
             if (this.Document == null) { return; }
 
             using (var frm = new SearchForm(this.Document, this.Categories, cmbSearch.Text)) {
+                frm.ShowDialog(this);
+            }
+        }
+
+        private void mnuGeneratePassword_Click(object sender, EventArgs e) {
+            using (var frm = new PasswordGeneratorForm()) {
                 frm.ShowDialog(this);
             }
         }

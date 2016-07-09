@@ -764,6 +764,62 @@
         yjBb+wOW61M/FyjCEwAAAABJRU5ErkJggg==
 </value>
   </data>
+  <data name="mnuGeneratePassword_16" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAS
+        dAAAEnQB3mYfeAAAANFJREFUOE+l0j0KwkAQhuGAYGUlWHkAQfAAVoKVNt7AykqwshJsrXIhK0HwBoKV
+        leANbAV9P5hdY5ygMcVDdobZL3+bJOO0GrdZhi1OeJSkPTHAG1hjhBoG1ssrDJihjRsUMkR+RtyAo/VW
+        mV4RN2BpvV2mlxf2vAXokUOd1cEWPVxRGCB6Z300Dau+oIEWzgjzL7YIAXur51brVzVRh75NmAt7PgI2
+        Vh+gO3ahUF0VtIAb0McdGpwiBH4TA/TeE+jwKMgb9sSAykf5f27zZ2nyBM07TqNcskKKAAAAAElFTkSu
+        QmCC
+</value>
+  </data>
+  <data name="mnuGeneratePassword_24" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAS
+        dAAAEnQB3mYfeAAAAWZJREFUSEu11EFHBVEYxvFZtYqIaBUREdFniBaJttGqD9CqbVzaXiIiolW0imjV
+        qlVEqz5Aq4hoFdHqUs/fvO907pkzc5s6d/Fj5jnnnveeOe9MUaz3xysZ5pQMc7KLM/nK7EiqAqkJ/zWQ
+        XxX4kJ5sy5Ysy7Wk5sZGFniVFZmTN7kR5k9Lan6stQBbZHHGTy17kTXZs/tRWgtciY8/W9ZVa4FNYWwp
+        yLqqFZi1+yYTciDMvZQZadtd4w4exMfoZ7I7mbKMM5mUWwl/F6/XWKB8SUr3luHYMhxaFvKxn/socDtC
+        TjvSTZ5/Cv+cMXbkua9TZxc+0XGw5BtBBtrTH1M45uvU2UW4CL3uOa3q+YVwqE+yKPE44vWqAqvCW0vI
+        AZLxkvnjeZTwUGkCOm5B9i0rF2woAD4DFJkXvjfsxCf+VVWAZ84ngK3vyrukftBV4yHnMPS5PrcwpxMZ
+        OoPxSIY5JcNs+sU3XAQMDU90gBkAAAAASUVORK5CYII=
+</value>
+  </data>
+  <data name="mnuGeneratePassword_32" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAS
+        dAAAEnQB3mYfeAAAAf5JREFUWEfVl09HRVEUxR8R0SgiolGjiD5A0+hNolFERKPoA0QfIN40IppGNGrU
+        tGnTRhGNGkWjiIhay7lrv33f2e/P5d37avDTvmuvc/Z+955z7q3VancmSyg2SSg2ibs4Bl/gp2ZYg7Wy
+        Bj5BNKAOWCtrIDLWyf9t4A7sgFUwD5bBHngHkb8flRvgc9sG9LL4E6C+W2jrxfWopLoWxCbxDTYAfdPg
+        GSg3C6jPOG0UUl0LYpM4B/Lx9vucthT/en0YaT4LYhPhvl0A8l2ByFeVNJ8FsYlcA3mmQNXF1o80pwWx
+        iWiRkbVCGwdpTgu6iTenDWMOnAGO40LdBFyMD4Um5M81C8pJ8Qi85xJQvwUsJP0eHBYxc73zyJdrFpST
+        wq9+woainLbiKfDjhXy5ZkE5KfaB8kuFJnjLuSaU51rxeemDcRd+sFgByvcWIBdAeZ6ObEo56YNxF35i
+        0rsYuR19/hUsAu+5Ad4jlM81C8pJwgNHOR5E/mPlA+hlxKI8H+TTO8IT1UiaBe3OCfAGHrnKccFJ523e
+        An67HQA/Fx+d/ER6rlmQVrKS/BX6Vdzb/tkeAer+SOabkk1xDr4xX4By/Uh1Lei+ZFhci4+T1fWpljXA
+        bcZnyOJshh8e0cBxkTUQmerk7zUw8c/ypv4x4Y7ils8amAyh2CSh2Bid1i9854+RrsP5vwAAAABJRU5E
+        rkJggg==
+</value>
+  </data>
+  <data name="mnuGeneratePassword_48" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAS
+        dAAAEnQB3mYfeAAAAyJJREFUaEPtmUHEVUEYhi8RERERERFtIyIiIvo3rdq2imjb9qdtXKJVRLRqFW0j
+        IiKibUSriFYRERH1vuZ+c17ffef+/+3ev3uGf/G438y833dmzpmZ78y5k8nWtG9sZU/Yyp6wlT1hK3tC
+        CqfBa/Bn5LCPZ8DcAN4C5zBG2Ne5AfwGTjxG2Ne5ATjhmNkfwKZZ+wBegZvgHDgJGJP2LfAeOJ9VWNsA
+        uCMM29rW9BR4Bthpbs2sOwReAuf/r5TrVcOLduI+0Bjs/DfAtiuzuuAsyP6rUOJWw4sW8QioP9FccnhW
+        FxwA6r8qJW41vKjFB3AQqD/vuGryE7gEtH1VStxqeFGLi0B9yVOgms/gKmAbf1nW9lUp162GFzm4GNWP
+        cHrE3P9flGtXw4sccVcVPhGn3UvKtavhRZkvgHdb/cg94PR7Sbl2NbyIC081y3IcMCdoTO5UsQEw8Wlb
+        kOO0NdXwIjddloVPLJIYnyAHxfoL4BfI1yQ5RltTDS9SfgJmVPUhl0Fo+Jr7BOQtlhn5B2CnWeYgOBiN
+        r6gvaWuq4UXKC6D6YBtkLbfUrGOW5i8H9wZkHyX7tjXV8CLlLlB9wIE5/XXg9A+B0yvZp62phhcpnCqq
+        J5xSnFpO/wnkqXQNZJ22L48UcmCFc9vN/532/9tA9SdAXrjavjxS0KCZd0C1wQPg9IQdjUWr5CmU25dD
+        Cho0w0SlWsLtcdH7DQ8y2YdwMesHBKfZPVLQi2fcyxtzhNOSxyB0d0DO3oueHFEtaWuq4UWEL2nu9aG1
+        +7hMe2NWDtjOI2j2DVRL2ppqlKDcJXKCcXt6a/F+BZFpz4NYsIyZDzgBj6M5Ttbk9kFTjYF88MgHEw6U
+        BxrVEF20x8BubkTrSWRdbh801Rhg0BANn/AGeJTUQEEsWvq3Mi3P0EcAFzIT3UfgdPmabU01BuIJfAeR
+        /gN2IAfaFKVP1Sjwew4/hzwH2nnO07F9uS59q0ZZwEdnNjMmP0pxF1n395x1MTcAJxoz+wPYNHMD6P4P
+        Dv0sOHaG/FSNslX2MAj20f7J1ye2sidsZU/Yyp6wld0wnfwFlntyuwsssVwAAAAASUVORK5CYII=
+</value>
+  </data>
   <data name="mnuNew_16" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAS
