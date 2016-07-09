@@ -13,19 +13,20 @@ namespace Bimil {
         private void Form_Load(object sender, EventArgs e) {
             chbShowStart.Checked = Settings.ShowStart;
             chbCloseOnEscape.Checked = Settings.CloseOnEscape;
+            chbEditableByDefault.Checked = Settings.EditableByDefault;
+            chbPasswordSafeWarnings.Checked = Settings.ShowPasswordSafeWarnings;
 
             chbItemTimeout.Checked = (Settings.AutoCloseItemTimeout > 0);
             txtItemTimeout.Text = (Settings.AutoCloseItemTimeout > 0) ? Settings.AutoCloseItemTimeout.ToString(CultureInfo.CurrentCulture) : "120";
 
             chbAppTimeout.Checked = (Settings.AutoCloseTimeout > 0);
             txtAppTimeout.Text = (Settings.AutoCloseTimeout > 0) ? Settings.AutoCloseTimeout.ToString(CultureInfo.CurrentCulture) : "900";
-
-            chbPasswordSafeWarnings.Checked = Settings.ShowPasswordSafeWarnings;
         }
 
         private void btnOK_Click(object sender, EventArgs e) {
             Settings.ShowStart = chbShowStart.Checked;
             Settings.CloseOnEscape = chbCloseOnEscape.Checked;
+            Settings.EditableByDefault = chbEditableByDefault.Checked;
             Settings.ShowPasswordSafeWarnings = chbPasswordSafeWarnings.Checked;
 
             if (chbItemTimeout.Checked) {

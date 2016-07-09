@@ -40,6 +40,15 @@ namespace Bimil {
             set { Medo.Configuration.Settings.Write("AutoCloseItemTimeout", LimitBetween(value, minValue: 10, maxValue: 3600, allowZero: true)); }
         }
 
+        [Category("Behavior")]
+        [DisplayName("Editable by default")]
+        [Description("If true, all fields will be editable by default.")]
+        [DefaultValue(false)]
+        public static bool EditableByDefault {
+            get { return Medo.Configuration.Settings.Read("EditableByDefault", false); }
+            set { Medo.Configuration.Settings.Write("EditableByDefault", value); }
+        }
+
 
         [Category("Compatibility")]
         [DisplayName("Show PasswordSafe warnings")]

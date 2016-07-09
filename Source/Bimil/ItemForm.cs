@@ -19,7 +19,7 @@ namespace Bimil {
         private static Font UnderlineFont = new Font(SystemFonts.MessageBoxFont.Name, SystemFonts.MessageBoxFont.SizeInPoints, SystemFonts.MessageBoxFont.Style | FontStyle.Underline);
         private readonly IList<string> Categories;
 
-        public ItemForm(Document document, Entry item, bool startsAsEditable, IList<string> categories) {
+        public ItemForm(Document document, Entry item, IList<string> categories, bool startsAsEditable) {
             InitializeComponent();
             this.Font = SystemFonts.MessageBoxFont;
 

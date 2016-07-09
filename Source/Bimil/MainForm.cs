@@ -237,6 +237,11 @@ namespace Bimil {
             }
         }
 
+
+        private void lsvEntries_BeforeLabelEdit(object sender, LabelEditEventArgs e) {
+            if (!Settings.EditableByDefault) { e.CancelEdit = true; }
+        }
+
         private void lsvEntries_KeyDown(object sender, KeyEventArgs e) {
             switch (e.KeyData) {
                 case Keys.Insert: {
@@ -589,7 +594,7 @@ namespace Bimil {
                         entry.Records.Add(new Record(recordType));
                     }
 
-                    using (var frm2 = new ItemForm(this.Document, entry, true, this.Categories)) {
+                    using (var frm2 = new ItemForm(this.Document, entry, this.Categories, startsAsEditable: true)) {
                         if (frm2.ShowDialog(this) == DialogResult.OK) {
                             RefreshItems(entry);
                             RefreshCategories();
@@ -608,7 +613,7 @@ namespace Bimil {
             if ((this.Document == null) || (lsvEntries.SelectedItems.Count != 1)) { return; }
 
             var item = (Entry)(lsvEntries.SelectedItems[0].Tag);
-            using (var frm2 = new ItemForm(this.Document, item, false, this.Categories)) {
+            using (var frm2 = new ItemForm(this.Document, item, this.Categories, startsAsEditable: Settings.EditableByDefault)) {
                 if (frm2.ShowDialog(this) == DialogResult.OK) {
                     lsvEntries.SelectedItems[0].Text = item.Title;
                     RefreshCategories();
@@ -776,5 +781,6 @@ namespace Bimil {
             public String FileName { get; }
 
         }
+
     }
 }
