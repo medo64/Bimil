@@ -18,8 +18,9 @@ namespace Bimil {
         private static Font FixedFont = new Font(FontFamily.GenericMonospace, SystemFonts.MessageBoxFont.SizeInPoints + 0.5F, SystemFonts.MessageBoxFont.Style);
         private static Font UnderlineFont = new Font(SystemFonts.MessageBoxFont.Name, SystemFonts.MessageBoxFont.SizeInPoints, SystemFonts.MessageBoxFont.Style | FontStyle.Underline);
         private readonly IList<string> Categories;
+        private readonly string DefaultCategory;
 
-        public ItemForm(Document document, Entry item, IList<string> categories, bool startsAsEditable) {
+        public ItemForm(Document document, Entry item, IList<string> categories, bool startsAsEditable, string defaultCategory = null) {
             InitializeComponent();
             this.Font = SystemFonts.MessageBoxFont;
 
@@ -27,6 +28,7 @@ namespace Bimil {
             this.Item = item;
             this.Editable = startsAsEditable && !this.Document.IsReadOnly;
             this.Categories = categories;
+            this.DefaultCategory = !string.IsNullOrEmpty(defaultCategory) ? defaultCategory : null;
 
             btnEdit.Visible = !this.Document.IsReadOnly;
 
@@ -133,6 +135,7 @@ namespace Bimil {
                 foreach (var category in this.Categories) {
                     categoryComboBox.Items.Add(category);
                 }
+                if (this.DefaultCategory != null) { categoryComboBox.Text = this.DefaultCategory; }
                 pnl.Controls.Add(categoryComboBox);
                 var label = new Label() { AutoEllipsis = true, Location = new Point(0, y), Size = new Size(labelWidth, unitHeight), Text = "Category:", TextAlign = ContentAlignment.MiddleLeft, UseMnemonic = false };
                 pnl.Controls.Add(label);

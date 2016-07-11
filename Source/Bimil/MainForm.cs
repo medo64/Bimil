@@ -594,7 +594,16 @@ namespace Bimil {
                         entry.Records.Add(new Record(recordType));
                     }
 
-                    using (var frm2 = new ItemForm(this.Document, entry, this.Categories, startsAsEditable: true)) {
+                    //determine current category
+                    string categoryText = cmbSearch.Text.Trim();
+                    foreach (var category in this.Categories) {
+                        if (category.Equals(categoryText, StringComparison.CurrentCultureIgnoreCase)) {
+                            categoryText = category;
+                            break;
+                        }
+                    }
+
+                    using (var frm2 = new ItemForm(this.Document, entry, this.Categories, startsAsEditable: true,defaultCategory:categoryText)) {
                         if (frm2.ShowDialog(this) == DialogResult.OK) {
                             RefreshItems(entry);
                             RefreshCategories();
