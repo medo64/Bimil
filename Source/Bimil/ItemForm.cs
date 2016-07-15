@@ -379,12 +379,12 @@ namespace Bimil {
             var padding = SystemInformation.VerticalScrollBarWidth + 1;
 
             var control = new ComboBox() { BackColor = SystemColors.Control, Font = this.Font, Location = new Point(x + padding, y), DropDownStyle = ComboBoxStyle.DropDownList, Width = pnl.ClientSize.Width - x - padding, Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right };
-            control.Items.Add("Open dropdown to show passwords");
+            control.Items.Add("Open dropdown to show password history (" + entry.PasswordHistory.Count.ToString(CultureInfo.CurrentCulture) + ")");
             control.SelectedIndex = 0;
 
             control.DropDownClosed += new EventHandler(delegate (object sender, EventArgs e) {
                 control.Items.Clear();
-                control.Items.Add("Open dropdown to show password history");
+                control.Items.Add("Open dropdown to show password history (" + entry.PasswordHistory.Count.ToString(CultureInfo.CurrentCulture) + ")");
                 control.SelectedIndex = 0;
             });
 
@@ -392,7 +392,7 @@ namespace Bimil {
                 control.ForeColor = SystemColors.ControlText;
                 control.Items.Clear();
                 if (entry.PasswordHistory.Count == 0) {
-                    control.Items.Add("No password history");
+                    control.Items.Add("No passwords in history");
                 } else {
                     foreach (var item in entry.PasswordHistory) {
                         var timeString = item.TimeFirstUsed.ToShortDateString() + " " + item.TimeFirstUsed.ToShortTimeString();
