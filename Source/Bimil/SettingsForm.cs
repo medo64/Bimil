@@ -21,6 +21,8 @@ namespace Bimil {
 
             chbAppTimeout.Checked = (Settings.AutoCloseTimeout > 0);
             txtAppTimeout.Text = (Settings.AutoCloseTimeout > 0) ? Settings.AutoCloseTimeout.ToString(CultureInfo.CurrentCulture) : "900";
+
+            chbAutoCloseSave.Checked = Settings.AutoCloseSave;
         }
 
         private void btnOK_Click(object sender, EventArgs e) {
@@ -46,14 +48,18 @@ namespace Bimil {
             } else {
                 Settings.AutoCloseTimeout = 0;
             }
+
+            Settings.AutoCloseSave = chbAutoCloseSave.Enabled;
         }
 
         private void chbItemTimeout_CheckedChanged(object sender, EventArgs e) {
             txtItemTimeout.Enabled = chbItemTimeout.Checked;
+            chbAutoCloseSave.Enabled = chbAppTimeout.Checked | chbItemTimeout.Checked;
         }
 
         private void chbAppTimeout_CheckedChanged(object sender, EventArgs e) {
             txtAppTimeout.Enabled = chbAppTimeout.Checked;
+            chbAutoCloseSave.Enabled = chbAppTimeout.Checked | chbItemTimeout.Checked;
         }
 
         private void txtTimeout_KeyDown(object sender, KeyEventArgs e) {

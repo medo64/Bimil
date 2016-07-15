@@ -35,13 +35,14 @@ namespace Bimil {
             this.txtItemTimeout = new System.Windows.Forms.TextBox();
             this.txtAppTimeout = new System.Windows.Forms.TextBox();
             this.chbEditableByDefault = new System.Windows.Forms.CheckBox();
+            this.chbAutoCloseSave = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // btnCancel
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(200, 188);
+            this.btnCancel.Location = new System.Drawing.Point(220, 216);
             this.btnCancel.Margin = new System.Windows.Forms.Padding(3, 15, 3, 3);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(90, 28);
@@ -53,11 +54,11 @@ namespace Bimil {
             // 
             this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOK.Location = new System.Drawing.Point(104, 188);
+            this.btnOK.Location = new System.Drawing.Point(124, 216);
             this.btnOK.Margin = new System.Windows.Forms.Padding(3, 15, 3, 3);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(90, 28);
-            this.btnOK.TabIndex = 9;
+            this.btnOK.TabIndex = 10;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
@@ -89,9 +90,9 @@ namespace Bimil {
             this.chbItemTimeout.AutoSize = true;
             this.chbItemTimeout.Location = new System.Drawing.Point(12, 122);
             this.chbItemTimeout.Name = "chbItemTimeout";
-            this.chbItemTimeout.Size = new System.Drawing.Size(106, 21);
+            this.chbItemTimeout.Size = new System.Drawing.Size(183, 21);
             this.chbItemTimeout.TabIndex = 5;
-            this.chbItemTimeout.Text = "Item timeout";
+            this.chbItemTimeout.Text = "Auto-close entry timeout";
             this.tip.SetToolTip(this.chbItemTimeout, "Time in seconds for item window to automatically close if it loses focus.");
             this.chbItemTimeout.UseVisualStyleBackColor = true;
             this.chbItemTimeout.CheckedChanged += new System.EventHandler(this.chbItemTimeout_CheckedChanged);
@@ -101,9 +102,9 @@ namespace Bimil {
             this.chbAppTimeout.AutoSize = true;
             this.chbAppTimeout.Location = new System.Drawing.Point(12, 150);
             this.chbAppTimeout.Name = "chbAppTimeout";
-            this.chbAppTimeout.Size = new System.Drawing.Size(149, 21);
+            this.chbAppTimeout.Size = new System.Drawing.Size(219, 21);
             this.chbAppTimeout.TabIndex = 7;
-            this.chbAppTimeout.Text = "Application timeout";
+            this.chbAppTimeout.Text = "Auto-close application timeout";
             this.tip.SetToolTip(this.chbAppTimeout, "Time in seconds for main window to automatically close if it loses focus.");
             this.chbAppTimeout.UseVisualStyleBackColor = true;
             this.chbAppTimeout.CheckedChanged += new System.EventHandler(this.chbAppTimeout_CheckedChanged);
@@ -124,7 +125,7 @@ namespace Bimil {
             // 
             this.txtItemTimeout.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.txtItemTimeout.Enabled = false;
-            this.txtItemTimeout.Location = new System.Drawing.Point(230, 120);
+            this.txtItemTimeout.Location = new System.Drawing.Point(250, 120);
             this.txtItemTimeout.MaxLength = 4;
             this.txtItemTimeout.Name = "txtItemTimeout";
             this.txtItemTimeout.ShortcutsEnabled = false;
@@ -139,7 +140,7 @@ namespace Bimil {
             // 
             this.txtAppTimeout.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.txtAppTimeout.Enabled = false;
-            this.txtAppTimeout.Location = new System.Drawing.Point(230, 148);
+            this.txtAppTimeout.Location = new System.Drawing.Point(250, 148);
             this.txtAppTimeout.MaxLength = 4;
             this.txtAppTimeout.Name = "txtAppTimeout";
             this.txtAppTimeout.ShortcutsEnabled = false;
@@ -161,13 +162,25 @@ namespace Bimil {
             this.tip.SetToolTip(this.chbEditableByDefault, "If checked, fields will be editable by default");
             this.chbEditableByDefault.UseVisualStyleBackColor = true;
             // 
+            // chbAutoCloseSave
+            // 
+            this.chbAutoCloseSave.AutoSize = true;
+            this.chbAutoCloseSave.Location = new System.Drawing.Point(12, 177);
+            this.chbAutoCloseSave.Name = "chbAutoCloseSave";
+            this.chbAutoCloseSave.Size = new System.Drawing.Size(152, 21);
+            this.chbAutoCloseSave.TabIndex = 9;
+            this.chbAutoCloseSave.Text = "Save on auto-close";
+            this.tip.SetToolTip(this.chbAutoCloseSave, "If checked, any pending changes will be saved on timeout.");
+            this.chbAutoCloseSave.UseVisualStyleBackColor = true;
+            // 
             // SettingsForm
             // 
             this.AcceptButton = this.btnOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(302, 228);
+            this.ClientSize = new System.Drawing.Size(322, 256);
+            this.Controls.Add(this.chbAutoCloseSave);
             this.Controls.Add(this.chbEditableByDefault);
             this.Controls.Add(this.txtAppTimeout);
             this.Controls.Add(this.txtItemTimeout);
@@ -205,5 +218,6 @@ namespace Bimil {
         private System.Windows.Forms.TextBox txtItemTimeout;
         private System.Windows.Forms.TextBox txtAppTimeout;
         private System.Windows.Forms.CheckBox chbEditableByDefault;
+        private System.Windows.Forms.CheckBox chbAutoCloseSave;
     }
 }

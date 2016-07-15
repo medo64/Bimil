@@ -41,6 +41,15 @@ namespace Bimil {
         }
 
         [Category("Behavior")]
+        [DisplayName("Auto-close save")]
+        [Description("If true, edited items will be automatically saved when auto-close gets activated.")]
+        [DefaultValue(true)]
+        public static bool AutoCloseSave {
+            get { return Medo.Configuration.Settings.Read("AutoCloseSave", true); }
+            set { Medo.Configuration.Settings.Write("AutoCloseSave", value); }
+        }
+
+        [Category("Behavior")]
         [DisplayName("Editable by default")]
         [Description("If true, all fields will be editable by default.")]
         [DefaultValue(false)]

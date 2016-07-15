@@ -101,6 +101,10 @@ namespace Bimil {
                 }
                 form.Close();
             }
+
+            if (Settings.AutoCloseSave && btnOK.Visible && btnOK.Enabled) {
+                btnOK.PerformClick();
+            }
             this.Close();
         }
 

@@ -170,6 +170,15 @@ namespace Bimil {
                 tmrClose.Enabled = false;
 
                 if (this.Document != null) {
+                    if (Settings.AutoCloseSave && this.Document.HasChanged) {
+                        if (this.DocumentFileName != null) {
+                            mnuSave_ButtonClick(null, null);
+                        } else { //if it cannot be saved, cancel close
+                            tmrClose.Enabled = true;
+                            return;
+                        }
+                    }
+
                     var fileName = this.DocumentFileName;
                     var readOnly = this.Document.IsReadOnly;
 
@@ -603,7 +612,7 @@ namespace Bimil {
                         }
                     }
 
-                    using (var frm2 = new ItemForm(this.Document, entry, this.Categories, startsAsEditable: true,defaultCategory:categoryText)) {
+                    using (var frm2 = new ItemForm(this.Document, entry, this.Categories, startsAsEditable: true, defaultCategory: categoryText)) {
                         if (frm2.ShowDialog(this) == DialogResult.OK) {
                             RefreshItems(entry);
                             RefreshCategories();
