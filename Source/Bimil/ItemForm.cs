@@ -396,7 +396,7 @@ namespace Bimil {
                 } else {
                     foreach (var item in entry.PasswordHistory) {
                         var timeString = item.TimeFirstUsed.ToShortDateString() + " " + item.TimeFirstUsed.ToShortTimeString();
-                        control.Items.Add(timeString + ": " + item.HistoricalPassword);
+                        control.Items.Insert(0, timeString + ": " + item.HistoricalPassword);
                     }
                 }
             });
