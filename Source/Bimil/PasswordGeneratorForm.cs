@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
+using System.IO;
+using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Windows.Forms;
@@ -31,32 +33,69 @@ namespace Bimil {
 
 
         private void Form_Load(object sender, EventArgs e) {
-            chbIncludeUpperCase.Checked = Settings.PasswordGeneratorIncludeUpperCase;
-            chbIncludeLowerCase.Checked = Settings.PasswordGeneratorIncludeLowerCase;
-            chbIncludeNumbers.Checked = Settings.PasswordGeneratorIncludeNumbers;
-            chbIncludeSpecialCharacters.Checked = Settings.PasswordGeneratorIncludeSpecialCharacters;
-            chbRestrictSimilar.Checked = Settings.PasswordGeneratorRestrictSimilar;
-            chbRestrictMovable.Checked = Settings.PasswordGeneratorRestrictMovable;
-            chbRestrictPronounceable.Checked = Settings.PasswordGeneratorRestrictPronounceable;
-            chbRestrictRepeated.Checked = Settings.PasswordGeneratorRestrictRepeated;
-            txtLength.Text = Settings.PasswordGeneratorLength.ToString("0", CultureInfo.CurrentCulture);
+            {
+                chbWordIncludeUpperCase.Checked = Settings.PasswordGeneratorWordIncludeUpperCase;
+                chbWordIncludeNumber.Checked = Settings.PasswordGeneratorWordIncludeNumber;
+                chbWordIncludeSpecialCharacter.Checked = Settings.PasswordGeneratorWordIncludeSpecialCharacter;
+                chbWordIncludeIncomplete.Checked = Settings.PasswordGeneratorWordIncludeIncomplete;
+
+                chbWordRestrictAddSpace.Checked = Settings.PasswordGeneratorWordRestrictAddSpace;
+
+                txtWordCount.Text = Settings.PasswordGeneratorWordCount.ToString("0", CultureInfo.CurrentCulture);
+            }
+
+            {
+                chbIncludeUpperCase.Checked = Settings.PasswordGeneratorIncludeUpperCase;
+                chbIncludeLowerCase.Checked = Settings.PasswordGeneratorIncludeLowerCase;
+                chbIncludeNumbers.Checked = Settings.PasswordGeneratorIncludeNumbers;
+                chbIncludeSpecialCharacters.Checked = Settings.PasswordGeneratorIncludeSpecialCharacters;
+
+                chbRestrictSimilar.Checked = Settings.PasswordGeneratorRestrictSimilar;
+                chbRestrictMovable.Checked = Settings.PasswordGeneratorRestrictMovable;
+                chbRestrictPronounceable.Checked = Settings.PasswordGeneratorRestrictPronounceable;
+                chbRestrictRepeated.Checked = Settings.PasswordGeneratorRestrictRepeated;
+
+                txtLength.Text = Settings.PasswordGeneratorLength.ToString("0", CultureInfo.CurrentCulture);
+            }
+
+            tabStyle.SelectedTab = Settings.PasswordGeneratorUseWord ? tabStyle_Words : tabStyle_Classic;
+
             btnGenerate_Click(null, null);
         }
 
         private void Form_FormClosed(object sender, FormClosedEventArgs e) {
-            Settings.PasswordGeneratorIncludeUpperCase = chbIncludeUpperCase.Checked;
-            Settings.PasswordGeneratorIncludeLowerCase = chbIncludeLowerCase.Checked;
-            Settings.PasswordGeneratorIncludeNumbers = chbIncludeNumbers.Checked;
-            Settings.PasswordGeneratorIncludeSpecialCharacters = chbIncludeSpecialCharacters.Checked;
-            Settings.PasswordGeneratorRestrictSimilar = chbRestrictSimilar.Checked;
-            Settings.PasswordGeneratorRestrictMovable = chbRestrictMovable.Checked;
-            Settings.PasswordGeneratorRestrictPronounceable = chbRestrictPronounceable.Checked;
-            Settings.PasswordGeneratorRestrictRepeated = chbRestrictRepeated.Checked;
+            {
+                Settings.PasswordGeneratorWordIncludeUpperCase = chbWordIncludeUpperCase.Checked;
+                Settings.PasswordGeneratorWordIncludeNumber = chbWordIncludeNumber.Checked;
+                Settings.PasswordGeneratorWordIncludeSpecialCharacter = chbWordIncludeSpecialCharacter.Checked;
+                Settings.PasswordGeneratorWordIncludeIncomplete = chbWordIncludeIncomplete.Checked;
 
-            int length;
-            if (int.TryParse(txtLength.Text, NumberStyles.Integer, CultureInfo.CurrentCulture, out length)) {
-                Settings.PasswordGeneratorLength = length;
+                Settings.PasswordGeneratorWordRestrictAddSpace = chbWordRestrictAddSpace.Checked;
+
+                int count;
+                if (int.TryParse(txtWordCount.Text, NumberStyles.Integer, CultureInfo.CurrentCulture, out count)) {
+                    Settings.PasswordGeneratorWordCount = count;
+                }
             }
+
+            {
+                Settings.PasswordGeneratorIncludeUpperCase = chbIncludeUpperCase.Checked;
+                Settings.PasswordGeneratorIncludeLowerCase = chbIncludeLowerCase.Checked;
+                Settings.PasswordGeneratorIncludeNumbers = chbIncludeNumbers.Checked;
+                Settings.PasswordGeneratorIncludeSpecialCharacters = chbIncludeSpecialCharacters.Checked;
+
+                Settings.PasswordGeneratorRestrictSimilar = chbRestrictSimilar.Checked;
+                Settings.PasswordGeneratorRestrictMovable = chbRestrictMovable.Checked;
+                Settings.PasswordGeneratorRestrictPronounceable = chbRestrictPronounceable.Checked;
+                Settings.PasswordGeneratorRestrictRepeated = chbRestrictRepeated.Checked;
+
+                int length;
+                if (int.TryParse(txtLength.Text, NumberStyles.Integer, CultureInfo.CurrentCulture, out length)) {
+                    Settings.PasswordGeneratorLength = length;
+                }
+            }
+
+            Settings.PasswordGeneratorUseWord = !tabStyle.SelectedTab.Equals(tabStyle_Classic);
         }
 
 
@@ -71,7 +110,7 @@ namespace Bimil {
         }
 
 
-        private void txtLength_KeyDown(object sender, KeyEventArgs e) {
+        private void txtNumber_KeyDown(object sender, KeyEventArgs e) {
             TextBox textBox = (TextBox)sender;
 
             switch (e.KeyData) {
@@ -112,6 +151,14 @@ namespace Bimil {
             }
         }
 
+        private void txtWordCount_Leave(object sender, EventArgs e) {
+            int count;
+            if (!int.TryParse(txtWordCount.Text, NumberStyles.Integer, CultureInfo.CurrentCulture, out count)) {
+                count = Settings.PasswordGeneratorWordCount;
+            }
+            txtLength.Text = Math.Min(Math.Max(count, 1), 9).ToString(CultureInfo.CurrentCulture);
+        }
+
         private void txtLength_Leave(object sender, EventArgs e) {
             int length;
             if (!int.TryParse(txtLength.Text, NumberStyles.Integer, CultureInfo.CurrentCulture, out length)) {
@@ -123,7 +170,7 @@ namespace Bimil {
         private void ChangeLength(TextBox textBox, int delta) {
             int length;
             if (int.TryParse(textBox.Text, NumberStyles.Integer, CultureInfo.CurrentCulture, out length)) {
-                var newLength = Math.Min(Math.Max(length + delta, 1), 99);
+                var newLength = Math.Min(Math.Max(length + delta, 1), (int)Math.Pow(10, textBox.TextLength) - 1);
                 textBox.Text = newLength.ToString(CultureInfo.CurrentCulture);
                 textBox.SelectAll();
             }
@@ -154,65 +201,136 @@ namespace Bimil {
 
         private readonly double CracksPerSecond = 100000000000000;
 
-        private readonly RandomNumberGenerator rnd = RandomNumberGenerator.Create();
+        private static readonly RandomNumberGenerator Rnd = RandomNumberGenerator.Create();
 
         private void btnGenerate_Click(object sender, EventArgs e) {
-            txtPassword.Text = "";
-            lblCombinations.Text = "?";
+            string password = null;
+            double combinations = double.NaN;
 
-            int length;
-            if (int.TryParse(txtLength.Text, NumberStyles.Integer, CultureInfo.InvariantCulture, out length) && (length >= 1)) {
-                var includeUpperCase = chbIncludeUpperCase.Checked;
-                var includeLowerCase = chbIncludeLowerCase.Checked;
-                var includeNumbers = chbIncludeNumbers.Checked;
-                var includeSpecial = chbIncludeSpecialCharacters.Checked;
-                var restrictSimilar = chbRestrictSimilar.Checked;
-                var restrictMovable = chbRestrictMovable.Checked;
-                var restrictPronounceable = chbRestrictPronounceable.Checked;
-                var restrictRepeated = chbRestrictRepeated.Checked;
+            if (tabStyle.SelectedTab.Equals(tabStyle_Classic)) {
+                int length;
+                if (int.TryParse(txtLength.Text, NumberStyles.Integer, CultureInfo.InvariantCulture, out length) && (length >= 1)) {
+                    var includeUpperCase = chbIncludeUpperCase.Checked;
+                    var includeLowerCase = chbIncludeLowerCase.Checked;
+                    var includeNumbers = chbIncludeNumbers.Checked;
+                    var includeSpecial = chbIncludeSpecialCharacters.Checked;
+                    var restrictSimilar = chbRestrictSimilar.Checked;
+                    var restrictMovable = chbRestrictMovable.Checked;
+                    var restrictPronounceable = chbRestrictPronounceable.Checked;
+                    var restrictRepeated = chbRestrictRepeated.Checked;
 
-                var cracksPerSecond = CracksPerSecond;
-                for (var i = 2016; i <= DateTime.Now.Year - 1; i += 2) { cracksPerSecond *= 2; } //Moore's law
-
-                var combinations = CalculateCombinations(includeUpperCase, includeLowerCase, includeNumbers, includeSpecial, restrictSimilar, restrictMovable, restrictPronounceable, restrictRepeated, length);
-                var secondsToCrack = Math.Floor(combinations / cracksPerSecond);
-                var minutesToCrack = Math.Floor(secondsToCrack / 60);
-                var hoursToCrack = Math.Floor(minutesToCrack / 60);
-                var daysToCrack = Math.Floor(hoursToCrack / 24);
-                var yearsToCrack = Math.Floor(daysToCrack / 365);
-                var centuriesToCrack = Math.Floor(yearsToCrack / 100);
-                var millenniumsToCrack = Math.Floor(yearsToCrack / 1000);
-                var millionYearsToCrack = Math.Floor(yearsToCrack / 1000000);
-
-                if (millionYearsToCrack >= 1000) {
-                    lblCombinations.Text = "Eternity to crack";
-                } else if (millionYearsToCrack >= 1) {
-                    lblCombinations.Text = "About " + millenniumsToCrack.ToString("#,##0", CultureInfo.CurrentCulture) + " million years to crack";
-                } else if (millenniumsToCrack >= 1) {
-                    lblCombinations.Text = "About " + millenniumsToCrack.ToString("#,##0", CultureInfo.CurrentCulture) + " " + (((millenniumsToCrack % 10) == 1) ? "millennium" : "millenniums") + " to crack";
-                } else if (centuriesToCrack >= 1) {
-                    lblCombinations.Text = "About " + centuriesToCrack.ToString("#,##0", CultureInfo.CurrentCulture) + " " + (((centuriesToCrack % 10) == 1) ? "century" : "centuries") + " to crack";
-                } else if (yearsToCrack >= 1) {
-                    lblCombinations.Text = "About " + yearsToCrack.ToString("#,##0", CultureInfo.CurrentCulture) + " " + (((yearsToCrack % 10) == 1) ? "year" : "years") + " to crack";
-                } else if (daysToCrack >= 1) {
-                    lblCombinations.Text = "About " + daysToCrack.ToString("#,##0", CultureInfo.CurrentCulture) + " " + (((daysToCrack % 10) == 1) ? "day" : "days") + " to crack";
-                } else if (hoursToCrack >= 1) {
-                    lblCombinations.Text = "About " + hoursToCrack.ToString("#,##0", CultureInfo.CurrentCulture) + " " + (((hoursToCrack % 10) == 1) ? "hour" : "hours") + " to crack";
-                } else if (minutesToCrack >= 1) {
-                    lblCombinations.Text = "About " + minutesToCrack.ToString("#,##0", CultureInfo.CurrentCulture) + " " + (((minutesToCrack % 10) == 1) ? "minute" : "minutes") + " to crack";
-                } else {
-                    lblCombinations.Text = "About " + secondsToCrack.ToString("#,##0", CultureInfo.CurrentCulture) + " " + (((secondsToCrack % 10) == 1) ? "second" : "seconds") + " to crack";
+                    password = GenerateClassicPassword(includeUpperCase, includeLowerCase, includeNumbers, includeSpecial, restrictSimilar, restrictMovable, restrictPronounceable, restrictRepeated, length);
+                    combinations = CalculateClassicCombinations(includeUpperCase, includeLowerCase, includeNumbers, includeSpecial, restrictSimilar, restrictMovable, restrictPronounceable, restrictRepeated, length);
                 }
-                tip.SetToolTip(lblCombinations, combinations.ToString("#,##0", CultureInfo.CurrentCulture) + " combinations");
+            } else {
+                int count;
+                if (int.TryParse(txtWordCount.Text, NumberStyles.Integer, CultureInfo.InvariantCulture, out count) && (count >= 1)) {
+                    var includeUpperCase = chbWordIncludeUpperCase.Checked;
+                    var includeNumber = chbWordIncludeNumber.Checked;
+                    var includeSpecial = chbWordIncludeSpecialCharacter.Checked;
+                    var includeIncomplete = chbWordIncludeIncomplete.Checked;
+                    var restrictAddSpace = chbWordRestrictAddSpace.Checked;
 
-                txtPassword.Text = GeneratePassword(includeUpperCase, includeLowerCase, includeNumbers, includeSpecial, restrictSimilar, restrictMovable, restrictPronounceable, restrictRepeated, length);
+                    password = GenerateWordPassword(includeUpperCase, includeNumber, includeSpecial, includeIncomplete, restrictAddSpace, count);
+                    combinations = CalculateWordCombinations(includeUpperCase, includeNumber, includeSpecial, includeIncomplete, restrictAddSpace, count);
+                }
             }
+
+            if (!double.IsNaN(combinations)) {
+                var crackDurationText = GetCrackDuration(combinations);
+                lblCombinations.Text = "About " + crackDurationText + " to crack";
+                tip.SetToolTip(lblCombinations, combinations.ToString("#,##0", CultureInfo.CurrentCulture) + " combinations");
+            } else {
+                lblCombinations.Text = "?";
+                tip.SetToolTip(lblCombinations, null);
+            }
+
+            txtPassword.Text = password;
 
             btnCopy.Enabled = (txtPassword.TextLength > 0);
         }
 
 
-        private double CalculateCombinations(bool includeUpperCase, bool includeLowerCase, bool includeNumbers, bool includeSpecial, bool restrictSimilar, bool restrictMovable, bool restrictPronounceable, bool restrictRepeated, int length) {
+        #region Word password
+
+        private string[] Words = null;
+
+        private string GenerateWordPassword(bool includeUpperCase, bool includeNumber, bool includeSpecial, bool includeIncomplete, bool spaceSeparated, int count) {
+            var sb = new StringBuilder();
+
+            if (this.Words == null) {
+                using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Bimil.Resources.Words.txt"))
+                using (var textStream = new StreamReader(stream)) {
+                    this.Words = textStream.ReadToEnd().Split(new string[] { "\r\n", "\n", "\r" }, StringSplitOptions.RemoveEmptyEntries);
+                }
+            }
+
+            var selectedWords = new List<List<char>>();
+            for (var i = 0; i < count; i++) {
+                var wordIndex = GetRandomNumber(this.Words.Length);
+                selectedWords.Add(new List<char>(this.Words[wordIndex]));
+            }
+
+            if (includeIncomplete) {
+                var wordIndex = GetRandomNumber(selectedWords.Count);
+                var charIndex = GetRandomNumber(selectedWords[wordIndex].Count);
+                selectedWords[wordIndex].RemoveAt(charIndex);
+            }
+
+            if (includeUpperCase) {
+                var wordIndex = GetRandomNumber(selectedWords.Count);
+                var charIndex = GetRandomNumber(selectedWords[wordIndex].Count);
+                selectedWords[wordIndex][charIndex] = char.ToUpperInvariant(selectedWords[wordIndex][charIndex]);
+            }
+
+            if (includeNumber) {
+                var wordIndex = GetRandomNumber(selectedWords.Count);
+                var charIndex = GetRandomNumber(selectedWords[wordIndex].Count);
+                var number = GetRandomNumber(100);
+                selectedWords[wordIndex].InsertRange(charIndex, number.ToString(CultureInfo.InvariantCulture));
+            }
+
+            if (includeSpecial) {
+                var wordIndex = GetRandomNumber(selectedWords.Count);
+                var charIndex = GetRandomNumber(selectedWords[wordIndex].Count);
+                var specialIndex = GetRandomNumber(SpecialCharacters.Length);
+                selectedWords[wordIndex].Insert(charIndex, SpecialCharacters[specialIndex]);
+            }
+
+            for (var i = 0; i < selectedWords.Count; i++) {
+                if (spaceSeparated && (sb.Length > 0)) { sb.Append(" "); }
+                sb.Append(new string(selectedWords[i].ToArray()));
+            }
+
+            return sb.ToString();
+        }
+
+        private double CalculateWordCombinations(bool includeUpperCase, bool includeNumber, bool includeSpecial, bool includeIncomplete, bool spaceSeparated, int count) {
+            var words = this.Words.Length;
+            if (includeUpperCase) { words *= (1 + 5); } //1 original + 5 characters (shortest length) that can be upper case
+            if (includeIncomplete) { words *= (1 + 5); }
+            if (includeNumber) { words *= 100; }
+            if (includeSpecial) { words *= (1 + SpecialCharacters.Length); }
+            var wordCombinations = Math.Pow(words, count);
+
+            //var length = count * 5;
+            //var characters = 26;
+            //if (includeUpperCase) { characters *= 2; }
+            //if (includeNumber) { characters += 10; }
+            //if (includeSpecial) { characters += SpecialCharacters.Length; }
+            //if (includeIncomplete) { length -= 1; }
+            //if (spaceSeparated) { length += 4; }
+            //var bruteCombinations = Math.Pow(characters, length);
+
+            return wordCombinations;
+        }
+
+        #endregion
+
+
+        #region Classic password
+
+        private double CalculateClassicCombinations(bool includeUpperCase, bool includeLowerCase, bool includeNumbers, bool includeSpecial, bool restrictSimilar, bool restrictMovable, bool restrictPronounceable, bool restrictRepeated, int length) {
             var allCharacters = new List<char>();
             var vowelCharacters = new List<char>();
             var consonantCharacters = new List<char>();
@@ -269,14 +387,12 @@ namespace Bimil {
             return combinations;
         }
 
-        private string GeneratePassword(bool includeUpperCase, bool includeLowerCase, bool includeNumbers, bool includeSpecial, bool restrictSimilar, bool restrictMovable, bool restrictPronounceable, bool restrictRepeated, int length) {
+        private string GenerateClassicPassword(bool includeUpperCase, bool includeLowerCase, bool includeNumbers, bool includeSpecial, bool restrictSimilar, bool restrictMovable, bool restrictPronounceable, bool restrictRepeated, int length) {
             var sb = new StringBuilder();
 
             var useVowelNext = false;
-            var rndBuffer = new byte[4];
             while (sb.Length < length) {
-                rnd.GetBytes(rndBuffer);
-                var sixteenth = rndBuffer[0] % 16;
+                var sixteenth = GetRandomNumber(16);
 
                 List<char> characters = new List<char>();
                 if (includeUpperCase && (sixteenth >= 0) && (sixteenth <= 5)) { //Uppercase: 6/16th ~ 37.5%
@@ -307,14 +423,7 @@ namespace Bimil {
                 if (restrictMovable) { RemoveCharacters(characters, RestrictedMoveable); }
 
                 if (characters.Count > 0) {
-                    uint maxRandomCount = uint.MaxValue - (uint.MaxValue % (uint)characters.Count);
-                    uint randomNumber;
-                    do {
-                        rnd.GetBytes(rndBuffer);
-                        randomNumber = BitConverter.ToUInt32(rndBuffer, 0);
-                    } while (randomNumber >= maxRandomCount);
-                    var charIndex = (int)(randomNumber % (uint)characters.Count);
-
+                    var charIndex = GetRandomNumber(characters.Count);
                     var nextChar = characters[charIndex];
                     if (restrictRepeated && (sb.Length > 1) && (sb[sb.Length - 1] == nextChar)) { continue; }
                     sb.Append(nextChar);
@@ -338,5 +447,55 @@ namespace Bimil {
                 }
             }
         }
+
+        #endregion
+
+        private static int GetRandomNumber(int upperLimit) {
+            var rndBuffer = new byte[4];
+            Rnd.GetBytes(rndBuffer);
+
+            uint maxRandomCount = uint.MaxValue - (uint.MaxValue % (uint)upperLimit);
+            uint randomNumber;
+            do {
+                Rnd.GetBytes(rndBuffer);
+                randomNumber = BitConverter.ToUInt32(rndBuffer, 0);
+            } while (randomNumber >= maxRandomCount);
+            return (int)(randomNumber % (uint)upperLimit);
+        }
+
+        private string GetCrackDuration(double combinations) {
+            var cracksPerSecond = CracksPerSecond;
+            for (var i = 2016; i <= DateTime.Now.Year - 1; i += 2) { cracksPerSecond *= 2; } //Moore's law
+
+            var secondsToCrack = Math.Floor(combinations / cracksPerSecond);
+            var minutesToCrack = Math.Floor(secondsToCrack / 60);
+            var hoursToCrack = Math.Floor(minutesToCrack / 60);
+            var daysToCrack = Math.Floor(hoursToCrack / 24);
+            var yearsToCrack = Math.Floor(daysToCrack / 365);
+            var centuriesToCrack = Math.Floor(yearsToCrack / 100);
+            var millenniumsToCrack = Math.Floor(yearsToCrack / 1000);
+            var millionYearsToCrack = Math.Floor(yearsToCrack / 1000000);
+
+            if (millionYearsToCrack >= 1000) {
+                return "eternity";
+            } else if (millionYearsToCrack >= 1) {
+                return millenniumsToCrack.ToString("#,##0", CultureInfo.CurrentCulture) + " million years";
+            } else if (millenniumsToCrack >= 1) {
+                return millenniumsToCrack.ToString("#,##0", CultureInfo.CurrentCulture) + " " + (((millenniumsToCrack % 10) == 1) ? "millennium" : "millenniums");
+            } else if (centuriesToCrack >= 1) {
+                return centuriesToCrack.ToString("#,##0", CultureInfo.CurrentCulture) + " " + (((centuriesToCrack % 10) == 1) ? "century" : "centuries");
+            } else if (yearsToCrack >= 1) {
+                return yearsToCrack.ToString("#,##0", CultureInfo.CurrentCulture) + " " + (((yearsToCrack % 10) == 1) ? "year" : "years");
+            } else if (daysToCrack >= 1) {
+                return daysToCrack.ToString("#,##0", CultureInfo.CurrentCulture) + " " + (((daysToCrack % 10) == 1) ? "day" : "days");
+            } else if (hoursToCrack >= 1) {
+                return hoursToCrack.ToString("#,##0", CultureInfo.CurrentCulture) + " " + (((hoursToCrack % 10) == 1) ? "hour" : "hours");
+            } else if (minutesToCrack >= 1) {
+                return minutesToCrack.ToString("#,##0", CultureInfo.CurrentCulture) + " " + (((minutesToCrack % 10) == 1) ? "minute" : "minutes");
+            } else {
+                return secondsToCrack.ToString("#,##0", CultureInfo.CurrentCulture) + " " + (((secondsToCrack % 10) == 1) ? "second" : "seconds");
+            }
+        }
+
     }
 }

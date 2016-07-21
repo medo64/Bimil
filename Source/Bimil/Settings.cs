@@ -85,6 +85,13 @@ namespace Bimil {
         #region PasswordGenerator
 
         [Browsable(false)]
+        public static bool PasswordGeneratorUseWord {
+            get { return Medo.Configuration.Settings.Read("PasswordGeneratorUseWord", true); }
+            set { Medo.Configuration.Settings.Write("PasswordGeneratorUseWord", value); }
+        }
+
+
+        [Browsable(false)]
         public static bool PasswordGeneratorIncludeUpperCase {
             get { return Medo.Configuration.Settings.Read("PasswordGeneratorIncludeUpperCase", true); }
             set { Medo.Configuration.Settings.Write("PasswordGeneratorIncludeUpperCase", value); }
@@ -136,6 +143,43 @@ namespace Bimil {
         public static int PasswordGeneratorLength {
             get { return LimitBetween(Medo.Configuration.Settings.Read("PasswordGeneratorLength", 12), minValue: 1, maxValue: 99, allowZero: false); }
             set { Medo.Configuration.Settings.Write("PasswordGeneratorLength", LimitBetween(value, minValue: 1, maxValue: 99, allowZero: false)); }
+        }
+
+
+        [Browsable(false)]
+        public static bool PasswordGeneratorWordIncludeUpperCase {
+            get { return Medo.Configuration.Settings.Read("PasswordGeneratorWordIncludeUpperCase", true); }
+            set { Medo.Configuration.Settings.Write("PasswordGeneratorWordIncludeUpperCase", value); }
+        }
+
+        [Browsable(false)]
+        public static bool PasswordGeneratorWordIncludeNumber {
+            get { return Medo.Configuration.Settings.Read("PasswordGeneratorWordIncludeNumber", true); }
+            set { Medo.Configuration.Settings.Write("PasswordGeneratorWordIncludeNumber", value); }
+        }
+
+        [Browsable(false)]
+        public static bool PasswordGeneratorWordIncludeSpecialCharacter {
+            get { return Medo.Configuration.Settings.Read("PasswordGeneratorWordIncludeSpecialCharacter", true); }
+            set { Medo.Configuration.Settings.Write("PasswordGeneratorWordIncludeSpecialCharacter", value); }
+        }
+
+        [Browsable(false)]
+        public static bool PasswordGeneratorWordIncludeIncomplete {
+            get { return Medo.Configuration.Settings.Read("PasswordGeneratorWordIncludeIncomplete", true); }
+            set { Medo.Configuration.Settings.Write("PasswordGeneratorWordIncludeIncomplete", value); }
+        }
+
+        [Browsable(false)]
+        public static bool PasswordGeneratorWordRestrictAddSpace {
+            get { return Medo.Configuration.Settings.Read("PasswordGeneratorWordRestrictAddSpace", false); }
+            set { Medo.Configuration.Settings.Write("PasswordGeneratorWordRestrictAddSpace", value); }
+        }
+
+        [Browsable(false)]
+        public static int PasswordGeneratorWordCount {
+            get { return LimitBetween(Medo.Configuration.Settings.Read("PasswordGeneratorWordCount", 4), minValue: 1, maxValue: 9, allowZero: false); }
+            set { Medo.Configuration.Settings.Write("PasswordGeneratorWordCount", LimitBetween(value, minValue: 1, maxValue: 9, allowZero: false)); }
         }
 
         #endregion

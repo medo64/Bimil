@@ -254,6 +254,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Properties\App.ico" />
+    <EmbeddedResource Include="Resources\Words.txt" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
