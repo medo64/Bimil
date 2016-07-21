@@ -229,7 +229,7 @@ namespace Bimil {
             this.txtLength.TabIndex = 3;
             this.txtLength.Text = "12";
             this.txtLength.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.tip.SetToolTip(this.txtLength, "Length of password");
+            this.tip.SetToolTip(this.txtLength, "Length of password (1-99).");
             this.txtLength.TextChanged += new System.EventHandler(this.btnGenerate_Click);
             this.txtLength.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtNumber_KeyDown);
             this.txtLength.Leave += new System.EventHandler(this.txtLength_Leave);
@@ -245,7 +245,7 @@ namespace Bimil {
             this.txtWordCount.TabIndex = 2;
             this.txtWordCount.Text = "4";
             this.txtWordCount.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.tip.SetToolTip(this.txtWordCount, "Length of password");
+            this.tip.SetToolTip(this.txtWordCount, "Number of words to use (1-9)");
             this.txtWordCount.TextChanged += new System.EventHandler(this.btnGenerate_Click);
             this.txtWordCount.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtNumber_KeyDown);
             this.txtWordCount.Leave += new System.EventHandler(this.txtWordCount_Leave);
@@ -257,10 +257,10 @@ namespace Bimil {
             this.chbWordIncludeSpecialCharacter.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chbWordIncludeSpecialCharacter.Location = new System.Drawing.Point(6, 84);
             this.chbWordIncludeSpecialCharacter.Name = "chbWordIncludeSpecialCharacter";
-            this.chbWordIncludeSpecialCharacter.Size = new System.Drawing.Size(147, 21);
+            this.chbWordIncludeSpecialCharacter.Size = new System.Drawing.Size(140, 21);
             this.chbWordIncludeSpecialCharacter.TabIndex = 2;
-            this.chbWordIncludeSpecialCharacter.Text = "Special characters";
-            this.tip.SetToolTip(this.chbWordIncludeSpecialCharacter, "Include special characters");
+            this.chbWordIncludeSpecialCharacter.Text = "Special character";
+            this.tip.SetToolTip(this.chbWordIncludeSpecialCharacter, "Include special character in one of the words");
             this.chbWordIncludeSpecialCharacter.UseVisualStyleBackColor = true;
             this.chbWordIncludeSpecialCharacter.CheckedChanged += new System.EventHandler(this.btnGenerate_Click);
             // 
@@ -271,10 +271,10 @@ namespace Bimil {
             this.chbWordIncludeNumber.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chbWordIncludeNumber.Location = new System.Drawing.Point(6, 30);
             this.chbWordIncludeNumber.Name = "chbWordIncludeNumber";
-            this.chbWordIncludeNumber.Size = new System.Drawing.Size(87, 21);
+            this.chbWordIncludeNumber.Size = new System.Drawing.Size(80, 21);
             this.chbWordIncludeNumber.TabIndex = 0;
-            this.chbWordIncludeNumber.Text = "Numbers";
-            this.tip.SetToolTip(this.chbWordIncludeNumber, "Include numbers");
+            this.chbWordIncludeNumber.Text = "Number";
+            this.tip.SetToolTip(this.chbWordIncludeNumber, "Include number in one of words");
             this.chbWordIncludeNumber.UseVisualStyleBackColor = true;
             this.chbWordIncludeNumber.CheckedChanged += new System.EventHandler(this.btnGenerate_Click);
             // 
@@ -288,7 +288,7 @@ namespace Bimil {
             this.chbWordIncludeIncomplete.Size = new System.Drawing.Size(132, 21);
             this.chbWordIncludeIncomplete.TabIndex = 3;
             this.chbWordIncludeIncomplete.Text = "Incomplete word";
-            this.tip.SetToolTip(this.chbWordIncludeIncomplete, "Include lower case letters");
+            this.tip.SetToolTip(this.chbWordIncludeIncomplete, "Remove a character from one of the words.");
             this.chbWordIncludeIncomplete.UseVisualStyleBackColor = true;
             this.chbWordIncludeIncomplete.CheckedChanged += new System.EventHandler(this.btnGenerate_Click);
             // 
@@ -299,10 +299,10 @@ namespace Bimil {
             this.chbWordIncludeUpperCase.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chbWordIncludeUpperCase.Location = new System.Drawing.Point(6, 57);
             this.chbWordIncludeUpperCase.Name = "chbWordIncludeUpperCase";
-            this.chbWordIncludeUpperCase.Size = new System.Drawing.Size(103, 21);
+            this.chbWordIncludeUpperCase.Size = new System.Drawing.Size(139, 21);
             this.chbWordIncludeUpperCase.TabIndex = 1;
-            this.chbWordIncludeUpperCase.Text = "Upper case";
-            this.tip.SetToolTip(this.chbWordIncludeUpperCase, "Include upper case letters");
+            this.chbWordIncludeUpperCase.Text = "Upper case letter";
+            this.tip.SetToolTip(this.chbWordIncludeUpperCase, "Include upper case letter in one of words");
             this.chbWordIncludeUpperCase.UseVisualStyleBackColor = true;
             this.chbWordIncludeUpperCase.CheckedChanged += new System.EventHandler(this.btnGenerate_Click);
             // 
