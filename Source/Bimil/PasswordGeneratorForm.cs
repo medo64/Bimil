@@ -245,7 +245,7 @@ namespace Bimil {
             if (!double.IsNaN(combinations)) {
                 var crackDurationText = GetCrackDuration(combinations);
                 lblCombinations.Text = "About " + crackDurationText + " to crack";
-                tip.SetToolTip(lblCombinations, combinations.ToString("#,##0", CultureInfo.CurrentCulture) + " combinations");
+                tip.SetToolTip(lblCombinations, combinations.ToString("#,##0", CultureInfo.CurrentCulture) + " combinations.\n\nGiven number was calculated assuming potential attacker knows exactly which method and dictionary were used to generate password.");
             } else {
                 lblCombinations.Text = "?";
                 tip.SetToolTip(lblCombinations, null);
@@ -491,7 +491,7 @@ namespace Bimil {
             var cracksPerSecond = CracksPerSecond;
             for (var i = 2016; i <= DateTime.Now.Year - 1; i += 2) { cracksPerSecond *= 2; } //Moore's law
 
-            var secondsToCrack = Math.Floor(combinations / cracksPerSecond);
+            var secondsToCrack = Math.Floor(combinations / cracksPerSecond / 2);
             var minutesToCrack = Math.Floor(secondsToCrack / 60);
             var hoursToCrack = Math.Floor(minutesToCrack / 60);
             var daysToCrack = Math.Floor(hoursToCrack / 24);
