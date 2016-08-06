@@ -248,7 +248,7 @@ namespace Bimil {
             if (!double.IsNaN(combinations)) {
                 var crackDurationText = GetCrackDuration(combinations);
                 lblCombinations.Text = "About " + crackDurationText + " to crack";
-                tip.SetToolTip(lblCombinations, combinations.ToString("#,##0", CultureInfo.CurrentCulture) + " combinations.\n\nGiven number was calculated assuming potential attacker knows exactly which method and dictionary were used to generate password.");
+                tip.SetToolTip(lblCombinations, combinations.ToString("#,##0", CultureInfo.CurrentCulture) + " (" + GetEngineeringString(combinations) + ") combinations.\n\nGiven number was calculated assuming potential attacker knows exactly which method and dictionary were used to generate password.");
             } else {
                 lblCombinations.Text = "?";
                 tip.SetToolTip(lblCombinations, null);
@@ -542,5 +542,15 @@ namespace Bimil {
             }
         }
 
+        private static string GetEngineeringString(double number) {
+            var exponent = 0;
+            while (number > 1000) {
+                exponent += 3;
+                number /= 1000;
+            }
+            number = Math.Floor(number); //always round down
+
+            return string.Format(CultureInfo.CurrentCulture, "{0:0}e{1}", number, exponent);
+        }
     }
 }
