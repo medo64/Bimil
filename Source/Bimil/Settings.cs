@@ -177,6 +177,12 @@ namespace Bimil {
         }
 
         [Browsable(false)]
+        public static bool PasswordGeneratorWordRestrictBreak {
+            get { return Medo.Configuration.Settings.Read("PasswordGeneratorWordRestrictBreak", false); }
+            set { Medo.Configuration.Settings.Write("PasswordGeneratorWordRestrictBreak", value); }
+        }
+
+        [Browsable(false)]
         public static int PasswordGeneratorWordCount {
             get { return LimitBetween(Medo.Configuration.Settings.Read("PasswordGeneratorWordCount", 4), minValue: 1, maxValue: 9, allowZero: false); }
             set { Medo.Configuration.Settings.Write("PasswordGeneratorWordCount", LimitBetween(value, minValue: 1, maxValue: 9, allowZero: false)); }

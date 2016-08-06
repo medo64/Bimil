@@ -44,6 +44,7 @@ namespace Bimil {
             this.chbWordIncludeIncomplete = new System.Windows.Forms.CheckBox();
             this.chbWordIncludeUpperCase = new System.Windows.Forms.CheckBox();
             this.chbWordRestrictAddSpace = new System.Windows.Forms.CheckBox();
+            this.chbWordRestrictBreak = new System.Windows.Forms.CheckBox();
             this.tabStyle = new System.Windows.Forms.TabControl();
             this.tabStyle_Words = new System.Windows.Forms.TabPage();
             this.grpWordRestrict = new System.Windows.Forms.GroupBox();
@@ -318,6 +319,18 @@ namespace Bimil {
             this.chbWordRestrictAddSpace.UseVisualStyleBackColor = true;
             this.chbWordRestrictAddSpace.CheckedChanged += new System.EventHandler(this.btnGenerate_Click);
             // 
+            // chbWordRestrictBreak
+            // 
+            this.chbWordRestrictBreak.AutoSize = true;
+            this.chbWordRestrictBreak.Location = new System.Drawing.Point(6, 57);
+            this.chbWordRestrictBreak.Name = "chbWordRestrictBreak";
+            this.chbWordRestrictBreak.Size = new System.Drawing.Size(157, 21);
+            this.chbWordRestrictBreak.TabIndex = 1;
+            this.chbWordRestrictBreak.Text = "Don\'t break up word";
+            this.tip.SetToolTip(this.chbWordRestrictBreak, "Modifications to the words are done at the begining or at the end of word only.");
+            this.chbWordRestrictBreak.UseVisualStyleBackColor = true;
+            this.chbWordRestrictBreak.CheckedChanged += new System.EventHandler(this.btnGenerate_Click);
+            // 
             // tabStyle
             // 
             this.tabStyle.Controls.Add(this.tabStyle_Words);
@@ -346,6 +359,7 @@ namespace Bimil {
             // grpWordRestrict
             // 
             this.grpWordRestrict.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.grpWordRestrict.Controls.Add(this.chbWordRestrictBreak);
             this.grpWordRestrict.Controls.Add(this.chbWordRestrictAddSpace);
             this.grpWordRestrict.Location = new System.Drawing.Point(221, 6);
             this.grpWordRestrict.Margin = new System.Windows.Forms.Padding(12, 3, 3, 3);
@@ -501,5 +515,6 @@ namespace Bimil {
         private System.Windows.Forms.CheckBox chbWordIncludeUpperCase;
         private System.Windows.Forms.GroupBox grpWordRestrict;
         private System.Windows.Forms.CheckBox chbWordRestrictAddSpace;
+        private System.Windows.Forms.CheckBox chbWordRestrictBreak;
     }
 }
