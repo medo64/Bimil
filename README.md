@@ -8,11 +8,12 @@ Saved files are based on Password Safe file format with a few custom fields.
 
 #### Word-based password generator ####
 
-Bimil uses word list extracted from WordNet 3.0 using following commands:
+Bimil uses word list extracted from WordNet database using the following
+commands:
 
-    egrep -v "^  " data.* | cut -d' ' -f5 | egrep "^[a-z]{5,7}$" | sort | uniq > words.txt
+    egrep -v "^  " data.* | cut -d' ' -f5 | egrep "^[a-z]{4,7}$" | sort | uniq > Words.txt
 
-This extracts all unique words between 5 and 7 characters.
+This extracts all unique words between 4 and 7 characters.
 
 
 
