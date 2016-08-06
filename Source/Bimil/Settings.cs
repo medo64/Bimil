@@ -148,7 +148,7 @@ namespace Bimil {
 
         [Browsable(false)]
         public static bool PasswordGeneratorWordIncludeUpperCase {
-            get { return Medo.Configuration.Settings.Read("PasswordGeneratorWordIncludeUpperCase", true); }
+            get { return Medo.Configuration.Settings.Read("PasswordGeneratorWordIncludeUpperCase", false); }
             set { Medo.Configuration.Settings.Write("PasswordGeneratorWordIncludeUpperCase", value); }
         }
 
@@ -160,13 +160,13 @@ namespace Bimil {
 
         [Browsable(false)]
         public static bool PasswordGeneratorWordIncludeSpecialCharacter {
-            get { return Medo.Configuration.Settings.Read("PasswordGeneratorWordIncludeSpecialCharacter", true); }
+            get { return Medo.Configuration.Settings.Read("PasswordGeneratorWordIncludeSpecialCharacter", false); }
             set { Medo.Configuration.Settings.Write("PasswordGeneratorWordIncludeSpecialCharacter", value); }
         }
 
         [Browsable(false)]
         public static bool PasswordGeneratorWordIncludeIncomplete {
-            get { return Medo.Configuration.Settings.Read("PasswordGeneratorWordIncludeIncomplete", true); }
+            get { return Medo.Configuration.Settings.Read("PasswordGeneratorWordIncludeIncomplete", false); }
             set { Medo.Configuration.Settings.Write("PasswordGeneratorWordIncludeIncomplete", value); }
         }
 
@@ -178,13 +178,13 @@ namespace Bimil {
 
         [Browsable(false)]
         public static bool PasswordGeneratorWordRestrictBreak {
-            get { return Medo.Configuration.Settings.Read("PasswordGeneratorWordRestrictBreak", false); }
+            get { return Medo.Configuration.Settings.Read("PasswordGeneratorWordRestrictBreak", true); }
             set { Medo.Configuration.Settings.Write("PasswordGeneratorWordRestrictBreak", value); }
         }
 
         [Browsable(false)]
         public static bool PasswordGeneratorWordRestrictTitleCase {
-            get { return Medo.Configuration.Settings.Read("PasswordGeneratorWordRestrictTitleCase", false); }
+            get { return Medo.Configuration.Settings.Read("PasswordGeneratorWordRestrictTitleCase", true); }
             set { Medo.Configuration.Settings.Write("PasswordGeneratorWordRestrictTitleCase", value); }
         }
 

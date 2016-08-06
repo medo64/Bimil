@@ -255,8 +255,6 @@ namespace Bimil {
             // chbWordIncludeSpecialCharacter
             // 
             this.chbWordIncludeSpecialCharacter.AutoSize = true;
-            this.chbWordIncludeSpecialCharacter.Checked = true;
-            this.chbWordIncludeSpecialCharacter.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chbWordIncludeSpecialCharacter.Location = new System.Drawing.Point(6, 84);
             this.chbWordIncludeSpecialCharacter.Name = "chbWordIncludeSpecialCharacter";
             this.chbWordIncludeSpecialCharacter.Size = new System.Drawing.Size(140, 21);
@@ -283,8 +281,6 @@ namespace Bimil {
             // chbWordIncludeIncomplete
             // 
             this.chbWordIncludeIncomplete.AutoSize = true;
-            this.chbWordIncludeIncomplete.Checked = true;
-            this.chbWordIncludeIncomplete.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chbWordIncludeIncomplete.Location = new System.Drawing.Point(6, 111);
             this.chbWordIncludeIncomplete.Name = "chbWordIncludeIncomplete";
             this.chbWordIncludeIncomplete.Size = new System.Drawing.Size(132, 21);
@@ -297,8 +293,6 @@ namespace Bimil {
             // chbWordIncludeUpperCase
             // 
             this.chbWordIncludeUpperCase.AutoSize = true;
-            this.chbWordIncludeUpperCase.Checked = true;
-            this.chbWordIncludeUpperCase.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chbWordIncludeUpperCase.Location = new System.Drawing.Point(6, 57);
             this.chbWordIncludeUpperCase.Name = "chbWordIncludeUpperCase";
             this.chbWordIncludeUpperCase.Size = new System.Drawing.Size(139, 21);
@@ -311,10 +305,10 @@ namespace Bimil {
             // chbWordRestrictAddSpace
             // 
             this.chbWordRestrictAddSpace.AutoSize = true;
-            this.chbWordRestrictAddSpace.Location = new System.Drawing.Point(6, 30);
+            this.chbWordRestrictAddSpace.Location = new System.Drawing.Point(6, 111);
             this.chbWordRestrictAddSpace.Name = "chbWordRestrictAddSpace";
             this.chbWordRestrictAddSpace.Size = new System.Drawing.Size(108, 21);
-            this.chbWordRestrictAddSpace.TabIndex = 0;
+            this.chbWordRestrictAddSpace.TabIndex = 2;
             this.chbWordRestrictAddSpace.Text = "Add spacing";
             this.tip.SetToolTip(this.chbWordRestrictAddSpace, "Adds spacing between words");
             this.chbWordRestrictAddSpace.UseVisualStyleBackColor = true;
@@ -323,10 +317,12 @@ namespace Bimil {
             // chbWordRestrictBreak
             // 
             this.chbWordRestrictBreak.AutoSize = true;
-            this.chbWordRestrictBreak.Location = new System.Drawing.Point(6, 84);
+            this.chbWordRestrictBreak.Checked = true;
+            this.chbWordRestrictBreak.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chbWordRestrictBreak.Location = new System.Drawing.Point(6, 57);
             this.chbWordRestrictBreak.Name = "chbWordRestrictBreak";
             this.chbWordRestrictBreak.Size = new System.Drawing.Size(157, 21);
-            this.chbWordRestrictBreak.TabIndex = 2;
+            this.chbWordRestrictBreak.TabIndex = 1;
             this.chbWordRestrictBreak.Text = "Don\'t break up word";
             this.tip.SetToolTip(this.chbWordRestrictBreak, "Modifications to the words are done at the begining or at the end of word only.");
             this.chbWordRestrictBreak.UseVisualStyleBackColor = true;
@@ -335,10 +331,12 @@ namespace Bimil {
             // chbWordRestrictTitleCase
             // 
             this.chbWordRestrictTitleCase.AutoSize = true;
-            this.chbWordRestrictTitleCase.Location = new System.Drawing.Point(6, 57);
+            this.chbWordRestrictTitleCase.Checked = true;
+            this.chbWordRestrictTitleCase.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chbWordRestrictTitleCase.Location = new System.Drawing.Point(6, 30);
             this.chbWordRestrictTitleCase.Name = "chbWordRestrictTitleCase";
             this.chbWordRestrictTitleCase.Size = new System.Drawing.Size(91, 21);
-            this.chbWordRestrictTitleCase.TabIndex = 1;
+            this.chbWordRestrictTitleCase.TabIndex = 0;
             this.chbWordRestrictTitleCase.Text = "Title case";
             this.tip.SetToolTip(this.chbWordRestrictTitleCase, "First character of every word will be capitalized.");
             this.chbWordRestrictTitleCase.UseVisualStyleBackColor = true;
