@@ -340,10 +340,10 @@ namespace Bimil {
             //this is really rough calculation assuming everybody knows exactly how password was created and it assumes all words are 5 characters only
 
             var words = this.Words.Length;
-            if (includeUpperCase) { words *= (1 + (restrictBreak ? 1 : 5) - (restrictTitleCase ? 1 : 0)); } //1 original + 5 characters (shortest length) that can be upper case; if break is restricted, only the first character will be upper-case; in case of title-case, first character is assumed fixed
-            if (includeIncomplete) { words *= (1 + (restrictBreak ? 1 : 5)); } //1 original + 5 characters (shortest length) that can be upper case; if break is restricted, only the last character will be removed thus only doubling the space
-            if (includeNumber) { words *= (restrictBreak ? 2 : 6) * 100; } //number can be inserted at any place in 5 character string (thus 6); if break is restricted, it still can be inserted at the end or beginning of any word
-            if (includeSpecial) { words *= (1 + SpecialCharacters.Length * (restrictBreak ? 2 : 6)); } //special character can be inserted in any word at any place; if break is restricted, only start and end are good
+            if (includeUpperCase) { words *= (1 + (restrictBreak ? 1 : 4) - (restrictTitleCase ? 1 : 0)); } //1 original + 5 characters (shortest length) that can be upper case; if break is restricted, only the first character will be upper-case; in case of title-case, first character is assumed fixed
+            if (includeIncomplete) { words *= (1 + (restrictBreak ? 1 : 4)); } //1 original + 5 characters (shortest length) that can be upper case; if break is restricted, only the last character will be removed thus only doubling the space
+            if (includeNumber) { words *= (restrictBreak ? 2 : 5) * 100; } //number can be inserted at any place in 5 character string (thus 6); if break is restricted, it still can be inserted at the end or beginning of any word
+            if (includeSpecial) { words *= (1 + SpecialCharacters.Length * (restrictBreak ? 2 : 5)); } //special character can be inserted in any word at any place; if break is restricted, only start and end are good
             var wordCombinations = Math.Pow(words, count);
 
             return wordCombinations;
