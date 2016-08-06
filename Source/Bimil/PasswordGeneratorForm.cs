@@ -162,7 +162,7 @@ namespace Bimil {
             if (!int.TryParse(txtWordCount.Text, NumberStyles.Integer, CultureInfo.CurrentCulture, out count)) {
                 count = Settings.PasswordGeneratorWordCount;
             }
-            txtLength.Text = Math.Min(Math.Max(count, 1), 9).ToString(CultureInfo.CurrentCulture);
+            txtWordCount.Text = Math.Min(Math.Max(count, 1), 9).ToString(CultureInfo.CurrentCulture);
         }
 
         private void txtLength_Leave(object sender, EventArgs e) {
