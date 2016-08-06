@@ -46,6 +46,7 @@ namespace Bimil {
             this.chbWordRestrictAddSpace = new System.Windows.Forms.CheckBox();
             this.chbWordRestrictBreak = new System.Windows.Forms.CheckBox();
             this.chbWordRestrictTitleCase = new System.Windows.Forms.CheckBox();
+            this.chbWordRestrictSuffixOnly = new System.Windows.Forms.CheckBox();
             this.tabStyle = new System.Windows.Forms.TabControl();
             this.tabStyle_Words = new System.Windows.Forms.TabPage();
             this.grpWordRestrict = new System.Windows.Forms.GroupBox();
@@ -308,7 +309,7 @@ namespace Bimil {
             this.chbWordRestrictAddSpace.Location = new System.Drawing.Point(6, 111);
             this.chbWordRestrictAddSpace.Name = "chbWordRestrictAddSpace";
             this.chbWordRestrictAddSpace.Size = new System.Drawing.Size(108, 21);
-            this.chbWordRestrictAddSpace.TabIndex = 2;
+            this.chbWordRestrictAddSpace.TabIndex = 3;
             this.chbWordRestrictAddSpace.Text = "Add spacing";
             this.tip.SetToolTip(this.chbWordRestrictAddSpace, "Adds spacing between words");
             this.chbWordRestrictAddSpace.UseVisualStyleBackColor = true;
@@ -342,6 +343,20 @@ namespace Bimil {
             this.chbWordRestrictTitleCase.UseVisualStyleBackColor = true;
             this.chbWordRestrictTitleCase.CheckedChanged += new System.EventHandler(this.btnGenerate_Click);
             // 
+            // chbWordRestrictSuffixOnly
+            // 
+            this.chbWordRestrictSuffixOnly.AutoSize = true;
+            this.chbWordRestrictSuffixOnly.Checked = true;
+            this.chbWordRestrictSuffixOnly.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chbWordRestrictSuffixOnly.Location = new System.Drawing.Point(6, 84);
+            this.chbWordRestrictSuffixOnly.Name = "chbWordRestrictSuffixOnly";
+            this.chbWordRestrictSuffixOnly.Size = new System.Drawing.Size(162, 21);
+            this.chbWordRestrictSuffixOnly.TabIndex = 2;
+            this.chbWordRestrictSuffixOnly.Text = "Append to suffix-only";
+            this.tip.SetToolTip(this.chbWordRestrictSuffixOnly, "Modifications to the words are done at the end of password only.");
+            this.chbWordRestrictSuffixOnly.UseVisualStyleBackColor = true;
+            this.chbWordRestrictSuffixOnly.CheckedChanged += new System.EventHandler(this.btnGenerate_Click);
+            // 
             // tabStyle
             // 
             this.tabStyle.Controls.Add(this.tabStyle_Words);
@@ -370,6 +385,7 @@ namespace Bimil {
             // grpWordRestrict
             // 
             this.grpWordRestrict.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.grpWordRestrict.Controls.Add(this.chbWordRestrictSuffixOnly);
             this.grpWordRestrict.Controls.Add(this.chbWordRestrictTitleCase);
             this.grpWordRestrict.Controls.Add(this.chbWordRestrictBreak);
             this.grpWordRestrict.Controls.Add(this.chbWordRestrictAddSpace);
@@ -529,5 +545,6 @@ namespace Bimil {
         private System.Windows.Forms.CheckBox chbWordRestrictAddSpace;
         private System.Windows.Forms.CheckBox chbWordRestrictBreak;
         private System.Windows.Forms.CheckBox chbWordRestrictTitleCase;
+        private System.Windows.Forms.CheckBox chbWordRestrictSuffixOnly;
     }
 }

@@ -42,6 +42,7 @@ namespace Bimil {
                 chbWordRestrictAddSpace.Checked = Settings.PasswordGeneratorWordRestrictAddSpace;
                 chbWordRestrictBreak.Checked = Settings.PasswordGeneratorWordRestrictBreak;
                 chbWordRestrictTitleCase.Checked = Settings.PasswordGeneratorWordRestrictTitleCase;
+                chbWordRestrictSuffixOnly.Checked = Settings.PasswordGeneratorWordRestrictSuffixOnly;
 
                 txtWordCount.Text = Settings.PasswordGeneratorWordCount.ToString("0", CultureInfo.CurrentCulture);
             }
@@ -75,6 +76,7 @@ namespace Bimil {
                 Settings.PasswordGeneratorWordRestrictAddSpace = chbWordRestrictAddSpace.Checked;
                 Settings.PasswordGeneratorWordRestrictBreak = chbWordRestrictBreak.Checked;
                 Settings.PasswordGeneratorWordRestrictTitleCase = chbWordRestrictTitleCase.Checked;
+                Settings.PasswordGeneratorWordRestrictSuffixOnly = chbWordRestrictSuffixOnly.Checked;
 
                 int count;
                 if (int.TryParse(txtWordCount.Text, NumberStyles.Integer, CultureInfo.CurrentCulture, out count)) {
@@ -236,9 +238,10 @@ namespace Bimil {
                     var restrictAddSpace = chbWordRestrictAddSpace.Checked;
                     var restrictBreak = chbWordRestrictBreak.Checked;
                     var restrictTitleCase = chbWordRestrictTitleCase.Checked;
+                    var restrictSuffixOnly = chbWordRestrictSuffixOnly.Checked;
 
-                    password = GenerateWordPassword(includeUpperCase, includeNumber, includeSpecial, includeIncomplete, restrictAddSpace, restrictTitleCase, restrictBreak, count);
-                    combinations = CalculateWordCombinations(includeUpperCase, includeNumber, includeSpecial, includeIncomplete, restrictAddSpace, restrictTitleCase, restrictBreak, count);
+                    password = GenerateWordPassword(includeUpperCase, includeNumber, includeSpecial, includeIncomplete, restrictAddSpace, restrictTitleCase, restrictSuffixOnly, restrictBreak, count);
+                    combinations = CalculateWordCombinations(includeUpperCase, includeNumber, includeSpecial, includeIncomplete, restrictAddSpace, restrictTitleCase, restrictSuffixOnly, restrictBreak, count);
                 }
             }
 
@@ -261,7 +264,7 @@ namespace Bimil {
 
         private string[] Words = null;
 
-        private string GenerateWordPassword(bool includeUpperCase, bool includeNumber, bool includeSpecial, bool includeIncomplete, bool spaceSeparated, bool restrictTitleCase, bool restrictBreak, int count) {
+        private string GenerateWordPassword(bool includeUpperCase, bool includeNumber, bool includeSpecial, bool includeIncomplete, bool spaceSeparated, bool restrictTitleCase, bool restrictSuffixOnly, bool restrictBreak, int count) {
             var sb = new StringBuilder();
 
             if (this.Words == null) {
@@ -278,7 +281,7 @@ namespace Bimil {
             }
 
             if (includeIncomplete) {
-                var wordIndex = GetRandomNumber(selectedWords.Count);
+                var wordIndex = restrictSuffixOnly ? selectedWords.Count - 1 : GetRandomNumber(selectedWords.Count); //incomplete may be restricted to last word only
                 if (restrictBreak) { //break restriction only removes last character
                     selectedWords[wordIndex].RemoveAt(selectedWords[wordIndex].Count - 1);
                 } else {
@@ -288,9 +291,9 @@ namespace Bimil {
             }
 
             if (includeUpperCase) {
-                var wordIndex = GetRandomNumber(selectedWords.Count);
+                var wordIndex = restrictSuffixOnly ? 0 : GetRandomNumber(selectedWords.Count); //uppercase may be restricted to first word only
                 int charIndex;
-                if (restrictBreak) { //break restriction only uppercases the first character.
+                if (restrictBreak || restrictSuffixOnly) { //break restriction only uppercases the first character.
                     charIndex = 0;
                 } else {
                     charIndex = GetRandomNumber(selectedWords[wordIndex].Count);
@@ -305,10 +308,14 @@ namespace Bimil {
             }
 
             if (includeNumber) {
-                var wordIndex = GetRandomNumber(selectedWords.Count);
+                var wordIndex = restrictSuffixOnly ? selectedWords.Count - 1 : GetRandomNumber(selectedWords.Count); //number may be restricted to last word only
                 int charIndex;
                 if (restrictBreak) { //break restriction only adds number before or after the word
-                    charIndex = (GetRandomNumber(2) == 0) ? 0 : selectedWords[wordIndex].Count;
+                    if (restrictSuffixOnly) {
+                        charIndex = selectedWords[wordIndex].Count;
+                    } else {
+                        charIndex = (GetRandomNumber(2) == 0) ? 0 : selectedWords[wordIndex].Count;
+                    }
                 } else {
                     charIndex = GetRandomNumber(selectedWords[wordIndex].Count + 1);
                 }
@@ -317,10 +324,14 @@ namespace Bimil {
             }
 
             if (includeSpecial) {
-                var wordIndex = GetRandomNumber(selectedWords.Count);
+                var wordIndex = restrictSuffixOnly ? selectedWords.Count - 1 : GetRandomNumber(selectedWords.Count); //special character may be restricted to last word only
                 int charIndex;
                 if (restrictBreak) { //break restriction only adds character before or after the word
-                    charIndex = (GetRandomNumber(2) == 0) ? 0 : selectedWords[wordIndex].Count;
+                    if (restrictSuffixOnly) {
+                        charIndex = selectedWords[wordIndex].Count;
+                    } else {
+                        charIndex = (GetRandomNumber(2) == 0) ? 0 : selectedWords[wordIndex].Count;
+                    }
                 } else {
                     charIndex = GetRandomNumber(selectedWords[wordIndex].Count + 1);
                 }
@@ -336,15 +347,25 @@ namespace Bimil {
             return sb.ToString();
         }
 
-        private double CalculateWordCombinations(bool includeUpperCase, bool includeNumber, bool includeSpecial, bool includeIncomplete, bool spaceSeparated, bool restrictTitleCase, bool restrictBreak, int count) {
+        private double CalculateWordCombinations(bool includeUpperCase, bool includeNumber, bool includeSpecial, bool includeIncomplete, bool spaceSeparated, bool restrictTitleCase, bool restrictSuffixOnly, bool restrictBreak, int count) {
             //this is really rough calculation assuming everybody knows exactly how password was created and it assumes all words are 5 characters only
 
             var words = this.Words.Length;
-            if (includeUpperCase) { words *= (1 + (restrictBreak ? 1 : 4) - (restrictTitleCase ? 1 : 0)); } //1 original + 5 characters (shortest length) that can be upper case; if break is restricted, only the first character will be upper-case; in case of title-case, first character is assumed fixed
-            if (includeIncomplete) { words *= (1 + (restrictBreak ? 1 : 4)); } //1 original + 5 characters (shortest length) that can be upper case; if break is restricted, only the last character will be removed thus only doubling the space
-            if (includeNumber) { words *= (restrictBreak ? 2 : 5) * 100; } //number can be inserted at any place in 5 character string (thus 6); if break is restricted, it still can be inserted at the end or beginning of any word
-            if (includeSpecial) { words *= (1 + SpecialCharacters.Length * (restrictBreak ? 2 : 5)); } //special character can be inserted in any word at any place; if break is restricted, only start and end are good
-            var wordCombinations = Math.Pow(words, count);
+            if (includeUpperCase && !restrictSuffixOnly) { words *= (1 + (restrictBreak ? 1 : 4) - (restrictTitleCase ? 1 : 0)); } //1 original + 5 characters (shortest length) that can be upper case; if break is restricted, only the first character will be upper-case; in case of title-case, first character is assumed fixed
+            if (includeIncomplete && !restrictSuffixOnly) { words *= (1 + (restrictBreak ? 1 : 4)); } //1 original + 5 characters (shortest length) that can be upper case; if break is restricted, only the last character will be removed thus only doubling the space
+            if (includeNumber && !restrictSuffixOnly) { words *= (restrictBreak ? 2 : 5) * 100; } //number can be inserted at any place in 5 character string (thus 6); if break is restricted, it still can be inserted at the end or beginning of any word
+            if (includeSpecial && !restrictSuffixOnly) { words *= (1 + SpecialCharacters.Length * (restrictBreak ? 2 : 5)); } //special character can be inserted in any word at any place; if break is restricted, only start and end are good
+
+            double wordCombinations;
+            if (restrictSuffixOnly) {
+                var wordsLast = this.Words.Length;
+                if (includeIncomplete) { wordsLast *= 2; }
+                if (includeNumber) { wordsLast *= 100; }
+                if (includeSpecial) { wordsLast *= SpecialCharacters.Length; }
+                wordCombinations = Math.Pow(words, count - 1) * wordsLast;
+            } else {
+                wordCombinations = Math.Pow(words, count);
+            }
 
             return wordCombinations;
         }
