@@ -45,6 +45,7 @@ namespace Bimil {
             this.chbWordIncludeUpperCase = new System.Windows.Forms.CheckBox();
             this.chbWordRestrictAddSpace = new System.Windows.Forms.CheckBox();
             this.chbWordRestrictBreak = new System.Windows.Forms.CheckBox();
+            this.chbWordRestrictTitleCase = new System.Windows.Forms.CheckBox();
             this.tabStyle = new System.Windows.Forms.TabControl();
             this.tabStyle_Words = new System.Windows.Forms.TabPage();
             this.grpWordRestrict = new System.Windows.Forms.GroupBox();
@@ -322,14 +323,26 @@ namespace Bimil {
             // chbWordRestrictBreak
             // 
             this.chbWordRestrictBreak.AutoSize = true;
-            this.chbWordRestrictBreak.Location = new System.Drawing.Point(6, 57);
+            this.chbWordRestrictBreak.Location = new System.Drawing.Point(6, 84);
             this.chbWordRestrictBreak.Name = "chbWordRestrictBreak";
             this.chbWordRestrictBreak.Size = new System.Drawing.Size(157, 21);
-            this.chbWordRestrictBreak.TabIndex = 1;
+            this.chbWordRestrictBreak.TabIndex = 2;
             this.chbWordRestrictBreak.Text = "Don\'t break up word";
             this.tip.SetToolTip(this.chbWordRestrictBreak, "Modifications to the words are done at the begining or at the end of word only.");
             this.chbWordRestrictBreak.UseVisualStyleBackColor = true;
             this.chbWordRestrictBreak.CheckedChanged += new System.EventHandler(this.btnGenerate_Click);
+            // 
+            // chbWordRestrictTitleCase
+            // 
+            this.chbWordRestrictTitleCase.AutoSize = true;
+            this.chbWordRestrictTitleCase.Location = new System.Drawing.Point(6, 57);
+            this.chbWordRestrictTitleCase.Name = "chbWordRestrictTitleCase";
+            this.chbWordRestrictTitleCase.Size = new System.Drawing.Size(91, 21);
+            this.chbWordRestrictTitleCase.TabIndex = 1;
+            this.chbWordRestrictTitleCase.Text = "Title case";
+            this.tip.SetToolTip(this.chbWordRestrictTitleCase, "First character of every word will be capitalized.");
+            this.chbWordRestrictTitleCase.UseVisualStyleBackColor = true;
+            this.chbWordRestrictTitleCase.CheckedChanged += new System.EventHandler(this.btnGenerate_Click);
             // 
             // tabStyle
             // 
@@ -359,6 +372,7 @@ namespace Bimil {
             // grpWordRestrict
             // 
             this.grpWordRestrict.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.grpWordRestrict.Controls.Add(this.chbWordRestrictTitleCase);
             this.grpWordRestrict.Controls.Add(this.chbWordRestrictBreak);
             this.grpWordRestrict.Controls.Add(this.chbWordRestrictAddSpace);
             this.grpWordRestrict.Location = new System.Drawing.Point(221, 6);
@@ -516,5 +530,6 @@ namespace Bimil {
         private System.Windows.Forms.GroupBox grpWordRestrict;
         private System.Windows.Forms.CheckBox chbWordRestrictAddSpace;
         private System.Windows.Forms.CheckBox chbWordRestrictBreak;
+        private System.Windows.Forms.CheckBox chbWordRestrictTitleCase;
     }
 }
