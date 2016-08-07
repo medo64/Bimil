@@ -160,13 +160,13 @@ namespace Bimil {
 
         [Browsable(false)]
         public static bool PasswordGeneratorWordIncludeSpecialCharacter {
-            get { return Medo.Configuration.Settings.Read("PasswordGeneratorWordIncludeSpecialCharacter", false); }
+            get { return Medo.Configuration.Settings.Read("PasswordGeneratorWordIncludeSpecialCharacter", true); }
             set { Medo.Configuration.Settings.Write("PasswordGeneratorWordIncludeSpecialCharacter", value); }
         }
 
         [Browsable(false)]
         public static bool PasswordGeneratorWordIncludeIncomplete {
-            get { return Medo.Configuration.Settings.Read("PasswordGeneratorWordIncludeIncomplete", false); }
+            get { return Medo.Configuration.Settings.Read("PasswordGeneratorWordIncludeIncomplete", true); }
             set { Medo.Configuration.Settings.Write("PasswordGeneratorWordIncludeIncomplete", value); }
         }
 

@@ -256,10 +256,10 @@ namespace Bimil {
             // chbWordIncludeSpecialCharacter
             // 
             this.chbWordIncludeSpecialCharacter.AutoSize = true;
-            this.chbWordIncludeSpecialCharacter.Location = new System.Drawing.Point(6, 84);
+            this.chbWordIncludeSpecialCharacter.Location = new System.Drawing.Point(6, 57);
             this.chbWordIncludeSpecialCharacter.Name = "chbWordIncludeSpecialCharacter";
             this.chbWordIncludeSpecialCharacter.Size = new System.Drawing.Size(140, 21);
-            this.chbWordIncludeSpecialCharacter.TabIndex = 2;
+            this.chbWordIncludeSpecialCharacter.TabIndex = 1;
             this.chbWordIncludeSpecialCharacter.Text = "Special character";
             this.tip.SetToolTip(this.chbWordIncludeSpecialCharacter, "Include special character in one of the words");
             this.chbWordIncludeSpecialCharacter.UseVisualStyleBackColor = true;
@@ -294,10 +294,10 @@ namespace Bimil {
             // chbWordIncludeUpperCase
             // 
             this.chbWordIncludeUpperCase.AutoSize = true;
-            this.chbWordIncludeUpperCase.Location = new System.Drawing.Point(6, 57);
+            this.chbWordIncludeUpperCase.Location = new System.Drawing.Point(6, 84);
             this.chbWordIncludeUpperCase.Name = "chbWordIncludeUpperCase";
             this.chbWordIncludeUpperCase.Size = new System.Drawing.Size(139, 21);
-            this.chbWordIncludeUpperCase.TabIndex = 1;
+            this.chbWordIncludeUpperCase.TabIndex = 2;
             this.chbWordIncludeUpperCase.Text = "Upper case letter";
             this.tip.SetToolTip(this.chbWordIncludeUpperCase, "Include upper case letter in one of words");
             this.chbWordIncludeUpperCase.UseVisualStyleBackColor = true;

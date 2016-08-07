@@ -353,8 +353,6 @@ namespace Bimil {
             var words = this.Words.Length;
             if (includeUpperCase && !restrictSuffixOnly) { words *= (1 + (restrictBreak ? 1 : 4) - (restrictTitleCase ? 1 : 0)); } //1 original + 5 characters (shortest length) that can be upper case; if break is restricted, only the first character will be upper-case; in case of title-case, first character is assumed fixed
             if (includeIncomplete && !restrictSuffixOnly) { words *= (1 + (restrictBreak ? 1 : 4)); } //1 original + 5 characters (shortest length) that can be upper case; if break is restricted, only the last character will be removed thus only doubling the space
-            if (includeNumber && !restrictSuffixOnly) { words *= (restrictBreak ? 2 : 5) * 100; } //number can be inserted at any place in 5 character string (thus 6); if break is restricted, it still can be inserted at the end or beginning of any word
-            if (includeSpecial && !restrictSuffixOnly) { words *= (1 + SpecialCharacters.Length * (restrictBreak ? 2 : 5)); } //special character can be inserted in any word at any place; if break is restricted, only start and end are good
 
             double wordCombinations;
             if (restrictSuffixOnly) {
@@ -365,6 +363,8 @@ namespace Bimil {
                 wordCombinations = Math.Pow(words, count - 1) * wordsLast;
             } else {
                 wordCombinations = Math.Pow(words, count);
+                if (includeNumber) { wordCombinations *= (restrictBreak ? 4 : 20) * 100; } //assume attacker knows number between 0 and 100 is to be inserted; if restricted, assume it knows it will be on word-breaks
+                if (includeSpecial) { wordCombinations *= (restrictBreak ? 1 : 20) * SpecialCharacters.Length; } //special character can be inserted in any word at any place; if break is restricted, only start and end are good
             }
 
             return wordCombinations;
@@ -494,6 +494,7 @@ namespace Bimil {
         }
 
         #endregion
+
 
         private static int GetRandomNumber(int upperLimit) {
             var rndBuffer = new byte[4];
