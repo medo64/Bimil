@@ -254,6 +254,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Properties\App.ico" />
+    <EmbeddedResource Include="Resources\Names.txt" />
     <EmbeddedResource Include="Resources\Words.txt" />
   </ItemGroup>
   <ItemGroup>

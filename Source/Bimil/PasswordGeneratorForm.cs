@@ -268,10 +268,19 @@ namespace Bimil {
             var sb = new StringBuilder();
 
             if (this.Words == null) {
+                var words = new List<string>();
+
                 using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Bimil.Resources.Words.txt"))
                 using (var textStream = new StreamReader(stream)) {
-                    this.Words = textStream.ReadToEnd().Split(new string[] { "\r\n", "\n", "\r" }, StringSplitOptions.RemoveEmptyEntries);
+                    words.AddRange(textStream.ReadToEnd().Split(new string[] { "\r\n", "\n", "\r" }, StringSplitOptions.RemoveEmptyEntries));
                 }
+
+                using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Bimil.Resources.Names.txt"))
+                using (var textStream = new StreamReader(stream)) {
+                    words.AddRange(textStream.ReadToEnd().Split(new string[] { "\r\n", "\n", "\r" }, StringSplitOptions.RemoveEmptyEntries));
+                }
+
+                this.Words = words.ToArray();
             }
 
             var selectedWords = new List<List<char>>();

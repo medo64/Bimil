@@ -16,6 +16,17 @@ commands:
 This extracts all unique words between 4 and 7 characters.
 
 
+It also uses list of the most common names for the year 2000 onward, available
+from United States Social Security Administration
+(https://www.ssa.gov/oact/babynames/limits.html), extracted using the following
+commands:
+
+    awk 'BEGIN {FS=","} {if ($3>23) print tolower($1)}' yob20*.txt | egrep "^[a-z]{4,7}$" | sort | uniq > Names.txt
+
+This extracts unique names used more than 23 times in any given year with length
+between 4 and 7 characters.
+
+    
 
 #### External code copyrights ####
 
