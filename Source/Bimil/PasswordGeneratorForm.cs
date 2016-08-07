@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
@@ -262,7 +263,7 @@ namespace Bimil {
 
         #region Word password
 
-        private string[] Words = null;
+        private ReadOnlyCollection<string> Words = null;
 
         private string GenerateWordPassword(bool includeUpperCase, bool includeNumber, bool includeSpecial, bool includeIncomplete, bool spaceSeparated, bool restrictTitleCase, bool restrictSuffixOnly, bool restrictBreak, int count) {
             var sb = new StringBuilder();
@@ -280,12 +281,12 @@ namespace Bimil {
                     words.AddRange(textStream.ReadToEnd().Split(new string[] { "\r\n", "\n", "\r" }, StringSplitOptions.RemoveEmptyEntries));
                 }
 
-                this.Words = words.ToArray();
+                this.Words = words.AsReadOnly();
             }
 
             var selectedWords = new List<List<char>>();
             for (var i = 0; i < count; i++) {
-                var wordIndex = GetRandomNumber(this.Words.Length);
+                var wordIndex = GetRandomNumber(this.Words.Count);
                 selectedWords.Add(new List<char>(this.Words[wordIndex]));
             }
 
@@ -359,13 +360,13 @@ namespace Bimil {
         private double CalculateWordCombinations(bool includeUpperCase, bool includeNumber, bool includeSpecial, bool includeIncomplete, bool spaceSeparated, bool restrictTitleCase, bool restrictSuffixOnly, bool restrictBreak, int count) {
             //this is really rough calculation assuming everybody knows exactly how password was created and it assumes all words are 5 characters only
 
-            var words = this.Words.Length;
+            var words = this.Words.Count;
             if (includeUpperCase && !restrictSuffixOnly) { words *= (1 + (restrictBreak ? 1 : 4) - (restrictTitleCase ? 1 : 0)); } //1 original + 5 characters (shortest length) that can be upper case; if break is restricted, only the first character will be upper-case; in case of title-case, first character is assumed fixed
             if (includeIncomplete && !restrictSuffixOnly) { words *= (1 + (restrictBreak ? 1 : 4)); } //1 original + 5 characters (shortest length) that can be upper case; if break is restricted, only the last character will be removed thus only doubling the space
 
             double wordCombinations;
             if (restrictSuffixOnly) {
-                var wordsLast = this.Words.Length;
+                var wordsLast = this.Words.Count;
                 if (includeIncomplete) { wordsLast *= 2; }
                 if (includeNumber) { wordsLast *= 100; }
                 if (includeSpecial) { wordsLast *= SpecialCharacters.Length; }
