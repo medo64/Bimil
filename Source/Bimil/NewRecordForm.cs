@@ -22,12 +22,10 @@ namespace Bimil {
 
 
         private void Form_Load(object sender, EventArgs e) {
-            foreach (RecordType recordType in Enum.GetValues(typeof(RecordType))) {
-                var caption = Helpers.GetRecordCaption(recordType);
-                if (caption != null) {
-                    cmbRecordType.Items.Add(new BimilFormatWrapper(caption, recordType));
-                }
+            foreach (RecordType recordType in Helpers.GetUsableRecordTypes()) {
+                cmbRecordType.Items.Add(new BimilFormatWrapper(Helpers.GetRecordCaption(recordType), recordType));
             }
+
             if (this.Record != null) {
                 cmbRecordType.SelectedItem = this.Record.RecordType;
             } else {

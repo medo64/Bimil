@@ -50,6 +50,24 @@ namespace Bimil {
             }
         }
 
+        public static IEnumerable<RecordType> GetUsableRecordTypes() {
+            yield return RecordType.UserName;
+            yield return RecordType.Password;
+            yield return RecordType.Url;
+
+            yield return RecordType.EmailAddress;
+            yield return RecordType.TwoFactorKey;
+
+            yield return RecordType.CreditCardNumber;
+            yield return RecordType.CreditCardExpiration;
+            yield return RecordType.CreditCardVerificationValue;
+            yield return RecordType.CreditCardPin;
+
+            yield return RecordType.Notes;
+
+            yield return RecordType.PasswordHistory;
+        }
+
         public static bool GetIsHideable(RecordType recordType) {
             switch (recordType) {
                 case RecordType.Password:
