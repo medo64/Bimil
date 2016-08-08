@@ -56,6 +56,7 @@ namespace Bimil {
             this.lblLength = new System.Windows.Forms.Label();
             this.grpRestrictions = new System.Windows.Forms.GroupBox();
             this.grpInclude = new System.Windows.Forms.GroupBox();
+            this.picSecurityRating = new System.Windows.Forms.PictureBox();
             this.tabStyle.SuspendLayout();
             this.tabStyle_Words.SuspendLayout();
             this.grpWordRestrict.SuspendLayout();
@@ -63,6 +64,7 @@ namespace Bimil {
             this.tabStyle_Classic.SuspendLayout();
             this.grpRestrictions.SuspendLayout();
             this.grpInclude.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picSecurityRating)).BeginInit();
             this.SuspendLayout();
             // 
             // lblCombinations
@@ -476,11 +478,23 @@ namespace Bimil {
             this.grpInclude.TabStop = false;
             this.grpInclude.Text = "Include";
             // 
+            // picSecurityRating
+            // 
+            this.picSecurityRating.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.picSecurityRating.Location = new System.Drawing.Point(12, 274);
+            this.picSecurityRating.Margin = new System.Windows.Forms.Padding(3, 3, 3, 0);
+            this.picSecurityRating.Name = "picSecurityRating";
+            this.picSecurityRating.Size = new System.Drawing.Size(48, 48);
+            this.picSecurityRating.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+            this.picSecurityRating.TabIndex = 5;
+            this.picSecurityRating.TabStop = false;
+            // 
             // PasswordGeneratorForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(459, 331);
+            this.Controls.Add(this.picSecurityRating);
             this.Controls.Add(this.tabStyle);
             this.Controls.Add(this.btnCopy);
             this.Controls.Add(this.btnGenerate);
@@ -508,6 +522,7 @@ namespace Bimil {
             this.grpRestrictions.PerformLayout();
             this.grpInclude.ResumeLayout(false);
             this.grpInclude.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picSecurityRating)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -546,5 +561,6 @@ namespace Bimil {
         private System.Windows.Forms.CheckBox chbWordRestrictBreak;
         private System.Windows.Forms.CheckBox chbWordRestrictTitleCase;
         private System.Windows.Forms.CheckBox chbWordRestrictSuffixOnly;
+        private System.Windows.Forms.PictureBox picSecurityRating;
     }
 }

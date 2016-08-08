@@ -247,12 +247,21 @@ namespace Bimil {
             }
 
             if (!double.IsNaN(combinations)) {
-                var crackDurationText = GetCrackDuration(combinations);
+                var secondsToCrack = GetCrackDurationInSeconds(combinations);
+                var crackDurationText = GetCrackDurationText(secondsToCrack);
                 lblCombinations.Text = "About " + crackDurationText + " to crack";
                 tip.SetToolTip(lblCombinations, combinations.ToString("#,##0", CultureInfo.CurrentCulture) + " (" + GetEngineeringString(combinations) + ") combinations.\n\nGiven number was calculated assuming potential attacker knows exactly which method and dictionary were used to generate password.");
+                if (secondsToCrack > 365 * 24 * 60 * 60) {
+                    Helpers.ScaleImage(picSecurityRating, "picSecurityHigh", 1);
+                } else if (secondsToCrack > 24 * 60 * 60) {
+                    Helpers.ScaleImage(picSecurityRating, "picSecurityMedium", 1);
+                } else {
+                    Helpers.ScaleImage(picSecurityRating, "picSecurityLow", 1);
+                }
             } else {
                 lblCombinations.Text = "?";
                 tip.SetToolTip(lblCombinations, null);
+                picSecurityRating.Image = null;
             }
 
             txtPassword.Text = password;
@@ -535,11 +544,15 @@ namespace Bimil {
             return (int)(randomNumber % (uint)upperLimit);
         }
 
-        private string GetCrackDuration(double combinations) {
+        private double GetCrackDurationInSeconds(double combinations) {
             var cracksPerSecond = CracksPerSecond;
             for (var i = 2016; i <= DateTime.Now.Year - 1; i += 2) { cracksPerSecond *= 2; } //Moore's law
 
-            var secondsToCrack = Math.Floor(combinations / cracksPerSecond / 2);
+            var secondsToCrack = Math.Floor(combinations / cracksPerSecond);
+            return secondsToCrack / 2;
+        }
+
+        private string GetCrackDurationText(double secondsToCrack) {
             var minutesToCrack = Math.Floor(secondsToCrack / 60);
             var hoursToCrack = Math.Floor(minutesToCrack / 60);
             var daysToCrack = Math.Floor(hoursToCrack / 24);

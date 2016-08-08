@@ -363,6 +363,20 @@ namespace Bimil {
 #endif
         }
 
+        internal static void ScaleImage(PictureBox pictureBox, string nameRoot, double scaleBoost = 1) {
+            var sizeAndSet = GetSizeAndSet(scaleBoost, pictureBox);
+            var size = sizeAndSet.Key;
+            var set = sizeAndSet.Value;
+
+            var resources = Bimil.Properties.Resources.ResourceManager;
+            var bitmap = resources.GetObject(nameRoot + set) as Bitmap;
+#if DEBUG
+            pictureBox.Image = (bitmap != null) ? new Bitmap(bitmap, size, size) : new Bitmap(size, size, PixelFormat.Format8bppIndexed);
+#else
+            pictureBox.Image = (bitmap != null) ? new Bitmap(bitmap, size, size) : null;
+#endif
+        }
+
         internal static ImageList GetImageList(Form form, params string[] names) {
             var sizeAndSet = GetSizeAndSet(form);
             var size = sizeAndSet.Key;
@@ -380,9 +394,13 @@ namespace Bimil {
         }
 
         private static KeyValuePair<int, string> GetSizeAndSet(params Control[] controls) {
+            return GetSizeAndSet(Settings.ScaleBoost, controls);
+        }
+
+        private static KeyValuePair<int, string> GetSizeAndSet(double scaleBoost, params Control[] controls) {
             using (var g = controls[0].CreateGraphics()) {
                 var scale = Math.Max(Math.Max(g.DpiX, g.DpiY), 96.0) / 96.0;
-                scale += Settings.ScaleBoost;
+                scale += scaleBoost;
 
                 if (scale < 1.5) {
                     return new KeyValuePair<int, string>(16, "_16");
