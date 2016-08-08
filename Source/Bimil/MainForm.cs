@@ -635,6 +635,7 @@ namespace Bimil {
                 if (frm2.ShowDialog(this) == DialogResult.OK) {
                     lsvEntries.SelectedItems[0].Text = item.Title;
                     RefreshCategories();
+                    RefreshItems(item);
                     UpdateMenu();
                 }
             }
