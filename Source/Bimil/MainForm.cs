@@ -76,6 +76,12 @@ namespace Bimil {
                 case Keys.Control | Keys.F:
                     mnuSearch.PerformClick();
                     return true;
+
+                case Keys.F5:
+                    RefreshCategories();
+                    RefreshItems();
+                    UpdateMenu();
+                    return true;
             }
 
             return base.ProcessDialogKey(keyData);
