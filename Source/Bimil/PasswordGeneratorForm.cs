@@ -216,7 +216,7 @@ namespace Bimil {
 
             if (tabStyle.SelectedTab.Equals(tabStyle_Classic)) {
                 int length;
-                if (int.TryParse(txtLength.Text, NumberStyles.Integer, CultureInfo.InvariantCulture, out length) && (length >= 4)) {
+                if (int.TryParse(txtLength.Text, NumberStyles.Integer, CultureInfo.InvariantCulture, out length) && (length >= 4) && (length <= 99)) {
                     var includeUpperCase = chbIncludeUpperCase.Checked;
                     var includeLowerCase = chbIncludeLowerCase.Checked;
                     var includeNumbers = chbIncludeNumbers.Checked;
@@ -231,7 +231,7 @@ namespace Bimil {
                 }
             } else {
                 int count;
-                if (int.TryParse(txtWordCount.Text, NumberStyles.Integer, CultureInfo.InvariantCulture, out count) && (count >= 1)) {
+                if (int.TryParse(txtWordCount.Text, NumberStyles.Integer, CultureInfo.InvariantCulture, out count) && (count >= 1) && (count <= 9)) {
                     var includeUpperCase = chbWordIncludeUpperCase.Checked;
                     var includeNumber = chbWordIncludeNumber.Checked;
                     var includeSpecial = chbWordIncludeSpecialCharacter.Checked;
