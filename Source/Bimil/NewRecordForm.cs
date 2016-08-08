@@ -31,7 +31,22 @@ namespace Bimil {
             if (this.Record != null) {
                 cmbRecordType.SelectedItem = this.Record.RecordType;
             } else {
-                cmbRecordType.SelectedIndex = 0;
+                foreach (BimilFormatWrapper item in cmbRecordType.Items) {
+                    var isAlreadyUsed = false;
+                    foreach (var record in this.RecordsInUse) {
+                        if (item.Format == record.RecordType) {
+                            isAlreadyUsed = true;
+                            break;
+                        }
+                    }
+                    if (isAlreadyUsed == false) {
+                        cmbRecordType.SelectedItem = item;
+                        break;
+                    }
+                }
+                if (cmbRecordType.SelectedItem == null) {
+                    cmbRecordType.SelectedIndex = 0;
+                }
             }
         }
 
