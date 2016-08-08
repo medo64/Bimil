@@ -149,10 +149,10 @@ namespace Bimil {
             this.chbIncludeLowerCase.AutoSize = true;
             this.chbIncludeLowerCase.Checked = true;
             this.chbIncludeLowerCase.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chbIncludeLowerCase.Location = new System.Drawing.Point(6, 57);
+            this.chbIncludeLowerCase.Location = new System.Drawing.Point(6, 30);
             this.chbIncludeLowerCase.Name = "chbIncludeLowerCase";
             this.chbIncludeLowerCase.Size = new System.Drawing.Size(102, 21);
-            this.chbIncludeLowerCase.TabIndex = 1;
+            this.chbIncludeLowerCase.TabIndex = 0;
             this.chbIncludeLowerCase.Text = "Lower case";
             this.tip.SetToolTip(this.chbIncludeLowerCase, "Include lower case letters");
             this.chbIncludeLowerCase.UseVisualStyleBackColor = true;
@@ -163,10 +163,10 @@ namespace Bimil {
             this.chbIncludeUpperCase.AutoSize = true;
             this.chbIncludeUpperCase.Checked = true;
             this.chbIncludeUpperCase.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chbIncludeUpperCase.Location = new System.Drawing.Point(6, 30);
+            this.chbIncludeUpperCase.Location = new System.Drawing.Point(6, 57);
             this.chbIncludeUpperCase.Name = "chbIncludeUpperCase";
             this.chbIncludeUpperCase.Size = new System.Drawing.Size(103, 21);
-            this.chbIncludeUpperCase.TabIndex = 0;
+            this.chbIncludeUpperCase.TabIndex = 1;
             this.chbIncludeUpperCase.Text = "Upper case";
             this.tip.SetToolTip(this.chbIncludeUpperCase, "Include upper case letters");
             this.chbIncludeUpperCase.UseVisualStyleBackColor = true;

@@ -171,7 +171,7 @@ namespace Bimil {
             if (!int.TryParse(txtLength.Text, NumberStyles.Integer, CultureInfo.CurrentCulture, out length)) {
                 length = Settings.PasswordGeneratorLength;
             }
-            txtLength.Text = Math.Min(Math.Max(length, 1), 99).ToString(CultureInfo.CurrentCulture);
+            txtLength.Text = Math.Min(Math.Max(length, 4), 99).ToString(CultureInfo.CurrentCulture);
         }
 
         private void ChangeLength(TextBox textBox, int delta) {
@@ -216,7 +216,7 @@ namespace Bimil {
 
             if (tabStyle.SelectedTab.Equals(tabStyle_Classic)) {
                 int length;
-                if (int.TryParse(txtLength.Text, NumberStyles.Integer, CultureInfo.InvariantCulture, out length) && (length >= 1)) {
+                if (int.TryParse(txtLength.Text, NumberStyles.Integer, CultureInfo.InvariantCulture, out length) && (length >= 4) && (length <= 99)) {
                     var includeUpperCase = chbIncludeUpperCase.Checked;
                     var includeLowerCase = chbIncludeLowerCase.Checked;
                     var includeNumbers = chbIncludeNumbers.Checked;
@@ -231,7 +231,7 @@ namespace Bimil {
                 }
             } else {
                 int count;
-                if (int.TryParse(txtWordCount.Text, NumberStyles.Integer, CultureInfo.InvariantCulture, out count) && (count >= 1)) {
+                if (int.TryParse(txtWordCount.Text, NumberStyles.Integer, CultureInfo.InvariantCulture, out count) && (count >= 1) && (count <= 9)) {
                     var includeUpperCase = chbWordIncludeUpperCase.Checked;
                     var includeNumber = chbWordIncludeNumber.Checked;
                     var includeSpecial = chbWordIncludeSpecialCharacter.Checked;
@@ -443,49 +443,65 @@ namespace Bimil {
         }
 
         private string GenerateClassicPassword(bool includeUpperCase, bool includeLowerCase, bool includeNumbers, bool includeSpecial, bool restrictSimilar, bool restrictMovable, bool restrictPronounceable, bool restrictRepeated, int length) {
-            var sb = new StringBuilder();
+            while (true) {
+                var sb = new StringBuilder();
 
-            var useVowelNext = false;
-            while (sb.Length < length) {
-                var sixteenth = GetRandomNumber(16);
+                var useVowelNext = false;
+                while (sb.Length < length) {
+                    var sixteenth = GetRandomNumber(16);
 
-                List<char> characters = new List<char>();
-                if (includeUpperCase && (sixteenth >= 0) && (sixteenth <= 5)) { //Uppercase: 6/16th ~ 37.5%
-                    if (restrictPronounceable) {
-                        IncludeCharacters(characters, useVowelNext ? UpperCaseVowels : UpperCaseConsonants);
-                        useVowelNext = !useVowelNext;
-                    } else {
-                        IncludeCharacters(characters, UpperCaseVowels, UpperCaseConsonants);
+                    List<char> characters = new List<char>();
+                    if (includeUpperCase && (sixteenth >= 0) && (sixteenth <= 5)) { //Uppercase: 6/16th ~ 37.5%
+                        if (restrictPronounceable) {
+                            IncludeCharacters(characters, useVowelNext ? UpperCaseVowels : UpperCaseConsonants);
+                            useVowelNext = !useVowelNext;
+                        } else {
+                            IncludeCharacters(characters, UpperCaseVowels, UpperCaseConsonants);
+                        }
+                    } else if (includeLowerCase && (sixteenth >= 6) && (sixteenth <= 11)) { //Lowercase: 6/16th ~ 37.5%
+                        if (restrictPronounceable) {
+                            IncludeCharacters(characters, useVowelNext ? LowerCaseVowels : LowerCaseConsonants);
+                            useVowelNext = !useVowelNext;
+                        } else {
+                            IncludeCharacters(characters, LowerCaseVowels, LowerCaseConsonants);
+                        }
+                    } else if (includeNumbers && (sixteenth >= 12) && (sixteenth <= 13)) { //Number: 2/16th ~ 12.5%
+                        if (restrictPronounceable && !useVowelNext) { continue; } //treat numbers as vowels
+                        IncludeCharacters(characters, Digits);
+                        useVowelNext = false;
+                    } else if (includeSpecial && (sixteenth >= 14) && (sixteenth <= 15)) { //Number: 2/16th ~ 12.5%
+                        if (restrictPronounceable && !useVowelNext) { continue; } //treat specials as vowels
+                        IncludeCharacters(characters, SpecialCharacters);
+                        useVowelNext = false;
                     }
-                } else if (includeLowerCase && (sixteenth >= 6) && (sixteenth <= 11)) { //Lowercase: 6/16th ~ 37.5%
-                    if (restrictPronounceable) {
-                        IncludeCharacters(characters, useVowelNext ? LowerCaseVowels : LowerCaseConsonants);
-                        useVowelNext = !useVowelNext;
-                    } else {
-                        IncludeCharacters(characters, LowerCaseVowels, LowerCaseConsonants);
+
+                    if (restrictSimilar) { RemoveCharacters(characters, RestrictedSimilar); }
+                    if (restrictMovable) { RemoveCharacters(characters, RestrictedMoveable); }
+
+                    if (characters.Count > 0) {
+                        var charIndex = GetRandomNumber(characters.Count);
+                        var nextChar = characters[charIndex];
+                        if (restrictRepeated && (sb.Length > 1) && (sb[sb.Length - 1] == nextChar)) { continue; }
+                        sb.Append(nextChar);
                     }
-                } else if (includeNumbers && (sixteenth >= 12) && (sixteenth <= 13)) { //Number: 2/16th ~ 12.5%
-                    if (restrictPronounceable && !useVowelNext) { continue; } //treat numbers as vowels
-                    IncludeCharacters(characters, Digits);
-                    useVowelNext = false;
-                } else if (includeSpecial && (sixteenth >= 14) && (sixteenth <= 15)) { //Number: 2/16th ~ 12.5%
-                    if (restrictPronounceable && !useVowelNext) { continue; } //treat specials as vowels
-                    IncludeCharacters(characters, SpecialCharacters);
-                    useVowelNext = false;
                 }
 
-                if (restrictSimilar) { RemoveCharacters(characters, RestrictedSimilar); }
-                if (restrictMovable) { RemoveCharacters(characters, RestrictedMoveable); }
-
-                if (characters.Count > 0) {
-                    var charIndex = GetRandomNumber(characters.Count);
-                    var nextChar = characters[charIndex];
-                    if (restrictRepeated && (sb.Length > 1) && (sb[sb.Length - 1] == nextChar)) { continue; }
-                    sb.Append(nextChar);
+                int countUpper = 0, countLower = 0, countNumber = 0, countSpecial = 0;
+                for (var i = 0; i < sb.Length; i++) {
+                    if ((Array.IndexOf(this.LowerCaseConsonants, sb[i]) > 0) || (Array.IndexOf(this.LowerCaseVowels, sb[i]) > 0)) { countLower += 1; }
+                    if ((Array.IndexOf(this.UpperCaseConsonants, sb[i]) > 0) || (Array.IndexOf(this.UpperCaseVowels, sb[i]) > 0)) { countUpper += 1; }
+                    if (Array.IndexOf(this.Digits, sb[i]) > 0) { countNumber += 1; }
+                    if (Array.IndexOf(this.SpecialCharacters, sb[i]) > 0) { countSpecial += 1; }
                 }
+
+                //another loop if one of selected is missing
+                if (includeLowerCase && (countLower == 0)) { continue; }
+                if (includeUpperCase && (countUpper == 0)) { continue; }
+                if (includeNumbers && (countNumber == 0)) { continue; }
+                if (includeSpecial && (countSpecial == 0)) { continue; }
+
+                return sb.ToString();
             }
-
-            return sb.ToString();
         }
 
 
