@@ -42,6 +42,7 @@ namespace Bimil {
             // 
             this.cmbSearch.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmbSearch.DropDownStyle = System.Windows.Forms.ComboBoxStyle.Simple;
             this.cmbSearch.FormattingEnabled = true;
             this.cmbSearch.Location = new System.Drawing.Point(90, 12);
             this.cmbSearch.Margin = new System.Windows.Forms.Padding(3, 3, 3, 9);
