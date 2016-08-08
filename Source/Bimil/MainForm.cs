@@ -642,8 +642,8 @@ namespace Bimil {
                     lsvEntries.SelectedItems[0].Text = item.Title;
                     RefreshCategories();
                     RefreshItems(item);
-                    UpdateMenu();
                 }
+                UpdateMenu();
             }
         }
 
