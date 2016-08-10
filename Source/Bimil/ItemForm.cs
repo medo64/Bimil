@@ -31,6 +31,7 @@ namespace Bimil {
             this.DefaultCategory = !string.IsNullOrEmpty(defaultCategory) ? defaultCategory : null;
 
             btnEdit.Visible = !this.Document.IsReadOnly;
+            btnFill.Visible = !Helpers.IsRunningOnMono; //filling form includes operations not supported under Linux - Mono under Windows might have some troubles too but it is disabled there because it enables easy testing :)
 
             this.Text = this.Document.IsReadOnly ? "View" : "Edit";
         }
@@ -56,6 +57,12 @@ namespace Bimil {
                     } else if (btnFields.Visible) {
                         btnFields_Click(null, null);
                     }
+                    e.Handled = true;
+                    e.SuppressKeyPress = true;
+                    break;
+
+                case Keys.F5: //fill
+                    if (btnFill.Visible) { btnFill.PerformClick(); }
                     e.Handled = true;
                     e.SuppressKeyPress = true;
                     break;
@@ -247,7 +254,7 @@ namespace Bimil {
                             pnl.Controls.Add(textBox);
                             Array.Clear(bytes, 0, bytes.Length);
 
-                            pnl.Controls.Add(NewCopyButton(textBox, tipText: "Copy two-factor key to clipboard.", copyText: delegate () { return GetTwoFactorCode(textBox.Text); }));
+                            pnl.Controls.Add(NewCopyButton(textBox, tipText: "Copy two-factor key to clipboard.", copyText: delegate () { return Helpers.GetTwoFactorCode(textBox.Text); }));
                             pnl.Controls.Add(NewViewTwoFactorCode(textBox));
                             pnl.Controls.Add(NewExecuteOAuthQRButton(textBox));
                             pnl.Controls.Add(NewShowPasswordButton(textBox, tipText: "Show two-factor key."));
@@ -260,7 +267,7 @@ namespace Bimil {
                             var textBox = NewTextBox(labelWidth, y, record);
                             pnl.Controls.Add(textBox);
 
-                            pnl.Controls.Add(NewCopyButton(textBox, allowedCopyCharacters: NumberCharacters));
+                            pnl.Controls.Add(NewCopyButton(textBox, allowedCopyCharacters: Helpers.NumberCharacters));
 
                             yH = textBox.Height;
                         }
@@ -315,6 +322,16 @@ namespace Bimil {
             btnOK.Visible = true;
             btnCancel.Text = "Cancel";
             this.Editable = true;
+        }
+
+        private void btnFill_Click(object sender, EventArgs e) {
+            var originalState = this.Owner.WindowState;
+            this.Owner.WindowState = FormWindowState.Minimized;
+            using (var frm = new FillForm(this.Item)) {
+                frm.ShowDialog(this);
+            }
+            this.Owner.WindowState = originalState;
+            this.Select();
         }
 
         private void btnOK_Click(object sender, EventArgs e) {
@@ -450,7 +467,7 @@ namespace Bimil {
                 } else {
                     text = textBox.Text;
                 }
-                text = FilterText(text, allowedCopyCharacters);
+                text = Helpers.FilterText(text, allowedCopyCharacters);
 
                 Clipboard.Clear();
                 if (text.Length > 0) {
@@ -623,7 +640,7 @@ namespace Bimil {
                 var textBox = (TextBox)(((Control)sender).Tag);
                 textBox.Select();
 
-                var key = FilterText(textBox.Text.ToUpperInvariant(), Base32Characters);
+                var key = Helpers.FilterText(textBox.Text.ToUpperInvariant(), Helpers.Base32Characters);
                 if (key.Length > 0) {
                     var keyUrl = string.Format(CultureInfo.InvariantCulture, "otpauth://totp/{0}?secret={1}", HttpUtility.UrlPathEncode(this.Item.Title), HttpUtility.UrlEncode(key));
                     using (var frm = new QRCodeForm(keyUrl)) {
@@ -654,7 +671,7 @@ namespace Bimil {
                 var textBox = (TextBox)(((Control)sender).Tag);
                 textBox.Select();
 
-                var code = GetTwoFactorCode(textBox.Text, space: true);
+                var code = Helpers.GetTwoFactorCode(textBox.Text, space: true);
                 if (code != "") { Medo.MessageBox.ShowInformation(this, code); }
             });
 
@@ -709,42 +726,6 @@ namespace Bimil {
                 return "";
             }
         }
-
-        private string GetTwoFactorCode(string text, bool space = false) {
-            var key = FilterText(text.ToUpperInvariant(), Base32Characters);
-            if (key.Length > 0) {
-                try {
-                    var otp = new OneTimePassword(key);
-                    var code = otp.GetCode().ToString(new string('0', otp.Digits), CultureInfo.InvariantCulture);
-                    if (space) {
-                        var mid = code.Length / 2;
-                        return code.Substring(0, mid) + " " + code.Substring(mid);
-                    } else {
-                        return code;
-                    }
-                } catch (ArgumentException) { }
-            }
-            return "";
-        }
-
-
-        private static string FilterText(string text, char[] allowedCopyCharacters) {
-            if (allowedCopyCharacters != null) {
-                var allowedCharacters = new List<char>(allowedCopyCharacters);
-                var sb = new StringBuilder();
-                foreach (var ch in text) {
-                    if (allowedCharacters.Contains(ch)) {
-                        sb.Append(ch);
-                    }
-                }
-                return sb.ToString();
-            } else {
-                return text;
-            }
-        }
-
-        private static readonly char[] Base32Characters = new char[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '2', '3', '4', '5', '6', '7' };
-        private static readonly char[] NumberCharacters = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
 
 
         private delegate string GetText();

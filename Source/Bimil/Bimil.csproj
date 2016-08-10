@@ -113,6 +113,12 @@
     <Compile Include="BimilDocument\BimilValue.cs" />
     <Compile Include="BimilDocument\DocumentConversion.cs" />
     <Compile Include="EntryCache.cs" />
+    <Compile Include="FillForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FillForm.Designer.cs">
+      <DependentUpon>FillForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="ItemForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -209,6 +215,9 @@
       <DependentUpon>StartForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Templates.cs" />
+    <EmbeddedResource Include="FillForm.resx">
+      <DependentUpon>FillForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ItemForm.resx">
       <DependentUpon>ItemForm.cs</DependentUpon>
     </EmbeddedResource>

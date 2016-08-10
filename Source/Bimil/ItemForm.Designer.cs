@@ -31,6 +31,7 @@ namespace Bimil {
             this.btnFields = new System.Windows.Forms.Button();
             this.tip = new System.Windows.Forms.ToolTip(this.components);
             this.tmrClose = new System.Windows.Forms.Timer(this.components);
+            this.btnFill = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // pnl
@@ -64,7 +65,7 @@ namespace Bimil {
             this.btnOK.Margin = new System.Windows.Forms.Padding(3, 15, 3, 3);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(90, 28);
-            this.btnOK.TabIndex = 4;
+            this.btnOK.TabIndex = 5;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Visible = false;
@@ -99,6 +100,16 @@ namespace Bimil {
             // 
             this.tmrClose.Tick += new System.EventHandler(this.tmrClose_Tick);
             // 
+            // btnFill
+            // 
+            this.btnFill.Location = new System.Drawing.Point(108, 355);
+            this.btnFill.Name = "btnFill";
+            this.btnFill.Size = new System.Drawing.Size(90, 28);
+            this.btnFill.TabIndex = 4;
+            this.btnFill.Text = "Fill";
+            this.btnFill.UseVisualStyleBackColor = true;
+            this.btnFill.Click += new System.EventHandler(this.btnFill_Click);
+            // 
             // ItemForm
             // 
             this.AcceptButton = this.btnOK;
@@ -106,6 +117,7 @@ namespace Bimil {
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(582, 395);
+            this.Controls.Add(this.btnFill);
             this.Controls.Add(this.btnFields);
             this.Controls.Add(this.btnEdit);
             this.Controls.Add(this.btnCancel);
@@ -138,5 +150,6 @@ namespace Bimil {
         private System.Windows.Forms.Button btnFields;
         private System.Windows.Forms.ToolTip tip;
         private System.Windows.Forms.Timer tmrClose;
+        private System.Windows.Forms.Button btnFill;
     }
 }

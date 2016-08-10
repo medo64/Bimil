@@ -1,3 +1,4 @@
+using Medo.Security.Cryptography;
 using Medo.Security.Cryptography.PasswordSafe;
 using System;
 using System.Collections.Generic;
@@ -5,6 +6,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Globalization;
+using System.Text;
 using System.Windows.Forms;
 
 namespace Bimil {
@@ -425,6 +427,47 @@ namespace Bimil {
         }
 
         #endregion
+
+
+        public static readonly char[] Base32Characters = new char[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '2', '3', '4', '5', '6', '7' };
+        public static readonly char[] NumberCharacters = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
+
+        public static string FilterText(string text, char[] allowedCopyCharacters) {
+            if (allowedCopyCharacters != null) {
+                var allowedCharacters = new List<char>(allowedCopyCharacters);
+                var sb = new StringBuilder();
+                foreach (var ch in text) {
+                    if (allowedCharacters.Contains(ch)) {
+                        sb.Append(ch);
+                    }
+                }
+                return sb.ToString();
+            } else {
+                return text;
+            }
+        }
+
+        public static string GetTwoFactorCode(string text, bool space = false) {
+            var key = Helpers.FilterText(text.ToUpperInvariant(), Helpers.Base32Characters);
+            if (key.Length > 0) {
+                try {
+                    var otp = new OneTimePassword(key);
+                    var code = otp.GetCode().ToString(new string('0', otp.Digits), CultureInfo.InvariantCulture);
+                    if (space) {
+                        var mid = code.Length / 2;
+                        return code.Substring(0, mid) + " " + code.Substring(mid);
+                    } else {
+                        return code;
+                    }
+                } catch (ArgumentException) { }
+            }
+            return "";
+        }
+
+
+        public static bool IsRunningOnMono {
+            get { return (Type.GetType("Mono.Runtime") != null); }
+        }
 
     }
 }
