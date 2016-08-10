@@ -95,6 +95,7 @@ namespace Bimil {
                 case RecordType.CreditCardExpiration:
                 case RecordType.CreditCardVerificationValue:
                 case RecordType.CreditCardPin:
+                case RecordType.QRCode:
                     erp.SetError(cmbRecordType, "This record type is not supported by PasswordSafe.");
                     break;
 
