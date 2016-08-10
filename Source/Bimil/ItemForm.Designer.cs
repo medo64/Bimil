@@ -114,6 +114,7 @@ namespace Bimil {
             this.KeyPreview = true;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
+            this.MinimumSize = new System.Drawing.Size(480, 320);
             this.Name = "ItemForm";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
