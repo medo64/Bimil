@@ -9,6 +9,9 @@ namespace Bimil {
         public FillForm(Entry entry) {
             InitializeComponent();
 
+            this.Font = SystemFonts.MessageBoxFont;
+            Medo.Windows.Forms.State.SetupOnLoadAndClose(this);
+
             var y = 0;
             foreach (var record in entry.Records) {
                 switch (record.RecordType) {
@@ -43,6 +46,17 @@ namespace Bimil {
         }
 
 
+        protected override bool ProcessDialogKey(Keys keyData) {
+            switch (keyData) {
+                case Keys.Escape:
+                    this.Close();
+                    return true;
+            }
+
+            return base.ProcessDialogKey(keyData);
+        }
+
+
         private void tmrType_Tick(object sender, EventArgs e) {
             tmrType.Enabled = false;
 
@@ -57,7 +71,7 @@ namespace Bimil {
 
         private void tmrRestore_Tick(object sender, EventArgs e) {
             tmrRestore.Enabled = false;
-            this.WindowState = FormWindowState.Normal;
+            this.Visible = true;
             this.Select();
         }
 
@@ -72,11 +86,12 @@ namespace Bimil {
             }
 
             if (isCancel) {
-                btn.DialogResult = DialogResult.Cancel;
-                this.CancelButton = btn;
+                btn.Click += delegate (object sender, EventArgs e) {
+                    this.Close();
+                };
             } else {
                 btn.Click += delegate (object sender, EventArgs e) {
-                    this.WindowState = FormWindowState.Minimized;
+                    this.Visible = false;
 
                     var filteredText = (allowedCharacters == null) ? text : Helpers.FilterText(text, allowedCharacters);
 

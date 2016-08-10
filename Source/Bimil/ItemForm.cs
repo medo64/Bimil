@@ -325,12 +325,19 @@ namespace Bimil {
 
         private void btnFill_Click(object sender, EventArgs e) {
             var originalState = this.Owner.WindowState;
-            this.Owner.WindowState = FormWindowState.Minimized;
-            using (var frm = new FillForm(this.Item)) {
-                frm.ShowDialog(this);
-            }
-            this.Owner.WindowState = originalState;
-            this.Select();
+            var ownerForm = this.Owner;
+
+            this.Close();
+
+            var frm = new FillForm(this.Item);
+            frm.Shown += delegate (object sender2, EventArgs e2) {
+                ownerForm.Visible = false;
+            };
+            frm.FormClosed += delegate (object sender2, FormClosedEventArgs e2) {
+                ownerForm.Visible = true;
+                ownerForm.Select();
+            };
+            frm.Show();
         }
 
         private void btnOK_Click(object sender, EventArgs e) {
