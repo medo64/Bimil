@@ -7,7 +7,6 @@ using Medo.Security.Cryptography.PasswordSafe;
 using System.Collections.Generic;
 using System.Web;
 using Medo.Security.Cryptography;
-using System.Text;
 
 namespace Bimil {
     internal partial class ItemForm : Form {

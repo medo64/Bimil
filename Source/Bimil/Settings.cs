@@ -202,6 +202,12 @@ namespace Bimil {
 
         #endregion
 
+        [Browsable(false)]
+        public static string FillSuffixKeys {
+            get { return Medo.Configuration.Settings.Read("FillSuffixKeys", "{TAB}"); }
+            set { Medo.Configuration.Settings.Write("FillSuffixKeys", value); }
+        }
+
 
         private static int LimitBetween(int value, int minValue, int maxValue, bool allowZero) {
             if (allowZero && (value == 0)) { return 0; }

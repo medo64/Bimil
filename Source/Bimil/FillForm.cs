@@ -49,7 +49,7 @@ namespace Bimil {
             Clipboard.Clear();
             Clipboard.SetText(tmrType.Tag.ToString());
             SendKeys.Send("^V");
-            SendKeys.Send("{ENTER}");
+            SendKeys.Send(Settings.FillSuffixKeys);
             Clipboard.Clear();
 
             tmrRestore.Enabled = true;
