@@ -44,6 +44,8 @@ namespace Bimil {
                 case RecordType.CreditCardVerificationValue: return "Card security code";
                 case RecordType.CreditCardPin: return "Card PIN";
 
+                case RecordType.QRCode: return "QR Code";
+
                 case RecordType.PasswordHistory: return "Password history";
 
                 default: return null; //all other fields are not really supported
@@ -62,6 +64,8 @@ namespace Bimil {
             yield return RecordType.CreditCardExpiration;
             yield return RecordType.CreditCardVerificationValue;
             yield return RecordType.CreditCardPin;
+
+            yield return RecordType.QRCode;
 
             yield return RecordType.Notes;
 

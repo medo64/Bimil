@@ -249,7 +249,7 @@ namespace Bimil {
 
                             pnl.Controls.Add(NewCopyButton(textBox, tipText: "Copy two-factor key to clipboard.", copyText: delegate () { return GetTwoFactorCode(textBox.Text); }));
                             pnl.Controls.Add(NewViewTwoFactorCode(textBox));
-                            pnl.Controls.Add(NewExecuteQRButton(textBox));
+                            pnl.Controls.Add(NewExecuteOAuthQRButton(textBox));
                             pnl.Controls.Add(NewShowPasswordButton(textBox, tipText: "Show two-factor key."));
 
                             yH = textBox.Height;
@@ -261,6 +261,17 @@ namespace Bimil {
                             pnl.Controls.Add(textBox);
 
                             pnl.Controls.Add(NewCopyButton(textBox, allowedCopyCharacters: NumberCharacters));
+
+                            yH = textBox.Height;
+                        }
+                        break;
+
+
+                    case RecordType.QRCode: {
+                            var textBox = NewTextBox(labelWidth, y, record);
+                            pnl.Controls.Add(textBox);
+
+                            pnl.Controls.Add(NewExecuteQRButton(textBox));
 
                             yH = textBox.Height;
                         }
@@ -593,7 +604,7 @@ namespace Bimil {
             return button;
         }
 
-        private Button NewExecuteQRButton(TextBox parentTextBox) {
+        private Button NewExecuteOAuthQRButton(TextBox parentTextBox) {
             parentTextBox.Width -= parentTextBox.Height;
             var button = new Button() {
                 Name = "btnExecuteQR",
@@ -645,6 +656,36 @@ namespace Bimil {
 
                 var code = GetTwoFactorCode(textBox.Text, space: true);
                 if (code != "") { Medo.MessageBox.ShowInformation(this, code); }
+            });
+
+            return button;
+        }
+
+        private Button NewExecuteQRButton(TextBox parentTextBox) {
+            parentTextBox.Width -= parentTextBox.Height;
+            var button = new Button() {
+                Name = "btnExecuteQR",
+                Location = new Point(parentTextBox.Right, parentTextBox.Top),
+                Size = new Size(parentTextBox.Height, parentTextBox.Height),
+                TabStop = false,
+                Tag = parentTextBox,
+                Text = "",
+                Anchor = AnchorStyles.Top | AnchorStyles.Right
+            };
+            Helpers.ScaleButton(button);
+
+            tip.SetToolTip(button, "Shows QR code.");
+
+            button.Click += new EventHandler(delegate (object sender, EventArgs e) {
+                var textBox = (TextBox)(((Control)sender).Tag);
+                textBox.Select();
+
+                var content = textBox.Text;
+                if (content != "") {
+                    using (var frm = new QRCodeForm(content)) {
+                        frm.ShowDialog(this);
+                    }
+                }
             });
 
             return button;

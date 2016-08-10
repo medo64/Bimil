@@ -210,6 +210,14 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         }
 
         /// <summary>
+        /// Gets/sets UTF-8 encoded text used for QR code generation.
+        /// </summary>
+        public string QRCode {
+            get { return this.Records.Contains(RecordType.QRCode) ? this.Records[RecordType.QRCode].Text : ""; }
+            set { this.Records[RecordType.QRCode].Text = value; }
+        }
+
+        /// <summary>
         /// Gets password history.
         /// </summary>
         public PasswordHistoryCollection PasswordHistory {

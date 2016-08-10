@@ -107,6 +107,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
                     case RecordType.CreditCardExpiration:
                     case RecordType.CreditCardVerificationValue:
                     case RecordType.CreditCardPin:
+                    case RecordType.QRCode:
                         return PasswordSafeFieldDataType.Text;
 
                     case RecordType.CreationTime:

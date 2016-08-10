@@ -130,6 +130,11 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         CreditCardPin = 0x1f,
 
         /// <summary>
+        /// UTF-8 encoded text used for QR code generation.
+        /// </summary>
+        QRCode = 0x20,
+
+        /// <summary>
         /// End of entries.
         /// </summary>
         EndOfEntry = 0xFF,
