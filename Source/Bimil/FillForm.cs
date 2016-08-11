@@ -60,11 +60,19 @@ namespace Bimil {
         private void tmrType_Tick(object sender, EventArgs e) {
             tmrType.Enabled = false;
 
-            Clipboard.Clear();
-            Clipboard.SetText(tmrType.Tag.ToString());
-            SendKeys.Send("^V");
-            SendKeys.Send(Settings.FillSuffixKeys);
-            Clipboard.Clear();
+            var text = tmrType.Tag.ToString();
+            if (!string.IsNullOrEmpty(text)) {
+                if (Settings.AutoTypeUseClipboard) {
+                    Clipboard.Clear();
+                    Clipboard.SetText(text);
+                    SendKeys.Send("^V");
+                    SendKeys.Send(Settings.AutoTypeSuffixKeys);
+                    Clipboard.Clear();
+                } else {
+                    SendKeys.Send(Helpers.GetTextForSendKeys(text));
+                    SendKeys.Send(Settings.AutoTypeSuffixKeys);
+                }
+            }
 
             tmrRestore.Enabled = true;
         }

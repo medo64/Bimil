@@ -468,6 +468,45 @@ namespace Bimil {
 
         #region AutoType
 
+        public static string GetTextForSendKeys(string text) {
+            var sb = new StringBuilder();
+            foreach (var ch in text) {
+                switch (ch) {
+                    case '+':
+                    case '^':
+                    case '%':
+                    case '~':
+                    case '(':
+                    case ')':
+                    case '{':
+                    case '}':
+                    case '[':
+                    case ']':
+                        sb.Append("{" + ch + "}");
+                        break;
+
+                    case '\b':
+                        sb.Append("{Backspace}");
+                        break;
+
+                    case '\n':
+                    case '\r':
+                        sb.Append("{Enter}");
+                        break;
+
+                    case '\t':
+                        sb.Append("{Tab}");
+                        break;
+
+                    default:
+                        sb.Append(ch);
+                        break;
+                }
+            }
+            return sb.ToString();
+        }
+
+
         public enum AutoTypeTokenType {
             DoExpand,
             DoText,
@@ -478,42 +517,8 @@ namespace Bimil {
         public class AutoTypeToken {
             internal AutoTypeToken(string text, AutoTypeTokenType type = AutoTypeTokenType.DoText, string argument = null) {
                 if (type == AutoTypeTokenType.DoText) {
-                    var sb = new StringBuilder();
-                    foreach (var ch in text) {
-                        switch (ch) {
-                            case '+':
-                            case '^':
-                            case '%':
-                            case '~':
-                            case '(':
-                            case ')':
-                            case '{':
-                            case '}':
-                            case '[':
-                            case ']':
-                                sb.Append("{" + ch + "}");
-                                break;
-
-                            case '\b':
-                                sb.Append("{Backspace}");
-                                break;
-
-                            case '\n':
-                            case '\r':
-                                sb.Append("{Enter}");
-                                break;
-
-                            case '\t':
-                                sb.Append("{Tab}");
-                                break;
-
-                            default:
-                                sb.Append(ch);
-                                break;
-                        }
-                    }
                     this.Type = AutoTypeTokenType.Type;
-                    this.Text = sb.ToString();
+                    this.Text = GetTextForSendKeys(text);
                 } else {
                     this.Type = type;
                     this.Text = text;

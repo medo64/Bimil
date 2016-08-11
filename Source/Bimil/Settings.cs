@@ -203,9 +203,15 @@ namespace Bimil {
         #endregion
 
         [Browsable(false)]
-        public static string FillSuffixKeys {
-            get { return Medo.Configuration.Settings.Read("FillSuffixKeys", "{TAB}"); }
-            set { Medo.Configuration.Settings.Write("FillSuffixKeys", value); }
+        public static string AutoTypeSuffixKeys {
+            get { return Medo.Configuration.Settings.Read("AutoTypeSuffixKeys", "{Tab}"); }
+            set { Medo.Configuration.Settings.Write("AutoTypeSuffixKeys", value); }
+        }
+
+        [Browsable(false)]
+        public static bool AutoTypeUseClipboard {
+            get { return Medo.Configuration.Settings.Read("AutoTypeUseClipboard", false); }
+            set { Medo.Configuration.Settings.Write("AutoTypeUseClipboard", value); }
         }
 
 
