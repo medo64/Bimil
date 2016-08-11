@@ -65,7 +65,7 @@ namespace Bimil {
                 if (Settings.AutoTypeUseClipboard) {
                     bwType.ReportProgress(100, text);
                 } else {
-                    foreach (var key in Helpers.GetTextForIndividualSendKeys(text)) {
+                    foreach (var key in AutotypeToken.GetIndividualKeyTokens(text)) {
                         bwType.ReportProgress(0, key);
                         Thread.Sleep(Settings.AutoTypeDelay);
                     }
