@@ -25,7 +25,7 @@ namespace Bimil {
         private void InitializeComponent() {
             this.components = new System.ComponentModel.Container();
             this.tmrRestore = new System.Windows.Forms.Timer(this.components);
-            this.tmrType = new System.Windows.Forms.Timer(this.components);
+            this.bwType = new System.ComponentModel.BackgroundWorker();
             this.SuspendLayout();
             // 
             // tmrRestore
@@ -33,9 +33,13 @@ namespace Bimil {
             this.tmrRestore.Interval = 500;
             this.tmrRestore.Tick += new System.EventHandler(this.tmrRestore_Tick);
             // 
-            // tmrType
+            // bwType
             // 
-            this.tmrType.Tick += new System.EventHandler(this.tmrType_Tick);
+            this.bwType.WorkerReportsProgress = true;
+            this.bwType.WorkerSupportsCancellation = true;
+            this.bwType.DoWork += new System.ComponentModel.DoWorkEventHandler(this.bwType_DoWork);
+            this.bwType.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.bwType_ProgressChanged);
+            this.bwType.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.bwType_RunWorkerCompleted);
             // 
             // FillForm
             // 
@@ -57,6 +61,6 @@ namespace Bimil {
         #endregion
 
         private System.Windows.Forms.Timer tmrRestore;
-        private System.Windows.Forms.Timer tmrType;
+        private System.ComponentModel.BackgroundWorker bwType;
     }
 }

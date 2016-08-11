@@ -468,8 +468,8 @@ namespace Bimil {
 
         #region AutoType
 
-        public static string GetTextForSendKeys(string text) {
-            var sb = new StringBuilder();
+        public static ReadOnlyCollection<string> GetTextForIndividualSendKeys(string text) {
+            var keys = new List<string>();
             foreach (var ch in text) {
                 switch (ch) {
                     case '+':
@@ -481,27 +481,21 @@ namespace Bimil {
                     case '{':
                     case '}':
                     case '[':
-                    case ']':
-                        sb.Append("{" + ch + "}");
-                        break;
-
-                    case '\b':
-                        sb.Append("{Backspace}");
-                        break;
-
+                    case ']': keys.Add("{" + ch + "}"); break;
+                    case '\b': keys.Add("{Backspace}"); break;
                     case '\n':
-                    case '\r':
-                        sb.Append("{Enter}");
-                        break;
-
-                    case '\t':
-                        sb.Append("{Tab}");
-                        break;
-
-                    default:
-                        sb.Append(ch);
-                        break;
+                    case '\r': keys.Add("{Enter}"); break;
+                    case '\t': keys.Add("{Tab}"); break;
+                    default: keys.Add(ch.ToString()); break;
                 }
+            }
+            return keys.AsReadOnly();
+        }
+
+        public static string GetTextForSendKeys(string text) {
+            var sb = new StringBuilder();
+            foreach (var key in GetTextForIndividualSendKeys(text)) {
+                sb.Append(key);
             }
             return sb.ToString();
         }
@@ -519,6 +513,7 @@ namespace Bimil {
                 if (type == AutoTypeTokenType.DoText) {
                     this.Type = AutoTypeTokenType.Type;
                     this.Text = GetTextForSendKeys(text);
+                    this.Keys = GetTextForIndividualSendKeys(text);
                 } else {
                     this.Type = type;
                     this.Text = text;
@@ -531,6 +526,7 @@ namespace Bimil {
 
             public AutoTypeTokenType Type { get; }
             public string Text { get; }
+            public ReadOnlyCollection<string> Keys { get; }
             public string Argument { get; }
 
             public override string ToString() {

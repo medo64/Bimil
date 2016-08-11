@@ -3,6 +3,7 @@ using System.Windows.Forms;
 using System;
 using System.Drawing;
 using Medo.Security.Cryptography;
+using System.Threading;
 
 namespace Bimil {
     internal partial class FillForm : Form {
@@ -57,23 +58,42 @@ namespace Bimil {
         }
 
 
-        private void tmrType_Tick(object sender, EventArgs e) {
-            tmrType.Enabled = false;
+        private void bwType_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e) {
+            var text = e.Argument.ToString();
 
-            var text = tmrType.Tag.ToString();
+            if (!string.IsNullOrEmpty(text)) {
+                if (Settings.AutoTypeUseClipboard) {
+                    bwType.ReportProgress(100, text);
+                } else {
+                    foreach (var key in Helpers.GetTextForIndividualSendKeys(text)) {
+                        bwType.ReportProgress(0, key);
+                        Thread.Sleep(Settings.AutoTypeDelay);
+                    }
+                    bwType.ReportProgress(100, "");
+                }
+            }
+        }
+
+        private void bwType_ProgressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e) {
+            var text = e.UserState.ToString();
+
             if (!string.IsNullOrEmpty(text)) {
                 if (Settings.AutoTypeUseClipboard) {
                     Clipboard.Clear();
                     Clipboard.SetText(text);
-                    SendKeys.Send("^V");
-                    SendKeys.Send(Settings.AutoTypeSuffixKeys);
+                    if (Settings.AutoTypeUseSendWait) { SendKeys.SendWait("^V"); } else { SendKeys.Send("^V"); }
                     Clipboard.Clear();
                 } else {
-                    SendKeys.Send(Helpers.GetTextForSendKeys(text));
-                    SendKeys.Send(Settings.AutoTypeSuffixKeys);
+                    if (Settings.AutoTypeUseSendWait) { SendKeys.SendWait(text); } else { SendKeys.Send(text); }
                 }
             }
 
+            if (e.ProgressPercentage == 100) {
+                if (Settings.AutoTypeUseSendWait) { SendKeys.SendWait(Settings.AutoTypeSuffixKeys); } else { SendKeys.Send(Settings.AutoTypeSuffixKeys); }
+            }
+        }
+
+        private void bwType_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e) {
             tmrRestore.Enabled = true;
         }
 
@@ -103,8 +123,7 @@ namespace Bimil {
 
                     var filteredText = (allowedCharacters == null) ? text : Helpers.FilterText(text, allowedCharacters);
 
-                    tmrType.Tag = isText2FAKey ? Helpers.GetTwoFactorCode(filteredText) : filteredText;
-                    tmrType.Enabled = true;
+                    bwType.RunWorkerAsync(isText2FAKey ? Helpers.GetTwoFactorCode(filteredText) : filteredText);
                 };
             }
 
