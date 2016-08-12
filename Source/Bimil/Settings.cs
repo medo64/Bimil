@@ -204,18 +204,6 @@ namespace Bimil {
 
 
         [Browsable(false)]
-        public static string AutoTypeSuffixKeys {
-            get { return Medo.Configuration.Settings.Read("AutoTypeSuffixKeys", "{Tab}"); }
-            set { Medo.Configuration.Settings.Write("AutoTypeSuffixKeys", value); }
-        }
-
-        [Browsable(false)]
-        public static bool AutoTypeUseClipboard {
-            get { return Medo.Configuration.Settings.Read("AutoTypeUseClipboard", false); }
-            set { Medo.Configuration.Settings.Write("AutoTypeUseClipboard", value); }
-        }
-
-        [Browsable(false)]
         public static bool AutoTypeUseSendWait {
             get { return Medo.Configuration.Settings.Read("AutoTypeUseSendWait", true); }
             set { Medo.Configuration.Settings.Write("AutoTypeUseSendWait", value); }

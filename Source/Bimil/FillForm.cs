@@ -4,6 +4,9 @@ using System;
 using System.Drawing;
 using Medo.Security.Cryptography;
 using System.Threading;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Text;
 
 namespace Bimil {
     internal partial class FillForm : Form {
@@ -14,37 +17,54 @@ namespace Bimil {
             Medo.Windows.Forms.State.SetupOnLoadAndClose(this);
 
             var y = 0;
+
+            foreach (var record in entry.Records) {
+                if (record.RecordType == RecordType.Autotype) {
+                    y = AddButton(y, "Auto-type", AutotypeToken.GetAutotypeTokens(record.Text), record).Bottom;
+                }
+            }
+
+            if (y == 0) { //no auto-type; use default
+                y = AddButton(y, "Auto-type", AutotypeToken.GetAutotypeTokens(null), null).Bottom;
+            }
+
             foreach (var record in entry.Records) {
                 switch (record.RecordType) {
                     case RecordType.UserName:
                     case RecordType.EmailAddress:
                     case RecordType.CreditCardExpiration:
-                        y = AddButton(y, Helpers.GetRecordCaption(record), record.Text).Bottom;
+                        y = AddButton(y, Helpers.GetRecordCaption(record), AutotypeToken.GetIndividualKeyTokens(record.Text),
+                            record).Bottom;
                         break;
 
                     case RecordType.Password:
                     case RecordType.CreditCardPin:
                     case RecordType.CreditCardVerificationValue:
-                        y = AddButton(y, Helpers.GetRecordCaption(record), record.Text, isTextHidden: true).Bottom;
+                        y = AddButton(y, Helpers.GetRecordCaption(record),
+                            AutotypeToken.GetIndividualKeyTokens(record.Text), record, isTextHidden: true).Bottom;
                         break;
 
                     case RecordType.TwoFactorKey:
-                        var bytes = record.GetBytes();
-                        y = AddButton(y, Helpers.GetRecordCaption(record), OneTimePassword.ToBase32(bytes, bytes.Length, SecretFormatFlags.Spacing | SecretFormatFlags.Padding), isTextHidden: true, isText2FAKey: true).Bottom;
-                        Array.Clear(bytes, 0, bytes.Length);
+                        y = AddButton(y, Helpers.GetRecordCaption(record),
+                            AutotypeToken.GetAutotypeTokens(@"\2"), record, isTextHidden: true).Bottom;
                         break;
 
                     case RecordType.CreditCardNumber:
-                        y = AddButton(y, Helpers.GetRecordCaption(record), record.Text, allowedCharacters: Helpers.NumberCharacters).Bottom;
+                        y = AddButton(y, Helpers.GetRecordCaption(record),
+                            AutotypeToken.GetIndividualKeyTokens(Helpers.FilterText(record.Text, Helpers.NumberCharacters)), record).Bottom;
                         break;
                 }
             }
 
-            var rect = AddButton(y + SystemInformation.DragSize.Height, "Cancel", null, isCancel: true);
+            var rect = AddButton(y + SystemInformation.DragSize.Height, "Cancel", isCancel: true);
             this.ClientSize = new Size(this.ClientRectangle.Width, rect.Bottom);
             this.MinimumSize = this.Size;
-            this.MaximumSize = new Size(this.Size.Width * 4, this.Size.Height);
+            this.MaximumSize = new Size(this.Size.Width * 2, this.Size.Height);
+
+            this.Entry = entry;
         }
+
+        private readonly Entry Entry;
 
 
         protected override bool ProcessDialogKey(Keys keyData) {
@@ -58,38 +78,56 @@ namespace Bimil {
         }
 
 
-        private void bwType_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e) {
-            var text = e.Argument.ToString();
+        private int Delay;
+        private bool UseSendWait;
 
-            if (!string.IsNullOrEmpty(text)) {
-                if (Settings.AutoTypeUseClipboard) {
-                    bwType.ReportProgress(100, text);
-                } else {
-                    foreach (var key in AutotypeToken.GetIndividualKeyTokens(text)) {
-                        bwType.ReportProgress(0, key);
-                        Thread.Sleep(Settings.AutoTypeDelay);
+        private void bwType_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e) {
+            var tokens = (IEnumerable<AutotypeToken>)e.Argument;
+
+            this.Delay = Settings.AutoTypeDelay;
+            this.UseSendWait = Settings.AutoTypeUseSendWait;
+
+            foreach (var token in tokens) {
+                if (token.Kind == AutotypeTokenKind.Command) {
+                    var parts = token.Content.Split(':');
+                    var command = parts[0];
+                    var argument = (parts.Length > 1) ? parts[1] : null;
+
+                    switch (command) {
+                        case "Delay": {
+                                int ms;
+                                if (int.TryParse(argument, NumberStyles.Integer, CultureInfo.InvariantCulture, out ms)) {
+                                    this.Delay = ms;
+                                }
+                            }
+                            break;
+
+                        case "Wait": {
+                                int ms;
+                                if (int.TryParse(argument, NumberStyles.Integer, CultureInfo.InvariantCulture, out ms)) {
+                                    Thread.Sleep(ms);
+                                }
+                            }
+                            break;
+
+                        case "Legacy":
+                            this.UseSendWait = !this.UseSendWait;
+                            break;
                     }
-                    bwType.ReportProgress(100, "");
+                } else {
+                    bwType.ReportProgress(0, token);
+                    Thread.Sleep(this.Delay);
                 }
             }
         }
 
         private void bwType_ProgressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e) {
-            var text = e.UserState.ToString();
+            var token = (AutotypeToken)e.UserState;
 
-            if (!string.IsNullOrEmpty(text)) {
-                if (Settings.AutoTypeUseClipboard) {
-                    Clipboard.Clear();
-                    Clipboard.SetText(text);
-                    if (Settings.AutoTypeUseSendWait) { SendKeys.SendWait("^V"); } else { SendKeys.Send("^V"); }
-                    Clipboard.Clear();
-                } else {
-                    if (Settings.AutoTypeUseSendWait) { SendKeys.SendWait(text); } else { SendKeys.Send(text); }
-                }
-            }
-
-            if (e.ProgressPercentage == 100) {
-                if (Settings.AutoTypeUseSendWait) { SendKeys.SendWait(Settings.AutoTypeSuffixKeys); } else { SendKeys.Send(Settings.AutoTypeSuffixKeys); }
+            if (this.UseSendWait) {
+                SendKeys.SendWait(token.Content);
+            } else {
+                SendKeys.Send(token.Content);
             }
         }
 
@@ -104,13 +142,28 @@ namespace Bimil {
         }
 
 
-        private Rectangle AddButton(int top, string caption, string text, char[] allowedCharacters = null, bool isTextHidden = false, bool isText2FAKey = false, bool isCancel = false) {
-            var btn = new Button() { Text = caption, Left = this.ClientRectangle.Left, Width = this.ClientRectangle.Width, Top = top, Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right };
-            if (string.IsNullOrEmpty(text)) {
+        private Rectangle AddButton(int top, string caption, IEnumerable<AutotypeToken> tokens = null, Record record = null, bool isTextHidden = false, bool isCancel = false) {
+            var btn = new Button() { Text = caption, Left = this.ClientRectangle.Left, Width = this.ClientRectangle.Width, Top = top, Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right, AutoEllipsis = true };
+
+            if (tokens == null) {
                 btn.Height *= 2;
             } else {
                 btn.Height *= 3;
-                btn.Text += "\n" + (isTextHidden ? "******" : text);
+                btn.Text += "\n";
+                if (isTextHidden) {
+                    btn.Text += "******";
+                } else {
+                    if (tokens != null) {
+                        var sb = new StringBuilder();
+                        foreach (var token in tokens) {
+                            if ((token.Kind != AutotypeTokenKind.Key) || (token.Content.StartsWith("{", StringComparison.Ordinal) && token.Content.EndsWith("}", StringComparison.Ordinal))) {
+                                sb.Append(" ");
+                            }
+                            sb.Append(token.Content);
+                        }
+                        btn.Text += sb.ToString();
+                    }
+                };
             }
 
             if (isCancel) {
@@ -121,9 +174,18 @@ namespace Bimil {
                 btn.Click += delegate (object sender, EventArgs e) {
                     this.Visible = false;
 
-                    var filteredText = (allowedCharacters == null) ? text : Helpers.FilterText(text, allowedCharacters);
+                    var processedTokens = new List<AutotypeToken>();
+                    foreach (var token in AutotypeToken.GetAutotypeTokens(tokens, this.Entry)) {
+                        if ((token.Kind == AutotypeTokenKind.Command) && token.Content.Equals("TwoFactorCode", StringComparison.Ordinal)) {
+                            var bytes = (record != null) ? record.GetBytes() : this.Entry.TwoFactorKey;
+                            var key = OneTimePassword.ToBase32(bytes, bytes.Length, SecretFormatFlags.Spacing | SecretFormatFlags.Padding);
+                            processedTokens.AddRange(AutotypeToken.GetIndividualKeyTokens(Helpers.GetTwoFactorCode(key)));
+                        } else {
+                            processedTokens.Add(token);
+                        }
+                    }
 
-                    bwType.RunWorkerAsync(isText2FAKey ? Helpers.GetTwoFactorCode(filteredText) : filteredText);
+                    bwType.RunWorkerAsync(processedTokens.AsReadOnly());
                 };
             }
 

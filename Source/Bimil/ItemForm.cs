@@ -60,12 +60,6 @@ namespace Bimil {
                     e.SuppressKeyPress = true;
                     break;
 
-                case Keys.F5: //fill
-                    if (btnFill.Visible) { btnFill.PerformClick(); }
-                    e.Handled = true;
-                    e.SuppressKeyPress = true;
-                    break;
-
                 case Keys.F7: //show all
                     bool alreadyHidden = false;
                     foreach (var control in this.pnl.Controls) {
@@ -82,6 +76,12 @@ namespace Bimil {
                             if ((record != null) && Helpers.GetIsHideable(record.RecordType)) { textBox.UseSystemPasswordChar = !alreadyHidden; }
                         }
                     }
+                    e.Handled = true;
+                    e.SuppressKeyPress = true;
+                    break;
+
+                case Keys.Control | Keys.T: //fill
+                    if (btnFill.Visible) { btnFill.PerformClick(); }
                     e.Handled = true;
                     e.SuppressKeyPress = true;
                     break;
@@ -283,6 +283,14 @@ namespace Bimil {
                         }
                         break;
 
+                    case RecordType.Autotype: {
+                            var textBox = NewTextBox(labelWidth, y, record);
+                            pnl.Controls.Add(textBox);
+
+                            yH = textBox.Height;
+                        }
+                        break;
+
                     default:
                         yH = label.Height;
                         break;
@@ -326,6 +334,10 @@ namespace Bimil {
         private void btnFill_Click(object sender, EventArgs e) {
             var originalState = this.Owner.WindowState;
             var ownerForm = this.Owner;
+
+            if (btnOK.Visible && btnOK.Enabled) {
+                btnOK.PerformClick(); //save any changes
+            }
 
             this.Close();
 
