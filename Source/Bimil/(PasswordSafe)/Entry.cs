@@ -218,8 +218,6 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         }
 
 
-        #region Auto-type
-
         /// <summary>
         /// Gets/sets auto-type text.
         /// </summary>
@@ -237,25 +235,8 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// * Legacy: Switches processing to legacy mode.
         /// </summary>
         public IEnumerable<AutotypeToken> AutotypeTokens {
-            get {
-                foreach (var token in AutotypeToken.GetAutotypeTokens(this.Autotype, this)) {
-                    yield return token;
-                }
-            }
+            get { return AutotypeToken.GetAutotypeTokens(this.Autotype, this); }
         }
-
-        /// <summary>
-        /// Return auto-type tokens without any field processing; i.e. UserName won't be converted to actual user name.
-        /// </summary>
-        public IEnumerable<AutotypeToken> RawAutotypeTokens {
-            get {
-                foreach (var token in AutotypeToken.GetAutotypeTokens(this.Autotype)) {
-                    yield return token;
-                }
-            }
-        }
-
-        #endregion
 
 
         /// <summary>

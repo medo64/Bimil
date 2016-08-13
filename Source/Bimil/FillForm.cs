@@ -21,12 +21,12 @@ namespace Bimil {
 
             foreach (var record in entry.Records) {
                 if (record.RecordType == RecordType.Autotype) {
-                    y = AddButton(y, "Auto-type", AutotypeToken.GetAutotypeTokens(record.Text)).Bottom;
+                    y = AddButton(y, "Auto-type", AutotypeToken.GetUnexpandedAutotypeTokens(record.Text)).Bottom;
                 }
             }
 
             if (y == 0) { //no auto-type; use default
-                y = AddButton(y, "Auto-type", AutotypeToken.GetAutotypeTokens(null)).Bottom;
+                y = AddButton(y, "Auto-type", AutotypeToken.GetUnexpandedAutotypeTokens(null)).Bottom;
             }
 
             foreach (var record in entry.Records) {
@@ -34,7 +34,7 @@ namespace Bimil {
                     case RecordType.UserName:
                     case RecordType.EmailAddress:
                     case RecordType.CreditCardExpiration:
-                        y = AddButton(y, Helpers.GetRecordCaption(record), AutotypeToken.GetIndividualKeyTokens(record.Text),
+                        y = AddButton(y, Helpers.GetRecordCaption(record), AutotypeToken.GetAutotypeTokensFromText(record.Text),
                             record).Bottom;
                         break;
 
@@ -42,17 +42,17 @@ namespace Bimil {
                     case RecordType.CreditCardPin:
                     case RecordType.CreditCardVerificationValue:
                         y = AddButton(y, Helpers.GetRecordCaption(record),
-                            AutotypeToken.GetIndividualKeyTokens(record.Text), record, isTextHidden: true).Bottom;
+                            AutotypeToken.GetAutotypeTokensFromText(record.Text), record, isTextHidden: true).Bottom;
                         break;
 
                     case RecordType.TwoFactorKey:
                         y = AddButton(y, Helpers.GetRecordCaption(record),
-                            AutotypeToken.GetAutotypeTokens(@"\2"), record, isTextHidden: true).Bottom;
+                            AutotypeToken.GetUnexpandedAutotypeTokens(@"\2"), record, isTextHidden: true).Bottom;
                         break;
 
                     case RecordType.CreditCardNumber:
                         y = AddButton(y, Helpers.GetRecordCaption(record),
-                            AutotypeToken.GetIndividualKeyTokens(Helpers.FilterText(record.Text, Helpers.NumberCharacters)), record).Bottom;
+                            AutotypeToken.GetAutotypeTokensFromText(Helpers.FilterText(record.Text, Helpers.NumberCharacters)), record).Bottom;
                         break;
                 }
             }
@@ -180,7 +180,7 @@ namespace Bimil {
                         if ((token.Kind == AutotypeTokenKind.Command) && token.Content.Equals("TwoFactorCode", StringComparison.Ordinal)) {
                             var bytes = (record != null) ? record.GetBytes() : this.Entry.TwoFactorKey;
                             var key = OneTimePassword.ToBase32(bytes, bytes.Length, SecretFormatFlags.Spacing | SecretFormatFlags.Padding);
-                            processedTokens.AddRange(AutotypeToken.GetIndividualKeyTokens(Helpers.GetTwoFactorCode(key)));
+                            processedTokens.AddRange(AutotypeToken.GetAutotypeTokensFromText(Helpers.GetTwoFactorCode(key)));
                         } else {
                             processedTokens.Add(token);
                         }
