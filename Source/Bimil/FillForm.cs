@@ -15,17 +15,18 @@ namespace Bimil {
 
             this.Font = SystemFonts.MessageBoxFont;
             Medo.Windows.Forms.State.SetupOnLoadAndClose(this);
+            this.Opacity = 0.84;
 
             var y = 0;
 
             foreach (var record in entry.Records) {
                 if (record.RecordType == RecordType.Autotype) {
-                    y = AddButton(y, "Auto-type", AutotypeToken.GetAutotypeTokens(record.Text), record).Bottom;
+                    y = AddButton(y, "Auto-type", AutotypeToken.GetAutotypeTokens(record.Text)).Bottom;
                 }
             }
 
             if (y == 0) { //no auto-type; use default
-                y = AddButton(y, "Auto-type", AutotypeToken.GetAutotypeTokens(null), null).Bottom;
+                y = AddButton(y, "Auto-type", AutotypeToken.GetAutotypeTokens(null)).Bottom;
             }
 
             foreach (var record in entry.Records) {
