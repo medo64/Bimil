@@ -51,7 +51,6 @@ namespace Bimil {
             this.Name = "FillForm";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Bimil";
             this.TopMost = true;
             this.ResumeLayout(false);

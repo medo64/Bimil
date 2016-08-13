@@ -15,7 +15,7 @@ namespace Bimil {
 
             this.Font = SystemFonts.MessageBoxFont;
             Medo.Windows.Forms.State.SetupOnLoadAndClose(this);
-            this.Opacity = 0.84;
+            this.Opacity = Settings.AutoTypeWindowOpacity / 100;
 
             var y = 0;
 

@@ -215,6 +215,12 @@ namespace Bimil {
             set { Medo.Configuration.Settings.Write("AutoTypeDelay", value); }
         }
 
+        [Browsable(false)]
+        public static int AutoTypeWindowOpacity {
+            get { return LimitBetween(Medo.Configuration.Settings.Read("AutoTypeWindowOpacity", 100), minValue: 25, maxValue: 100, allowZero: false); }
+            set { Medo.Configuration.Settings.Write("AutoTypeWindowOpacity", LimitBetween(value, minValue: 25, maxValue: 100, allowZero: false)); }
+        }
+
 
         private static int LimitBetween(int value, int minValue, int maxValue, bool allowZero) {
             if (allowZero && (value == 0)) { return 0; }
