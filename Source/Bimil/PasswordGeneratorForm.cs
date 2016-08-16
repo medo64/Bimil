@@ -307,6 +307,14 @@ namespace Bimil {
                     }
                 }
 
+                using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Bimil.Resources.Bible.txt"))
+                using (var textStream = new StreamReader(stream)) {
+                    var items = textStream.ReadToEnd().Split(new string[] { "\r\n", "\n", "\r" }, StringSplitOptions.RemoveEmptyEntries);
+                    foreach (var item in items) {
+                        if (!wordDictionary.ContainsKey(item)) { wordDictionary.Add(item, null); }
+                    }
+                }
+
                 var wordList = new List<string>(wordDictionary.Keys);
                 this.Words = wordList.AsReadOnly();
 

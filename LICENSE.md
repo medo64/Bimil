@@ -55,10 +55,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ### WordNet (https://wordnet.princeton.edu) ###
 
-Bimil uses WordNet database as a base for its word-based password generator.
+Bimil uses WordNet database as a source of words for its word-based password
+generator.
 
 
-#### WordNet 3.0 license ####
+#### WordNet 3.0 License ####
 
 This software and database is being provided to you, the LICENSEE, by Princeton
 University under the following license. By obtaining, using and/or copying this

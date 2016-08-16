@@ -60,7 +60,7 @@ between 4 and 7 characters without any consecutive repeating characters.
 
 Additionally, it uses list of US geographical feature as found on US Board On
 Geographic Names (http://geonames.usgs.gov/domestic/download_data.htm),
-extracted using following commands:
+extracted using the following commands:
 
     cut -d"|" -f2 NationalFile_*.txt | tr '[:upper:]' '[:lower:]' | egrep "^[a-z]{4,7}$" | grep -v '\(.\)\1' | sort | uniq > GeoFeatures.txt
 
@@ -68,8 +68,31 @@ This extracts unique names with length between 4 and 7 characters without any
 consecutive repeating characters.
 
 
+Lastly, King James Bible (http://ebible.org/kjv/) is also a source of words. It
+has been included as it it offers nice selection of archaic but recognizable
+English words not really found elsewhere and it is a public domain. Words have
+been extracted using the following commands:
 
-#### External code copyrights ####
+    cat *.txt | tr -cs '[:alnum:]' '\n' | tr '[:upper:]' '[:lower:]' | egrep "^[a-z]{4,7}$" | grep -v '\(.\)\1' | sort | uniq > Bible.txt
 
-QR Coder: Copyright (c) 2013-2015 Raffael Herrmann
-WordNet 3.0: Copyright 2006 by Princeton University. All rights reserved.
+This extracts unique words with length between 4 and 7 characters without any
+consecutive repeating characters.
+
+
+
+#### External code copyrights and references ####
+
+QR Coder:
+Copyright (c) 2013-2015 Raffael Herrmann
+
+WordNet 3.0:
+Copyright 2006 by Princeton University. All rights reserved.
+
+Popular Baby Names (United States Social Security Administration):
+Public Domain
+
+US Board On Geographic Names (States, Territories, Associated Areas of the United States):
+Public Domain
+
+King James Bible (1769):
+Public Domain
