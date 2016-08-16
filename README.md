@@ -52,13 +52,13 @@ from United States Social Security Administration
 (https://www.ssa.gov/oact/babynames/limits.html), extracted using the following
 commands:
 
-    awk 'BEGIN {FS=","} {if ($3>23) print tolower($1)}' yob20*.txt | egrep "^[a-z]{4,7}$" | sort | uniq > Names.txt
+    awk 'BEGIN {FS=","} {if ($3>23) print tolower($1)}' yob20*.txt | egrep "^[a-z]{4,7}$" | grep -v '\(.\)\1' | sort | uniq > Names.txt
 
 This extracts unique names used more than 23 times in any given year with length
-between 4 and 7 characters.
+between 4 and 7 characters without any consecutive repeating characters.
 
 
-Additionally  it uses list of US geographical feature as found on US Board On
+Additionally, it uses list of US geographical feature as found on US Board On
 Geographic Names (http://geonames.usgs.gov/domestic/download_data.htm),
 extracted using following commands:
 
