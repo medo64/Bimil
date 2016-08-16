@@ -281,26 +281,36 @@ namespace Bimil {
             if (this.Words == null) {
                 var sw = Stopwatch.StartNew();
 
-                var words = new List<string>();
+                var wordDictionary = new Dictionary<string, object>();
 
                 using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Bimil.Resources.Words.txt"))
                 using (var textStream = new StreamReader(stream)) {
-                    words.AddRange(textStream.ReadToEnd().Split(new string[] { "\r\n", "\n", "\r" }, StringSplitOptions.RemoveEmptyEntries));
+                    var items = textStream.ReadToEnd().Split(new string[] { "\r\n", "\n", "\r" }, StringSplitOptions.RemoveEmptyEntries);
+                    foreach (var item in items) {
+                        if (!wordDictionary.ContainsKey(item)) { wordDictionary.Add(item, null); }
+                    }
                 }
 
                 using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Bimil.Resources.Names.txt"))
                 using (var textStream = new StreamReader(stream)) {
-                    words.AddRange(textStream.ReadToEnd().Split(new string[] { "\r\n", "\n", "\r" }, StringSplitOptions.RemoveEmptyEntries));
+                    var items = textStream.ReadToEnd().Split(new string[] { "\r\n", "\n", "\r" }, StringSplitOptions.RemoveEmptyEntries);
+                    foreach (var item in items) {
+                        if (!wordDictionary.ContainsKey(item)) { wordDictionary.Add(item, null); }
+                    }
                 }
 
                 using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Bimil.Resources.GeoFeatures.txt"))
                 using (var textStream = new StreamReader(stream)) {
-                    words.AddRange(textStream.ReadToEnd().Split(new string[] { "\r\n", "\n", "\r" }, StringSplitOptions.RemoveEmptyEntries));
+                    var items = textStream.ReadToEnd().Split(new string[] { "\r\n", "\n", "\r" }, StringSplitOptions.RemoveEmptyEntries);
+                    foreach (var item in items) {
+                        if (!wordDictionary.ContainsKey(item)) { wordDictionary.Add(item, null); }
+                    }
                 }
 
-                this.Words = words.AsReadOnly();
+                var wordList = new List<string>(wordDictionary.Keys);
+                this.Words = wordList.AsReadOnly();
 
-                Debug.WriteLine($"Generated word list of {Words.Count} words in {sw.ElapsedMilliseconds} ms."); 
+                Debug.WriteLine($"Generated word list of {Words.Count} words in {sw.ElapsedMilliseconds} ms.");
             }
 
             var selectedWords = new List<List<char>>();
