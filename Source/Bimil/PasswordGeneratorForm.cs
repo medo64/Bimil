@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
@@ -278,6 +279,8 @@ namespace Bimil {
             var sb = new StringBuilder();
 
             if (this.Words == null) {
+                var sw = Stopwatch.StartNew();
+
                 var words = new List<string>();
 
                 using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Bimil.Resources.Words.txt"))
@@ -290,7 +293,14 @@ namespace Bimil {
                     words.AddRange(textStream.ReadToEnd().Split(new string[] { "\r\n", "\n", "\r" }, StringSplitOptions.RemoveEmptyEntries));
                 }
 
+                using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Bimil.Resources.GeoFeatures.txt"))
+                using (var textStream = new StreamReader(stream)) {
+                    words.AddRange(textStream.ReadToEnd().Split(new string[] { "\r\n", "\n", "\r" }, StringSplitOptions.RemoveEmptyEntries));
+                }
+
                 this.Words = words.AsReadOnly();
+
+                Debug.WriteLine($"Generated word list of {Words.Count} words in {sw.ElapsedMilliseconds} ms."); 
             }
 
             var selectedWords = new List<List<char>>();

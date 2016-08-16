@@ -58,6 +58,16 @@ This extracts unique names used more than 23 times in any given year with length
 between 4 and 7 characters.
 
 
+Additionally  it uses list of US geographical feature as found on US Board On
+Geographic Names (http://geonames.usgs.gov/domestic/download_data.htm),
+extracted using following commands:
+
+    cut -d"|" -f2 NationalFile_*.txt | tr '[:upper:]' '[:lower:]' | egrep "^[a-z]{4,7}$" | grep -v '\(.\)\1' | sort | uniq > GeoFeatures.txt
+
+This extracts unique names with length between 4 and 7 characters without any
+consecutive repeating characters.
+
+
 
 #### External code copyrights ####
 

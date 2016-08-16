@@ -265,6 +265,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Properties\App.ico" />
+    <EmbeddedResource Include="Resources\GeoFeatures.txt" />
     <EmbeddedResource Include="Resources\Names.txt" />
     <EmbeddedResource Include="Resources\Words.txt" />
   </ItemGroup>
