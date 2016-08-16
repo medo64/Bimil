@@ -68,15 +68,35 @@ This extracts unique names with length between 4 and 7 characters without any
 consecutive repeating characters.
 
 
-Lastly, King James Bible (https://www.gutenberg.org/ebooks/30) is also a source
-of words. It has been included as it it offers nice selection of archaic but
-recognizable English words not really found elsewhere and it is a public domain.
-Words have been extracted using the following commands:
+Moreover, King James Bible (https://www.gutenberg.org/ebooks/30) is also a
+source of words. It has been included as it it offers nice selection of archaic
+but recognizable English words not really found elsewhere and it is a public
+domain. Words have been extracted using the following commands:
 
     cat pg30.txt | tr -cs '[:alnum:]' '\n' | tr '[:upper:]' '[:lower:]' | egrep "^[a-z]{4,7}$" | grep -v '\(.\)\1' | sort | uniq > Bible.txt
 
 This extracts unique words with length between 4 and 7 characters without any
 consecutive repeating characters.
+
+
+Further, the works of William Shakespeare (https://www.gutenberg.org/ebooks/100)
+have been used as additional word source. These books are in the public domain
+and offer nice selection of less commonly used words that everybody finds
+recognizable nonetheless. Words have been extracted using the following command:
+
+    cat pg100.txt | tr -cs '[:alnum:]' '\n' | tr '[:upper:]' '[:lower:]' | egrep "^[a-z]{4,7}$" | sort | uniq > WilliamShakespeare.txt
+
+This extracts unique words with length between 4 and 7 characters.
+
+
+Lastly, the works of Jane Austen (https://www.gutenberg.org/ebooks/31100) have
+been used as a word source. Books are also in the public domain and offer small
+but nice selection of the less commonly used words. Words have been extracted
+using the following command:
+
+    cat pg31100.txt | tr -cs '[:alnum:]' '\n' | tr '[:upper:]' '[:lower:]' | egrep "^[a-z]{4,7}$" | sort | uniq > JaneAusten.txt
+
+This extracts unique words with length between 4 and 7 characters.
 
 
 
@@ -95,4 +115,10 @@ US Board On Geographic Names (States, Territories, Associated Areas of the Unite
 Public Domain
 
 The Bible, King James Version, Complete (Project Gutenberg):
-Public Domain
+Public Domain, The Project Gutenberg License
+
+The Complete Works of William Shakespeare (Project Gutenberg):
+Public Domain, The Project Gutenberg License, Produced by World Library, Inc., from their Library of the Future
+
+The Complete Works of Jane Austen (Project Gutenberg):
+Public Domain, The Project Gutenberg License
