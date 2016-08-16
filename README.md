@@ -68,12 +68,12 @@ This extracts unique names with length between 4 and 7 characters without any
 consecutive repeating characters.
 
 
-Lastly, King James Bible (http://ebible.org/kjv/) is also a source of words. It
-has been included as it it offers nice selection of archaic but recognizable
-English words not really found elsewhere and it is a public domain. Words have
-been extracted using the following commands:
+Lastly, King James Bible (https://www.gutenberg.org/ebooks/30) is also a source
+of words. It has been included as it it offers nice selection of archaic but
+recognizable English words not really found elsewhere and it is a public domain.
+Words have been extracted using the following commands:
 
-    cat *.txt | tr -cs '[:alnum:]' '\n' | tr '[:upper:]' '[:lower:]' | egrep "^[a-z]{4,7}$" | grep -v '\(.\)\1' | sort | uniq > Bible.txt
+    cat pg30.txt | tr -cs '[:alnum:]' '\n' | tr '[:upper:]' '[:lower:]' | egrep "^[a-z]{4,7}$" | grep -v '\(.\)\1' | sort | uniq > Bible.txt
 
 This extracts unique words with length between 4 and 7 characters without any
 consecutive repeating characters.
@@ -94,5 +94,5 @@ Public Domain
 US Board On Geographic Names (States, Territories, Associated Areas of the United States):
 Public Domain
 
-King James Bible (1769):
+The Bible, King James Version, Complete (Project Gutenberg):
 Public Domain
