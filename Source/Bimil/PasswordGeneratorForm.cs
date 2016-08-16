@@ -283,35 +283,15 @@ namespace Bimil {
 
                 var wordDictionary = new Dictionary<string, object>();
 
-                using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Bimil.Resources.Words.txt"))
-                using (var textStream = new StreamReader(stream)) {
-                    var items = textStream.ReadToEnd().Split(new string[] { "\r\n", "\n", "\r" }, StringSplitOptions.RemoveEmptyEntries);
-                    foreach (var item in items) {
-                        if (!wordDictionary.ContainsKey(item)) { wordDictionary.Add(item, null); }
-                    }
-                }
-
-                using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Bimil.Resources.Names.txt"))
-                using (var textStream = new StreamReader(stream)) {
-                    var items = textStream.ReadToEnd().Split(new string[] { "\r\n", "\n", "\r" }, StringSplitOptions.RemoveEmptyEntries);
-                    foreach (var item in items) {
-                        if (!wordDictionary.ContainsKey(item)) { wordDictionary.Add(item, null); }
-                    }
-                }
-
-                using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Bimil.Resources.GeoFeatures.txt"))
-                using (var textStream = new StreamReader(stream)) {
-                    var items = textStream.ReadToEnd().Split(new string[] { "\r\n", "\n", "\r" }, StringSplitOptions.RemoveEmptyEntries);
-                    foreach (var item in items) {
-                        if (!wordDictionary.ContainsKey(item)) { wordDictionary.Add(item, null); }
-                    }
-                }
-
-                using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Bimil.Resources.Bible.txt"))
-                using (var textStream = new StreamReader(stream)) {
-                    var items = textStream.ReadToEnd().Split(new string[] { "\r\n", "\n", "\r" }, StringSplitOptions.RemoveEmptyEntries);
-                    foreach (var item in items) {
-                        if (!wordDictionary.ContainsKey(item)) { wordDictionary.Add(item, null); }
+                foreach (var streamName in Assembly.GetExecutingAssembly().GetManifestResourceNames()) {
+                    if (streamName.EndsWith(".txt")) {
+                        using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(streamName))
+                        using (var textStream = new StreamReader(stream)) {
+                            var items = textStream.ReadToEnd().Split(new string[] { "\r\n", "\n", "\r" }, StringSplitOptions.RemoveEmptyEntries);
+                            foreach (var item in items) {
+                                if (!wordDictionary.ContainsKey(item)) { wordDictionary.Add(item, null); }
+                            }
+                        }
                     }
                 }
 
