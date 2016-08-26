@@ -21,12 +21,12 @@ namespace Bimil {
 
             foreach (var record in entry.Records) {
                 if (record.RecordType == RecordType.Autotype) {
-                    y = AddButton(y, "Auto-type", AutotypeToken.GetUnexpandedAutotypeTokens(record.Text)).Bottom;
+                    y = AddButton(y, "Auto-type", AutotypeToken.GetUnexpandedAutotypeTokens(record.Text), isAutoClose: true).Bottom;
                 }
             }
 
             if (y == 0) { //no auto-type; use default
-                y = AddButton(y, "Auto-type", AutotypeToken.GetUnexpandedAutotypeTokens(null)).Bottom;
+                y = AddButton(y, "Auto-type", AutotypeToken.GetUnexpandedAutotypeTokens(null), isAutoClose: true).Bottom;
             }
 
             foreach (var record in entry.Records) {
@@ -81,6 +81,7 @@ namespace Bimil {
 
         private int Delay;
         private bool UseSendWait;
+        private bool CloseAfterType;
 
         private void bwType_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e) {
             var tokens = (IEnumerable<AutotypeToken>)e.Argument;
@@ -133,7 +134,11 @@ namespace Bimil {
         }
 
         private void bwType_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e) {
-            tmrRestore.Enabled = true;
+            if (CloseAfterType) {
+                this.Close();
+            } else {
+                tmrRestore.Enabled = true;
+            }
         }
 
         private void tmrRestore_Tick(object sender, EventArgs e) {
@@ -143,7 +148,7 @@ namespace Bimil {
         }
 
 
-        private Rectangle AddButton(int top, string caption, IEnumerable<AutotypeToken> tokens = null, Record record = null, bool isTextHidden = false, bool isCancel = false) {
+        private Rectangle AddButton(int top, string caption, IEnumerable<AutotypeToken> tokens = null, Record record = null, bool isTextHidden = false, bool isCancel = false, bool isAutoClose = false) {
             var btn = new Button() { Text = caption, Left = this.ClientRectangle.Left, Width = this.ClientRectangle.Width, Top = top, Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right, AutoEllipsis = true };
 
             if (tokens == null) {
@@ -186,6 +191,7 @@ namespace Bimil {
                         }
                     }
 
+                    this.CloseAfterType = isAutoClose;
                     bwType.RunWorkerAsync(processedTokens.AsReadOnly());
                 };
             }
