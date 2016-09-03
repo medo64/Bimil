@@ -74,7 +74,7 @@ namespace Bimil {
             // btnEdit
             // 
             this.btnEdit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnEdit.Location = new System.Drawing.Point(12, 355);
+            this.btnEdit.Location = new System.Drawing.Point(108, 355);
             this.btnEdit.Margin = new System.Windows.Forms.Padding(3, 15, 3, 3);
             this.btnEdit.Name = "btnEdit";
             this.btnEdit.Size = new System.Drawing.Size(90, 28);
@@ -86,11 +86,11 @@ namespace Bimil {
             // btnFields
             // 
             this.btnFields.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnFields.Location = new System.Drawing.Point(12, 355);
+            this.btnFields.Location = new System.Drawing.Point(108, 355);
             this.btnFields.Margin = new System.Windows.Forms.Padding(3, 15, 3, 3);
             this.btnFields.Name = "btnFields";
             this.btnFields.Size = new System.Drawing.Size(90, 28);
-            this.btnFields.TabIndex = 2;
+            this.btnFields.TabIndex = 4;
             this.btnFields.Text = "Fields";
             this.btnFields.UseVisualStyleBackColor = true;
             this.btnFields.Visible = false;
@@ -102,10 +102,10 @@ namespace Bimil {
             // 
             // btnFill
             // 
-            this.btnFill.Location = new System.Drawing.Point(108, 355);
+            this.btnFill.Location = new System.Drawing.Point(12, 355);
             this.btnFill.Name = "btnFill";
             this.btnFill.Size = new System.Drawing.Size(90, 28);
-            this.btnFill.TabIndex = 4;
+            this.btnFill.TabIndex = 2;
             this.btnFill.Text = "Fill";
             this.btnFill.UseVisualStyleBackColor = true;
             this.btnFill.Click += new System.EventHandler(this.btnFill_Click);
