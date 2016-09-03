@@ -14,18 +14,20 @@ namespace Bimil {
         private readonly Document Document;
         private readonly Entry Item;
         private bool Editable;
+        private bool IsNew;
         private static Font FixedFont = new Font(FontFamily.GenericMonospace, SystemFonts.MessageBoxFont.SizeInPoints + 0.5F, SystemFonts.MessageBoxFont.Style);
         private static Font UnderlineFont = new Font(SystemFonts.MessageBoxFont.Name, SystemFonts.MessageBoxFont.SizeInPoints, SystemFonts.MessageBoxFont.Style | FontStyle.Underline);
         private readonly IList<string> Categories;
         private readonly string DefaultCategory;
 
-        public ItemForm(Document document, Entry item, IList<string> categories, bool startsAsEditable, string defaultCategory = null) {
+        public ItemForm(Document document, Entry item, IList<string> categories, bool startsAsEditable, bool isNew = false, string defaultCategory = null) {
             InitializeComponent();
             this.Font = SystemFonts.MessageBoxFont;
 
             this.Document = document;
             this.Item = item;
             this.Editable = startsAsEditable && !this.Document.IsReadOnly;
+            this.IsNew = isNew;
             this.Categories = categories;
             this.DefaultCategory = !string.IsNullOrEmpty(defaultCategory) ? defaultCategory : null;
 
@@ -311,6 +313,10 @@ namespace Bimil {
             }
 
             pnl.Visible = true;
+
+            if (this.IsNew) {
+                titleTextBox.Select();
+            }
         }
 
         private void btnEdit_Click(object sender, EventArgs e) {

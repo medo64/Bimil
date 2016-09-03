@@ -654,7 +654,7 @@ namespace Bimil {
                         }
                     }
 
-                    using (var frm2 = new ItemForm(this.Document, entry, this.Categories, startsAsEditable: true, defaultCategory: categoryText)) {
+                    using (var frm2 = new ItemForm(this.Document, entry, this.Categories, startsAsEditable: true, isNew: true, defaultCategory: categoryText)) {
                         if (frm2.ShowDialog(this) == DialogResult.OK) {
                             RefreshItems(entry);
                             RefreshCategories();
