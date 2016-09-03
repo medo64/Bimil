@@ -128,6 +128,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
                         case AutoTypeState.EscapeCreditCard:
                             switch (ch) {
                                 case 'n':
+                                case 't':
                                 case 'e':
                                 case 'v':
                                 case 'p': //double character escapes
@@ -215,7 +216,8 @@ namespace Medo.Security.Cryptography.PasswordSafe {
                         case "Password": foreach (var key in AutotypeToken.GetAutotypeTokensFromText(entry.Password)) { yield return key; } break;
                         case "TwoFactorCode": yield return token; break;
 
-                        case "CreditCardNumber": foreach (var key in AutotypeToken.GetAutotypeTokensFromText(entry.CreditCardNumber)) { yield return key; } break;
+                        case "CreditCardNumber": foreach (var key in AutotypeToken.GetAutotypeTokensFromText(TrimCreditCardNumber(entry.CreditCardNumber))) { yield return key; } break;
+                        case "CreditCardNumberTabbed": foreach (var key in AutotypeToken.GetAutotypeTokensFromText(TrimCreditCardNumber(entry.CreditCardNumber, isTabbed: true))) { yield return key; } break;
                         case "CreditCardExpiration": foreach (var key in AutotypeToken.GetAutotypeTokensFromText(entry.CreditCardExpiration)) { yield return key; } break;
                         case "CreditCardVerificationValue": foreach (var key in AutotypeToken.GetAutotypeTokensFromText(entry.CreditCardVerificationValue)) { yield return key; } break;
                         case "CreditCardPin": foreach (var key in AutotypeToken.GetAutotypeTokensFromText(entry.CreditCardPin)) { yield return key; } break;
@@ -317,6 +319,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
                 case "p": return new AutotypeToken("Password", AutotypeTokenKind.Command);
                 case "2": return new AutotypeToken("TwoFactorCode", AutotypeTokenKind.Command);
                 case "cn": return new AutotypeToken("CreditCardNumber", AutotypeTokenKind.Command);
+                case "ct": return new AutotypeToken("CreditCardNumberTabbed", AutotypeTokenKind.Command);
                 case "ce": return new AutotypeToken("CreditCardExpiration", AutotypeTokenKind.Command);
                 case "cv": return new AutotypeToken("CreditCardVerificationValue", AutotypeTokenKind.Command);
                 case "cp": return new AutotypeToken("CreditCardPin", AutotypeTokenKind.Command);
@@ -331,6 +334,19 @@ namespace Medo.Security.Cryptography.PasswordSafe {
                 case "z": return new AutotypeToken("Legacy", AutotypeTokenKind.Command);
                 default: return new AutotypeToken(command);
             }
+        }
+
+        private static string TrimCreditCardNumber(string creditCardNumber, bool isTabbed = false) {
+            var sb = new StringBuilder();
+            foreach (var ch in creditCardNumber) {
+                if (char.IsDigit(ch)) { sb.Append(ch); }
+            }
+            if (isTabbed) {
+                for (var i = sb.Length - 4; i > 0; i -= 4) {
+                    sb.Insert(i, '\t');
+                }
+            }
+            return sb.ToString();
         }
 
         #endregion

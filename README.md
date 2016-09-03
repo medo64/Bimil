@@ -15,6 +15,7 @@ characters are supported:
     \p      Password field.
     \2      Two-factor authentication code.
     \cn     Credit card number.
+    \ct     Credit card number (tab separated).
     \ce     Credit card expiration.
     \cv     Credit card security code.
     \cp     Credit card pin number.
