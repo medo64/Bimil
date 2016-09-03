@@ -185,12 +185,27 @@ namespace Bimil {
                         }
                     }
 
-                    var fileName = this.DocumentFileName;
-                    var readOnly = this.Document.IsReadOnly;
+                    while (true) {
+                        using (var frm = new PasswordForm()) {
+                            if (frm.ShowDialog(this) == DialogResult.OK) {
+                                if (this.Document.ValidatePassphrase(frm.Password)) {
+                                    break;
+                                } else {
+                                    Medo.MessageBox.ShowError(this, "Password does not match.");
+                                    continue;
+                                }
+                            } else {
+                                this.Document = null;
+                                this.DocumentFileName = null;
+                                break;
+                            }
+                        }
+                    }
 
-                    this.Document = null;
-                    this.DocumentFileName = null;
-                    LoadFile(fileName, readOnly);
+                    RefreshFiles();
+                    RefreshCategories();
+                    RefreshItems();
+                    UpdateMenu();
                 }
             }
         }
