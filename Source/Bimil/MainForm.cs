@@ -585,6 +585,8 @@ namespace Bimil {
                             Medo.MessageBox.ShowError(this, "Old password does not match.");
                             return;
                         }
+                    } else {
+                        return;
                     }
                 }
             } catch (FormatException) {
