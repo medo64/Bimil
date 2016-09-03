@@ -30,7 +30,9 @@ namespace Bimil {
             this.mnuOpen = new System.Windows.Forms.ToolStripSplitButton();
             this.mnuSave = new System.Windows.Forms.ToolStripSplitButton();
             this.mnuSaveAs = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuChangePassword = new System.Windows.Forms.ToolStripButton();
+            this.mnuProperties = new System.Windows.Forms.ToolStripDropDownButton();
+            this.mnuChangePassword = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuReadOnly = new System.Windows.Forms.ToolStripMenuItem();
             this.mnu0 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuAdd = new System.Windows.Forms.ToolStripButton();
             this.mnuEdit = new System.Windows.Forms.ToolStripButton();
@@ -63,7 +65,7 @@ namespace Bimil {
             this.mnuNew,
             this.mnuOpen,
             this.mnuSave,
-            this.mnuChangePassword,
+            this.mnuProperties,
             this.mnu0,
             this.mnuAdd,
             this.mnuEdit,
@@ -123,15 +125,37 @@ namespace Bimil {
             this.mnuSaveAs.Text = "Save as";
             this.mnuSaveAs.Click += new System.EventHandler(this.mnuSaveAs_Click);
             // 
+            // mnuProperties
+            // 
+            this.mnuProperties.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.mnuProperties.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mnuChangePassword,
+            this.mnuReadOnly});
+            this.mnuProperties.Image = global::Bimil.Properties.Resources.mnuProperties_16;
+            this.mnuProperties.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.mnuProperties.Name = "mnuProperties";
+            this.mnuProperties.Size = new System.Drawing.Size(34, 24);
+            this.mnuProperties.Tag = "";
+            this.mnuProperties.Text = "Properties";
+            this.mnuProperties.ToolTipText = "File properties";
+            this.mnuProperties.DropDownOpening += new System.EventHandler(this.mnuProperties_DropDownOpening);
+            // 
             // mnuChangePassword
             // 
-            this.mnuChangePassword.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.mnuChangePassword.Image = global::Bimil.Properties.Resources.mnuChangePassword_16;
-            this.mnuChangePassword.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.mnuChangePassword.Name = "mnuChangePassword";
-            this.mnuChangePassword.Size = new System.Drawing.Size(24, 24);
+            this.mnuChangePassword.Size = new System.Drawing.Size(201, 26);
             this.mnuChangePassword.Text = "Change password";
             this.mnuChangePassword.Click += new System.EventHandler(this.mnuChangePassword_Click);
+            // 
+            // mnuReadOnly
+            // 
+            this.mnuReadOnly.CheckOnClick = true;
+            this.mnuReadOnly.Image = global::Bimil.Properties.Resources.mnuReadOnly_16;
+            this.mnuReadOnly.Name = "mnuReadOnly";
+            this.mnuReadOnly.Size = new System.Drawing.Size(201, 26);
+            this.mnuReadOnly.Text = "Read-only";
+            this.mnuReadOnly.Click += new System.EventHandler(this.mnuReadOnly_Click);
             // 
             // mnu0
             // 
@@ -342,7 +366,6 @@ namespace Bimil {
         private System.Windows.Forms.ToolStripButton mnuEdit;
         private System.Windows.Forms.ToolStripButton mnuRemove;
         private System.Windows.Forms.ToolStripButton mnuAdd;
-        private System.Windows.Forms.ToolStripButton mnuChangePassword;
         private System.Windows.Forms.Panel pnlDocument;
         private System.Windows.Forms.ListView lsvEntries;
         private System.Windows.Forms.ColumnHeader lsvEntries_colTitle;
@@ -359,6 +382,9 @@ namespace Bimil {
         private System.Windows.Forms.ToolStripSeparator mnu1;
         private System.Windows.Forms.ToolStripButton mnuSearch;
         private System.Windows.Forms.ToolStripButton mnuGeneratePassword;
+        private System.Windows.Forms.ToolStripDropDownButton mnuProperties;
+        private System.Windows.Forms.ToolStripMenuItem mnuChangePassword;
+        private System.Windows.Forms.ToolStripMenuItem mnuReadOnly;
     }
 }
 

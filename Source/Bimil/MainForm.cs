@@ -446,15 +446,7 @@ namespace Bimil {
                 if (document != null) {
                     this.Document = document.Document;
                     this.DocumentFileName = document.FileName;
-                    this.Document.IsReadOnly = isReadOnly;
-
-                    cmbSearch.BackColor = isReadOnly ? SystemColors.Control : SystemColors.Window;
-                    lsvEntries.BackColor = isReadOnly ? SystemColors.Control : SystemColors.Window;
-                    lsvEntries.LabelEdit = !isReadOnly;
-
-                    cmbSearch.Text = "";
-                    mnuEdit.Text = isReadOnly ? "View" : "Edit";
-                    mnuEdit.ToolTipText = mnuEdit.Text + " (F4)";
+                    SetReadonly(isReadOnly);
                 }
 
                 RefreshCategories();
@@ -463,6 +455,19 @@ namespace Bimil {
                 cmbSearch.Select();
             }
         }
+
+        private void SetReadonly(bool isReadOnly) {
+            this.Document.IsReadOnly = isReadOnly;
+
+            cmbSearch.BackColor = isReadOnly ? SystemColors.Control : SystemColors.Window;
+            lsvEntries.BackColor = isReadOnly ? SystemColors.Control : SystemColors.Window;
+            lsvEntries.LabelEdit = !isReadOnly;
+
+            cmbSearch.Text = "";
+            mnuEdit.Text = isReadOnly ? "View" : "Edit";
+            mnuEdit.ToolTipText = mnuEdit.Text + " (F4)";
+        }
+
 
         private DocumentResult LoadPasswordSafeFile(string fileName, string password = null) {
             try {
@@ -565,6 +570,11 @@ namespace Bimil {
         }
 
 
+        private void mnuProperties_DropDownOpening(object sender, EventArgs e) {
+            mnuChangePassword.Enabled = !this.Document.IsReadOnly;
+            mnuReadOnly.Checked = this.Document.IsReadOnly;
+        }
+
         private void mnuChangePassword_Click(object sender, EventArgs e) {
             if (this.Document == null) { return; }
 
@@ -599,6 +609,12 @@ namespace Bimil {
             UpdateMenu();
             cmbSearch.Select();
         }
+
+        private void mnuReadOnly_Click(object sender, EventArgs e) {
+            SetReadonly(mnuReadOnly.Checked);
+            UpdateMenu();
+        }
+
 
         private void mnuAdd_Click(object sender, EventArgs e) {
             if (this.Document == null) { return; }
@@ -736,7 +752,7 @@ namespace Bimil {
 
         private void UpdateMenu() {
             mnuSave.Enabled = (this.Document != null) && (!this.Document.IsReadOnly);
-            mnuChangePassword.Enabled = (this.Document != null) && (!this.Document.IsReadOnly);
+            mnuProperties.Enabled = (this.Document != null);
             mnuAdd.Enabled = (this.Document != null) && (!this.Document.IsReadOnly);
             mnuEdit.Enabled = (this.Document != null) && (lsvEntries.SelectedItems.Count == 1);
             mnuRemove.Enabled = (this.Document != null) && (lsvEntries.SelectedItems.Count > 0) && (!this.Document.IsReadOnly);
