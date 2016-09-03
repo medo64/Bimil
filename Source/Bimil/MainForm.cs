@@ -198,17 +198,17 @@ namespace Bimil {
 
         private void RefreshFiles() {
             for (int i = mnuOpen.DropDownItems.Count - 1; i >= 0; i--) {
-                if (mnuOpen.DropDownItems[i] is ToolStripMenuItem) {
+                if ((mnuOpen.DropDownItems[i] is ToolStripMenuItem) && (mnuOpen.DropDownItems[i].Tag is RecentFile)) {
                     mnuOpen.DropDownItems.RemoveAt(i);
                 } else {
                     break;
                 }
             }
             foreach (var file in this.RecentFiles) {
-                var item = new ToolStripMenuItem(file.Title) { Tag = file.FileName, ToolTipText = file.FileName };
+                var item = new ToolStripMenuItem(file.Title) { Tag = file, ToolTipText = file.FileName };
                 item.Click += new EventHandler(delegate (object sender2, EventArgs e2) {
                     if (SaveIfNeeded() != DialogResult.OK) { return; }
-                    var fileName = item.Tag.ToString();
+                    var fileName = ((RecentFile)item.Tag).FileName;
                     LoadFile(fileName);
                 });
                 mnuOpen.DropDownItems.Add(item);
@@ -377,12 +377,15 @@ namespace Bimil {
 
         private void mnuOpen_DropDownOpening(object sender, EventArgs e) {
             foreach (ToolStripDropDownItem item in mnuOpen.DropDownItems) {
-                var fileName = item.Tag as string;
-                if (fileName != null) {
-                    if (!File.Exists(fileName)) {
-                        Helpers.ScaleToolstripItem(item, "picNonexistent");
-                    } else {
-                        item.Image = null;
+                var recentFile = item.Tag as RecentFile;
+                if (recentFile != null) {
+                    var fileName = recentFile.FileName;
+                    if (fileName != null) {
+                        if (!File.Exists(fileName)) {
+                            Helpers.ScaleToolstripItem(item, "picNonexistent");
+                        } else {
+                            item.Image = null;
+                        }
                     }
                 }
             }
