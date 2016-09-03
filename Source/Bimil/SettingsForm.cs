@@ -49,7 +49,7 @@ namespace Bimil {
                 Settings.AutoCloseTimeout = 0;
             }
 
-            Settings.AutoCloseSave = chbAutoCloseSave.Enabled;
+            Settings.AutoCloseSave = chbAutoCloseSave.Checked;
         }
 
         private void chbItemTimeout_CheckedChanged(object sender, EventArgs e) {
