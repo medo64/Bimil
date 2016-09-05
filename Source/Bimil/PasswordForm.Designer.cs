@@ -23,10 +23,15 @@ namespace Bimil {
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PasswordForm));
             this.lblPassword = new System.Windows.Forms.Label();
             this.txtPassword = new System.Windows.Forms.TextBox();
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnOK = new System.Windows.Forms.Button();
+            this.erp = new System.Windows.Forms.ErrorProvider(this.components);
+            this.tmrCapsLock = new System.Windows.Forms.Timer(this.components);
+            ((System.ComponentModel.ISupportInitialize)(this.erp)).BeginInit();
             this.SuspendLayout();
             // 
             // lblPassword
@@ -73,6 +78,16 @@ namespace Bimil {
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
             // 
+            // erp
+            // 
+            this.erp.ContainerControl = this;
+            this.erp.Icon = ((System.Drawing.Icon)(resources.GetObject("erp.Icon")));
+            // 
+            // tmrCapsLock
+            // 
+            this.tmrCapsLock.Enabled = true;
+            this.tmrCapsLock.Tick += new System.EventHandler(this.tmrCapsLock_Tick);
+            // 
             // PasswordForm
             // 
             this.AcceptButton = this.btnOK;
@@ -92,6 +107,7 @@ namespace Bimil {
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Enter password";
+            ((System.ComponentModel.ISupportInitialize)(this.erp)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -103,5 +119,7 @@ namespace Bimil {
         private System.Windows.Forms.TextBox txtPassword;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Button btnOK;
+        private System.Windows.Forms.ErrorProvider erp;
+        private System.Windows.Forms.Timer tmrCapsLock;
     }
 }

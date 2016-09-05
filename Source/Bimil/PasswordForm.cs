@@ -8,6 +8,9 @@ namespace Bimil {
         public PasswordForm() {
             InitializeComponent();
             this.Font = SystemFonts.MessageBoxFont;
+
+            erp.SetIconAlignment(txtPassword, ErrorIconAlignment.MiddleLeft);
+            erp.SetIconPadding(txtPassword, SystemInformation.Border3DSize.Width);
         }
 
 
@@ -17,5 +20,14 @@ namespace Bimil {
 
         public string Password { get; private set; }
 
+        private void tmrCapsLock_Tick(object sender, EventArgs e) {
+            var isCapsLock = Control.IsKeyLocked(Keys.CapsLock);
+            var wasCapsLock = !string.IsNullOrEmpty(erp.GetError(txtPassword));
+            if (isCapsLock && !wasCapsLock) {
+                erp.SetError(txtPassword, "CapsLock is on.");
+            } else if (!isCapsLock && wasCapsLock) {
+                erp.SetError(txtPassword, null);
+            }
+        }
     }
 }
