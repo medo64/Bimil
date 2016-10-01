@@ -21,14 +21,47 @@ namespace Bimil {
 
             foreach (var record in entry.Records) {
                 if (record.RecordType == RecordType.Autotype) {
-                    y = AddButton(y, "Auto-type", AutotypeToken.GetUnexpandedAutotypeTokens(record.Text), isAutoClose: true).Bottom;
+                    y = AddButton(y, "Auto-type", AutotypeToken.GetUnexpandedAutotypeTokens(record.Text), isDefinedAutoType: true).Bottom;
                 }
             }
 
             if (y == 0) { //no auto-type; use default
-                y = AddButton(y, "Auto-type", AutotypeToken.GetUnexpandedAutotypeTokens(null), isAutoClose: true).Bottom;
+                y = AddButton(y, "Auto-type", AutotypeToken.GetUnexpandedAutotypeTokens(null), isDefinedAutoType: true).Bottom;
             }
 
+            //Suffix type
+            var buttonNoSuffix = new ToolStripButton("None");
+            var buttonTabSuffix = new ToolStripButton("Tab");
+            var buttonEnterSuffix = new ToolStripButton("Enter");
+
+            buttonNoSuffix.Click += delegate (object sender2, EventArgs e2) {
+                this.Suffix = SuffixType.None;
+                buttonNoSuffix.Checked = true;
+                buttonTabSuffix.Checked = false;
+                buttonEnterSuffix.Checked = false;
+            };
+            buttonTabSuffix.Click += delegate (object sender2, EventArgs e2) {
+                this.Suffix = SuffixType.Tab;
+                buttonNoSuffix.Checked = false;
+                buttonTabSuffix.Checked = true;
+                buttonEnterSuffix.Checked = false;
+            };
+            buttonEnterSuffix.Click += delegate (object sender2, EventArgs e2) {
+                this.Suffix = SuffixType.Enter;
+                buttonNoSuffix.Checked = false;
+                buttonTabSuffix.Checked = false;
+                buttonEnterSuffix.Checked = true;
+            };
+
+            var toolstrip = new ToolStrip() { Dock = DockStyle.None, Left = this.ClientRectangle.Left, Top = y + SystemInformation.DragSize.Height, GripStyle = ToolStripGripStyle.Hidden, RenderMode = ToolStripRenderMode.System };
+            toolstrip.Items.Add(new ToolStripLabel("Suffix:") { ForeColor = SystemColors.GrayText });
+            toolstrip.Items.AddRange(new ToolStripItem[] { buttonNoSuffix, buttonTabSuffix, buttonEnterSuffix });
+            buttonNoSuffix.PerformClick();
+
+            this.Controls.Add(toolstrip);
+            y = toolstrip.Bottom;
+
+            //all textual fields
             foreach (var record in entry.Records) {
                 switch (record.RecordType) {
                     case RecordType.UserName:
@@ -66,6 +99,7 @@ namespace Bimil {
         }
 
         private readonly Entry Entry;
+        private SuffixType Suffix = SuffixType.None;
 
 
         protected override bool ProcessDialogKey(Keys keyData) {
@@ -117,19 +151,24 @@ namespace Bimil {
                             break;
                     }
                 } else {
-                    bwType.ReportProgress(0, token);
+                    bwType.ReportProgress(0, token.Content);
                     Thread.Sleep(this.Delay);
                 }
+            }
+
+            switch (this.Suffix) {
+                case SuffixType.Tab: bwType.ReportProgress(100, "{TAB}"); break;
+                case SuffixType.Enter: bwType.ReportProgress(100, "{ENTER}"); break;
             }
         }
 
         private void bwType_ProgressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e) {
-            var token = (AutotypeToken)e.UserState;
+            string content = (string)e.UserState;
 
             if (this.UseSendWait) {
-                SendKeys.SendWait((Control.IsKeyLocked(Keys.CapsLock) ? "{CAPSLOCK}" : "") + token.Content);
+                SendKeys.SendWait((Control.IsKeyLocked(Keys.CapsLock) ? "{CAPSLOCK}" : "") + content);
             } else {
-                SendKeys.Send((Control.IsKeyLocked(Keys.CapsLock) ? "{CAPSLOCK}" : "") + token.Content);
+                SendKeys.Send((Control.IsKeyLocked(Keys.CapsLock) ? "{CAPSLOCK}" : "") + content);
             }
         }
 
@@ -148,7 +187,7 @@ namespace Bimil {
         }
 
 
-        private Rectangle AddButton(int top, string caption, IEnumerable<AutotypeToken> tokens = null, Record record = null, bool isTextHidden = false, bool isCancel = false, bool isAutoClose = false) {
+        private Rectangle AddButton(int top, string caption, IEnumerable<AutotypeToken> tokens = null, Record record = null, bool isTextHidden = false, bool isCancel = false, bool isDefinedAutoType = false) {
             var btn = new Button() { Text = caption, Left = this.ClientRectangle.Left, Width = this.ClientRectangle.Width, Top = top, Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right, AutoEllipsis = true };
 
             if (tokens == null) {
@@ -191,7 +230,7 @@ namespace Bimil {
                         }
                     }
 
-                    this.CloseAfterType = isAutoClose;
+                    this.CloseAfterType = isDefinedAutoType;
                     bwType.RunWorkerAsync(processedTokens.AsReadOnly());
                 };
             }
@@ -201,5 +240,11 @@ namespace Bimil {
             return new Rectangle(btn.Location, btn.Size);
         }
 
+
+        private enum SuffixType {
+            None,
+            Tab,
+            Enter
+        }
     }
 }
