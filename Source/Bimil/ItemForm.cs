@@ -29,7 +29,7 @@ namespace Bimil {
             this.Editable = startsAsEditable && !this.Document.IsReadOnly;
             this.IsNew = isNew;
             this.Categories = categories;
-            this.DefaultCategory = !string.IsNullOrEmpty(defaultCategory) ? defaultCategory : null;
+            this.DefaultCategory = categories.Contains(defaultCategory) ? defaultCategory : null;
 
             btnEdit.Visible = !this.Document.IsReadOnly;
             btnFill.Visible = !Helpers.IsRunningOnMono; //filling form includes operations not supported under Linux - Mono under Windows might have some troubles too but it is disabled there because it enables easy testing :)
