@@ -1,4 +1,6 @@
 using Medo.Security.Cryptography.PasswordSafe;
+using System.Collections.Generic;
+using System.Text;
 
 namespace Bimil {
     internal class EntryCache {
@@ -14,13 +16,27 @@ namespace Bimil {
         public string Title { get; }
         public string Group { get; }
 
-        public string MatchedText { get; private set; }
+        public string MatchedText {
+            get {
+                if (_matchList != null) {
+                    var sb = new StringBuilder();
+                    foreach (var text in _matchList) {
+                        if (sb.Length > 0) { sb.Append(", "); }
+                        sb.Append(text);
+                    }
+                    return sb.ToString();
+                } else {
+                    return null;
+                }
+            }
+        }
+
+        private List<string> _matchList;
 
         public void AddMatch(string text) {
-            if (string.IsNullOrEmpty(this.MatchedText)) {
-                this.MatchedText = text;
-            } else {
-                this.MatchedText += ", " + text;
+            if (_matchList == null) { _matchList = new List<string>(); }
+            if (!_matchList.Contains(text)) {
+                _matchList.Add(text);
             }
         }
 

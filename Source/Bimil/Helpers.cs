@@ -117,38 +117,51 @@ namespace Bimil {
 
         #region Entry search
 
-        public static void PerformEntrySearch(Document document, ListView lsvEntries, String text, Entry entryToSelect = null, bool extendedSearch = false, bool addMatchDescription = false) {
+        public static void PerformEntrySearch(Document document, ListView listView, String searchText, Entry entryToSelect = null, bool extendedSearch = false, bool addMatchDescription = false) {
             var sw = Stopwatch.StartNew();
+            var words = searchText.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
             //search for matches
             var resultList = new List<EntryCache>();
-            if (document != null) {
+            if ((document != null) && (words.Length > 0)) {
                 foreach (var entry in document.Entries) {
                     var item = new EntryCache(entry);
-                    if (string.Equals(item.Group, text, StringComparison.CurrentCultureIgnoreCase)) {
-                        item.AddMatch("Group");
-                    }
-                    if ((text.Length > 0) && (item.Title.IndexOf(text, StringComparison.CurrentCultureIgnoreCase) >= 0)) {
-                        item.AddMatch("Title");
-                    }
-                    if ((text.Length > 0) && extendedSearch) {
-                        foreach (var record in entry.Records) {
-                            if (record.RecordType == RecordType.Title) { continue; }
-                            if (record.RecordType == RecordType.Group) { continue; }
-                            var recordCaption = Helpers.GetRecordCaption(record.RecordType);
-                            if (recordCaption != null) { //so we know it is supported
-                                if (!Helpers.GetIsHideable(record.RecordType)) { //also check it is not hidden by default (e.g. password field)
-                                    var recordText = record.Text;
-                                    if (recordText != null) { //we have something searchable
-                                        if (recordText.IndexOf(text, StringComparison.CurrentCultureIgnoreCase) >= 0) {
-                                            item.AddMatch(recordCaption);
+                    var anyFailedChecks = false;
+                    foreach (var text in words) {
+                        var successfulCheck = false;
+                        if (string.Equals(item.Group, text, StringComparison.CurrentCultureIgnoreCase)) {
+                            item.AddMatch("Group");
+                            successfulCheck = true;
+                        }
+                        if ((text.Length > 0) && (item.Title.IndexOf(text, StringComparison.CurrentCultureIgnoreCase) >= 0)) {
+                            item.AddMatch("Title");
+                            successfulCheck = true;
+                        }
+                        if ((text.Length > 0) && extendedSearch) {
+                            foreach (var record in entry.Records) {
+                                if (record.RecordType == RecordType.Title) { continue; }
+                                if (record.RecordType == RecordType.Group) { continue; }
+                                var recordCaption = Helpers.GetRecordCaption(record.RecordType);
+                                if (recordCaption != null) { //so we know it is supported
+                                    if (!Helpers.GetIsHideable(record.RecordType)) { //also check it is not hidden by default (e.g. password field)
+                                        var recordText = record.Text;
+                                        if (recordText != null) { //we have something searchable
+                                            if (recordText.IndexOf(text, StringComparison.CurrentCultureIgnoreCase) >= 0) {
+                                                item.AddMatch(recordCaption);
+                                                successfulCheck = true;
+                                            }
                                         }
                                     }
                                 }
                             }
                         }
+
+                        anyFailedChecks |= !successfulCheck;
+                        if (anyFailedChecks) { break; }
                     }
-                    if (!string.IsNullOrEmpty(item.MatchedText)) {
+                    if (anyFailedChecks) {
+                        continue;
+                    } else {
                         resultList.Add(item);
                     }
                 }
@@ -157,9 +170,9 @@ namespace Bimil {
 
             //sort, preferring the same group
             resultList.Sort((item1, item2) => {
-                if (string.Equals(item1.Group, text, StringComparison.CurrentCultureIgnoreCase) && !string.Equals(item2.Group, text, StringComparison.CurrentCultureIgnoreCase)) {
+                if (string.Equals(item1.Group, searchText, StringComparison.CurrentCultureIgnoreCase) && !string.Equals(item2.Group, searchText, StringComparison.CurrentCultureIgnoreCase)) {
                     return -1; //item1 is before item2
-                } else if (!string.Equals(item1.Group, text, StringComparison.CurrentCultureIgnoreCase) && string.Equals(item2.Group, text, StringComparison.CurrentCultureIgnoreCase)) {
+                } else if (!string.Equals(item1.Group, searchText, StringComparison.CurrentCultureIgnoreCase) && string.Equals(item2.Group, searchText, StringComparison.CurrentCultureIgnoreCase)) {
                     return +1; //item2 is before item1
                 } else {
                     var groupCompare = string.Compare(item1.Group, item2.Group, StringComparison.CurrentCultureIgnoreCase);
@@ -169,32 +182,32 @@ namespace Bimil {
             Debug.WriteLine(string.Format(CultureInfo.InvariantCulture, "Items sorted at {0:0.0} ms", sw.ElapsedMilliseconds));
 
             //show items
-            lsvEntries.BeginUpdate();
-            lsvEntries.Items.Clear();
-            lsvEntries.Groups.Clear();
+            listView.BeginUpdate();
+            listView.Items.Clear();
+            listView.Groups.Clear();
 
             var groupDictionary = new Dictionary<string, ListViewGroup>();
             foreach (var item in resultList) {
                 ListViewGroup group;
                 if (!groupDictionary.TryGetValue(item.Group, out group)) {
                     group = new ListViewGroup(string.IsNullOrEmpty(item.Group) ? "(no group)" : item.Group);
-                    lsvEntries.Groups.Add(group);
+                    listView.Groups.Add(group);
                     groupDictionary.Add(item.Group, group);
                 }
                 var lvi = new ListViewItem(item.Title, group) { Tag = item.Entry };
                 if (addMatchDescription && !string.IsNullOrEmpty(item.MatchedText)) { lvi.ToolTipText = "Matched: " + item.MatchedText; }
-                lsvEntries.Items.Add(lvi);
+                listView.Items.Add(lvi);
             }
 
-            lsvEntries.EndUpdate();
+            listView.EndUpdate();
             Debug.WriteLine(string.Format(CultureInfo.InvariantCulture, "Items updated at {0:0.0} ms", sw.ElapsedMilliseconds));
 
-            if (lsvEntries.Items.Count > 0) {
-                lsvEntries.Enabled = true;
-                lsvEntries.ForeColor = SystemColors.WindowText;
+            if (listView.Items.Count > 0) {
+                listView.Enabled = true;
+                listView.ForeColor = SystemColors.WindowText;
 
                 if (entryToSelect != null) {
-                    foreach (ListViewItem item in lsvEntries.Items) {
+                    foreach (ListViewItem item in listView.Items) {
                         var entry = (Entry)(item.Tag);
                         if (entry.Equals(entryToSelect)) {
                             item.Selected = true;
@@ -204,20 +217,20 @@ namespace Bimil {
                     }
                 }
 
-                if (lsvEntries.SelectedItems.Count == 0) {
-                    lsvEntries.Items[0].Selected = true;
-                    lsvEntries.Items[0].Focused = true;
+                if (listView.SelectedItems.Count == 0) {
+                    listView.Items[0].Selected = true;
+                    listView.Items[0].Focused = true;
                 }
 
-                lsvEntries.EnsureVisible(lsvEntries.SelectedItems[0].Index);
+                listView.EnsureVisible(listView.SelectedItems[0].Index);
             } else {
-                lsvEntries.Enabled = false;
-                lsvEntries.ForeColor = SystemColors.GrayText;
+                listView.Enabled = false;
+                listView.ForeColor = SystemColors.GrayText;
 
                 if ((document == null) || (document.Entries.Count == 0)) {
-                    lsvEntries.Items.Add("No items.");
+                    listView.Items.Add("No items.");
                 } else {
-                    lsvEntries.Items.Add("No matching items found.");
+                    listView.Items.Add("No matching items found.");
                 }
             }
 
