@@ -127,9 +127,9 @@ namespace Bimil {
             var token = (AutotypeToken)e.UserState;
 
             if (this.UseSendWait) {
-                SendKeys.SendWait(token.Content);
+                SendKeys.SendWait((Control.IsKeyLocked(Keys.CapsLock) ? "{CAPSLOCK}" : "") + token.Content);
             } else {
-                SendKeys.Send(token.Content);
+                SendKeys.Send((Control.IsKeyLocked(Keys.CapsLock) ? "{CAPSLOCK}" : "") + token.Content);
             }
         }
 
