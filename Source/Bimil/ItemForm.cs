@@ -32,7 +32,7 @@ namespace Bimil {
             this.DefaultCategory = categories.Contains(defaultCategory) ? defaultCategory : null;
 
             btnEdit.Visible = !this.Document.IsReadOnly;
-            btnFill.Visible = !Helpers.IsRunningOnMono; //filling form includes operations not supported under Linux - Mono under Windows might have some troubles too but it is disabled there because it enables easy testing :)
+            btnAutotype.Visible = !Helpers.IsRunningOnMono; //filling form includes operations not supported under Linux - Mono under Windows might have some troubles too but it is disabled there because it enables easy testing :)
 
             this.Text = this.Document.IsReadOnly ? "View" : "Edit";
         }
@@ -83,7 +83,7 @@ namespace Bimil {
                     break;
 
                 case Keys.Control | Keys.T: //fill
-                    if (btnFill.Visible) { btnFill.PerformClick(); }
+                    if (btnAutotype.Visible) { btnAutotype.PerformClick(); }
                     e.Handled = true;
                     e.SuppressKeyPress = true;
                     break;
@@ -337,7 +337,7 @@ namespace Bimil {
             this.Editable = true;
         }
 
-        private void btnFill_Click(object sender, EventArgs e) {
+        private void btnAutotype_Click(object sender, EventArgs e) {
             var originalState = this.Owner.WindowState;
             var ownerForm = this.Owner;
 
@@ -347,7 +347,7 @@ namespace Bimil {
 
             this.Close();
 
-            var frm = new FillForm(this.Item);
+            var frm = new AutotypeForm(this.Item);
             frm.Shown += delegate (object sender2, EventArgs e2) {
                 ownerForm.Visible = false;
             };

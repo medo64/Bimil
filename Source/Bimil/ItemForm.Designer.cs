@@ -31,7 +31,7 @@ namespace Bimil {
             this.btnFields = new System.Windows.Forms.Button();
             this.tip = new System.Windows.Forms.ToolTip(this.components);
             this.tmrClose = new System.Windows.Forms.Timer(this.components);
-            this.btnFill = new System.Windows.Forms.Button();
+            this.btnAutotype = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // pnl
@@ -100,15 +100,15 @@ namespace Bimil {
             // 
             this.tmrClose.Tick += new System.EventHandler(this.tmrClose_Tick);
             // 
-            // btnFill
+            // btnAutotype
             // 
-            this.btnFill.Location = new System.Drawing.Point(12, 355);
-            this.btnFill.Name = "btnFill";
-            this.btnFill.Size = new System.Drawing.Size(90, 28);
-            this.btnFill.TabIndex = 2;
-            this.btnFill.Text = "Fill";
-            this.btnFill.UseVisualStyleBackColor = true;
-            this.btnFill.Click += new System.EventHandler(this.btnFill_Click);
+            this.btnAutotype.Location = new System.Drawing.Point(12, 355);
+            this.btnAutotype.Name = "btnAutotype";
+            this.btnAutotype.Size = new System.Drawing.Size(90, 28);
+            this.btnAutotype.TabIndex = 2;
+            this.btnAutotype.Text = "Auto-type";
+            this.btnAutotype.UseVisualStyleBackColor = true;
+            this.btnAutotype.Click += new System.EventHandler(this.btnAutotype_Click);
             // 
             // ItemForm
             // 
@@ -117,7 +117,7 @@ namespace Bimil {
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(582, 395);
-            this.Controls.Add(this.btnFill);
+            this.Controls.Add(this.btnAutotype);
             this.Controls.Add(this.btnFields);
             this.Controls.Add(this.btnEdit);
             this.Controls.Add(this.btnCancel);
@@ -150,6 +150,6 @@ namespace Bimil {
         private System.Windows.Forms.Button btnFields;
         private System.Windows.Forms.ToolTip tip;
         private System.Windows.Forms.Timer tmrClose;
-        private System.Windows.Forms.Button btnFill;
+        private System.Windows.Forms.Button btnAutotype;
     }
 }

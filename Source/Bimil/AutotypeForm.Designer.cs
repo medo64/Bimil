@@ -1,5 +1,5 @@
 namespace Bimil {
-    partial class FillForm {
+    partial class AutotypeForm {
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -41,17 +41,17 @@ namespace Bimil {
             this.bwType.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.bwType_ProgressChanged);
             this.bwType.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.bwType_RunWorkerCompleted);
             // 
-            // FillForm
+            // AutotypeForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(222, 253);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "FillForm";
+            this.Name = "AutotypeForm";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
-            this.Text = "Bimil";
+            this.Text = "Bimil auto-type";
             this.TopMost = true;
             this.ResumeLayout(false);
 

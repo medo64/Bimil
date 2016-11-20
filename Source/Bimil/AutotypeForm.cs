@@ -9,8 +9,8 @@ using System.Globalization;
 using System.Text;
 
 namespace Bimil {
-    internal partial class FillForm : Form {
-        public FillForm(Entry entry) {
+    internal partial class AutotypeForm : Form {
+        public AutotypeForm(Entry entry) {
             InitializeComponent();
 
             this.Font = SystemFonts.MessageBoxFont;
