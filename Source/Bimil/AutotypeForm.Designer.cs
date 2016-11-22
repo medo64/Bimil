@@ -24,6 +24,7 @@ namespace Bimil {
         /// </summary>
         private void InitializeComponent() {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AutotypeForm));
             this.tmrRestore = new System.Windows.Forms.Timer(this.components);
             this.bwType = new System.ComponentModel.BackgroundWorker();
             this.SuspendLayout();
@@ -46,11 +47,10 @@ namespace Bimil {
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(222, 253);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "AutotypeForm";
-            this.ShowIcon = false;
-            this.ShowInTaskbar = false;
             this.Text = "Bimil auto-type";
             this.TopMost = true;
             this.ResumeLayout(false);
