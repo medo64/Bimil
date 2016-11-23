@@ -118,12 +118,13 @@ namespace Bimil {
         private bool CloseAfterType;
 
         private void bwType_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e) {
-            var tokens = (IEnumerable<AutotypeToken>)e.Argument;
+            var tokens = new List<AutotypeToken>((IEnumerable<AutotypeToken>)e.Argument).AsReadOnly();
 
             this.Delay = Settings.AutoTypeDelay;
             this.UseSendWait = Settings.AutoTypeUseSendWait;
 
-            foreach (var token in tokens) {
+            for (var i = 0; i < tokens.Count; i++) {
+                var token = tokens[i];
                 if (token.Kind == AutotypeTokenKind.Command) {
                     var parts = token.Content.Split(':');
                     var command = parts[0];
@@ -151,7 +152,7 @@ namespace Bimil {
                             break;
                     }
                 } else {
-                    bwType.ReportProgress(0, token.Content);
+                    bwType.ReportProgress(i * 100 / tokens.Count, token.Content);
                     Thread.Sleep(this.Delay);
                 }
             }
@@ -170,9 +171,19 @@ namespace Bimil {
             } else {
                 SendKeys.Send((Control.IsKeyLocked(Keys.CapsLock) ? "{CAPSLOCK}" : "") + content);
             }
+
+            var progressIndex = e.ProgressPercentage / 25;
+            if ((progressIndex == 1) && (tryProgress.Icon != Bimil.Properties.Resources.icoProgress1)) {
+                tryProgress.Icon = Bimil.Properties.Resources.icoProgress1;
+            } else if ((progressIndex == 2) && (tryProgress.Icon != Bimil.Properties.Resources.icoProgress2)) {
+                tryProgress.Icon = Bimil.Properties.Resources.icoProgress2;
+            } else if ((progressIndex == 3) && (tryProgress.Icon != Bimil.Properties.Resources.icoProgress3)) {
+                tryProgress.Icon = Bimil.Properties.Resources.icoProgress3;
+            }
         }
 
         private void bwType_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e) {
+            tryProgress.Visible = false;
             if (CloseAfterType) {
                 this.Close();
             } else {
@@ -231,6 +242,8 @@ namespace Bimil {
                     }
 
                     this.CloseAfterType = isDefinedAutoType;
+                    tryProgress.Icon = Bimil.Properties.Resources.icoProgress0;
+                    tryProgress.Visible = true;
                     bwType.RunWorkerAsync(processedTokens.AsReadOnly());
                 };
             }
@@ -246,5 +259,6 @@ namespace Bimil {
             Tab,
             Enter
         }
+
     }
 }

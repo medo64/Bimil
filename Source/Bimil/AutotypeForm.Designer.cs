@@ -27,6 +27,7 @@ namespace Bimil {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AutotypeForm));
             this.tmrRestore = new System.Windows.Forms.Timer(this.components);
             this.bwType = new System.ComponentModel.BackgroundWorker();
+            this.tryProgress = new System.Windows.Forms.NotifyIcon(this.components);
             this.SuspendLayout();
             // 
             // tmrRestore
@@ -41,6 +42,10 @@ namespace Bimil {
             this.bwType.DoWork += new System.ComponentModel.DoWorkEventHandler(this.bwType_DoWork);
             this.bwType.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.bwType_ProgressChanged);
             this.bwType.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.bwType_RunWorkerCompleted);
+            // 
+            // tryProgress
+            // 
+            this.tryProgress.Text = "Bimil auto-type";
             // 
             // AutotypeForm
             // 
@@ -61,5 +66,6 @@ namespace Bimil {
 
         private System.Windows.Forms.Timer tmrRestore;
         private System.ComponentModel.BackgroundWorker bwType;
+        private System.Windows.Forms.NotifyIcon tryProgress;
     }
 }
