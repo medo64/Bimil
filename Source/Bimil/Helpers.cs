@@ -119,11 +119,22 @@ namespace Bimil {
 
         public static void PerformEntrySearch(Document document, ListView listView, String searchText, Entry entryToSelect = null, bool extendedSearch = false, bool addMatchDescription = false) {
             var sw = Stopwatch.StartNew();
-            var words = searchText.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
             //search for matches
             var resultList = new List<EntryCache>();
-            if ((document != null) && (words.Length > 0)) {
+            if (document != null) {
+                var words = new List<string>();
+                var curWord = new StringBuilder();
+                foreach (var ch in searchText) {
+                    if (char.IsLetterOrDigit(ch)) {
+                        curWord.Append(ch);
+                    } else if (curWord.Length > 0) {
+                        words.Add(curWord.ToString());
+                        curWord.Length = 0;
+                    }
+                }
+                if ((curWord.Length > 0) || (words.Count == 0)) { words.Add(curWord.ToString()); }
+
                 foreach (var entry in document.Entries) {
                     var item = new EntryCache(entry);
                     var anyFailedChecks = false;
