@@ -537,7 +537,7 @@ namespace Bimil {
                 Tag = parentTextBox,
                 Text = "",
                 Anchor = AnchorStyles.Top | AnchorStyles.Right,
-                Enabled = (parentTextBox.TextLength == 0)
+                Enabled = (parentTextBox.TextLength == 0) && this.Editable
             };
             Helpers.ScaleButton(button);
 
@@ -545,7 +545,7 @@ namespace Bimil {
 
             parentTextBox.TextChanged += new EventHandler(delegate (object sender, EventArgs e) {
                 var textBox = (TextBox)sender;
-                button.Enabled = (textBox.TextLength == 0);
+                button.Enabled = (textBox.TextLength == 0) && this.Editable;
             });
 
             button.Click += new EventHandler(delegate (object sender, EventArgs e) {
