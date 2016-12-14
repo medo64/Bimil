@@ -537,24 +537,30 @@ namespace Bimil {
                 Tag = parentTextBox,
                 Text = "",
                 Anchor = AnchorStyles.Top | AnchorStyles.Right,
-                Enabled = (parentTextBox.TextLength == 0) && this.Editable
+                Enabled = this.Editable
             };
             Helpers.ScaleButton(button);
 
             tip.SetToolTip(button, "Generate password (available only when no password already present).");
 
-            parentTextBox.TextChanged += new EventHandler(delegate (object sender, EventArgs e) {
-                var textBox = (TextBox)sender;
-                button.Enabled = (textBox.TextLength == 0) && this.Editable;
-            });
+            parentTextBox.ReadOnlyChanged += delegate (object sender2, EventArgs e2) {
+                button.Enabled = !parentTextBox.ReadOnly;
+            };
 
             button.Click += new EventHandler(delegate (object sender, EventArgs e) {
                 var textBox = (TextBox)(((Control)sender).Tag);
                 textBox.Select();
 
-                using (var frm = new PasswordGeneratorForm(useCopyAsSave: true)) {
-                    if (frm.ShowDialog(this) == DialogResult.OK) {
-                        textBox.Text = frm.Password;
+                bool generateNew = true;
+                if (textBox.Text.Length > 0) {
+                    generateNew = Medo.MessageBox.ShowQuestion(this, "Do you wish to overwrite current password?", MessageBoxButtons.YesNo) == DialogResult.Yes;
+                }
+
+                if (generateNew) {
+                    using (var frm = new PasswordGeneratorForm(useCopyAsSave: true)) {
+                        if (frm.ShowDialog(this) == DialogResult.OK) {
+                            textBox.Text = frm.Password;
+                        }
                     }
                 }
             });
