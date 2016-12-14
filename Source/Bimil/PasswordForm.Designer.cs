@@ -31,6 +31,7 @@ namespace Bimil {
             this.btnOK = new System.Windows.Forms.Button();
             this.erp = new System.Windows.Forms.ErrorProvider(this.components);
             this.tmrCapsLock = new System.Windows.Forms.Timer(this.components);
+            this.chbShowPassword = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.erp)).BeginInit();
             this.SuspendLayout();
             // 
@@ -49,7 +50,7 @@ namespace Bimil {
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtPassword.Location = new System.Drawing.Point(102, 12);
             this.txtPassword.Name = "txtPassword";
-            this.txtPassword.Size = new System.Drawing.Size(200, 22);
+            this.txtPassword.Size = new System.Drawing.Size(268, 22);
             this.txtPassword.TabIndex = 1;
             this.txtPassword.UseSystemPasswordChar = true;
             // 
@@ -57,11 +58,11 @@ namespace Bimil {
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(212, 52);
+            this.btnCancel.Location = new System.Drawing.Point(280, 80);
             this.btnCancel.Margin = new System.Windows.Forms.Padding(3, 15, 3, 3);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(90, 28);
-            this.btnCancel.TabIndex = 3;
+            this.btnCancel.TabIndex = 4;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             // 
@@ -69,11 +70,11 @@ namespace Bimil {
             // 
             this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOK.Location = new System.Drawing.Point(116, 52);
+            this.btnOK.Location = new System.Drawing.Point(184, 80);
             this.btnOK.Margin = new System.Windows.Forms.Padding(3, 15, 3, 3);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(90, 28);
-            this.btnOK.TabIndex = 2;
+            this.btnOK.TabIndex = 3;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
@@ -88,13 +89,26 @@ namespace Bimil {
             this.tmrCapsLock.Enabled = true;
             this.tmrCapsLock.Tick += new System.EventHandler(this.tmrCapsLock_Tick);
             // 
+            // chbShowPassword
+            // 
+            this.chbShowPassword.AutoSize = true;
+            this.chbShowPassword.Location = new System.Drawing.Point(102, 41);
+            this.chbShowPassword.Name = "chbShowPassword";
+            this.chbShowPassword.Size = new System.Drawing.Size(128, 21);
+            this.chbShowPassword.TabIndex = 2;
+            this.chbShowPassword.TabStop = false;
+            this.chbShowPassword.Text = "&Show password";
+            this.chbShowPassword.UseVisualStyleBackColor = true;
+            this.chbShowPassword.CheckedChanged += new System.EventHandler(this.chbShowPassword_CheckedChanged);
+            // 
             // PasswordForm
             // 
             this.AcceptButton = this.btnOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(314, 92);
+            this.ClientSize = new System.Drawing.Size(382, 120);
+            this.Controls.Add(this.chbShowPassword);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnOK);
             this.Controls.Add(this.txtPassword);
@@ -121,5 +135,6 @@ namespace Bimil {
         private System.Windows.Forms.Button btnOK;
         private System.Windows.Forms.ErrorProvider erp;
         private System.Windows.Forms.Timer tmrCapsLock;
+        private System.Windows.Forms.CheckBox chbShowPassword;
     }
 }

@@ -14,6 +14,10 @@ namespace Bimil {
         }
 
 
+        private void chbShowPassword_CheckedChanged(object sender, EventArgs e) {
+            txtPassword.UseSystemPasswordChar = !txtPassword.UseSystemPasswordChar;
+        }
+
         private void btnOK_Click(object sender, EventArgs e) {
             this.Password = txtPassword.Text;
         }
@@ -29,5 +33,6 @@ namespace Bimil {
                 erp.SetError(txtPassword, null);
             }
         }
+
     }
 }
