@@ -126,7 +126,7 @@ namespace Bimil {
                 var words = new List<string>();
                 var curWord = new StringBuilder();
                 foreach (var ch in searchText) {
-                    if (char.IsLetterOrDigit(ch)) {
+                    if (char.IsLetterOrDigit(ch) || (ch == '.')) {
                         curWord.Append(ch);
                     } else if (curWord.Length > 0) {
                         words.Add(curWord.ToString());
