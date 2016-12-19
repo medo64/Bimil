@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Globalization;
+using System.IO;
 using System.Text;
 using System.Windows.Forms;
 
@@ -456,6 +457,27 @@ namespace Bimil {
         #endregion
 
 
+        #region Read-only support
+
+        internal static bool? GetReadOnly(string fileName) { //null if file cannot be found
+            if (fileName == null) { return null; }
+            if (!File.Exists(fileName)) { return null; }
+            try {
+                return (File.GetAttributes(fileName) & FileAttributes.ReadOnly) == FileAttributes.ReadOnly;
+            } catch (SystemException) { }
+            return null;
+        }
+
+        internal static void SetReadOnly(string fileName, bool newReadOnly) {
+            var attrs = (File.GetAttributes(fileName) & ~FileAttributes.ReadOnly);
+            if (newReadOnly) { attrs |= FileAttributes.ReadOnly; }
+            File.SetAttributes(fileName, attrs);
+        }
+
+        #endregion
+
+        #region 2FA Support
+
         public static readonly char[] Base32Characters = new char[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '2', '3', '4', '5', '6', '7' };
         public static readonly char[] NumberCharacters = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
 
@@ -490,6 +512,8 @@ namespace Bimil {
             }
             return "";
         }
+
+        #endregion
 
 
         public static bool IsRunningOnMono {

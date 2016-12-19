@@ -26,11 +26,18 @@ namespace Bimil {
             this.components = new System.ComponentModel.Container();
             this.lsvRecent = new System.Windows.Forms.ListView();
             this.lsvRecent_colFile = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.mnxList = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.mnxListOpen = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnxListOpenReadOnly = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnxList0 = new System.Windows.Forms.ToolStripSeparator();
+            this.mnxListRemove = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnxListReadOnly = new System.Windows.Forms.ToolStripMenuItem();
             this.btnOpen = new System.Windows.Forms.Button();
             this.btnClose = new System.Windows.Forms.Button();
             this.btnNew = new System.Windows.Forms.Button();
             this.tip = new System.Windows.Forms.ToolTip(this.components);
             this.btnOpenReadOnly = new System.Windows.Forms.Button();
+            this.mnxList.SuspendLayout();
             this.SuspendLayout();
             // 
             // lsvRecent
@@ -41,6 +48,7 @@ namespace Bimil {
             this.lsvRecent.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.lsvRecent.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.lsvRecent_colFile});
+            this.lsvRecent.ContextMenuStrip = this.mnxList;
             this.lsvRecent.FullRowSelect = true;
             this.lsvRecent.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
             this.lsvRecent.Location = new System.Drawing.Point(0, 0);
@@ -59,6 +67,52 @@ namespace Bimil {
             // 
             this.lsvRecent_colFile.Text = "File";
             this.lsvRecent_colFile.Width = 433;
+            // 
+            // mnxList
+            // 
+            this.mnxList.ImageScalingSize = new System.Drawing.Size(20, 20);
+            this.mnxList.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mnxListOpen,
+            this.mnxListOpenReadOnly,
+            this.mnxList0,
+            this.mnxListRemove,
+            this.mnxListReadOnly});
+            this.mnxList.Name = "mnxList";
+            this.mnxList.Size = new System.Drawing.Size(207, 142);
+            this.mnxList.Opening += new System.ComponentModel.CancelEventHandler(this.mnxList_Opening);
+            // 
+            // mnxListOpen
+            // 
+            this.mnxListOpen.Name = "mnxListOpen";
+            this.mnxListOpen.Size = new System.Drawing.Size(206, 26);
+            this.mnxListOpen.Text = "&Open";
+            this.mnxListOpen.Click += new System.EventHandler(this.mnxListOpen_Click);
+            // 
+            // mnxListOpenReadOnly
+            // 
+            this.mnxListOpenReadOnly.Name = "mnxListOpenReadOnly";
+            this.mnxListOpenReadOnly.Size = new System.Drawing.Size(206, 26);
+            this.mnxListOpenReadOnly.Text = "Open as &read-only";
+            this.mnxListOpenReadOnly.Click += new System.EventHandler(this.mnxListOpenReadOnly_Click);
+            // 
+            // mnxList0
+            // 
+            this.mnxList0.Name = "mnxList0";
+            this.mnxList0.Size = new System.Drawing.Size(203, 6);
+            // 
+            // mnxListRemove
+            // 
+            this.mnxListRemove.Name = "mnxListRemove";
+            this.mnxListRemove.Size = new System.Drawing.Size(206, 26);
+            this.mnxListRemove.Text = "Remove";
+            this.mnxListRemove.Click += new System.EventHandler(this.mnxListRemove_Click);
+            // 
+            // mnxListReadOnly
+            // 
+            this.mnxListReadOnly.Name = "mnxListReadOnly";
+            this.mnxListReadOnly.Size = new System.Drawing.Size(206, 26);
+            this.mnxListReadOnly.Text = "Read-only";
+            this.mnxListReadOnly.Click += new System.EventHandler(this.mnxListReadOnly_Click);
             // 
             // btnOpen
             // 
@@ -139,6 +193,7 @@ namespace Bimil {
             this.Text = "Start";
             this.Shown += new System.EventHandler(this.Form_Shown);
             this.Resize += new System.EventHandler(this.Form_Resize);
+            this.mnxList.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -152,5 +207,11 @@ namespace Bimil {
         private System.Windows.Forms.ColumnHeader lsvRecent_colFile;
         private System.Windows.Forms.ToolTip tip;
         private System.Windows.Forms.Button btnOpenReadOnly;
+        private System.Windows.Forms.ContextMenuStrip mnxList;
+        private System.Windows.Forms.ToolStripMenuItem mnxListRemove;
+        private System.Windows.Forms.ToolStripMenuItem mnxListReadOnly;
+        private System.Windows.Forms.ToolStripMenuItem mnxListOpen;
+        private System.Windows.Forms.ToolStripMenuItem mnxListOpenReadOnly;
+        private System.Windows.Forms.ToolStripSeparator mnxList0;
     }
 }

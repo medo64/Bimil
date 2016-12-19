@@ -1,7 +1,6 @@
 using Medo.Configuration;
 using System;
 using System.Drawing;
-using System.IO;
 using System.Windows.Forms;
 
 namespace Bimil {
@@ -11,11 +10,18 @@ namespace Bimil {
             this.Font = SystemFonts.MessageBoxFont;
             Medo.Windows.Forms.State.SetupOnLoadAndClose(this);
 
-            lsvRecent.SmallImageList = Helpers.GetImageList(this, "picNonexistent");
+            this.RecentFiles = recentFiles;
+
+            lsvRecent.SmallImageList = Helpers.GetImageList(this, "picNonexistent", "mnuReadOnly");
 
             foreach (var file in recentFiles) {
                 var lvi = new ListViewItem(file.Title) { Tag = file, ToolTipText = file.FileName };
-                if (!File.Exists(file.FileName)) { lvi.ImageIndex = 0; }
+                var readOnly = Helpers.GetReadOnly(file.FileName);
+                if (readOnly == null) {
+                    lvi.ImageIndex = 0;
+                } else if (readOnly.Value) {
+                    lvi.ImageIndex = 1;
+                }
                 lsvRecent.Items.Add(lvi);
             }
             if (lsvRecent.Items.Count > 0) {
@@ -26,6 +32,8 @@ namespace Bimil {
                 lsvRecent.ForeColor = SystemColors.GrayText;
             }
         }
+
+        private readonly RecentFiles RecentFiles;
 
 
         private void Form_Shown(object sender, EventArgs e) {
@@ -38,12 +46,19 @@ namespace Bimil {
 
 
         private void lsvRecent_SelectedIndexChanged(object sender, EventArgs e) {
-            btnOpen.Enabled = (lsvRecent.SelectedItems.Count == 1);
-            btnOpenReadOnly.Enabled = (lsvRecent.SelectedItems.Count == 1);
+            var fileName = (lsvRecent.SelectedItems.Count == 1) ? ((RecentFile)lsvRecent.SelectedItems[0].Tag).FileName : null;
+            var isReadOnly = Helpers.GetReadOnly(fileName);
+
+            btnOpen.Enabled = (isReadOnly == false);
+            btnOpenReadOnly.Enabled = (isReadOnly != null);
         }
 
         private void lsvRecent_ItemActivate(object sender, EventArgs e) {
-            this.FileName = ((RecentFile)lsvRecent.SelectedItems[0].Tag).FileName;
+            var fileName = ((RecentFile)lsvRecent.SelectedItems[0].Tag).FileName;
+            var readOnly = Helpers.GetReadOnly(fileName);
+            var isReadOnly = (readOnly == true); //treats non-existing files as false (to allow opening them)
+
+            SelectFileName(((RecentFile)lsvRecent.SelectedItems[0].Tag).FileName, isReadOnly);
             this.DialogResult = DialogResult.OK;
         }
 
@@ -65,10 +80,48 @@ namespace Bimil {
         }
 
 
+        private void mnxList_Opening(object sender, System.ComponentModel.CancelEventArgs e) {
+            var fileName = (lsvRecent.SelectedItems.Count == 1) ? ((RecentFile)lsvRecent.SelectedItems[0].Tag).FileName : null;
+            var isReadOnly = Helpers.GetReadOnly(fileName);
+
+            mnxListOpen.Enabled = (isReadOnly == false);
+            mnxListOpenReadOnly.Enabled = (isReadOnly != null);
+            mnxListRemove.Enabled = (fileName != null);
+            mnxListReadOnly.Enabled = (isReadOnly != null);
+            mnxListReadOnly.Checked = (isReadOnly == true);
+        }
+
+        private void mnxListOpen_Click(object sender, EventArgs e) {
+            btnOpen_Click(null, null);
+        }
+
+        private void mnxListOpenReadOnly_Click(object sender, EventArgs e) {
+            btnOpen_Click(null, null);
+        }
+
+        private void mnxListRemove_Click(object sender, EventArgs e) {
+            var fileName = ((RecentFile)lsvRecent.SelectedItems[0].Tag).FileName;
+            this.RecentFiles.Remove(fileName);
+        }
+
+        private void mnxListReadOnly_Click(object sender, EventArgs e) {
+            var newReadOnly = !mnxListReadOnly.Checked;
+            var fileName = ((RecentFile)lsvRecent.SelectedItems[0].Tag).FileName;
+            try {
+                Helpers.SetReadOnly(fileName, newReadOnly);
+                lsvRecent.SelectedItems[0].ImageIndex = newReadOnly ? 1 : -1;
+                lsvRecent.Refresh();
+            } catch (SystemException ex) {
+                Medo.MessageBox.ShowError(this, ex.Message);
+            }
+
+            lsvRecent_SelectedIndexChanged(null, null);
+        }
+
+
         private void SelectFileName(string fileName, bool readOnly = false) {
             this.FileName = fileName;
             this.IsReadOnly = readOnly;
         }
-
     }
 }
