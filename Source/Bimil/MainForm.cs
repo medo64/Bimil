@@ -17,6 +17,7 @@ namespace Bimil {
 
         private Document Document = null;
         private string DocumentFileName = null;
+        private bool DocumentReadOnlyChanged = false;
         private RecentFiles RecentFiles = new RecentFiles();
         private readonly List<string> Categories = new List<string>();
 
@@ -380,7 +381,8 @@ namespace Bimil {
             if (SaveIfNeeded() != DialogResult.OK) { return; }
             using (var frm = new OpenFileDialog() { AddExtension = true, AutoUpgradeEnabled = true, Filter = "Bimil and PasswordSafe files|*.bimil;*.psafe3|Bimil files|*.bimil|Password Safe files|*.psafe3|All files|*.*", RestoreDirectory = true, ShowReadOnly = true }) {
                 if (frm.ShowDialog(this) == DialogResult.OK) {
-                    if (LoadFile(frm.FileName, isReadOnly: frm.ReadOnlyChecked)) {
+                    var isReadOnly = frm.ReadOnlyChecked || (Helpers.GetReadOnly(frm.FileName) == true);
+                    if (LoadFile(frm.FileName, isReadOnly: isReadOnly)) {
                         if ((this.Document.LastSaveApplication == null) || !this.Document.LastSaveApplication.StartsWith("Bimil ")) {
                             var application = string.IsNullOrEmpty(this.Document.LastSaveApplication) ? "unknown" : this.Document.LastSaveApplication;
                             Medo.MessageBox.ShowWarning(this, "Be careful when saving files not created by Bimil.\n\nWhile such files can be used, not necessarily all the features of the original software will be supported. Likewise, files edited by Bimil won't be necessarily fully readable by other software; e.g. two-factor keys are only supported in Bimil.\n\nLast edited by:\n" + application);
@@ -396,8 +398,11 @@ namespace Bimil {
                 if (recentFile != null) {
                     var fileName = recentFile.FileName;
                     if (fileName != null) {
-                        if (!File.Exists(fileName)) {
+                        var isReadOnly = Helpers.GetReadOnly(fileName);
+                        if (isReadOnly == null) {
                             Helpers.ScaleToolstripItem(item, "picNonexistent");
+                        } else if (isReadOnly == true) {
+                            Helpers.ScaleToolstripItem(item, "mnuReadOnly");
                         } else {
                             item.Image = null;
                         }
@@ -411,8 +416,9 @@ namespace Bimil {
             DocumentResult document = null;
             string password;
 
+            var isFileReadOnly = Helpers.GetReadOnly(fileName);
             try {
-                if (!File.Exists(fileName)) {
+                if (isFileReadOnly == null) {
                     foreach (var recentFile in this.RecentFiles) {
                         if (string.Equals(fileName, recentFile.FileName, StringComparison.OrdinalIgnoreCase)) {
                             if (Medo.MessageBox.ShowQuestion(this, "File " + Path.GetFileName(fileName) + " could not be open.\nDo you wish to remove it from the recent list?", MessageBoxButtons.YesNo) == DialogResult.Yes) {
@@ -461,7 +467,8 @@ namespace Bimil {
                 if (document != null) {
                     this.Document = document.Document;
                     this.DocumentFileName = document.FileName;
-                    SetReadonly(isReadOnly);
+                    SetReadonly(isReadOnly || (isFileReadOnly == true));
+                    this.DocumentReadOnlyChanged = false;
                 }
 
                 RefreshCategories();
@@ -473,6 +480,7 @@ namespace Bimil {
 
         private void SetReadonly(bool isReadOnly) {
             this.Document.IsReadOnly = isReadOnly; //file status is changed upon save
+            this.DocumentReadOnlyChanged = true;
 
             cmbSearch.BackColor = isReadOnly ? SystemColors.Control : SystemColors.Window;
             lsvEntries.BackColor = isReadOnly ? SystemColors.Control : SystemColors.Window;
@@ -562,6 +570,7 @@ namespace Bimil {
                         this.Document.Save(fileStream);
                     }
                     if (this.Document.IsReadOnly) { Helpers.SetReadOnly(this.DocumentFileName, true); }
+                    this.DocumentReadOnlyChanged = false;
                 } catch (SystemException ex) {
                     Medo.MessageBox.ShowError(this, "Cannot save file.\n" + ex.Message);
                 }
@@ -584,6 +593,7 @@ namespace Bimil {
                     }
                     if (this.Document.IsReadOnly) { Helpers.SetReadOnly(frm.FileName, true); }
                     this.DocumentFileName = frm.FileName;
+                    this.DocumentReadOnlyChanged = false;
                     this.RecentFiles.Push(this.DocumentFileName);
                     RefreshFiles();
                     UpdateMenu();
@@ -791,7 +801,7 @@ namespace Bimil {
                 var file = new FileInfo(this.DocumentFileName);
                 var title = file.Name.Substring(0, file.Name.Length - file.Extension.Length);
 
-                this.Text = title + (this.Document?.HasChanged ?? false ? "*" : "") + " - Bimil";
+                this.Text = title + ((this.Document?.HasChanged ?? false) || this.DocumentReadOnlyChanged ? "*" : "") + " - Bimil";
             }
         }
 
