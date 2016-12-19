@@ -472,7 +472,7 @@ namespace Bimil {
         }
 
         private void SetReadonly(bool isReadOnly) {
-            this.Document.IsReadOnly = isReadOnly;
+            this.Document.IsReadOnly = isReadOnly; //file status is changed upon save
 
             cmbSearch.BackColor = isReadOnly ? SystemColors.Control : SystemColors.Window;
             lsvEntries.BackColor = isReadOnly ? SystemColors.Control : SystemColors.Window;
@@ -556,8 +556,14 @@ namespace Bimil {
             if (this.Document == null) { return; }
 
             if (this.DocumentFileName != null) {
-                using (var fileStream = new FileStream(this.DocumentFileName, FileMode.Create, FileAccess.Write)) {
-                    this.Document.Save(fileStream);
+                try {
+                    if (Helpers.GetReadOnly(this.DocumentFileName) == true) { Helpers.SetReadOnly(this.DocumentFileName, false); } //remove read-only before saving
+                    using (var fileStream = new FileStream(this.DocumentFileName, FileMode.Create, FileAccess.Write)) {
+                        this.Document.Save(fileStream);
+                    }
+                    if (this.Document.IsReadOnly) { Helpers.SetReadOnly(this.DocumentFileName, true); }
+                } catch (SystemException ex) {
+                    Medo.MessageBox.ShowError(this, "Cannot save file.\n" + ex.Message);
                 }
                 UpdateMenu();
             } else {
@@ -572,9 +578,11 @@ namespace Bimil {
             using (var frm = new SaveFileDialog() { AddExtension = true, AutoUpgradeEnabled = true, Filter = "Bimil files|*.bimil|Password Safe files|*.psafe3|All files|*.*", RestoreDirectory = true }) {
                 if (this.DocumentFileName != null) { frm.FileName = this.DocumentFileName; }
                 if (frm.ShowDialog(this) == DialogResult.OK) {
+                    if (Helpers.GetReadOnly(this.DocumentFileName) == true) { Helpers.SetReadOnly(frm.FileName, false); } //remove read-only before saving
                     using (var fileStream = new FileStream(frm.FileName, FileMode.Create, FileAccess.Write)) {
                         this.Document.Save(fileStream);
                     }
+                    if (this.Document.IsReadOnly) { Helpers.SetReadOnly(frm.FileName, true); }
                     this.DocumentFileName = frm.FileName;
                     this.RecentFiles.Push(this.DocumentFileName);
                     RefreshFiles();
@@ -768,7 +776,7 @@ namespace Bimil {
 
 
         private void UpdateMenu() {
-            mnuSave.Enabled = (this.Document != null) && (!this.Document.IsReadOnly);
+            mnuSave.Enabled = (this.Document != null);
             mnuProperties.Enabled = (this.Document != null);
             mnuAdd.Enabled = (this.Document != null) && (!this.Document.IsReadOnly);
             mnuEdit.Enabled = (this.Document != null) && (lsvEntries.SelectedItems.Count == 1);
