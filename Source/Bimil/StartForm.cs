@@ -92,11 +92,13 @@ namespace Bimil {
         }
 
         private void mnxListOpen_Click(object sender, EventArgs e) {
+            this.DialogResult = DialogResult.OK;
             btnOpen_Click(null, null);
         }
 
         private void mnxListOpenReadOnly_Click(object sender, EventArgs e) {
-            btnOpen_Click(null, null);
+            this.DialogResult = DialogResult.OK;
+            btnOpenReadOnly_Click(null, null);
         }
 
         private void mnxListRemove_Click(object sender, EventArgs e) {
