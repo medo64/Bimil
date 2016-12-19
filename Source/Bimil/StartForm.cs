@@ -51,6 +51,8 @@ namespace Bimil {
 
             btnOpen.Enabled = (isReadOnly == false);
             btnOpenReadOnly.Enabled = (isReadOnly != null);
+
+            this.AcceptButton = (!btnOpen.Enabled && btnOpenReadOnly.Enabled) ? btnOpenReadOnly : btnOpen;
         }
 
         private void lsvRecent_ItemActivate(object sender, EventArgs e) {
