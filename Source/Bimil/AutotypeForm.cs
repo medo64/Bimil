@@ -172,14 +172,16 @@ namespace Bimil {
                 SendKeys.Send((Control.IsKeyLocked(Keys.CapsLock) ? "{CAPSLOCK}" : "") + content);
             }
 
-            var progressIndex = e.ProgressPercentage / 25;
-            if ((progressIndex == 1) && (tryProgress.Icon != Bimil.Properties.Resources.icoProgress1)) {
-                tryProgress.Icon = Bimil.Properties.Resources.icoProgress1;
-            } else if ((progressIndex == 2) && (tryProgress.Icon != Bimil.Properties.Resources.icoProgress2)) {
-                tryProgress.Icon = Bimil.Properties.Resources.icoProgress2;
-            } else if ((progressIndex == 3) && (tryProgress.Icon != Bimil.Properties.Resources.icoProgress3)) {
-                tryProgress.Icon = Bimil.Properties.Resources.icoProgress3;
-            }
+            try {
+                var progressIndex = e.ProgressPercentage / 25;
+                if ((progressIndex == 1) && (tryProgress.Icon != Bimil.Properties.Resources.icoProgress1)) {
+                    tryProgress.Icon = Bimil.Properties.Resources.icoProgress1;
+                } else if ((progressIndex == 2) && (tryProgress.Icon != Bimil.Properties.Resources.icoProgress2)) {
+                    tryProgress.Icon = Bimil.Properties.Resources.icoProgress2;
+                } else if ((progressIndex == 3) && (tryProgress.Icon != Bimil.Properties.Resources.icoProgress3)) {
+                    tryProgress.Icon = Bimil.Properties.Resources.icoProgress3;
+                }
+            } catch (NullReferenceException) { } //race condition causes tray icon internals to be disposed - lazy way out
         }
 
         private void bwType_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e) {
