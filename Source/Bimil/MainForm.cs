@@ -186,6 +186,8 @@ namespace Bimil {
                         }
                     }
 
+                    if (this.WindowState == FormWindowState.Minimized) { this.WindowState = FormWindowState.Normal; }
+
                     while (true) {
                         using (var frm = new PasswordForm()) {
                             if (frm.ShowDialog(this) == DialogResult.OK) {
