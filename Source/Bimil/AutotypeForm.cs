@@ -21,12 +21,12 @@ namespace Bimil {
 
             foreach (var record in entry.Records) {
                 if (record.RecordType == RecordType.Autotype) {
-                    y = AddButton(y, "Auto-type", AutotypeToken.GetUnexpandedAutotypeTokens(record.Text), isDefinedAutoType: true).Bottom;
+                    y = AddTokenButton(y, "Auto-type", AutotypeToken.GetUnexpandedAutotypeTokens(record.Text), isDefinedAutoType: true).Bottom;
                 }
             }
 
             if (y == 0) { //no auto-type; use default
-                y = AddButton(y, "Auto-type", AutotypeToken.GetUnexpandedAutotypeTokens(null), isDefinedAutoType: true).Bottom;
+                y = AddTokenButton(y, "Auto-type", AutotypeToken.GetUnexpandedAutotypeTokens(null), isDefinedAutoType: true).Bottom;
             }
 
             //Suffix type
@@ -67,31 +67,35 @@ namespace Bimil {
                     case RecordType.UserName:
                     case RecordType.EmailAddress:
                     case RecordType.CreditCardExpiration:
-                        y = AddButton(y, Helpers.GetRecordCaption(record), AutotypeToken.GetAutotypeTokensFromText(record.Text),
+                        y = AddTokenButton(y, Helpers.GetRecordCaption(record), AutotypeToken.GetAutotypeTokensFromText(record.Text),
                             record).Bottom;
                         break;
 
                     case RecordType.Password:
                     case RecordType.CreditCardPin:
                     case RecordType.CreditCardVerificationValue:
-                        y = AddButton(y, Helpers.GetRecordCaption(record),
+                        y = AddTokenButton(y, Helpers.GetRecordCaption(record),
                             AutotypeToken.GetAutotypeTokensFromText(record.Text), record, isTextHidden: true).Bottom;
                         break;
 
                     case RecordType.TwoFactorKey:
-                        y = AddButton(y, Helpers.GetRecordCaption(record),
+                        y = AddTokenButton(y, Helpers.GetRecordCaption(record),
                             AutotypeToken.GetUnexpandedAutotypeTokens(@"\2"), record, isTextHidden: true).Bottom;
                         break;
 
                     case RecordType.CreditCardNumber:
-                        y = AddButton(y, Helpers.GetRecordCaption(record),
+                        y = AddTokenButton(y, Helpers.GetRecordCaption(record),
                             AutotypeToken.GetAutotypeTokensFromText(Helpers.FilterText(record.Text, Helpers.NumberCharacters)), record).Bottom;
                         break;
                 }
             }
 
-            var rect = AddButton(y + SystemInformation.DragSize.Height, "Cancel", isCancel: true);
-            this.ClientSize = new Size(this.ClientRectangle.Width, rect.Bottom);
+            var btnCancel = AddGenericButton(y + SystemInformation.DragSize.Height, "Cancel");
+            btnCancel.Click += delegate (object sender, EventArgs e) {
+                this.Close();
+            };
+
+            this.ClientSize = new Size(this.ClientRectangle.Width, btnCancel.Bottom);
             this.MinimumSize = this.Size;
             this.MaximumSize = new Size(this.Size.Width * 2, this.Size.Height);
 
@@ -200,55 +204,53 @@ namespace Bimil {
         }
 
 
-        private Rectangle AddButton(int top, string caption, IEnumerable<AutotypeToken> tokens = null, Record record = null, bool isTextHidden = false, bool isCancel = false, bool isDefinedAutoType = false) {
+        private Button AddGenericButton(int top, string caption, double heightMultiplier = 2) {
             var btn = new Button() { Text = caption, Left = this.ClientRectangle.Left, Width = this.ClientRectangle.Width, Top = top, Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right, AutoEllipsis = true };
+            btn.Height = (int)(btn.Height * heightMultiplier);
 
-            if (tokens == null) {
-                btn.Height *= 2;
+            this.Controls.Add(btn);
+
+            return btn;
+        }
+
+        private Rectangle AddTokenButton(int top, string caption, IEnumerable<AutotypeToken> tokens = null, Record record = null, bool isTextHidden = false, bool isDefinedAutoType = false) {
+            var btn = AddGenericButton(top, caption, 3);
+
+            btn.Text += "\n";
+            if (isTextHidden) {
+                btn.Text += "******";
             } else {
-                btn.Height *= 3;
-                btn.Text += "\n";
-                if (isTextHidden) {
-                    btn.Text += "******";
-                } else {
-                    if (tokens != null) {
-                        var sb = new StringBuilder();
-                        foreach (var token in tokens) {
-                            if ((token.Kind != AutotypeTokenKind.Key) || (token.Content.StartsWith("{", StringComparison.Ordinal) && token.Content.EndsWith("}", StringComparison.Ordinal))) {
-                                sb.Append(" ");
-                            }
-                            sb.Append(token.Content);
+                if (tokens != null) {
+                    var sb = new StringBuilder();
+                    foreach (var token in tokens) {
+                        if ((token.Kind != AutotypeTokenKind.Key) || (token.Content.StartsWith("{", StringComparison.Ordinal) && token.Content.EndsWith("}", StringComparison.Ordinal))) {
+                            sb.Append(" ");
                         }
-                        btn.Text += sb.ToString();
+                        sb.Append(token.Content);
                     }
-                };
-            }
+                    btn.Text += sb.ToString();
+                }
+            };
 
-            if (isCancel) {
-                btn.Click += delegate (object sender, EventArgs e) {
-                    this.Close();
-                };
-            } else {
-                btn.Click += delegate (object sender, EventArgs e) {
-                    this.Visible = false;
+            btn.Click += delegate (object sender, EventArgs e) {
+                this.Visible = false;
 
-                    var processedTokens = new List<AutotypeToken>();
-                    foreach (var token in AutotypeToken.GetAutotypeTokens(tokens, this.Entry)) {
-                        if ((token.Kind == AutotypeTokenKind.Command) && token.Content.Equals("TwoFactorCode", StringComparison.Ordinal)) {
-                            var bytes = (record != null) ? record.GetBytes() : this.Entry.TwoFactorKey;
-                            var key = OneTimePassword.ToBase32(bytes, bytes.Length, SecretFormatFlags.Spacing | SecretFormatFlags.Padding);
-                            processedTokens.AddRange(AutotypeToken.GetAutotypeTokensFromText(Helpers.GetTwoFactorCode(key)));
-                        } else {
-                            processedTokens.Add(token);
-                        }
+                var processedTokens = new List<AutotypeToken>();
+                foreach (var token in AutotypeToken.GetAutotypeTokens(tokens, this.Entry)) {
+                    if ((token.Kind == AutotypeTokenKind.Command) && token.Content.Equals("TwoFactorCode", StringComparison.Ordinal)) {
+                        var bytes = (record != null) ? record.GetBytes() : this.Entry.TwoFactorKey;
+                        var key = OneTimePassword.ToBase32(bytes, bytes.Length, SecretFormatFlags.Spacing | SecretFormatFlags.Padding);
+                        processedTokens.AddRange(AutotypeToken.GetAutotypeTokensFromText(Helpers.GetTwoFactorCode(key)));
+                    } else {
+                        processedTokens.Add(token);
                     }
+                }
 
-                    this.CloseAfterType = isDefinedAutoType;
-                    tryProgress.Icon = Bimil.Properties.Resources.icoProgress0;
-                    tryProgress.Visible = true;
-                    bwType.RunWorkerAsync(processedTokens.AsReadOnly());
-                };
-            }
+                this.CloseAfterType = isDefinedAutoType;
+                tryProgress.Icon = Bimil.Properties.Resources.icoProgress0;
+                tryProgress.Visible = true;
+                bwType.RunWorkerAsync(processedTokens.AsReadOnly());
+            };
 
             this.Controls.Add(btn);
 
