@@ -109,6 +109,12 @@
     <Compile Include="%28PasswordSafe%29\AutoTypeTokenKind.cs" />
     <Compile Include="%28PasswordSafe%29\PasswordHistoryCollection.cs" />
     <Compile Include="%28PasswordSafe%29\PasswordHistoryItem.cs" />
+    <Compile Include="AutotypeHelpForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AutotypeHelpForm.Designer.cs">
+      <DependentUpon>AutotypeHelpForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="BimilDocument\BimilDocument.cs" />
     <Compile Include="BimilDocument\BimilItem.cs" />
     <Compile Include="BimilDocument\BimilRecord.cs" />
@@ -219,6 +225,9 @@
     <Compile Include="Templates.cs" />
     <EmbeddedResource Include="AutotypeForm.resx">
       <DependentUpon>AutotypeForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AutotypeHelpForm.resx">
+      <DependentUpon>AutotypeHelpForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ItemForm.resx">
       <DependentUpon>ItemForm.cs</DependentUpon>

@@ -289,6 +289,16 @@ namespace Bimil {
                             var textBox = NewTextBox(labelWidth, y, record);
                             pnl.Controls.Add(textBox);
 
+                            pnl.Controls.Add(NewHelpButton(textBox, "Help for auto-type.", delegate (object sender2, EventArgs e2) {
+                                using (var frm = new AutotypeHelpForm(textBox.Text, textBox.ReadOnly)) {
+                                    if (frm.ShowDialog(this) == DialogResult.OK) {
+                                        if (!textBox.ReadOnly) {
+                                            textBox.Text = frm.AutotypeText;
+                                        }
+                                    }
+                                }
+                            }));
+
                             yH = textBox.Height;
                         }
                         break;
@@ -733,6 +743,28 @@ namespace Bimil {
                         frm.ShowDialog(this);
                     }
                 }
+            });
+
+            return button;
+        }
+
+        private Button NewHelpButton(TextBox parentTextBox, string tipText, EventHandler clickHandler) {
+            parentTextBox.Width -= parentTextBox.Height;
+            var button = new Button() {
+                Name = "btnHelp",
+                Location = new Point(parentTextBox.Right, parentTextBox.Top),
+                Size = new Size(parentTextBox.Height, parentTextBox.Height),
+                TabStop = false,
+                Tag = parentTextBox,
+                Text = "",
+                Anchor = AnchorStyles.Top | AnchorStyles.Right
+            };
+            Helpers.ScaleButton(button);
+
+            tip.SetToolTip(button, tipText);
+
+            button.Click += new EventHandler(delegate (object sender, EventArgs e) {
+                clickHandler.Invoke(sender, e);
             });
 
             return button;
