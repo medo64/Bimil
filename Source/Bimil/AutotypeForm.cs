@@ -13,6 +13,8 @@ namespace Bimil {
         public AutotypeForm(Entry entry) {
             InitializeComponent();
 
+            var minWidth = this.Width;
+
             this.Font = SystemFonts.MessageBoxFont;
             Medo.Windows.Forms.State.SetupOnLoadAndClose(this);
             this.Opacity = Settings.AutoTypeWindowOpacity / 100;
@@ -53,13 +55,7 @@ namespace Bimil {
                 buttonEnterSuffix.Checked = true;
             };
 
-            var toolstrip = new ToolStrip() { Dock = DockStyle.None, Left = this.ClientRectangle.Left, Top = y + SystemInformation.DragSize.Height, GripStyle = ToolStripGripStyle.Hidden, RenderMode = ToolStripRenderMode.System };
-            toolstrip.Items.Add(new ToolStripLabel("Suffix:") { ForeColor = SystemColors.GrayText });
-            toolstrip.Items.AddRange(new ToolStripItem[] { buttonNoSuffix, buttonTabSuffix, buttonEnterSuffix });
-            buttonNoSuffix.PerformClick();
-
-            this.Controls.Add(toolstrip);
-            y = toolstrip.Bottom;
+            y += SystemInformation.DragSize.Height;
 
             //all textual fields
             foreach (var record in entry.Records) {
@@ -90,14 +86,38 @@ namespace Bimil {
                 }
             }
 
-            var btnCancel = AddGenericButton(y + SystemInformation.DragSize.Height, "Cancel");
-            btnCancel.Click += delegate (object sender, EventArgs e) {
-                this.Close();
+            y += SystemInformation.DragSize.Height;
+
+            var btnTab = AddGenericButton(y, "Tab");
+            var btnEnter = AddGenericButton(y, "Enter");
+            btnTab.Width /= 2;
+            btnEnter.Left = btnTab.Right;
+            btnEnter.Width = this.ClientSize.Width - btnEnter.Left;
+            this.Resize += delegate (object sender, EventArgs e) {
+                btnTab.Width = this.ClientSize.Width / 2;
+                btnEnter.Left = btnTab.Right;
+                btnEnter.Width = this.ClientSize.Width - btnEnter.Left;
             };
+            btnTab.Click += delegate (object sender, EventArgs e) { ExecuteTokens(AutotypeToken.GetAutotypeTokensFromText("\t"), false); };
+            btnEnter.Click += delegate (object sender, EventArgs e) { ExecuteTokens(AutotypeToken.GetAutotypeTokensFromText("\n"), false); };
+            y = btnEnter.Bottom;
+
+            var toolstrip = new ToolStrip() { Dock = DockStyle.None, Left = this.ClientRectangle.Left, Top = y + SystemInformation.DragSize.Height, GripStyle = ToolStripGripStyle.Hidden, RenderMode = ToolStripRenderMode.System };
+            toolstrip.Items.Add(new ToolStripLabel("Suffix:") { ForeColor = SystemColors.GrayText });
+            toolstrip.Items.AddRange(new ToolStripItem[] { buttonNoSuffix, buttonTabSuffix, buttonEnterSuffix });
+            buttonNoSuffix.PerformClick();
+
+            this.Controls.Add(toolstrip);
+            y = toolstrip.Bottom;
+
+            y += SystemInformation.DragSize.Height;
+
+            var btnCancel = AddGenericButton(y, "Cancel");
+            btnCancel.Click += delegate (object sender, EventArgs e) { this.Close(); };
 
             this.ClientSize = new Size(this.ClientRectangle.Width, btnCancel.Bottom);
-            this.MinimumSize = this.Size;
-            this.MaximumSize = new Size(this.Size.Width * 2, this.Size.Height);
+            this.MinimumSize = new Size(minWidth, this.Height);
+            this.MaximumSize = new Size(minWidth * 2, this.Height);
 
             this.Entry = entry;
         }
@@ -233,8 +253,6 @@ namespace Bimil {
             };
 
             btn.Click += delegate (object sender, EventArgs e) {
-                this.Visible = false;
-
                 var processedTokens = new List<AutotypeToken>();
                 foreach (var token in AutotypeToken.GetAutotypeTokens(tokens, this.Entry)) {
                     if ((token.Kind == AutotypeTokenKind.Command) && token.Content.Equals("TwoFactorCode", StringComparison.Ordinal)) {
@@ -246,15 +264,21 @@ namespace Bimil {
                     }
                 }
 
-                this.CloseAfterType = isDefinedAutoType;
-                tryProgress.Icon = Bimil.Properties.Resources.icoProgress0;
-                tryProgress.Visible = true;
-                bwType.RunWorkerAsync(processedTokens.AsReadOnly());
+                ExecuteTokens(processedTokens.AsReadOnly(), isDefinedAutoType);
             };
 
             this.Controls.Add(btn);
 
             return new Rectangle(btn.Location, btn.Size);
+        }
+
+        private void ExecuteTokens(IEnumerable<AutotypeToken> tokens, bool closeAfterType) {
+            this.Visible = false;
+
+            this.CloseAfterType = closeAfterType;
+            tryProgress.Icon = Bimil.Properties.Resources.icoProgress0;
+            tryProgress.Visible = true;
+            bwType.RunWorkerAsync(tokens);
         }
 
 
