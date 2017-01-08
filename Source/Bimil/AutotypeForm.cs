@@ -112,10 +112,10 @@ namespace Bimil {
 
             y += SystemInformation.DragSize.Height;
 
-            var btnCancel = AddGenericButton(y, "Cancel");
-            btnCancel.Click += delegate (object sender, EventArgs e) { this.Close(); };
+            var btnClose = AddGenericButton(y, "Close");
+            btnClose.Click += delegate (object sender, EventArgs e) { this.Close(); };
 
-            this.ClientSize = new Size(this.ClientRectangle.Width, btnCancel.Bottom);
+            this.ClientSize = new Size(this.ClientRectangle.Width, btnClose.Bottom);
             this.MinimumSize = new Size(minWidth, this.Height);
             this.MaximumSize = new Size(minWidth * 2, this.Height);
 
