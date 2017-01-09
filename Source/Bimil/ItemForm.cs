@@ -869,8 +869,8 @@ namespace Bimil {
                 }
             }
 
-            var fileName = sbFileName.ToString().Trim();
-            var arguments = sbArguments.ToString().Trim();
+            var fileName = FillEnvironment(sbFileName.ToString().Trim());
+            var arguments = FillEnvironment(sbArguments.ToString().Trim());
 
             return new ProcessStartInfo(fileName, arguments);
         }
@@ -880,6 +880,51 @@ namespace Bimil {
             FileName,
             QuotedFileName,
             Arguments,
+        }
+
+
+        private string FillEnvironment(string text) {
+            var sb = new StringBuilder();
+            var sbVariable = new StringBuilder();
+
+            var state = EnvironmentState.Default;
+            foreach (var ch in text) {
+                switch (state) {
+                    case EnvironmentState.Default:
+                        if (ch == '%') {
+                            state = EnvironmentState.PercentVariable;
+                        } else {
+                            sb.Append(ch);
+                        }
+                        break;
+
+                    case EnvironmentState.PercentVariable:
+                        if (ch == '%') {
+                            if (sbVariable.Length == 0) { //just double percent
+                                sb.Append("%");
+                            } else {
+                                var value = Environment.GetEnvironmentVariable(sbVariable.ToString().Trim());
+                                if (value != null) {
+                                    sb.Append(value);
+                                } else { //just copy it all if environment variable is not found
+                                    sb.Append("%" + sbVariable.ToString() + "%");
+                                }
+                                sbVariable.Length = 0;
+                            }
+                            state = EnvironmentState.Default;
+                        } else {
+                            sbVariable.Append(ch);
+                        }
+                        break;
+                }
+            }
+
+            return sb.ToString();
+        }
+
+        private enum EnvironmentState {
+            Default,
+            PercentVariable,
         }
 
 
