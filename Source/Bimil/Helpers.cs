@@ -52,6 +52,7 @@ namespace Bimil {
 
                 case RecordType.Autotype: return "Auto-type";
                 case RecordType.PasswordHistory: return "Password history";
+                case RecordType.RunCommand: return "Run command";
 
                 default: return null; //all other fields are not really supported
             }
@@ -76,6 +77,7 @@ namespace Bimil {
 
             yield return RecordType.Autotype;
             yield return RecordType.PasswordHistory;
+            yield return RecordType.RunCommand;
         }
 
         public static bool GetIsHideable(RecordType recordType) {

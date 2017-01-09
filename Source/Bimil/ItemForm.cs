@@ -7,6 +7,7 @@ using Medo.Security.Cryptography.PasswordSafe;
 using System.Collections.Generic;
 using System.Web;
 using Medo.Security.Cryptography;
+using System.Text;
 
 namespace Bimil {
     internal partial class ItemForm : Form {
@@ -298,6 +299,16 @@ namespace Bimil {
                                     }
                                 }
                             }));
+
+                            yH = textBox.Height;
+                        }
+                        break;
+
+                    case RecordType.RunCommand: {
+                            var textBox = NewTextBox(labelWidth, y, record);
+                            pnl.Controls.Add(textBox);
+
+                            pnl.Controls.Add(NewExecuteCommandButton(textBox));
 
                             yH = textBox.Height;
                         }
@@ -770,6 +781,37 @@ namespace Bimil {
             return button;
         }
 
+        private Button NewExecuteCommandButton(TextBox parentTextBox) {
+            parentTextBox.Width -= parentTextBox.Height;
+            var button = new Button() {
+                Name = "btnExecute",
+                Location = new Point(parentTextBox.Right, parentTextBox.Top),
+                Size = new Size(parentTextBox.Height, parentTextBox.Height),
+                TabStop = false,
+                Tag = parentTextBox,
+                Text = "",
+                Anchor = AnchorStyles.Top | AnchorStyles.Right
+            };
+            Helpers.ScaleButton(button);
+
+            tip.SetToolTip(button, "Execute command");
+
+            button.Click += new EventHandler(delegate (object sender, EventArgs e) {
+                var text = ((TextBox)button.Tag).Text;
+                var startInfo = GetStartInfo(text);
+
+                try {
+                    Process.Start(startInfo);
+                } catch (InvalidOperationException ex) { //inproper call
+                    Medo.MessageBox.ShowError(this, "Cannot parse command.\n\n" + ex.Message);
+                } catch (SystemException ex) {
+                    Medo.MessageBox.ShowError(this, ex.Message);
+                }
+            });
+
+            return button;
+        }
+
 
         private string GetUrl(string text) {
             var url = text.Trim();
@@ -787,6 +829,57 @@ namespace Bimil {
             } else {
                 return "";
             }
+        }
+
+        private ProcessStartInfo GetStartInfo(string text) {
+            var sbFileName = new StringBuilder();
+            var sbArguments = new StringBuilder();
+
+            var state = StartInfoState.Default;
+            foreach (var ch in text.Trim()) {
+                switch (state) {
+                    case StartInfoState.Default:
+                        if (ch == '\"') {
+                            state = StartInfoState.QuotedFileName;
+                        } else {
+                            sbFileName.Append(ch);
+                            state = StartInfoState.FileName;
+                        }
+                        break;
+
+                    case StartInfoState.FileName:
+                        if ((ch == ' ') || (ch == '\"')) {
+                            state = StartInfoState.Arguments;
+                        } else {
+                            sbFileName.Append(ch);
+                        }
+                        break;
+
+                    case StartInfoState.QuotedFileName:
+                        if (ch == '\"') {
+                            state = StartInfoState.Arguments;
+                        } else {
+                            sbFileName.Append(ch);
+                        }
+                        break;
+
+                    case StartInfoState.Arguments:
+                        sbArguments.Append(ch);
+                        break;
+                }
+            }
+
+            var fileName = sbFileName.ToString().Trim();
+            var arguments = sbArguments.ToString().Trim();
+
+            return new ProcessStartInfo(fileName, arguments);
+        }
+
+        private enum StartInfoState {
+            Default,
+            FileName,
+            QuotedFileName,
+            Arguments,
         }
 
 
