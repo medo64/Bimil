@@ -13,8 +13,6 @@ namespace Bimil {
         public AutotypeForm(Entry entry) {
             InitializeComponent();
 
-            var minWidth = this.Width;
-
             this.Font = SystemFonts.MessageBoxFont;
             Medo.Windows.Forms.State.SetupOnLoadAndClose(this);
             this.Opacity = Settings.AutoTypeWindowOpacity / 100;
@@ -115,9 +113,9 @@ namespace Bimil {
             var btnClose = AddGenericButton(y, "Close");
             btnClose.Click += delegate (object sender, EventArgs e) { this.Close(); };
 
-            this.ClientSize = new Size(this.ClientRectangle.Width, btnClose.Bottom);
-            this.MinimumSize = new Size(minWidth, this.Height);
-            this.MaximumSize = new Size(minWidth * 2, this.Height);
+            this.ClientSize = new Size(SystemInformation.VerticalScrollBarWidth * 12, btnClose.Bottom);
+            this.MinimumSize = new Size(SystemInformation.VerticalScrollBarWidth * 10, this.Height);
+            this.MaximumSize = new Size(SystemInformation.VerticalScrollBarWidth * 30, this.Height);
 
             this.Entry = entry;
         }
@@ -226,7 +224,7 @@ namespace Bimil {
 
         private Button AddGenericButton(int top, string caption, double heightMultiplier = 2) {
             var btn = new Button() { Text = caption, Left = this.ClientRectangle.Left, Width = this.ClientRectangle.Width, Top = top, Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right, AutoEllipsis = true };
-            btn.Height = (int)(btn.Height * heightMultiplier);
+            btn.Height = (int)(SystemInformation.HorizontalScrollBarHeight * 1.25 * heightMultiplier);
 
             this.Controls.Add(btn);
 
