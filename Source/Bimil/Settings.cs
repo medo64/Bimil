@@ -141,7 +141,7 @@ namespace Bimil {
 
         [Browsable(false)]
         public static int PasswordGeneratorLength {
-            get { return LimitBetween(Medo.Configuration.Settings.Read("PasswordGeneratorLength", 12), minValue: 4, maxValue: 99, allowZero: false); }
+            get { return LimitBetween(Medo.Configuration.Settings.Read("PasswordGeneratorLength", 14), minValue: 4, maxValue: 99, allowZero: false); }
             set { Medo.Configuration.Settings.Write("PasswordGeneratorLength", LimitBetween(value, minValue: 1, maxValue: 99, allowZero: false)); }
         }
 
