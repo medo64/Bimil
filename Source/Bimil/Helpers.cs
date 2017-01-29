@@ -51,7 +51,6 @@ namespace Bimil {
                 case RecordType.QRCode: return "QR Code";
 
                 case RecordType.Autotype: return "Auto-type";
-                case RecordType.PasswordHistory: return "Password history";
                 case RecordType.RunCommand: return "Run command";
 
                 default: return null; //all other fields are not really supported
@@ -76,7 +75,6 @@ namespace Bimil {
             yield return RecordType.Notes;
 
             yield return RecordType.Autotype;
-            yield return RecordType.PasswordHistory;
             yield return RecordType.RunCommand;
         }
 

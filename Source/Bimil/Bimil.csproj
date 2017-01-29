@@ -133,6 +133,12 @@
     <Compile Include="ItemForm.Designer.cs">
       <DependentUpon>ItemForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="PasswordDetailsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PasswordDetailsForm.Designer.cs">
+      <DependentUpon>PasswordDetailsForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="PasswordGeneratorForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -231,6 +237,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ItemForm.resx">
       <DependentUpon>ItemForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PasswordDetailsForm.resx">
+      <DependentUpon>PasswordDetailsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PasswordGeneratorForm.resx">
       <DependentUpon>PasswordGeneratorForm.cs</DependentUpon>

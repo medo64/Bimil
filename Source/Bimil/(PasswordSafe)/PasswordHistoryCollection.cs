@@ -116,6 +116,15 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         }
 
 
+        /// <summary>
+        /// Removes all passwords currently stored.
+        /// </summary>
+        public void Clear() {
+            this.BaseCollection.Clear();
+            this.MarkAsChanged();
+        }
+
+
         internal void AddPasswordToHistory(DateTime time, string password) {
             if (this.Enabled && !string.IsNullOrEmpty(password)) { //change only if enabled and not empty
                 this.BaseCollection.Add(new PasswordHistoryItem(this, time, password));

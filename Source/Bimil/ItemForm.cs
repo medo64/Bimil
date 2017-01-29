@@ -204,17 +204,16 @@ namespace Bimil {
 
                             pnl.Controls.Add(NewCopyButton(textBox));
                             pnl.Controls.Add(NewShowPasswordButton(textBox));
+                            pnl.Controls.Add(NewConfigureButton(textBox, delegate (object sender2, EventArgs e2) {
+                                using (var frm = new PasswordDetailsForm(this.Item, textBox.ReadOnly)) {
+                                    if (frm.ShowDialog(this) == DialogResult.OK) {
+                                        //TODO:
+                                    }
+                                }
+                            }, "Password policy configuration."));
                             pnl.Controls.Add(NewGeneratePasswordButton(textBox));
 
                             yH = textBox.Height;
-                        }
-                        break;
-
-                    case RecordType.PasswordHistory: {
-                            var control = NewPasswordHistoryComboBox(labelWidth, y, this.Item);
-                            pnl.Controls.Add(control);
-
-                            yH = control.Height;
                         }
                         break;
 
@@ -290,7 +289,7 @@ namespace Bimil {
                             var textBox = NewTextBox(labelWidth, y, record);
                             pnl.Controls.Add(textBox);
 
-                            pnl.Controls.Add(NewHelpButton(textBox, "Help for auto-type.", delegate (object sender2, EventArgs e2) {
+                            pnl.Controls.Add(NewConfigureButton(textBox, delegate (object sender2, EventArgs e2) {
                                 using (var frm = new AutotypeHelpForm(textBox.Text, textBox.ReadOnly)) {
                                     if (frm.ShowDialog(this) == DialogResult.OK) {
                                         if (!textBox.ReadOnly) {
@@ -298,7 +297,7 @@ namespace Bimil {
                                         }
                                     }
                                 }
-                            }));
+                            }, "Auto-type configuration."));
 
                             yH = textBox.Height;
                         }
@@ -759,10 +758,10 @@ namespace Bimil {
             return button;
         }
 
-        private Button NewHelpButton(TextBox parentTextBox, string tipText, EventHandler clickHandler) {
+        private Button NewConfigureButton(TextBox parentTextBox, EventHandler clickHandler, string tipText = null, bool trackReadonly = false) {
             parentTextBox.Width -= parentTextBox.Height;
             var button = new Button() {
-                Name = "btnHelp",
+                Name = "btnConfigure",
                 Location = new Point(parentTextBox.Right, parentTextBox.Top),
                 Size = new Size(parentTextBox.Height, parentTextBox.Height),
                 TabStop = false,
@@ -772,11 +771,18 @@ namespace Bimil {
             };
             Helpers.ScaleButton(button);
 
-            tip.SetToolTip(button, tipText);
+            tip.SetToolTip(button, tipText ?? "Configure");
 
             button.Click += new EventHandler(delegate (object sender, EventArgs e) {
                 clickHandler.Invoke(sender, e);
             });
+
+            if (trackReadonly) {
+                button.Enabled = !parentTextBox.ReadOnly;
+                parentTextBox.ReadOnlyChanged += delegate (object sender2, EventArgs e2) {
+                    button.Enabled = !parentTextBox.ReadOnly;
+                };
+            }
 
             return button;
         }
