@@ -48,6 +48,7 @@ namespace Bimil {
             this.btnCancel.Size = new System.Drawing.Size(90, 28);
             this.btnCancel.TabIndex = 0;
             this.btnCancel.Text = "Cancel";
+            this.tip.SetToolTip(this.btnCancel, "Close without saving changes.");
             this.btnCancel.UseVisualStyleBackColor = true;
             // 
             // btnOK
@@ -60,6 +61,7 @@ namespace Bimil {
             this.btnOK.Size = new System.Drawing.Size(90, 28);
             this.btnOK.TabIndex = 10;
             this.btnOK.Text = "OK";
+            this.tip.SetToolTip(this.btnOK, "Save changes.");
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
             // 

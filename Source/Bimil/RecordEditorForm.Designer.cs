@@ -23,6 +23,7 @@ namespace Bimil {
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
+            this.components = new System.ComponentModel.Container();
             this.pnlFields = new System.Windows.Forms.Panel();
             this.lsvFields = new System.Windows.Forms.ListView();
             this.lsvFields_colTitle = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -30,6 +31,7 @@ namespace Bimil {
             this.btnOK = new System.Windows.Forms.Button();
             this.btnAdd = new System.Windows.Forms.Button();
             this.btnRemove = new System.Windows.Forms.Button();
+            this.tip = new System.Windows.Forms.ToolTip(this.components);
             this.pnlFields.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -80,6 +82,7 @@ namespace Bimil {
             this.btnCancel.Size = new System.Drawing.Size(90, 28);
             this.btnCancel.TabIndex = 4;
             this.btnCancel.Text = "Cancel";
+            this.tip.SetToolTip(this.btnCancel, "Close without saving changes.");
             this.btnCancel.UseVisualStyleBackColor = true;
             // 
             // btnOK
@@ -92,6 +95,7 @@ namespace Bimil {
             this.btnOK.Size = new System.Drawing.Size(90, 28);
             this.btnOK.TabIndex = 3;
             this.btnOK.Text = "OK";
+            this.tip.SetToolTip(this.btnOK, "Save changes.");
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
             // 
@@ -104,6 +108,7 @@ namespace Bimil {
             this.btnAdd.Size = new System.Drawing.Size(90, 28);
             this.btnAdd.TabIndex = 1;
             this.btnAdd.Text = "Add";
+            this.tip.SetToolTip(this.btnAdd, "Add a field.");
             this.btnAdd.UseVisualStyleBackColor = true;
             this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
             // 
@@ -117,6 +122,7 @@ namespace Bimil {
             this.btnRemove.Size = new System.Drawing.Size(90, 28);
             this.btnRemove.TabIndex = 2;
             this.btnRemove.Text = "Remove";
+            this.tip.SetToolTip(this.btnRemove, "Remove a field.");
             this.btnRemove.UseVisualStyleBackColor = true;
             this.btnRemove.Click += new System.EventHandler(this.btnRemove_Click);
             // 
@@ -155,5 +161,6 @@ namespace Bimil {
         private System.Windows.Forms.Button btnOK;
         private System.Windows.Forms.Button btnAdd;
         private System.Windows.Forms.Button btnRemove;
+        private System.Windows.Forms.ToolTip tip;
     }
 }

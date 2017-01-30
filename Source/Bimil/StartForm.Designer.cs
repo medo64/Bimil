@@ -78,7 +78,7 @@ namespace Bimil {
             this.mnxListRemove,
             this.mnxListReadOnly});
             this.mnxList.Name = "mnxList";
-            this.mnxList.Size = new System.Drawing.Size(207, 142);
+            this.mnxList.Size = new System.Drawing.Size(207, 114);
             this.mnxList.Opening += new System.ComponentModel.CancelEventHandler(this.mnxList_Opening);
             // 
             // mnxListOpen
@@ -125,7 +125,7 @@ namespace Bimil {
             this.btnOpen.Size = new System.Drawing.Size(100, 30);
             this.btnOpen.TabIndex = 1;
             this.btnOpen.Text = "&Open";
-            this.tip.SetToolTip(this.btnOpen, "Open file");
+            this.tip.SetToolTip(this.btnOpen, "Open file.");
             this.btnOpen.UseVisualStyleBackColor = true;
             this.btnOpen.Click += new System.EventHandler(this.btnOpen_Click);
             // 
@@ -139,7 +139,7 @@ namespace Bimil {
             this.btnClose.Size = new System.Drawing.Size(100, 30);
             this.btnClose.TabIndex = 4;
             this.btnClose.Text = "Close";
-            this.tip.SetToolTip(this.btnClose, "Close dialog");
+            this.tip.SetToolTip(this.btnClose, "Close.");
             this.btnClose.UseVisualStyleBackColor = true;
             // 
             // btnNew
@@ -152,7 +152,7 @@ namespace Bimil {
             this.btnNew.Size = new System.Drawing.Size(100, 30);
             this.btnNew.TabIndex = 3;
             this.btnNew.Text = "&New";
-            this.tip.SetToolTip(this.btnNew, "Create a new file");
+            this.tip.SetToolTip(this.btnNew, "Create a new file.");
             this.btnNew.UseVisualStyleBackColor = true;
             this.btnNew.Click += new System.EventHandler(this.btnNew_Click);
             // 
@@ -167,7 +167,7 @@ namespace Bimil {
             this.btnOpenReadOnly.Size = new System.Drawing.Size(100, 30);
             this.btnOpenReadOnly.TabIndex = 2;
             this.btnOpenReadOnly.Text = "Open (&r/o)";
-            this.tip.SetToolTip(this.btnOpenReadOnly, "Open read/only");
+            this.tip.SetToolTip(this.btnOpenReadOnly, "Open read/only.");
             this.btnOpenReadOnly.UseVisualStyleBackColor = true;
             this.btnOpenReadOnly.Click += new System.EventHandler(this.btnOpenReadOnly_Click);
             // 

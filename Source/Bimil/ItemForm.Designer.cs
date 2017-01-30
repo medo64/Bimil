@@ -55,6 +55,7 @@ namespace Bimil {
             this.btnCancel.Size = new System.Drawing.Size(90, 28);
             this.btnCancel.TabIndex = 0;
             this.btnCancel.Text = "Cancel";
+            this.tip.SetToolTip(this.btnCancel, "Close form without saving.");
             this.btnCancel.UseVisualStyleBackColor = true;
             // 
             // btnOK
@@ -67,6 +68,7 @@ namespace Bimil {
             this.btnOK.Size = new System.Drawing.Size(90, 28);
             this.btnOK.TabIndex = 5;
             this.btnOK.Text = "OK";
+            this.tip.SetToolTip(this.btnOK, "Save changes and close form.");
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Visible = false;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
@@ -80,6 +82,7 @@ namespace Bimil {
             this.btnEdit.Size = new System.Drawing.Size(90, 28);
             this.btnEdit.TabIndex = 3;
             this.btnEdit.Text = "Edit";
+            this.tip.SetToolTip(this.btnEdit, "Allow entry editing.");
             this.btnEdit.UseVisualStyleBackColor = true;
             this.btnEdit.Click += new System.EventHandler(this.btnEdit_Click);
             // 
@@ -92,6 +95,7 @@ namespace Bimil {
             this.btnFields.Size = new System.Drawing.Size(90, 28);
             this.btnFields.TabIndex = 4;
             this.btnFields.Text = "Fields";
+            this.tip.SetToolTip(this.btnFields, "Add or remove fields.");
             this.btnFields.UseVisualStyleBackColor = true;
             this.btnFields.Visible = false;
             this.btnFields.Click += new System.EventHandler(this.btnFields_Click);
@@ -107,6 +111,7 @@ namespace Bimil {
             this.btnAutotype.Size = new System.Drawing.Size(90, 28);
             this.btnAutotype.TabIndex = 2;
             this.btnAutotype.Text = "Auto-type";
+            this.tip.SetToolTip(this.btnAutotype, "Shows auto-type menu.");
             this.btnAutotype.UseVisualStyleBackColor = true;
             this.btnAutotype.Click += new System.EventHandler(this.btnAutotype_Click);
             // 

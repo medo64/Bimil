@@ -23,6 +23,7 @@ namespace Bimil {
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
+            this.components = new System.ComponentModel.Container();
             this.grpPasswordHistory = new System.Windows.Forms.GroupBox();
             this.btnHistoryClean = new System.Windows.Forms.Button();
             this.lblHistoryCount = new System.Windows.Forms.Label();
@@ -35,6 +36,7 @@ namespace Bimil {
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnOK = new System.Windows.Forms.Button();
             this.lblEditInfo = new System.Windows.Forms.Label();
+            this.tip = new System.Windows.Forms.ToolTip(this.components);
             this.grpPasswordHistory.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudHistoryCount)).BeginInit();
             this.SuspendLayout();
@@ -64,6 +66,7 @@ namespace Bimil {
             this.btnHistoryClean.Size = new System.Drawing.Size(114, 25);
             this.btnHistoryClean.TabIndex = 3;
             this.btnHistoryClean.Text = "Clean";
+            this.tip.SetToolTip(this.btnHistoryClean, "Clean all saved passwords.");
             this.btnHistoryClean.UseVisualStyleBackColor = true;
             this.btnHistoryClean.Click += new System.EventHandler(this.btnHistoryClean_Click);
             // 
@@ -88,6 +91,7 @@ namespace Bimil {
             this.btnHistoryShow.Size = new System.Drawing.Size(114, 25);
             this.btnHistoryShow.TabIndex = 4;
             this.btnHistoryShow.Text = "Show";
+            this.tip.SetToolTip(this.btnHistoryShow, "Show old passwords.");
             this.btnHistoryShow.UseVisualStyleBackColor = true;
             this.btnHistoryShow.Click += new System.EventHandler(this.btnHistoryShow_Click);
             // 
@@ -110,6 +114,7 @@ namespace Bimil {
             this.nudHistoryCount.Size = new System.Drawing.Size(50, 22);
             this.nudHistoryCount.TabIndex = 2;
             this.nudHistoryCount.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.tip.SetToolTip(this.nudHistoryCount, "Maximum number of passwords to save.");
             this.nudHistoryCount.Value = new decimal(new int[] {
             5,
             0,
@@ -125,6 +130,7 @@ namespace Bimil {
             this.chbHistoryEnabled.Size = new System.Drawing.Size(82, 21);
             this.chbHistoryEnabled.TabIndex = 0;
             this.chbHistoryEnabled.Text = "Enabled";
+            this.tip.SetToolTip(this.chbHistoryEnabled, "Enable saving password history.");
             this.chbHistoryEnabled.UseVisualStyleBackColor = true;
             this.chbHistoryEnabled.CheckedChanged += new System.EventHandler(this.chbHistoryEnabled_CheckedChanged);
             // 
@@ -170,6 +176,7 @@ namespace Bimil {
             this.btnCancel.Size = new System.Drawing.Size(90, 28);
             this.btnCancel.TabIndex = 0;
             this.btnCancel.Text = "Cancel";
+            this.tip.SetToolTip(this.btnCancel, "Close without saving changes.");
             this.btnCancel.UseVisualStyleBackColor = true;
             // 
             // btnOK
@@ -182,6 +189,7 @@ namespace Bimil {
             this.btnOK.Size = new System.Drawing.Size(90, 28);
             this.btnOK.TabIndex = 2;
             this.btnOK.Text = "OK";
+            this.tip.SetToolTip(this.btnOK, "Save changes.");
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Visible = false;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
@@ -239,5 +247,6 @@ namespace Bimil {
         private System.Windows.Forms.Button btnHistoryClean;
         private System.Windows.Forms.ColumnHeader lsvHistoryPasswords_Password;
         private System.Windows.Forms.Label lblEditInfo;
+        private System.Windows.Forms.ToolTip tip;
     }
 }

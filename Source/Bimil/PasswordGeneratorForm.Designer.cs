@@ -100,7 +100,7 @@ namespace Bimil {
             this.btnGenerate.Size = new System.Drawing.Size(90, 28);
             this.btnGenerate.TabIndex = 4;
             this.btnGenerate.Text = "Generate";
-            this.tip.SetToolTip(this.btnGenerate, "Generate new password");
+            this.tip.SetToolTip(this.btnGenerate, "Generate new password.");
             this.btnGenerate.UseVisualStyleBackColor = true;
             this.btnGenerate.Click += new System.EventHandler(this.btnGenerate_Click);
             // 
@@ -115,6 +115,7 @@ namespace Bimil {
             this.btnCopy.Size = new System.Drawing.Size(90, 28);
             this.btnCopy.TabIndex = 0;
             this.btnCopy.Text = "Copy";
+            this.tip.SetToolTip(this.btnCopy, "Copy password to clipboard.");
             this.btnCopy.UseVisualStyleBackColor = true;
             this.btnCopy.Click += new System.EventHandler(this.btnCopy_Click);
             // 
@@ -232,7 +233,7 @@ namespace Bimil {
             this.txtLength.ShortcutsEnabled = false;
             this.txtLength.Size = new System.Drawing.Size(50, 22);
             this.txtLength.TabIndex = 3;
-            this.txtLength.Text = "12";
+            this.txtLength.Text = "14";
             this.txtLength.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.tip.SetToolTip(this.txtLength, "Length of password (1-99).");
             this.txtLength.TextChanged += new System.EventHandler(this.btnGenerate_Click);
@@ -248,7 +249,7 @@ namespace Bimil {
             this.txtWordCount.ShortcutsEnabled = false;
             this.txtWordCount.Size = new System.Drawing.Size(50, 22);
             this.txtWordCount.TabIndex = 2;
-            this.txtWordCount.Text = "4";
+            this.txtWordCount.Text = "5";
             this.txtWordCount.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.tip.SetToolTip(this.txtWordCount, "Number of words to use (1-9)");
             this.txtWordCount.TextChanged += new System.EventHandler(this.btnGenerate_Click);

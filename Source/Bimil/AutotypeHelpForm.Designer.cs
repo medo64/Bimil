@@ -23,12 +23,14 @@ namespace Bimil {
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
+            this.components = new System.ComponentModel.Container();
             this.lsvHelp = new System.Windows.Forms.ListView();
             this.lsvHelp_colEscape = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.lsvHelp_colHelp = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnOK = new System.Windows.Forms.Button();
             this.txtAutotype = new System.Windows.Forms.TextBox();
+            this.tip = new System.Windows.Forms.ToolTip(this.components);
             this.SuspendLayout();
             // 
             // lsvHelp
@@ -65,6 +67,7 @@ namespace Bimil {
             this.btnCancel.Size = new System.Drawing.Size(90, 28);
             this.btnCancel.TabIndex = 6;
             this.btnCancel.Text = "Cancel";
+            this.tip.SetToolTip(this.btnCancel, "Close without saving changes.");
             this.btnCancel.UseVisualStyleBackColor = true;
             // 
             // btnOK
@@ -77,6 +80,7 @@ namespace Bimil {
             this.btnOK.Size = new System.Drawing.Size(90, 28);
             this.btnOK.TabIndex = 7;
             this.btnOK.Text = "OK";
+            this.tip.SetToolTip(this.btnOK, "Save changes.");
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
             // 
@@ -125,5 +129,6 @@ namespace Bimil {
         private System.Windows.Forms.TextBox txtAutotype;
         private System.Windows.Forms.ColumnHeader lsvHelp_colEscape;
         private System.Windows.Forms.ColumnHeader lsvHelp_colHelp;
+        private System.Windows.Forms.ToolTip tip;
     }
 }

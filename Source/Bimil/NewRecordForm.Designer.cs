@@ -30,6 +30,7 @@ namespace Bimil {
             this.lblRecordType = new System.Windows.Forms.Label();
             this.cmbRecordType = new System.Windows.Forms.ComboBox();
             this.erp = new System.Windows.Forms.ErrorProvider(this.components);
+            this.tip = new System.Windows.Forms.ToolTip(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.erp)).BeginInit();
             this.SuspendLayout();
             // 
@@ -43,6 +44,7 @@ namespace Bimil {
             this.btnCancel.Size = new System.Drawing.Size(90, 28);
             this.btnCancel.TabIndex = 5;
             this.btnCancel.Text = "Cancel";
+            this.tip.SetToolTip(this.btnCancel, "Close without changes.");
             this.btnCancel.UseVisualStyleBackColor = true;
             // 
             // btnOK
@@ -55,6 +57,7 @@ namespace Bimil {
             this.btnOK.Size = new System.Drawing.Size(90, 28);
             this.btnOK.TabIndex = 4;
             this.btnOK.Text = "OK";
+            this.tip.SetToolTip(this.btnOK, "Insert record type.");
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
             // 
@@ -77,6 +80,7 @@ namespace Bimil {
             this.cmbRecordType.Name = "cmbRecordType";
             this.cmbRecordType.Size = new System.Drawing.Size(250, 24);
             this.cmbRecordType.TabIndex = 3;
+            this.tip.SetToolTip(this.cmbRecordType, "Record type.");
             this.cmbRecordType.SelectedIndexChanged += new System.EventHandler(this.cmbRecordType_SelectedIndexChanged);
             // 
             // erp
@@ -117,5 +121,6 @@ namespace Bimil {
         private System.Windows.Forms.Label lblRecordType;
         private System.Windows.Forms.ComboBox cmbRecordType;
         private System.Windows.Forms.ErrorProvider erp;
+        private System.Windows.Forms.ToolTip tip;
     }
 }
