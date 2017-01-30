@@ -78,6 +78,10 @@ namespace Bimil {
                     mnuSearch.PerformClick();
                     return true;
 
+                case Keys.Control | Keys.T:
+                    mnxEntryAutotype_Click(null, null);
+                    return true;
+
                 case Keys.F5:
                     RefreshCategories();
                     RefreshItems();
