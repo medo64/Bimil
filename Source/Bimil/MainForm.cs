@@ -690,17 +690,7 @@ namespace Bimil {
         }
 
         private void mnuEdit_Click(object sender, EventArgs e) {
-            if ((this.Document == null) || (lsvEntries.SelectedItems.Count != 1)) { return; }
-
-            var item = (Entry)(lsvEntries.SelectedItems[0].Tag);
-            using (var frm2 = new ItemForm(this.Document, item, this.Categories, startsAsEditable: Settings.EditableByDefault)) {
-                if (frm2.ShowDialog(this) == DialogResult.OK) {
-                    lsvEntries.SelectedItems[0].Text = item.Title;
-                    RefreshCategories();
-                    RefreshItems(item);
-                }
-                UpdateMenu();
-            }
+            ShowEntry(Settings.EditableByDefault);
         }
 
         private void mnuRemove_Click(object sender, EventArgs e) {
@@ -750,6 +740,46 @@ namespace Bimil {
         private void mnuAppAbout_Click(object sender, EventArgs e) {
             Medo.Windows.Forms.AboutBox.ShowDialog(this, new Uri("https://www.medo64.com/bimil/"));
             cmbSearch.Select();
+        }
+
+
+        private void mnxEntry_Opening(object sender, System.ComponentModel.CancelEventArgs e) {
+            if (Settings.EditableByDefault) {
+                mnxEntryView.Font = new Font(mnxEntryView.Font, FontStyle.Regular);
+                mnxEntryEdit.Font = new Font(mnxEntryView.Font, FontStyle.Bold);
+            } else {
+                mnxEntryView.Font = new Font(mnxEntryView.Font, FontStyle.Bold);
+                mnxEntryEdit.Font = new Font(mnxEntryView.Font, FontStyle.Regular);
+            }
+
+            var isEntrySelected = lsvEntries.SelectedItems.Count > 0;
+            mnxEntryView.Enabled = isEntrySelected;
+            mnxEntryEdit.Enabled = isEntrySelected;
+            mnxEntryAutotype.Enabled = isEntrySelected;
+        }
+
+        private void mnxEntryView_Click(object sender, EventArgs e) {
+            ShowEntry(false);
+        }
+
+        private void mnxEntryEdit_Click(object sender, EventArgs e) {
+            ShowEntry(true);
+        }
+
+        private void mnxEntryAutotype_Click(object sender, EventArgs e) {
+            if ((this.Document == null) || (lsvEntries.SelectedItems.Count != 1)) { return; }
+
+            var entry = (Entry)(lsvEntries.SelectedItems[0].Tag);
+
+            var frm = new AutotypeForm(entry);
+            frm.Shown += delegate (object sender2, EventArgs e2) {
+                this.Visible = false;
+            };
+            frm.FormClosed += delegate (object sender2, FormClosedEventArgs e2) {
+                this.Visible = true;
+                this.Select();
+            };
+            frm.Show();
         }
 
         #endregion
@@ -804,6 +834,20 @@ namespace Bimil {
                 var title = file.Name.Substring(0, file.Name.Length - file.Extension.Length);
 
                 this.Text = title + ((this.Document?.HasChanged ?? false) || this.DocumentReadOnlyChanged ? "*" : "") + " - Bimil";
+            }
+        }
+
+        private void ShowEntry(bool startsAsEditable) {
+            if ((this.Document == null) || (lsvEntries.SelectedItems.Count != 1)) { return; }
+
+            var item = (Entry)(lsvEntries.SelectedItems[0].Tag);
+            using (var frm2 = new ItemForm(this.Document, item, this.Categories, startsAsEditable: startsAsEditable)) {
+                if (frm2.ShowDialog(this) == DialogResult.OK) {
+                    lsvEntries.SelectedItems[0].Text = item.Title;
+                    RefreshCategories();
+                    RefreshItems(item);
+                }
+                UpdateMenu();
             }
         }
 
@@ -862,6 +906,5 @@ namespace Bimil {
             public String FileName { get; }
 
         }
-
     }
 }

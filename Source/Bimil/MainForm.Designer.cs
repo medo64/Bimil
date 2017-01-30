@@ -50,11 +50,17 @@ namespace Bimil {
             this.pnlDocument = new System.Windows.Forms.Panel();
             this.lsvEntries = new System.Windows.Forms.ListView();
             this.lsvEntries_colTitle = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.mnxEntry = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.mnxEntryView = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnxEntryEdit = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnxEntry0 = new System.Windows.Forms.ToolStripSeparator();
+            this.mnxEntryAutotype = new System.Windows.Forms.ToolStripMenuItem();
             this.cmbSearch = new System.Windows.Forms.ComboBox();
             this.bwUpgradeCheck = new System.ComponentModel.BackgroundWorker();
             this.tmrClose = new System.Windows.Forms.Timer(this.components);
             this.mnu.SuspendLayout();
             this.pnlDocument.SuspendLayout();
+            this.mnxEntry.SuspendLayout();
             this.SuspendLayout();
             // 
             // mnu
@@ -289,6 +295,7 @@ namespace Bimil {
             this.lsvEntries.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.lsvEntries.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.lsvEntries_colTitle});
+            this.lsvEntries.ContextMenuStrip = this.mnxEntry;
             this.lsvEntries.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lsvEntries.FullRowSelect = true;
             this.lsvEntries.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
@@ -305,6 +312,44 @@ namespace Bimil {
             this.lsvEntries.ItemActivate += new System.EventHandler(this.lsvEntries_ItemActivate);
             this.lsvEntries.SelectedIndexChanged += new System.EventHandler(this.lsvEntries_SelectedIndexChanged);
             this.lsvEntries.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lsvEntries_KeyDown);
+            // 
+            // mnxEntry
+            // 
+            this.mnxEntry.ImageScalingSize = new System.Drawing.Size(20, 20);
+            this.mnxEntry.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mnxEntryView,
+            this.mnxEntryEdit,
+            this.mnxEntry0,
+            this.mnxEntryAutotype});
+            this.mnxEntry.Name = "mnxEntry";
+            this.mnxEntry.Size = new System.Drawing.Size(152, 88);
+            this.mnxEntry.Opening += new System.ComponentModel.CancelEventHandler(this.mnxEntry_Opening);
+            // 
+            // mnxEntryView
+            // 
+            this.mnxEntryView.Name = "mnxEntryView";
+            this.mnxEntryView.Size = new System.Drawing.Size(151, 26);
+            this.mnxEntryView.Text = "&View";
+            this.mnxEntryView.Click += new System.EventHandler(this.mnxEntryView_Click);
+            // 
+            // mnxEntryEdit
+            // 
+            this.mnxEntryEdit.Name = "mnxEntryEdit";
+            this.mnxEntryEdit.Size = new System.Drawing.Size(151, 26);
+            this.mnxEntryEdit.Text = "&Edit";
+            this.mnxEntryEdit.Click += new System.EventHandler(this.mnxEntryEdit_Click);
+            // 
+            // mnxEntry0
+            // 
+            this.mnxEntry0.Name = "mnxEntry0";
+            this.mnxEntry0.Size = new System.Drawing.Size(148, 6);
+            // 
+            // mnxEntryAutotype
+            // 
+            this.mnxEntryAutotype.Name = "mnxEntryAutotype";
+            this.mnxEntryAutotype.Size = new System.Drawing.Size(151, 26);
+            this.mnxEntryAutotype.Text = "Auto-type";
+            this.mnxEntryAutotype.Click += new System.EventHandler(this.mnxEntryAutotype_Click);
             // 
             // cmbSearch
             // 
@@ -350,6 +395,7 @@ namespace Bimil {
             this.mnu.ResumeLayout(false);
             this.mnu.PerformLayout();
             this.pnlDocument.ResumeLayout(false);
+            this.mnxEntry.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -385,6 +431,11 @@ namespace Bimil {
         private System.Windows.Forms.ToolStripDropDownButton mnuProperties;
         private System.Windows.Forms.ToolStripMenuItem mnuChangePassword;
         private System.Windows.Forms.ToolStripMenuItem mnuReadOnly;
+        private System.Windows.Forms.ContextMenuStrip mnxEntry;
+        private System.Windows.Forms.ToolStripMenuItem mnxEntryView;
+        private System.Windows.Forms.ToolStripMenuItem mnxEntryEdit;
+        private System.Windows.Forms.ToolStripSeparator mnxEntry0;
+        private System.Windows.Forms.ToolStripMenuItem mnxEntryAutotype;
     }
 }
 
