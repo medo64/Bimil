@@ -33,12 +33,15 @@ namespace Bimil {
             this.lsvHistoryPasswords = new System.Windows.Forms.ListView();
             this.lsvHistoryPasswords_Date = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.lsvHistoryPasswords_Password = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.mnxHistoricalPassword = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.mnxHistoricalPasswordCopy = new System.Windows.Forms.ToolStripMenuItem();
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnOK = new System.Windows.Forms.Button();
             this.lblEditInfo = new System.Windows.Forms.Label();
             this.tip = new System.Windows.Forms.ToolTip(this.components);
             this.grpPasswordHistory.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudHistoryCount)).BeginInit();
+            this.mnxHistoricalPassword.SuspendLayout();
             this.SuspendLayout();
             // 
             // grpPasswordHistory
@@ -143,6 +146,7 @@ namespace Bimil {
             this.lsvHistoryPasswords.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.lsvHistoryPasswords_Date,
             this.lsvHistoryPasswords_Password});
+            this.lsvHistoryPasswords.ContextMenuStrip = this.mnxHistoricalPassword;
             this.lsvHistoryPasswords.Enabled = false;
             this.lsvHistoryPasswords.FullRowSelect = true;
             this.lsvHistoryPasswords.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
@@ -165,6 +169,23 @@ namespace Bimil {
             // lsvHistoryPasswords_Password
             // 
             this.lsvHistoryPasswords_Password.Text = "Password";
+            // 
+            // mnxHistoricalPassword
+            // 
+            this.mnxHistoricalPassword.ImageScalingSize = new System.Drawing.Size(20, 20);
+            this.mnxHistoricalPassword.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mnxHistoricalPasswordCopy});
+            this.mnxHistoricalPassword.Name = "contextMenuStrip1";
+            this.mnxHistoricalPassword.Size = new System.Drawing.Size(119, 30);
+            this.mnxHistoricalPassword.Opening += new System.ComponentModel.CancelEventHandler(this.mnxHistoricalPassword_Opening);
+            // 
+            // mnxHistoricalPasswordCopy
+            // 
+            this.mnxHistoricalPasswordCopy.Image = global::Bimil.Properties.Resources.btnCopy_16;
+            this.mnxHistoricalPasswordCopy.Name = "mnxHistoricalPasswordCopy";
+            this.mnxHistoricalPasswordCopy.Size = new System.Drawing.Size(118, 26);
+            this.mnxHistoricalPasswordCopy.Text = "&Copy";
+            this.mnxHistoricalPasswordCopy.Click += new System.EventHandler(this.mnxHistoricalPasswordCopy_Click);
             // 
             // btnCancel
             // 
@@ -228,6 +249,7 @@ namespace Bimil {
             this.grpPasswordHistory.ResumeLayout(false);
             this.grpPasswordHistory.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudHistoryCount)).EndInit();
+            this.mnxHistoricalPassword.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -248,5 +270,7 @@ namespace Bimil {
         private System.Windows.Forms.ColumnHeader lsvHistoryPasswords_Password;
         private System.Windows.Forms.Label lblEditInfo;
         private System.Windows.Forms.ToolTip tip;
+        private System.Windows.Forms.ContextMenuStrip mnxHistoricalPassword;
+        private System.Windows.Forms.ToolStripMenuItem mnxHistoricalPasswordCopy;
     }
 }

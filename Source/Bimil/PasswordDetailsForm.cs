@@ -59,6 +59,18 @@ namespace Bimil {
             e.NewWidth = lsvHistoryPasswords.Columns[e.ColumnIndex].Width;
         }
 
+        private void mnxHistoricalPassword_Opening(object sender, System.ComponentModel.CancelEventArgs e) {
+            mnxHistoricalPasswordCopy.Enabled = (lsvHistoryPasswords.SelectedItems.Count == 1);
+        }
+
+        private void mnxHistoricalPasswordCopy_Click(object sender, System.EventArgs e) {
+            if (lsvHistoryPasswords.SelectedItems.Count != 1) { return; }
+
+            var item = (PasswordHistoryItem)(lsvHistoryPasswords.SelectedItems[0].Tag);
+            Clipboard.Clear();
+            Clipboard.SetText(item.HistoricalPassword);
+        }
+
 
         private void SetupHistoryStates() {
             chbHistoryEnabled.Enabled = !this.IsReadonly;
@@ -93,6 +105,5 @@ namespace Bimil {
 
             }
         }
-
     }
 }
