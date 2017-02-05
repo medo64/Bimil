@@ -733,7 +733,7 @@ namespace Bimil {
         }
 
         private void mnuAppFeedback_Click(object sender, EventArgs e) {
-            Medo.Diagnostics.ErrorReport.ShowDialog(this, null, new Uri("https://medo64.com/feesdback/"));
+            Medo.Diagnostics.ErrorReport.ShowDialog(this, null, new Uri("https://medo64.com/feedback/"));
             cmbSearch.Select();
         }
 
