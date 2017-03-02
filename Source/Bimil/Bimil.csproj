@@ -229,6 +229,9 @@
       <DependentUpon>StartForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Templates.cs" />
+    <Compile Include="TextBoxEx.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <EmbeddedResource Include="AutotypeForm.resx">
       <DependentUpon>AutotypeForm.cs</DependentUpon>
     </EmbeddedResource>
