@@ -38,6 +38,27 @@ namespace Bimil {
             this.Text = this.Document.IsReadOnly ? "View" : "Edit";
         }
 
+
+        #region Disable minimize
+
+        protected override void WndProc(ref Message m) {
+            if ((Environment.OSVersion.Platform == PlatformID.Win32NT) && (Environment.OSVersion.Version.Major < 10)
+                && (m.Msg == NativeMethods.WM_SYSCOMMAND) && (m.WParam == NativeMethods.SC_MINIMIZE)) {
+                m.Result = IntPtr.Zero;
+            } else {
+                base.WndProc(ref m);
+            }
+        }
+
+
+        private class NativeMethods {
+            internal const Int32 WM_SYSCOMMAND = 0x0112;
+            internal readonly static IntPtr SC_MINIMIZE = new IntPtr(0xF020);
+        }
+
+        #endregion
+
+
         private void EditItemForm_Load(object sender, EventArgs e) {
             if (this.Editable) {
                 btnEdit_Click(null, null);
