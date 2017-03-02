@@ -192,6 +192,7 @@ namespace Bimil {
                     case RecordType.LastModificationTime:
                     case RecordType.PasswordExpiryTime:
                     case RecordType.PasswordModificationTime:
+                    case RecordType.PasswordHistory:
                         continue;
 
                     case RecordType.UserName:

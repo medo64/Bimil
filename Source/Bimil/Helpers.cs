@@ -84,7 +84,6 @@ namespace Bimil {
                 case RecordType.TwoFactorKey:
                 case RecordType.CreditCardVerificationValue:
                 case RecordType.CreditCardPin:
-                case RecordType.PasswordHistory:
                     return true;
 
                 default: return false; //all other fields are visible by default
