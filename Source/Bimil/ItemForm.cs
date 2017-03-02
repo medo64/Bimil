@@ -228,9 +228,7 @@ namespace Bimil {
                             pnl.Controls.Add(NewShowPasswordButton(textBox));
                             pnl.Controls.Add(NewConfigureButton(textBox, delegate (object sender2, EventArgs e2) {
                                 using (var frm = new PasswordDetailsForm(this.Item, textBox.ReadOnly)) {
-                                    if (frm.ShowDialog(this) == DialogResult.OK) {
-                                        //TODO:
-                                    }
+                                    frm.ShowDialog(this);
                                 }
                             }, "Password policy configuration."));
                             pnl.Controls.Add(NewGeneratePasswordButton(textBox));
