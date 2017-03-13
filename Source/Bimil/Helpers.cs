@@ -535,6 +535,17 @@ namespace Bimil {
         #endregion
 
 
+        public static string ToTitleCase(string text) {
+            var parts = text.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            for (int i = 0; i < parts.Length; i++) {
+                if (parts[i].Length > 0) {
+                    parts[i] = parts[i].Substring(0, 1).ToUpper(CultureInfo.InvariantCulture) + parts[i].Substring(1).ToLower(CultureInfo.InvariantCulture);
+                }
+            }
+            return string.Join(" ", parts);
+        }
+
+
         public static bool IsRunningOnMono {
             get { return (Type.GetType("Mono.Runtime") != null); }
         }

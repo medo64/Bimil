@@ -11,6 +11,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Reflection;
 using System.Security;
+using System.Globalization;
 
 namespace Bimil {
     internal partial class MainForm : Form {
@@ -770,6 +771,38 @@ namespace Bimil {
             mnxEntryCopy.Enabled = isSingleEntrySelected;
             mnxEntryPaste.Enabled = ClipboardHelper.HasDataOnClipboard;
             mnxEntryAutotype.Enabled = isSingleEntrySelected;
+
+            for (int i = mnxEntry.Items.Count - 1; i > mnxEntry.Items.IndexOf(mnxEntryAutotype); i--) {
+                mnxEntry.Items.RemoveAt(i);
+            }
+
+            var hasCopyEntries = false;
+            var entry = (lsvEntries.SelectedItems.Count == 1) ? lsvEntries.SelectedItems[0].Tag as Entry : null;
+            if (entry != null) {
+                foreach (var record in entry.Records) {
+                    ToolStripMenuItem mnxItem = null;
+                    switch (record.RecordType) {
+                        case RecordType.UserName:
+                        case RecordType.EmailAddress:
+                            mnxItem = new ToolStripMenuItem("Copy " + Helpers.ToTitleCase(Helpers.GetRecordCaption(record)) + " (" + record.Text + ")");
+                            break;
+
+                        case RecordType.Password:
+                            mnxItem = new ToolStripMenuItem("Copy " + Helpers.ToTitleCase(Helpers.GetRecordCaption(record)) + " (" + new string('*', record.Text.Length) + ")");
+                            break;
+                    }
+
+                    if (mnxItem != null) {
+                        if (!hasCopyEntries) { mnxEntry.Items.Add(new ToolStripSeparator()); }
+                        hasCopyEntries = true;
+                        mnxItem.Click += delegate (object sender2, EventArgs e2) {
+                            Clipboard.Clear();
+                            Clipboard.SetText(record.Text);
+                        };
+                        mnxEntry.Items.Add(mnxItem);
+                    }
+                }
+            }
         }
 
         private void mnxEntryView_Click(object sender, EventArgs e) {

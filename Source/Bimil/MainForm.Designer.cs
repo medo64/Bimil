@@ -336,77 +336,77 @@ namespace Bimil {
             this.mnxEntry2,
             this.mnxEntryAutotype});
             this.mnxEntry.Name = "mnxEntry";
-            this.mnxEntry.Size = new System.Drawing.Size(163, 230);
+            this.mnxEntry.Size = new System.Drawing.Size(182, 258);
             this.mnxEntry.Opening += new System.ComponentModel.CancelEventHandler(this.mnxEntry_Opening);
             // 
             // mnxEntryView
             // 
             this.mnxEntryView.Name = "mnxEntryView";
-            this.mnxEntryView.Size = new System.Drawing.Size(162, 26);
+            this.mnxEntryView.Size = new System.Drawing.Size(181, 26);
             this.mnxEntryView.Text = "&View";
             this.mnxEntryView.Click += new System.EventHandler(this.mnxEntryView_Click);
             // 
             // mnxEntryEdit
             // 
             this.mnxEntryEdit.Name = "mnxEntryEdit";
-            this.mnxEntryEdit.Size = new System.Drawing.Size(162, 26);
+            this.mnxEntryEdit.Size = new System.Drawing.Size(181, 26);
             this.mnxEntryEdit.Text = "&Edit";
             this.mnxEntryEdit.Click += new System.EventHandler(this.mnxEntryEdit_Click);
             // 
             // mnxEntry0
             // 
             this.mnxEntry0.Name = "mnxEntry0";
-            this.mnxEntry0.Size = new System.Drawing.Size(159, 6);
+            this.mnxEntry0.Size = new System.Drawing.Size(178, 6);
             // 
             // mnxEntryAdd
             // 
             this.mnxEntryAdd.Name = "mnxEntryAdd";
-            this.mnxEntryAdd.Size = new System.Drawing.Size(162, 26);
+            this.mnxEntryAdd.Size = new System.Drawing.Size(181, 26);
             this.mnxEntryAdd.Text = "&Add";
             this.mnxEntryAdd.Click += new System.EventHandler(this.mnxEntryAdd_Click);
             // 
             // mnxEntryAddSimilar
             // 
             this.mnxEntryAddSimilar.Name = "mnxEntryAddSimilar";
-            this.mnxEntryAddSimilar.Size = new System.Drawing.Size(162, 26);
+            this.mnxEntryAddSimilar.Size = new System.Drawing.Size(181, 26);
             this.mnxEntryAddSimilar.Text = "Add &Similar";
             this.mnxEntryAddSimilar.Click += new System.EventHandler(this.mnxEntryAddSimilar_Click);
             // 
             // mnxEntry1
             // 
             this.mnxEntry1.Name = "mnxEntry1";
-            this.mnxEntry1.Size = new System.Drawing.Size(159, 6);
+            this.mnxEntry1.Size = new System.Drawing.Size(178, 6);
             // 
             // mnxEntryCut
             // 
             this.mnxEntryCut.Name = "mnxEntryCut";
-            this.mnxEntryCut.Size = new System.Drawing.Size(162, 26);
+            this.mnxEntryCut.Size = new System.Drawing.Size(181, 26);
             this.mnxEntryCut.Text = "Cu&t";
             this.mnxEntryCut.Click += new System.EventHandler(this.mnxEntryCut_Click);
             // 
             // mnxEntryCopy
             // 
             this.mnxEntryCopy.Name = "mnxEntryCopy";
-            this.mnxEntryCopy.Size = new System.Drawing.Size(162, 26);
+            this.mnxEntryCopy.Size = new System.Drawing.Size(181, 26);
             this.mnxEntryCopy.Text = "&Copy";
             this.mnxEntryCopy.Click += new System.EventHandler(this.mnxEntryCopy_Click);
             // 
             // mnxEntryPaste
             // 
             this.mnxEntryPaste.Name = "mnxEntryPaste";
-            this.mnxEntryPaste.Size = new System.Drawing.Size(162, 26);
+            this.mnxEntryPaste.Size = new System.Drawing.Size(181, 26);
             this.mnxEntryPaste.Text = "&Paste";
             this.mnxEntryPaste.Click += new System.EventHandler(this.mnxEntryPaste_Click);
             // 
             // mnxEntry2
             // 
             this.mnxEntry2.Name = "mnxEntry2";
-            this.mnxEntry2.Size = new System.Drawing.Size(159, 6);
+            this.mnxEntry2.Size = new System.Drawing.Size(178, 6);
             // 
             // mnxEntryAutotype
             // 
             this.mnxEntryAutotype.Name = "mnxEntryAutotype";
-            this.mnxEntryAutotype.Size = new System.Drawing.Size(162, 26);
+            this.mnxEntryAutotype.Size = new System.Drawing.Size(181, 26);
             this.mnxEntryAutotype.Text = "Auto-t&ype";
             this.mnxEntryAutotype.Click += new System.EventHandler(this.mnxEntryAutotype_Click);
             // 
