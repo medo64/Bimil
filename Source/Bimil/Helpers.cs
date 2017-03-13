@@ -256,7 +256,7 @@ namespace Bimil {
                 if ((document == null) || (document.Entries.Count == 0)) {
                     listView.Items.Add("No items.");
                 } else {
-                    listView.Items.Add("No matching items found.");
+                    listView.Items.Add("No matching items found (out of " + document.Entries.Count.ToString(CultureInfo.InvariantCulture) + ").");
                 }
             }
 
