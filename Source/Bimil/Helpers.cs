@@ -120,6 +120,8 @@ namespace Bimil {
         public static void PerformEntrySearch(Document document, ListView listView, String searchText, Entry entryToSelect = null, bool extendedSearch = false, bool addMatchDescription = false) {
             var sw = Stopwatch.StartNew();
 
+            var foundSelectedEntry = false;
+
             //search for matches
             var resultList = new List<EntryCache>();
             if (document != null) {
@@ -173,11 +175,24 @@ namespace Bimil {
                     if (anyFailedChecks) {
                         continue;
                     } else {
+                        if (item.Entry == entryToSelect) { foundSelectedEntry = true; }
                         resultList.Add(item);
                     }
                 }
             }
             Debug.WriteLine(string.Format(CultureInfo.InvariantCulture, "Items searched at {0:0.0} ms", sw.ElapsedMilliseconds));
+
+            //add selected entry if not added before
+            if ((document != null) && !foundSelectedEntry) {
+                foreach (var entry in document.Entries) { //just loop over them to be sure entry to select actually exists currently
+                    if (entry == entryToSelect) {
+                        var item = new EntryCache(entry);
+                        item.AddMatch("Selection");
+                        resultList.Add(item);
+                    }
+                }
+                Debug.WriteLine(string.Format(CultureInfo.InvariantCulture, "Found selected entry at {0:0.0} ms", sw.ElapsedMilliseconds));
+            }
 
             //sort, preferring the same group
             resultList.Sort((item1, item2) => {
@@ -235,7 +250,7 @@ namespace Bimil {
 
                 listView.EnsureVisible(listView.SelectedItems[0].Index);
             } else {
-                listView.Enabled = false;
+                listView.Enabled = true;
                 listView.ForeColor = SystemColors.GrayText;
 
                 if ((document == null) || (document.Entries.Count == 0)) {

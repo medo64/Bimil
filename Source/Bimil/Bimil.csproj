@@ -120,6 +120,7 @@
     <Compile Include="BimilDocument\BimilRecord.cs" />
     <Compile Include="BimilDocument\BimilValue.cs" />
     <Compile Include="BimilDocument\DocumentConversion.cs" />
+    <Compile Include="ClipboardHelper.cs" />
     <Compile Include="EntryCache.cs" />
     <Compile Include="AutotypeForm.cs">
       <SubType>Form</SubType>

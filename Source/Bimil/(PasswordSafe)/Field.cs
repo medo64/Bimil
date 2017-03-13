@@ -195,7 +195,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// Gets raw data without marking the field as accessed.
         /// Bytes are kept encrypted in memory until accessed.
         /// </summary>
-        protected byte[] RawDataDirect {
+        internal byte[] RawDataDirect {
             get {
                 if (this._rawData == null) { return new byte[0]; } //return empty array if no value has been set so far
                 return ProtectedData.Unprotect(this._rawData, this.RawDataEntropy, DataProtectionScope.CurrentUser);

@@ -82,6 +82,18 @@ namespace Bimil {
                     mnxEntryAutotype_Click(null, null);
                     return true;
 
+                case Keys.Control | Keys.X:
+                    mnxEntryCut_Click(null, null);
+                    return true;
+
+                case Keys.Control | Keys.C:
+                    mnxEntryCopy_Click(null, null);
+                    return true;
+
+                case Keys.Control | Keys.V:
+                    mnxEntryPaste_Click(null, null);
+                    return true;
+
                 case Keys.F5:
                     RefreshCategories();
                     RefreshItems();
@@ -331,6 +343,13 @@ namespace Bimil {
         }
 
         private void lsvEntries_SelectedIndexChanged(object sender, EventArgs e) {
+            if (lsvEntries.SelectedItems.Count > 0) {
+                var entry = lsvEntries.SelectedItems[0].Tag as Entry;
+                if (entry == null) {
+                    lsvEntries.SelectedItems.Clear();
+                    return;
+                }
+            }
             UpdateMenu();
         }
 
@@ -698,12 +717,15 @@ namespace Bimil {
         }
 
         private void mnuRemove_Click(object sender, EventArgs e) {
-            if ((this.Document == null) || (lsvEntries.SelectedItems.Count == 0)) { return; }
+            var isAnyEntrySelected = (lsvEntries.SelectedItems.Count >= 1) && ((lsvEntries.SelectedItems[0].Tag as Entry) != null);
+            if ((this.Document == null) || !isAnyEntrySelected) { return; }
 
             for (int i = lsvEntries.SelectedItems.Count - 1; i >= 0; i--) {
-                var item = (Entry)(lsvEntries.SelectedItems[i].Tag);
-                this.Document.Entries.Remove(item);
-                lsvEntries.Items.Remove(lsvEntries.SelectedItems[i]);
+                var item = lsvEntries.SelectedItems[i].Tag as Entry;
+                if (item != null) {
+                    this.Document.Entries.Remove(item);
+                    lsvEntries.Items.Remove(lsvEntries.SelectedItems[i]);
+                }
             }
             UpdateMenu();
             cmbSearch.Select();
@@ -756,10 +778,13 @@ namespace Bimil {
                 mnxEntryEdit.Font = new Font(mnxEntryView.Font, FontStyle.Regular);
             }
 
-            var isEntrySelected = lsvEntries.SelectedItems.Count > 0;
-            mnxEntryView.Enabled = isEntrySelected;
-            mnxEntryEdit.Enabled = isEntrySelected;
-            mnxEntryAutotype.Enabled = isEntrySelected;
+            var isAnyEntrySelected = (lsvEntries.SelectedItems.Count >= 1) && ((lsvEntries.SelectedItems[0].Tag as Entry) != null);
+            mnxEntryView.Enabled = isAnyEntrySelected;
+            mnxEntryEdit.Enabled = isAnyEntrySelected;
+            mnxEntryCut.Enabled = isAnyEntrySelected;
+            mnxEntryCopy.Enabled = isAnyEntrySelected;
+            mnxEntryPaste.Enabled = ClipboardHelper.HasDataOnClipboard;
+            mnxEntryAutotype.Enabled = isAnyEntrySelected;
         }
 
         private void mnxEntryView_Click(object sender, EventArgs e) {
@@ -770,8 +795,37 @@ namespace Bimil {
             ShowEntry(true);
         }
 
+        private void mnxEntryCut_Click(object sender, EventArgs e) {
+            var isSingleEntrySelected = (lsvEntries.SelectedItems.Count == 1) && ((lsvEntries.SelectedItems[0].Tag as Entry) != null);
+            if ((this.Document == null) || !isSingleEntrySelected) { return; }
+
+            var entry = (Entry)(lsvEntries.SelectedItems[0].Tag);
+            ClipboardHelper.SetClipboardData(entry);
+
+            this.Document.Entries.Remove(entry);
+            lsvEntries.Items.Remove(lsvEntries.SelectedItems[0]);
+        }
+
+        private void mnxEntryCopy_Click(object sender, EventArgs e) {
+            var isSingleEntrySelected = (lsvEntries.SelectedItems.Count == 1) && ((lsvEntries.SelectedItems[0].Tag as Entry) != null);
+            if ((this.Document == null) || !isSingleEntrySelected) { return; }
+
+            var entry = (Entry)(lsvEntries.SelectedItems[0].Tag);
+            ClipboardHelper.SetClipboardData(entry);
+        }
+
+        private void mnxEntryPaste_Click(object sender, EventArgs e) {
+            var entry = ClipboardHelper.GetClipboardData();
+            if (entry != null) {
+                this.Document.Entries.Add(entry);
+                RefreshCategories();
+                RefreshItems(entry);
+            }
+        }
+
         private void mnxEntryAutotype_Click(object sender, EventArgs e) {
-            if ((this.Document == null) || (lsvEntries.SelectedItems.Count != 1)) { return; }
+            var isSingleEntrySelected = (lsvEntries.SelectedItems.Count == 1) && ((lsvEntries.SelectedItems[0].Tag as Entry) != null);
+            if ((this.Document == null) || !isSingleEntrySelected) { return; }
 
             var entry = (Entry)(lsvEntries.SelectedItems[0].Tag);
 
@@ -822,11 +876,14 @@ namespace Bimil {
 
 
         private void UpdateMenu() {
+            var isAnyEntrySelected = (lsvEntries.SelectedItems.Count >= 1) && ((lsvEntries.SelectedItems[0].Tag as Entry) != null);
+            var isSingleEntrySelected = (lsvEntries.SelectedItems.Count == 1) && ((lsvEntries.SelectedItems[0].Tag as Entry) != null);
+
             mnuSave.Enabled = (this.Document != null);
             mnuProperties.Enabled = (this.Document != null);
             mnuAdd.Enabled = (this.Document != null) && (!this.Document.IsReadOnly);
-            mnuEdit.Enabled = (this.Document != null) && (lsvEntries.SelectedItems.Count == 1);
-            mnuRemove.Enabled = (this.Document != null) && (lsvEntries.SelectedItems.Count > 0) && (!this.Document.IsReadOnly);
+            mnuEdit.Enabled = (this.Document != null) && isSingleEntrySelected;
+            mnuRemove.Enabled = (this.Document != null) && isAnyEntrySelected && (!this.Document.IsReadOnly);
             mnuSearch.Enabled = (this.Document != null);
 
             pnlDocument.Visible = (this.Document != null);
@@ -842,9 +899,11 @@ namespace Bimil {
         }
 
         private void ShowEntry(bool startsAsEditable) {
-            if ((this.Document == null) || (lsvEntries.SelectedItems.Count != 1)) { return; }
+            var isSingleEntrySelected = (lsvEntries.SelectedItems.Count == 1) && ((lsvEntries.SelectedItems[0].Tag as Entry) != null);
+            if ((this.Document == null) || !isSingleEntrySelected) { return; }
 
-            var item = (Entry)(lsvEntries.SelectedItems[0].Tag);
+            var item = lsvEntries.SelectedItems[0].Tag as Entry;
+            if (item == null) { return; }
             using (var frm2 = new ItemForm(this.Document, item, this.Categories, startsAsEditable: startsAsEditable)) {
                 if (frm2.ShowDialog(this) == DialogResult.OK) {
                     lsvEntries.SelectedItems[0].Text = item.Title;
@@ -910,5 +969,6 @@ namespace Bimil {
             public String FileName { get; }
 
         }
+
     }
 }
