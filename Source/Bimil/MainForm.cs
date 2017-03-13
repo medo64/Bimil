@@ -679,37 +679,20 @@ namespace Bimil {
         private void mnuAdd_Click(object sender, EventArgs e) {
             if (this.Document == null) { return; }
 
-            using (var frm = new SelectTemplateForm()) {
-                if (frm.ShowDialog(this) == DialogResult.OK) {
-                    var entry = new Entry("New item");
-                    entry.Records[RecordType.Password] = null;
-                    this.Document.Entries.Add(entry);
-                    foreach (var recordType in frm.Template.RecordTypes) {
-                        entry.Records.Add(new Record(recordType));
-                    }
-
-                    //determine current category
-                    string categoryText = cmbSearch.Text.Trim();
-                    foreach (var category in this.Categories) {
-                        if (category.Equals(categoryText, StringComparison.CurrentCultureIgnoreCase)) {
-                            categoryText = category;
-                            break;
-                        }
-                    }
-
-                    using (var frm2 = new ItemForm(this.Document, entry, this.Categories, startsAsEditable: true, isNew: true, defaultCategory: categoryText)) {
-                        if (frm2.ShowDialog(this) == DialogResult.OK) {
-                            RefreshItems(entry);
-                            RefreshCategories();
-                        } else {
-                            this.Document.Entries.Remove(entry);
-                        }
-                    }
-
-                    UpdateMenu();
+            //determine current category
+            string categoryText = cmbSearch.Text.Trim();
+            foreach (var category in this.Categories) {
+                if (category.Equals(categoryText, StringComparison.CurrentCultureIgnoreCase)) {
+                    categoryText = category;
+                    break;
                 }
             }
-            cmbSearch.Select();
+
+            using (var frm = new SelectTemplateForm()) {
+                if (frm.ShowDialog(this) == DialogResult.OK) {
+                    AddItem(frm.Template.RecordTypes, categoryText);
+                }
+            }
         }
 
         private void mnuEdit_Click(object sender, EventArgs e) {
@@ -783,6 +766,7 @@ namespace Bimil {
             mnxEntryView.Enabled = isSingleEntrySelected;
             mnxEntryEdit.Enabled = isSingleEntrySelected;
             mnxEntryAdd.Enabled = true;
+            mnxEntryAddSimilar.Enabled = isSingleEntrySelected;
             mnxEntryRemove.Enabled = isAnyEntrySelected;
             mnxEntryCut.Enabled = isSingleEntrySelected;
             mnxEntryCopy.Enabled = isSingleEntrySelected;
@@ -800,6 +784,19 @@ namespace Bimil {
 
         private void mnxEntryAdd_Click(object sender, EventArgs e) {
             mnuAdd_Click(null, null);
+        }
+
+        private void mnxEntryAddSimilar_Click(object sender, EventArgs e) {
+            var isSingleEntrySelected = (lsvEntries.SelectedItems.Count == 1) && ((lsvEntries.SelectedItems[0].Tag as Entry) != null);
+            if ((this.Document == null) || !isSingleEntrySelected) { return; }
+
+            var entry = (Entry)(lsvEntries.SelectedItems[0].Tag);
+            var recordTypes = new List<RecordType>();
+            foreach (var record in entry.Records) {
+                recordTypes.Add(record.RecordType);
+            }
+
+            AddItem(recordTypes, entry.Group);
         }
 
         private void mnxEntryRemove_Click(object sender, EventArgs e) {
@@ -858,6 +855,29 @@ namespace Bimil {
             RefreshItems();
         }
 
+
+        private void AddItem(IEnumerable<RecordType> recordTypes, string categoryText) {
+            if (this.Document == null) { return; }
+
+            var entry = new Entry("New item");
+            entry.Records[RecordType.Password] = null;
+            this.Document.Entries.Add(entry);
+            foreach (var recordType in recordTypes) {
+                entry.Records.Add(new Record(recordType));
+            }
+
+            using (var frm2 = new ItemForm(this.Document, entry, this.Categories, startsAsEditable: true, isNew: true, defaultCategory: categoryText)) {
+                if (frm2.ShowDialog(this) == DialogResult.OK) {
+                    RefreshItems(entry);
+                    RefreshCategories();
+                } else {
+                    this.Document.Entries.Remove(entry);
+                }
+            }
+
+            UpdateMenu();
+            cmbSearch.Select();
+        }
 
         private void RefreshCategories() {
             this.Categories.Clear();
