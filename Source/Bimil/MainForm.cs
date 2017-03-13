@@ -762,12 +762,10 @@ namespace Bimil {
             }
 
             var isSingleEntrySelected = (lsvEntries.SelectedItems.Count == 1) && ((lsvEntries.SelectedItems[0].Tag as Entry) != null);
-            var isAnyEntrySelected = (lsvEntries.SelectedItems.Count >= 1) && ((lsvEntries.SelectedItems[0].Tag as Entry) != null);
             mnxEntryView.Enabled = isSingleEntrySelected;
             mnxEntryEdit.Enabled = isSingleEntrySelected;
             mnxEntryAdd.Enabled = true;
             mnxEntryAddSimilar.Enabled = isSingleEntrySelected;
-            mnxEntryRemove.Enabled = isAnyEntrySelected;
             mnxEntryCut.Enabled = isSingleEntrySelected;
             mnxEntryCopy.Enabled = isSingleEntrySelected;
             mnxEntryPaste.Enabled = ClipboardHelper.HasDataOnClipboard;
@@ -797,10 +795,6 @@ namespace Bimil {
             }
 
             AddItem(recordTypes, entry.Group);
-        }
-
-        private void mnxEntryRemove_Click(object sender, EventArgs e) {
-            mnuRemove_Click(null, null);
         }
 
         private void mnxEntryCut_Click(object sender, EventArgs e) {
