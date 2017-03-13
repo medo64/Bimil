@@ -778,13 +778,13 @@ namespace Bimil {
                 mnxEntryEdit.Font = new Font(mnxEntryView.Font, FontStyle.Regular);
             }
 
-            var isAnyEntrySelected = (lsvEntries.SelectedItems.Count >= 1) && ((lsvEntries.SelectedItems[0].Tag as Entry) != null);
-            mnxEntryView.Enabled = isAnyEntrySelected;
-            mnxEntryEdit.Enabled = isAnyEntrySelected;
-            mnxEntryCut.Enabled = isAnyEntrySelected;
-            mnxEntryCopy.Enabled = isAnyEntrySelected;
+            var isSingleEntrySelected = (lsvEntries.SelectedItems.Count == 1) && ((lsvEntries.SelectedItems[0].Tag as Entry) != null);
+            mnxEntryView.Enabled = isSingleEntrySelected;
+            mnxEntryEdit.Enabled = isSingleEntrySelected;
+            mnxEntryCut.Enabled = isSingleEntrySelected;
+            mnxEntryCopy.Enabled = isSingleEntrySelected;
             mnxEntryPaste.Enabled = ClipboardHelper.HasDataOnClipboard;
-            mnxEntryAutotype.Enabled = isAnyEntrySelected;
+            mnxEntryAutotype.Enabled = isSingleEntrySelected;
         }
 
         private void mnxEntryView_Click(object sender, EventArgs e) {
