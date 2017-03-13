@@ -127,6 +127,7 @@ namespace Bimil {
             if (document != null) {
                 var words = new List<string>();
                 var curWord = new StringBuilder();
+                searchText = searchText.Trim();
                 foreach (var ch in searchText) {
                     if (char.IsLetterOrDigit(ch) || (ch == '.')) {
                         curWord.Append(ch);
@@ -139,18 +140,20 @@ namespace Bimil {
 
                 foreach (var entry in document.Entries) {
                     var item = new EntryCache(entry);
+
                     var anyFailedChecks = false;
                     foreach (var text in words) {
                         var successfulCheck = false;
-                        if (string.Equals(item.Group, text, StringComparison.CurrentCultureIgnoreCase)) {
+                        if (string.Equals(item.Group, searchText, StringComparison.CurrentCultureIgnoreCase) //if group name fully matches
+                            || ((text.Length > 0) && item.Group.StartsWith(text, StringComparison.CurrentCultureIgnoreCase))) { //if group name starts with any word
                             item.AddMatch("Group");
                             successfulCheck = true;
                         }
-                        if ((text.Length > 0) && (item.Title.IndexOf(text, StringComparison.CurrentCultureIgnoreCase) >= 0)) {
+                        if ((text.Length > 0) && (item.Title.IndexOf(text, StringComparison.CurrentCultureIgnoreCase) >= 0)) { //if text matches any part of title
                             item.AddMatch("Title");
                             successfulCheck = true;
                         }
-                        if ((text.Length > 0) && extendedSearch) {
+                        if ((text.Length > 0) && extendedSearch) { //if other text fields are to be checked
                             foreach (var record in entry.Records) {
                                 if (record.RecordType == RecordType.Title) { continue; }
                                 if (record.RecordType == RecordType.Group) { continue; }
@@ -159,7 +162,7 @@ namespace Bimil {
                                     if (!Helpers.GetIsHideable(record.RecordType)) { //also check it is not hidden by default (e.g. password field)
                                         var recordText = record.Text;
                                         if (recordText != null) { //we have something searchable
-                                            if (recordText.IndexOf(text, StringComparison.CurrentCultureIgnoreCase) >= 0) {
+                                            if (recordText.IndexOf(text, StringComparison.CurrentCultureIgnoreCase) >= 0) { //if text matches any part of content
                                                 item.AddMatch(recordCaption);
                                                 successfulCheck = true;
                                             }
