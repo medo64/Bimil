@@ -53,15 +53,18 @@ namespace Bimil {
             this.mnxEntry = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.mnxEntryView = new System.Windows.Forms.ToolStripMenuItem();
             this.mnxEntryEdit = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnxEntry0 = new System.Windows.Forms.ToolStripSeparator();
+            this.mnxEntry1 = new System.Windows.Forms.ToolStripSeparator();
+            this.mnxEntryCut = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnxEntryCopy = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnxEntryPaste = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnxEntry2 = new System.Windows.Forms.ToolStripSeparator();
             this.mnxEntryAutotype = new System.Windows.Forms.ToolStripMenuItem();
             this.cmbSearch = new System.Windows.Forms.ComboBox();
             this.bwUpgradeCheck = new System.ComponentModel.BackgroundWorker();
             this.tmrClose = new System.Windows.Forms.Timer(this.components);
-            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
-            this.mnxEntryCut = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnxEntryCopy = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnxEntryPaste = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnxEntryAdd = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnxEntry0 = new System.Windows.Forms.ToolStripSeparator();
+            this.mnxEntryRemove = new System.Windows.Forms.ToolStripMenuItem();
             this.mnu.SuspendLayout();
             this.pnlDocument.SuspendLayout();
             this.mnxEntry.SuspendLayout();
@@ -323,14 +326,17 @@ namespace Bimil {
             this.mnxEntry.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnxEntryView,
             this.mnxEntryEdit,
-            this.toolStripMenuItem1,
+            this.mnxEntry0,
+            this.mnxEntryAdd,
+            this.mnxEntryRemove,
+            this.mnxEntry1,
             this.mnxEntryCut,
             this.mnxEntryCopy,
             this.mnxEntryPaste,
-            this.mnxEntry0,
+            this.mnxEntry2,
             this.mnxEntryAutotype});
             this.mnxEntry.Name = "mnxEntry";
-            this.mnxEntry.Size = new System.Drawing.Size(182, 200);
+            this.mnxEntry.Size = new System.Drawing.Size(182, 258);
             this.mnxEntry.Opening += new System.ComponentModel.CancelEventHandler(this.mnxEntry_Opening);
             // 
             // mnxEntryView
@@ -347,16 +353,42 @@ namespace Bimil {
             this.mnxEntryEdit.Text = "&Edit";
             this.mnxEntryEdit.Click += new System.EventHandler(this.mnxEntryEdit_Click);
             // 
-            // mnxEntry0
+            // mnxEntry1
             // 
-            this.mnxEntry0.Name = "mnxEntry0";
-            this.mnxEntry0.Size = new System.Drawing.Size(178, 6);
+            this.mnxEntry1.Name = "mnxEntry1";
+            this.mnxEntry1.Size = new System.Drawing.Size(178, 6);
+            // 
+            // mnxEntryCut
+            // 
+            this.mnxEntryCut.Name = "mnxEntryCut";
+            this.mnxEntryCut.Size = new System.Drawing.Size(181, 26);
+            this.mnxEntryCut.Text = "Cu&t";
+            this.mnxEntryCut.Click += new System.EventHandler(this.mnxEntryCut_Click);
+            // 
+            // mnxEntryCopy
+            // 
+            this.mnxEntryCopy.Name = "mnxEntryCopy";
+            this.mnxEntryCopy.Size = new System.Drawing.Size(181, 26);
+            this.mnxEntryCopy.Text = "&Copy";
+            this.mnxEntryCopy.Click += new System.EventHandler(this.mnxEntryCopy_Click);
+            // 
+            // mnxEntryPaste
+            // 
+            this.mnxEntryPaste.Name = "mnxEntryPaste";
+            this.mnxEntryPaste.Size = new System.Drawing.Size(181, 26);
+            this.mnxEntryPaste.Text = "&Paste";
+            this.mnxEntryPaste.Click += new System.EventHandler(this.mnxEntryPaste_Click);
+            // 
+            // mnxEntry2
+            // 
+            this.mnxEntry2.Name = "mnxEntry2";
+            this.mnxEntry2.Size = new System.Drawing.Size(178, 6);
             // 
             // mnxEntryAutotype
             // 
             this.mnxEntryAutotype.Name = "mnxEntryAutotype";
             this.mnxEntryAutotype.Size = new System.Drawing.Size(181, 26);
-            this.mnxEntryAutotype.Text = "Auto-type";
+            this.mnxEntryAutotype.Text = "Auto-t&ype";
             this.mnxEntryAutotype.Click += new System.EventHandler(this.mnxEntryAutotype_Click);
             // 
             // cmbSearch
@@ -382,31 +414,24 @@ namespace Bimil {
             // 
             this.tmrClose.Tick += new System.EventHandler(this.tmrClose_Tick);
             // 
-            // toolStripMenuItem1
+            // mnuEntryAdd
             // 
-            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(178, 6);
+            this.mnxEntryAdd.Name = "mnuEntryAdd";
+            this.mnxEntryAdd.Size = new System.Drawing.Size(181, 26);
+            this.mnxEntryAdd.Text = "&Add";
+            this.mnxEntryAdd.Click += new System.EventHandler(this.mnxEntryAdd_Click);
             // 
-            // mnxEntryCut
+            // mnxEntry0
             // 
-            this.mnxEntryCut.Name = "mnxEntryCut";
-            this.mnxEntryCut.Size = new System.Drawing.Size(181, 26);
-            this.mnxEntryCut.Text = "Cu&t";
-            this.mnxEntryCut.Click += new System.EventHandler(this.mnxEntryCut_Click);
+            this.mnxEntry0.Name = "mnxEntry0";
+            this.mnxEntry0.Size = new System.Drawing.Size(178, 6);
             // 
-            // mnxEntryCopy
+            // mnuEntryRemove
             // 
-            this.mnxEntryCopy.Name = "mnxEntryCopy";
-            this.mnxEntryCopy.Size = new System.Drawing.Size(181, 26);
-            this.mnxEntryCopy.Text = "&Copy";
-            this.mnxEntryCopy.Click += new System.EventHandler(this.mnxEntryCopy_Click);
-            // 
-            // mnxEntryPaste
-            // 
-            this.mnxEntryPaste.Name = "mnxEntryPaste";
-            this.mnxEntryPaste.Size = new System.Drawing.Size(181, 26);
-            this.mnxEntryPaste.Text = "&Paste";
-            this.mnxEntryPaste.Click += new System.EventHandler(this.mnxEntryPaste_Click);
+            this.mnxEntryRemove.Name = "mnuEntryRemove";
+            this.mnxEntryRemove.Size = new System.Drawing.Size(181, 26);
+            this.mnxEntryRemove.Text = "&Remove";
+            this.mnxEntryRemove.Click += new System.EventHandler(this.mnxEntryRemove_Click);
             // 
             // MainForm
             // 
@@ -468,12 +493,15 @@ namespace Bimil {
         private System.Windows.Forms.ContextMenuStrip mnxEntry;
         private System.Windows.Forms.ToolStripMenuItem mnxEntryView;
         private System.Windows.Forms.ToolStripMenuItem mnxEntryEdit;
-        private System.Windows.Forms.ToolStripSeparator mnxEntry0;
+        private System.Windows.Forms.ToolStripSeparator mnxEntry2;
         private System.Windows.Forms.ToolStripMenuItem mnxEntryAutotype;
-        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
+        private System.Windows.Forms.ToolStripSeparator mnxEntry1;
         private System.Windows.Forms.ToolStripMenuItem mnxEntryCut;
         private System.Windows.Forms.ToolStripMenuItem mnxEntryCopy;
         private System.Windows.Forms.ToolStripMenuItem mnxEntryPaste;
+        private System.Windows.Forms.ToolStripSeparator mnxEntry0;
+        private System.Windows.Forms.ToolStripMenuItem mnxEntryAdd;
+        private System.Windows.Forms.ToolStripMenuItem mnxEntryRemove;
     }
 }
 
