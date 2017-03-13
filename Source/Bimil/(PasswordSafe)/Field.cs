@@ -182,8 +182,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         internal byte[] RawData {
             get {
                 this.MarkAsAccessed();
-                if (this._rawData == null) { return new byte[0]; } //return empty array if no value has been set so far
-                return ProtectedData.Unprotect(this._rawData, this.RawDataEntropy, DataProtectionScope.CurrentUser);
+                return this.RawDataDirect;
             }
             set {
                 if (this.IsReadOnly) { throw new NotSupportedException("Object is read-only."); }
@@ -192,7 +191,16 @@ namespace Medo.Security.Cryptography.PasswordSafe {
                 Array.Clear(value, 0, value.Length);
             }
         }
-
+        /// <summary>
+        /// Gets raw data without marking the field as accessed.
+        /// Bytes are kept encrypted in memory until accessed.
+        /// </summary>
+        protected byte[] RawDataDirect {
+            get {
+                if (this._rawData == null) { return new byte[0]; } //return empty array if no value has been set so far
+                return ProtectedData.Unprotect(this._rawData, this.RawDataEntropy, DataProtectionScope.CurrentUser);
+            }
+        }
 
         /// <summary>
         /// Used to mark document as changed.

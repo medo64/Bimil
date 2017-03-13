@@ -279,5 +279,21 @@ namespace Medo.Security.Cryptography.PasswordSafe {
 
         #endregion
 
+
+        #region Clone
+
+        /// <summary>
+        /// Returns the exact copy of the entry.
+        /// </summary>
+        public Entry Clone() {
+            var records = new List<Record>();
+            foreach (var record in this.Records) {
+                records.Add(record.Clone());
+            }
+            return new Entry(records);
+        }
+
+        #endregion
+
     }
 }

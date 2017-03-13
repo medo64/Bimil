@@ -125,5 +125,17 @@ namespace Medo.Security.Cryptography.PasswordSafe {
             }
         }
 
+
+        #region Clone
+
+        /// <summary>
+        /// Returns the exact copy of the record.
+        /// </summary>
+        public Record Clone() {
+            return new Record(this.RecordType, base.RawDataDirect);
+        }
+
+        #endregion
+
     }
 }
