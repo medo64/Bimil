@@ -6,8 +6,10 @@ SET     FILE_SOLUTION="..\Source\Bimil.sln"
 SET  FILES_EXECUTABLE="..\Binaries\Bimil.exe"
 SET       FILES_OTHER="..\Binaries\ReadMe.txt"
 
-SET    COMPILE_TOOL_1="%PROGRAMFILES(X86)%\Microsoft Visual Studio 14.0\Common7\IDE\devenv.exe"
-SET    COMPILE_TOOL_2="%PROGRAMFILES(X86)%\Microsoft Visual Studio 14.0\Common7\IDE\WDExpress.exe"
+SET   COMPILE_TOOL_15="%PROGRAMFILES(X86)%\Microsoft Visual Studio\2017\Community\Common7\IDE\devenv.exe"
+SET   COMPILE_TOOL_14="%PROGRAMFILES(X86)%\Microsoft Visual Studio 14.0\Common7\IDE\devenv.exe"
+SET  COMPILE_TOOL_14E="%PROGRAMFILES(X86)%\Microsoft Visual Studio 14.0\Common7\IDE\WDExpress.exe"
+
 SET        SETUP_TOOL="%PROGRAMFILES(x86)%\Inno Setup 5\iscc.exe"
 
 SET       SIGN_TOOL_1="%PROGRAMFILES(X86)%\Windows Kits\10\bin\x86\signtool.exe"
@@ -22,17 +24,22 @@ SET        GIT_TOOL_1="%PROGRAMFILES%\Git\mingw64\bin\git.exe"
 ECHO --- DISCOVER TOOLS
 ECHO.
 
-IF EXIST %COMPILE_TOOL_1% (
-    ECHO Visual Studio 2015
-    SET COMPILE_TOOL=%COMPILE_TOOL_1%
+IF EXIST %COMPILE_TOOL_15% (
+    ECHO Visual Studio 2017
+    SET COMPILE_TOOL=%COMPILE_TOOL_15%
 ) ELSE (
-    IF EXIST %COMPILE_TOOL_2% (
-        ECHO Visual Studio Express 2015
-        SET COMPILE_TOOL=%COMPILE_TOOL_2%
-    ) ELSE (
-        ECHO Cannot find Visual Studio^^!
-        PAUSE && EXIT /B 255
-    )
+	IF EXIST %COMPILE_TOOL_14% (
+		ECHO Visual Studio 2015
+		SET COMPILE_TOOL=%COMPILE_TOOL_14%
+	) ELSE (
+		IF EXIST %COMPILE_TOOL_14E% (
+			ECHO Visual Studio Express 2015
+			SET COMPILE_TOOL=%COMPILE_TOOL_14E%
+		) ELSE (
+			ECHO Cannot find Visual Studio^^!
+			PAUSE && EXIT /B 255
+		)
+	)
 )
 
 IF EXIST %SETUP_TOOL% (
