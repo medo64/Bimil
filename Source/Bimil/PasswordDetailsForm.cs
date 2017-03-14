@@ -1,6 +1,7 @@
 using Medo.Security.Cryptography.PasswordSafe;
 using System;
 using System.Windows.Forms;
+using System.Collections.Generic;
 
 namespace Bimil {
     internal partial class PasswordDetailsForm : Form {
@@ -13,11 +14,15 @@ namespace Bimil {
 
             if (this.IsEnabled) {
                 nudHistoryCount.Value = entry.PasswordHistory.MaximumCount;
+                var listItems = new Stack<ListViewItem>(); //to get in the reverse
                 foreach (var password in entry.PasswordHistory) {
                     var lvi = new ListViewItem(password.TimeFirstUsed.ToShortDateString()) { Tag = password };
                     lvi.SubItems.Add("***");
-                    lsvHistoryPasswords.Items.Add(lvi);
                     lvi.ToolTipText = $"{password.TimeFirstUsed.ToLongDateString()}  {password.TimeFirstUsed.ToShortTimeString()}\n{password.HistoricalPassword}";
+                    listItems.Push(lvi);
+                }
+                foreach (var item in listItems) {
+                    lsvHistoryPasswords.Items.Add(item);
                 }
 
                 chbHistoryEnabled.Checked = entry.PasswordHistory.Enabled;

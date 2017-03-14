@@ -163,7 +163,7 @@ namespace Bimil {
             // 
             // lsvHistoryPasswords_Date
             // 
-            this.lsvHistoryPasswords_Date.Text = "Date";
+            this.lsvHistoryPasswords_Date.Text = "Set Date";
             this.lsvHistoryPasswords_Date.Width = 90;
             // 
             // lsvHistoryPasswords_Password
