@@ -39,6 +39,7 @@ namespace Bimil {
             this.btnOK = new System.Windows.Forms.Button();
             this.lblEditInfo = new System.Windows.Forms.Label();
             this.tip = new System.Windows.Forms.ToolTip(this.components);
+            this.lblCurrentPasswordTime = new System.Windows.Forms.Label();
             this.grpPasswordHistory.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudHistoryCount)).BeginInit();
             this.mnxHistoricalPassword.SuspendLayout();
@@ -225,6 +226,17 @@ namespace Bimil {
             this.lblEditInfo.TabIndex = 3;
             this.lblEditInfo.Text = "To modify settings, you must be in edit mode.";
             // 
+            // lblCurrentPasswordTime
+            // 
+            this.lblCurrentPasswordTime.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.lblCurrentPasswordTime.AutoSize = true;
+            this.lblCurrentPasswordTime.Location = new System.Drawing.Point(12, 171);
+            this.lblCurrentPasswordTime.Name = "lblCurrentPasswordTime";
+            this.lblCurrentPasswordTime.Size = new System.Drawing.Size(190, 17);
+            this.lblCurrentPasswordTime.TabIndex = 4;
+            this.lblCurrentPasswordTime.Text = "Current password was set on";
+            this.lblCurrentPasswordTime.Visible = false;
+            // 
             // PasswordDetailsForm
             // 
             this.AcceptButton = this.btnOK;
@@ -232,6 +244,7 @@ namespace Bimil {
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(502, 226);
+            this.Controls.Add(this.lblCurrentPasswordTime);
             this.Controls.Add(this.lblEditInfo);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnOK);
@@ -272,5 +285,6 @@ namespace Bimil {
         private System.Windows.Forms.ToolTip tip;
         private System.Windows.Forms.ContextMenuStrip mnxHistoricalPassword;
         private System.Windows.Forms.ToolStripMenuItem mnxHistoricalPasswordCopy;
+        private System.Windows.Forms.Label lblCurrentPasswordTime;
     }
 }

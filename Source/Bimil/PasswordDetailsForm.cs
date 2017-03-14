@@ -18,7 +18,8 @@ namespace Bimil {
                 foreach (var password in entry.PasswordHistory) {
                     var lvi = new ListViewItem(password.TimeFirstUsed.ToShortDateString()) { Tag = password };
                     lvi.SubItems.Add("***");
-                    lvi.ToolTipText = $"{password.TimeFirstUsed.ToLongDateString()}  {password.TimeFirstUsed.ToShortTimeString()}\n{password.HistoricalPassword}";
+                    var setTime = password.TimeFirstUsed.ToLocalTime();
+                    lvi.ToolTipText = $"{setTime:d}  {setTime:t}\n{password.HistoricalPassword}";
                     listItems.Push(lvi);
                 }
                 foreach (var item in listItems) {
@@ -28,6 +29,13 @@ namespace Bimil {
                 chbHistoryEnabled.Checked = entry.PasswordHistory.Enabled;
             }
             SetupHistoryStates();
+
+            if (entry.PasswordModificationTime != null) {
+                var setTime = entry.PasswordModificationTime.ToLocalTime();
+                lblCurrentPasswordTime.Text += $" {setTime:d}.";
+                tip.SetToolTip(lblCurrentPasswordTime, $"{setTime:d}  {setTime:t}");
+                lblCurrentPasswordTime.Visible = true;
+            }
 
             btnOK.Visible = !this.IsReadonly;
             lblEditInfo.Visible = this.IsReadonly;
