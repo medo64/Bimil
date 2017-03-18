@@ -12,26 +12,29 @@ namespace Bimil {
 
         public static void SetClipboardData(IEnumerable<Entry> entries) {
             var bytes = new List<byte>();
+            var buffer = new byte[0];
+            try {
+                foreach (var entry in entries) {
+                    foreach (var record in entry.Records) {
+                        bytes.AddRange(BitConverter.GetBytes((int)record.RecordType));
+                        bytes.AddRange(BitConverter.GetBytes(record.RawDataDirect.Length));
+                        bytes.AddRange(record.RawDataDirect);
+                    }
 
-            foreach (var entry in entries) {
-                foreach (var record in entry.Records) {
-                    bytes.AddRange(BitConverter.GetBytes((int)record.RecordType));
-                    bytes.AddRange(BitConverter.GetBytes(record.RawDataDirect.Length));
-                    bytes.AddRange(record.RawDataDirect);
+                    //add entry separator
+                    bytes.AddRange(new byte[] { 0, 0, 0, 0 }); //RecordType=0
+                    bytes.AddRange(new byte[] { 0, 0, 0, 0 }); //Length=0
                 }
+                buffer = bytes.ToArray();
 
-                //add entry separator
-                bytes.AddRange(new byte[] { 0, 0, 0, 0 }); //RecordType=0
-                bytes.AddRange(new byte[] { 0, 0, 0, 0 }); //Length=0
+                var protectedBuffer = ProtectedData.Protect(buffer, null, DataProtectionScope.CurrentUser);
+
+                Clipboard.Clear();
+                Clipboard.SetData(FormatName, protectedBuffer);
+            } finally {
+                for (int i = 0; i < bytes.Count; i++) { bytes[i] = 0; }
+                Array.Clear(buffer, 0, buffer.Length);
             }
-            var buffer = bytes.ToArray();
-            for (int i = 0; i < bytes.Count; i++) { bytes[i] = 0; }
-
-            var protectedBuffer = ProtectedData.Protect(buffer, null, DataProtectionScope.CurrentUser);
-            Array.Clear(buffer, 0, buffer.Length);
-
-            Clipboard.Clear();
-            Clipboard.SetData(FormatName, protectedBuffer);
         }
 
         public static IEnumerable<Entry> GetClipboardData() {
