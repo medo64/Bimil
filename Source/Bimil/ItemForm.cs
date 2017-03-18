@@ -804,7 +804,6 @@ namespace Bimil {
 
         private Button NewConfigureButton(TextBox parentTextBox, EventHandler clickHandler, string tipText = null, bool trackReadonly = false) {
             var button = NewCustomCommandButton(parentTextBox, clickHandler, tipText, "btnConfigure");
-            parentTextBox.Width -= parentTextBox.Height;
 
             if (trackReadonly) {
                 button.Enabled = !parentTextBox.ReadOnly;
