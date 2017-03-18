@@ -117,10 +117,11 @@ namespace Bimil {
 
         #region Entry search
 
-        public static void PerformEntrySearch(Document document, ListView listView, String searchText, Entry entryToSelect = null, bool extendedSearch = false, bool addMatchDescription = false) {
-            var sw = Stopwatch.StartNew();
+        public static void PerformEntrySearch(Document document, ListView listView, String searchText, IEnumerable<Entry> entriesToSelect = null, bool extendedSearch = false, bool addMatchDescription = false) {
+            var entriesToSelectList = new List<Entry>(entriesToSelect ?? new Entry[] { });
+            var remainingEntriesToSelect = new List<Entry>(entriesToSelectList);
 
-            var foundSelectedEntry = false;
+            var sw = Stopwatch.StartNew();
 
             //search for matches
             var resultList = new List<EntryCache>();
@@ -180,7 +181,7 @@ namespace Bimil {
                     if (anyFailedChecks) {
                         continue;
                     } else {
-                        if (item.Entry == entryToSelect) { foundSelectedEntry = true; }
+                        if (remainingEntriesToSelect.Contains(item.Entry)) { remainingEntriesToSelect.Remove(item.Entry); }
                         resultList.Add(item);
                     }
                 }
@@ -188,9 +189,10 @@ namespace Bimil {
             Debug.WriteLine(string.Format(CultureInfo.InvariantCulture, "Items searched at {0:0.0} ms", sw.ElapsedMilliseconds));
 
             //add selected entry if not added before
-            if ((document != null) && !foundSelectedEntry) {
+            if ((document != null) && (remainingEntriesToSelect.Count > 0)) {
                 foreach (var entry in document.Entries) { //just loop over them to be sure entry to select actually exists currently
-                    if (entry == entryToSelect) {
+                    if (remainingEntriesToSelect.Contains(entry)) {
+                        remainingEntriesToSelect.Remove(entry);
                         var item = new EntryCache(entry);
                         item.AddMatch("Selection");
                         resultList.Add(item);
@@ -237,13 +239,12 @@ namespace Bimil {
                 listView.Enabled = true;
                 listView.ForeColor = SystemColors.WindowText;
 
-                if (entryToSelect != null) {
+                if (entriesToSelectList.Count > 0) {
                     foreach (ListViewItem item in listView.Items) {
                         var entry = (Entry)(item.Tag);
-                        if (entry.Equals(entryToSelect)) {
+                        if (entriesToSelectList.Contains(entry)) {
                             item.Selected = true;
                             item.Focused = true;
-                            break;
                         }
                     }
                 }

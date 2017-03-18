@@ -11,7 +11,6 @@ using System.Diagnostics;
 using System.Threading;
 using System.Reflection;
 using System.Security;
-using System.Globalization;
 
 namespace Bimil {
     internal partial class MainForm : Form {
@@ -666,7 +665,7 @@ namespace Bimil {
             }
 
             RefreshCategories();
-            RefreshItems((lsvEntries.SelectedItems.Count > 0) ? (Entry)(lsvEntries.SelectedItems[0].Tag) : null);
+            RefreshItems((lsvEntries.SelectedItems.Count > 0) ? new Entry[] { (Entry)(lsvEntries.SelectedItems[0].Tag) } : null);
             UpdateMenu();
             cmbSearch.Select();
         }
@@ -762,13 +761,14 @@ namespace Bimil {
                 mnxEntryEdit.Font = new Font(mnxEntryView.Font, FontStyle.Regular);
             }
 
+            var isAnyEntrySelected = (lsvEntries.SelectedItems.Count >= 1) && ((lsvEntries.SelectedItems[0].Tag as Entry) != null);
             var isSingleEntrySelected = (lsvEntries.SelectedItems.Count == 1) && ((lsvEntries.SelectedItems[0].Tag as Entry) != null);
             mnxEntryView.Enabled = isSingleEntrySelected;
             mnxEntryEdit.Enabled = isSingleEntrySelected;
             mnxEntryAdd.Enabled = true;
             mnxEntryAddSimilar.Enabled = isSingleEntrySelected;
-            mnxEntryCut.Enabled = isSingleEntrySelected;
-            mnxEntryCopy.Enabled = isSingleEntrySelected;
+            mnxEntryCut.Enabled = isAnyEntrySelected;
+            mnxEntryCopy.Enabled = isAnyEntrySelected;
             mnxEntryPaste.Enabled = ClipboardHelper.HasDataOnClipboard;
             mnxEntryAutotype.Enabled = isSingleEntrySelected;
 
@@ -831,31 +831,42 @@ namespace Bimil {
         }
 
         private void mnxEntryCut_Click(object sender, EventArgs e) {
-            var isSingleEntrySelected = (lsvEntries.SelectedItems.Count == 1) && ((lsvEntries.SelectedItems[0].Tag as Entry) != null);
-            if ((this.Document == null) || !isSingleEntrySelected) { return; }
+            var isAnyEntrySelected = (lsvEntries.SelectedItems.Count >= 1) && ((lsvEntries.SelectedItems[0].Tag as Entry) != null);
+            if ((this.Document == null) || !isAnyEntrySelected) { return; }
 
-            var entry = (Entry)(lsvEntries.SelectedItems[0].Tag);
-            ClipboardHelper.SetClipboardData(entry);
+            var entries = new List<Entry>();
+            foreach (ListViewItem selectedItem in lsvEntries.SelectedItems) {
+                entries.Add((Entry)(selectedItem.Tag));
+            }
+            ClipboardHelper.SetClipboardData(entries.AsReadOnly());
 
-            this.Document.Entries.Remove(entry);
-            lsvEntries.Items.Remove(lsvEntries.SelectedItems[0]);
+            for (int i = lsvEntries.Items.Count - 1; i >= 0; i--) {
+                if (lsvEntries.Items[i].Selected) {
+                    var entry = (Entry)(lsvEntries.Items[i].Tag);
+                    this.Document.Entries.Remove(entry);
+                    lsvEntries.Items.RemoveAt(i);
+                }
+            }
         }
 
         private void mnxEntryCopy_Click(object sender, EventArgs e) {
-            var isSingleEntrySelected = (lsvEntries.SelectedItems.Count == 1) && ((lsvEntries.SelectedItems[0].Tag as Entry) != null);
-            if ((this.Document == null) || !isSingleEntrySelected) { return; }
+            var isAnyEntrySelected = (lsvEntries.SelectedItems.Count >= 1) && ((lsvEntries.SelectedItems[0].Tag as Entry) != null);
+            if ((this.Document == null) || !isAnyEntrySelected) { return; }
 
-            var entry = (Entry)(lsvEntries.SelectedItems[0].Tag);
-            ClipboardHelper.SetClipboardData(entry);
+            var entries = new List<Entry>();
+            foreach (ListViewItem selectedItem in lsvEntries.SelectedItems) {
+                entries.Add((Entry)(selectedItem.Tag));
+            }
+            ClipboardHelper.SetClipboardData(entries.AsReadOnly());
         }
 
         private void mnxEntryPaste_Click(object sender, EventArgs e) {
-            var entry = ClipboardHelper.GetClipboardData();
-            if (entry != null) {
+            var entries = new List<Entry>(ClipboardHelper.GetClipboardData());
+            foreach (var entry in entries) {
                 this.Document.Entries.Add(entry);
-                RefreshCategories();
-                RefreshItems(entry);
             }
+            RefreshCategories();
+            RefreshItems(entries.AsReadOnly());
         }
 
         private void mnxEntryAutotype_Click(object sender, EventArgs e) {
@@ -895,7 +906,7 @@ namespace Bimil {
 
             using (var frm2 = new ItemForm(this.Document, entry, this.Categories, startsAsEditable: true, isNew: true, defaultCategory: categoryText)) {
                 if (frm2.ShowDialog(this) == DialogResult.OK) {
-                    RefreshItems(entry);
+                    RefreshItems(new Entry[] { entry });
                     RefreshCategories();
                 } else {
                     this.Document.Entries.Remove(entry);
@@ -927,8 +938,8 @@ namespace Bimil {
             cmbSearch.EndUpdate();
         }
 
-        private void RefreshItems(Entry entryToSelect = null) {
-            Helpers.PerformEntrySearch(this.Document, lsvEntries, cmbSearch.Text, entryToSelect);
+        private void RefreshItems(IEnumerable<Entry> entriesToSelect = null) {
+            Helpers.PerformEntrySearch(this.Document, lsvEntries, cmbSearch.Text, entriesToSelect);
             Form_Resize(null, null); //to support both ListView full row with and without scrollbar
         }
 
@@ -967,10 +978,10 @@ namespace Bimil {
                 if (frm2.ShowDialog(this) == DialogResult.OK) {
                     lsvEntries.SelectedItems[0].Text = item.Title;
                     RefreshCategories();
-                    RefreshItems(item);
+                    RefreshItems(new Entry[] { item });
                 } else if (!string.Equals(oldGroup, item.Group, StringComparison.Ordinal)) {
                     RefreshCategories();
-                    RefreshItems(item);
+                    RefreshItems(new Entry[] { item });
                 }
                 UpdateMenu();
             }
