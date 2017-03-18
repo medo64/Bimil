@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Web;
 using Medo.Security.Cryptography;
 using System.Text;
+using Medo.Windows.Forms;
 
 namespace Bimil {
     internal partial class ItemForm : Form {
@@ -76,9 +77,9 @@ namespace Bimil {
             switch (e.KeyData) {
                 case Keys.F2: //edit, fields
                     if (btnEdit.Visible) {
-                        btnEdit_Click(null, null);
+                        btnEdit.PerformClick();
                     } else if (btnFields.Visible) {
-                        btnFields_Click(null, null);
+                        btnFields.PerformClick();
                     }
                     e.Handled = true;
                     e.SuppressKeyPress = true;
@@ -173,6 +174,29 @@ namespace Bimil {
                 pnl.Controls.Add(categoryComboBox);
                 var label = new Label() { AutoEllipsis = true, Location = new Point(0, y), Size = new Size(labelWidth, unitHeight), Text = "Category:", TextAlign = ContentAlignment.MiddleLeft, UseMnemonic = false };
                 pnl.Controls.Add(label);
+
+                if (!string.IsNullOrEmpty(record.Text)) {
+                    var renameButton = NewCustomCommandButton(categoryComboBox, delegate (object sender2, EventArgs e2) {
+                        using (var frm = new InputBox($"Rename all categories named \"{record.Text}\" to:", categoryComboBox.Text)) {
+                            if (frm.ShowDialog(this) == DialogResult.OK) {
+                                var groupFrom = this.Item.Group;
+                                var groupTo = frm.Text;
+                                foreach (var entry in this.Document.Entries) {
+                                    if (string.Equals(groupFrom, entry.Group, StringComparison.CurrentCultureIgnoreCase)) {
+                                        entry.Group = groupTo;
+                                    }
+                                }
+                                categoryComboBox.Text = groupTo;
+                            }
+                        }
+                    }, "Rename group", "btnGroupRename");
+                    pnl.Controls.Add(renameButton);
+                    renameButton.Enabled = categoryComboBox.Enabled;
+
+                    btnEdit.Click += delegate (object sender2, EventArgs e2) {
+                        renameButton.Enabled = categoryComboBox.Enabled;
+                    };
+                }
 
                 y += titleTextBox.Height + (label.Height / 4);
             }
@@ -779,23 +803,8 @@ namespace Bimil {
         }
 
         private Button NewConfigureButton(TextBox parentTextBox, EventHandler clickHandler, string tipText = null, bool trackReadonly = false) {
+            var button = NewCustomCommandButton(parentTextBox, clickHandler, tipText, "btnConfigure");
             parentTextBox.Width -= parentTextBox.Height;
-            var button = new Button() {
-                Name = "btnConfigure",
-                Location = new Point(parentTextBox.Right, parentTextBox.Top),
-                Size = new Size(parentTextBox.Height, parentTextBox.Height),
-                TabStop = false,
-                Tag = parentTextBox,
-                Text = "",
-                Anchor = AnchorStyles.Top | AnchorStyles.Right
-            };
-            Helpers.ScaleButton(button);
-
-            tip.SetToolTip(button, tipText ?? "Configure");
-
-            button.Click += new EventHandler(delegate (object sender, EventArgs e) {
-                clickHandler.Invoke(sender, e);
-            });
 
             if (trackReadonly) {
                 button.Enabled = !parentTextBox.ReadOnly;
@@ -803,6 +812,28 @@ namespace Bimil {
                     button.Enabled = !parentTextBox.ReadOnly;
                 };
             }
+
+            return button;
+        }
+
+        private Button NewCustomCommandButton(Control parentControl, EventHandler clickHandler, string tipText = null, string buttonName = "btnCustom") {
+            parentControl.Width -= parentControl.Height;
+            var button = new Button() {
+                Name = buttonName,
+                Location = new Point(parentControl.Right, parentControl.Top),
+                Size = new Size(parentControl.Height, parentControl.Height),
+                TabStop = false,
+                Tag = parentControl,
+                Text = "",
+                Anchor = AnchorStyles.Top | AnchorStyles.Right
+            };
+            Helpers.ScaleButton(button);
+
+            tip.SetToolTip(button, tipText ?? "Command");
+
+            button.Click += new EventHandler(delegate (object sender, EventArgs e) {
+                clickHandler.Invoke(sender, e);
+            });
 
             return button;
         }

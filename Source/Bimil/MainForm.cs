@@ -963,8 +963,12 @@ namespace Bimil {
             var item = lsvEntries.SelectedItems[0].Tag as Entry;
             if (item == null) { return; }
             using (var frm2 = new ItemForm(this.Document, item, this.Categories, startsAsEditable: startsAsEditable)) {
+                var oldGroup = item.Group;
                 if (frm2.ShowDialog(this) == DialogResult.OK) {
                     lsvEntries.SelectedItems[0].Text = item.Title;
+                    RefreshCategories();
+                    RefreshItems(item);
+                } else if (!string.Equals(oldGroup, item.Group, StringComparison.Ordinal)) {
                     RefreshCategories();
                     RefreshItems(item);
                 }
