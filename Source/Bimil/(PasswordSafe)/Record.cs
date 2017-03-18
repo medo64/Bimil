@@ -15,6 +15,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         public Record(RecordType type)
             : base() {
             this.RecordType = type;
+            if (this.RecordType == RecordType.Autotype) { this.Text = @"\u\t\p\t\n"; } //to have default value
         }
 
         internal Record(RecordType type, byte[] rawData) : base() {

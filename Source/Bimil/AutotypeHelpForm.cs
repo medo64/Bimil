@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using Medo.Security.Cryptography.PasswordSafe;
 
 namespace Bimil {
     internal partial class AutotypeHelpForm : Form {
@@ -10,7 +11,11 @@ namespace Bimil {
             this.Font = SystemFonts.MessageBoxFont;
             Medo.Windows.Forms.State.SetupOnLoadAndClose(this);
 
-            txtAutotype.Text = autotypeText;
+            if (string.IsNullOrEmpty(autotypeText)) {
+                txtAutotype.Text = @"\u\t\p\t\n";
+            } else {
+                txtAutotype.Text = autotypeText;
+            }
 
             if (isReadOnly) {
                 lsvHelp.BackColor = SystemColors.Control;
