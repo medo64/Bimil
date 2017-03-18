@@ -861,8 +861,17 @@ namespace Bimil {
         }
 
         private void mnxEntryPaste_Click(object sender, EventArgs e) {
+            string category = null;
+            foreach (String item in cmbSearch.Items) { //you must run over all items to determine current category (case-insensitive)
+                if (string.Equals(cmbSearch.Text, item, StringComparison.CurrentCultureIgnoreCase)) {
+                    category = item;
+                    break;
+                }
+            }
+
             var entries = new List<Entry>(ClipboardHelper.GetClipboardData());
             foreach (var entry in entries) {
+                if (category != null) { entry.Group = category;  } //switch category of pasted item to currently selected category
                 this.Document.Entries.Add(entry);
             }
             RefreshCategories();
