@@ -383,6 +383,86 @@ namespace Bimil.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap btnSuffixEnter_16 {
+            get {
+                object obj = ResourceManager.GetObject("btnSuffixEnter_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap btnSuffixEnter_24 {
+            get {
+                object obj = ResourceManager.GetObject("btnSuffixEnter_24", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap btnSuffixEnter_32 {
+            get {
+                object obj = ResourceManager.GetObject("btnSuffixEnter_32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap btnSuffixEnter_48 {
+            get {
+                object obj = ResourceManager.GetObject("btnSuffixEnter_48", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap btnSuffixTab_16 {
+            get {
+                object obj = ResourceManager.GetObject("btnSuffixTab_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap btnSuffixTab_24 {
+            get {
+                object obj = ResourceManager.GetObject("btnSuffixTab_24", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap btnSuffixTab_32 {
+            get {
+                object obj = ResourceManager.GetObject("btnSuffixTab_32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap btnSuffixTab_48 {
+            get {
+                object obj = ResourceManager.GetObject("btnSuffixTab_48", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap btnViewCode_16 {
             get {
                 object obj = ResourceManager.GetObject("btnViewCode_16", resourceCulture);

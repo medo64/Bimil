@@ -28,6 +28,7 @@ namespace Bimil {
             this.tmrRestore = new System.Windows.Forms.Timer(this.components);
             this.bwType = new System.ComponentModel.BackgroundWorker();
             this.tryProgress = new System.Windows.Forms.NotifyIcon(this.components);
+            this.tip = new System.Windows.Forms.ToolTip(this.components);
             this.SuspendLayout();
             // 
             // tmrRestore
@@ -67,5 +68,6 @@ namespace Bimil {
         private System.Windows.Forms.Timer tmrRestore;
         private System.ComponentModel.BackgroundWorker bwType;
         private System.Windows.Forms.NotifyIcon tryProgress;
+        private System.Windows.Forms.ToolTip tip;
     }
 }

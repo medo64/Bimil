@@ -29,30 +29,6 @@ namespace Bimil {
                 y = AddTokenButton(y, "Auto-type", AutotypeToken.GetUnexpandedAutotypeTokens(null), isDefinedAutoType: true).Bottom;
             }
 
-            //Suffix type
-            var buttonNoSuffix = new ToolStripButton("None");
-            var buttonTabSuffix = new ToolStripButton("Tab");
-            var buttonEnterSuffix = new ToolStripButton("Enter");
-
-            buttonNoSuffix.Click += delegate (object sender2, EventArgs e2) {
-                this.Suffix = SuffixType.None;
-                buttonNoSuffix.Checked = true;
-                buttonTabSuffix.Checked = false;
-                buttonEnterSuffix.Checked = false;
-            };
-            buttonTabSuffix.Click += delegate (object sender2, EventArgs e2) {
-                this.Suffix = SuffixType.Tab;
-                buttonNoSuffix.Checked = false;
-                buttonTabSuffix.Checked = true;
-                buttonEnterSuffix.Checked = false;
-            };
-            buttonEnterSuffix.Click += delegate (object sender2, EventArgs e2) {
-                this.Suffix = SuffixType.Enter;
-                buttonNoSuffix.Checked = false;
-                buttonTabSuffix.Checked = false;
-                buttonEnterSuffix.Checked = true;
-            };
-
             y += SystemInformation.DragSize.Height;
 
             //all textual fields
@@ -60,53 +36,45 @@ namespace Bimil {
                 switch (record.RecordType) {
                     case RecordType.UserName:
                     case RecordType.EmailAddress:
-                    case RecordType.CreditCardExpiration:
-                        y = AddTokenButton(y, Helpers.GetRecordCaption(record), AutotypeToken.GetAutotypeTokensFromText(record.Text),
-                            record).Bottom;
+                    case RecordType.CreditCardExpiration: {
+                            var tokens = AutotypeToken.GetAutotypeTokensFromText(record.Text);
+                            var btn = AddTokenButton(y, Helpers.GetRecordCaption(record),
+                                                     tokens, record);
+                            y = btn.Bottom;
+                            AddSuffixButtons(btn, tokens, record);
+                        }
                         break;
 
                     case RecordType.Password:
                     case RecordType.CreditCardPin:
-                    case RecordType.CreditCardVerificationValue:
-                        y = AddTokenButton(y, Helpers.GetRecordCaption(record),
-                            AutotypeToken.GetAutotypeTokensFromText(record.Text), record, isTextHidden: true).Bottom;
+                    case RecordType.CreditCardVerificationValue: {
+                            var tokens = AutotypeToken.GetAutotypeTokensFromText(record.Text);
+                            var btn = AddTokenButton(y, Helpers.GetRecordCaption(record),
+                                      tokens, record, isTextHidden: true);
+                            y = btn.Bottom;
+                            AddSuffixButtons(btn, tokens, record);
+                        }
                         break;
 
-                    case RecordType.TwoFactorKey:
-                        y = AddTokenButton(y, Helpers.GetRecordCaption(record),
-                            AutotypeToken.GetUnexpandedAutotypeTokens(@"\2"), record, isTextHidden: true).Bottom;
+                    case RecordType.TwoFactorKey: {
+                            var tokens = AutotypeToken.GetUnexpandedAutotypeTokens(@"\2");
+                            var btn = AddTokenButton(y, Helpers.GetRecordCaption(record),
+                                                     tokens, record, isTextHidden: true);
+                            y = btn.Bottom;
+                            AddSuffixButtons(btn, tokens, record);
+                        }
                         break;
 
-                    case RecordType.CreditCardNumber:
-                        y = AddTokenButton(y, Helpers.GetRecordCaption(record),
-                            AutotypeToken.GetAutotypeTokensFromText(Helpers.FilterText(record.Text, Helpers.NumberCharacters)), record).Bottom;
+                    case RecordType.CreditCardNumber: {
+                            var tokens = AutotypeToken.GetAutotypeTokensFromText(Helpers.FilterText(record.Text, Helpers.NumberCharacters));
+                            var btn = AddTokenButton(y, Helpers.GetRecordCaption(record),
+                                                     tokens, record);
+                            y = btn.Bottom;
+                            AddSuffixButtons(btn, tokens, record);
+                        }
                         break;
                 }
             }
-
-            y += SystemInformation.DragSize.Height;
-
-            var btnTab = AddGenericButton(y, "Tab");
-            var btnEnter = AddGenericButton(y, "Enter");
-            btnTab.Width /= 2;
-            btnEnter.Left = btnTab.Right;
-            btnEnter.Width = this.ClientSize.Width - btnEnter.Left;
-            this.Resize += delegate (object sender, EventArgs e) {
-                btnTab.Width = this.ClientSize.Width / 2;
-                btnEnter.Left = btnTab.Right;
-                btnEnter.Width = this.ClientSize.Width - btnEnter.Left;
-            };
-            btnTab.Click += delegate (object sender, EventArgs e) { ExecuteTokens(AutotypeToken.GetAutotypeTokensFromText("\t"), false); };
-            btnEnter.Click += delegate (object sender, EventArgs e) { ExecuteTokens(AutotypeToken.GetAutotypeTokensFromText("\n"), false); };
-            y = btnEnter.Bottom;
-
-            var toolstrip = new ToolStrip() { Dock = DockStyle.None, Left = this.ClientRectangle.Left, Top = y + SystemInformation.DragSize.Height, GripStyle = ToolStripGripStyle.Hidden, RenderMode = ToolStripRenderMode.System };
-            toolstrip.Items.Add(new ToolStripLabel("Suffix:") { ForeColor = SystemColors.GrayText });
-            toolstrip.Items.AddRange(new ToolStripItem[] { buttonNoSuffix, buttonTabSuffix, buttonEnterSuffix });
-            buttonNoSuffix.PerformClick();
-
-            this.Controls.Add(toolstrip);
-            y = toolstrip.Bottom;
 
             y += SystemInformation.DragSize.Height;
 
@@ -119,6 +87,7 @@ namespace Bimil {
 
             this.Entry = entry;
         }
+
 
         private readonly Entry Entry;
         private SuffixType Suffix = SuffixType.None;
@@ -231,7 +200,7 @@ namespace Bimil {
             return btn;
         }
 
-        private Rectangle AddTokenButton(int top, string caption, IEnumerable<AutotypeToken> tokens = null, Record record = null, bool isTextHidden = false, bool isDefinedAutoType = false) {
+        private Button AddTokenButton(int top, string caption, IEnumerable<AutotypeToken> tokens = null, Record record = null, bool isTextHidden = false, bool isDefinedAutoType = false) {
             var btn = AddGenericButton(top, caption, 3);
 
             btn.Text += "\n";
@@ -251,23 +220,77 @@ namespace Bimil {
             };
 
             btn.Click += delegate (object sender, EventArgs e) {
-                var processedTokens = new List<AutotypeToken>();
-                foreach (var token in AutotypeToken.GetAutotypeTokens(tokens, this.Entry)) {
-                    if ((token.Kind == AutotypeTokenKind.Command) && token.Content.Equals("TwoFactorCode", StringComparison.Ordinal)) {
-                        var bytes = (record != null) ? record.GetBytes() : this.Entry.TwoFactorKey;
-                        var key = OneTimePassword.ToBase32(bytes, bytes.Length, SecretFormatFlags.Spacing | SecretFormatFlags.Padding);
-                        processedTokens.AddRange(AutotypeToken.GetAutotypeTokensFromText(Helpers.GetTwoFactorCode(key)));
-                    } else {
-                        processedTokens.Add(token);
-                    }
-                }
-
-                ExecuteTokens(processedTokens.AsReadOnly(), isDefinedAutoType);
+                var processedTokens = GetProcessedTokens(record, tokens);
+                ExecuteTokens(processedTokens, isDefinedAutoType);
             };
 
             this.Controls.Add(btn);
 
-            return new Rectangle(btn.Location, btn.Size);
+            return btn;
+        }
+
+        private IEnumerable<AutotypeToken> GetProcessedTokens(Record record, IEnumerable<AutotypeToken> tokens, AutotypeToken suffixToken = null) {
+            var tokenList = new List<AutotypeToken>(AutotypeToken.GetAutotypeTokens(tokens, this.Entry));
+            if (suffixToken != null) { tokenList.Add(suffixToken); }
+
+            var processedTokens = new List<AutotypeToken>();
+            foreach (var token in tokenList) {
+                if ((token.Kind == AutotypeTokenKind.Command) && token.Content.Equals("TwoFactorCode", StringComparison.Ordinal)) {
+                    var bytes = (record != null) ? record.GetBytes() : this.Entry.TwoFactorKey;
+                    var key = OneTimePassword.ToBase32(bytes, bytes.Length, SecretFormatFlags.Spacing | SecretFormatFlags.Padding);
+                    processedTokens.AddRange(AutotypeToken.GetAutotypeTokensFromText(Helpers.GetTwoFactorCode(key)));
+                } else {
+                    processedTokens.Add(token);
+                }
+            }
+
+            return processedTokens.AsReadOnly();
+        }
+
+        private void AddSuffixButtons(Button button, IEnumerable<AutotypeToken> tokens, Record record) {
+            var halfHeight = button.Height / 2;
+
+            var tabButtonRectangle = new Rectangle(button.Right - halfHeight, button.Top, halfHeight, button.Height - halfHeight);
+            var enterButtonRectangle = new Rectangle(button.Right - halfHeight, button.Bottom - halfHeight, halfHeight, halfHeight);
+
+            var btnTab = AddSuffixButton(tabButtonRectangle, tokens, record, '\t');
+            var btnEnter = AddSuffixButton(enterButtonRectangle, tokens, record, '\n');
+
+            button.Parent.Controls.Add(btnTab);
+            button.Parent.Controls.Add(btnEnter);
+
+            button.Width -= halfHeight;
+        }
+
+        private Button AddSuffixButton(Rectangle rectangle, IEnumerable<AutotypeToken> tokens, Record record, char suffix) {
+            var button = new Button() {
+                Anchor = AnchorStyles.Top | AnchorStyles.Right,
+                Location = rectangle.Location,
+                Size = rectangle.Size,
+            };
+
+            AutotypeToken suffixToken = null;
+            switch (suffix) {
+                case '\t':
+                    button.Name = "btnSuffixTab";
+                    tip.SetToolTip(button, "Tab character as a suffix.");
+                    suffixToken = new AutotypeToken("{Tab}", AutotypeTokenKind.Key);
+                    break;
+
+                case '\n':
+                    button.Name = "btnSuffixEnter";
+                    tip.SetToolTip(button, "Enter character as a suffix.");
+                    suffixToken = new AutotypeToken("{Enter}", AutotypeTokenKind.Key);
+                    break;
+            }
+
+            button.Click += delegate (object sender2, EventArgs e2) {
+                var processedTokens = GetProcessedTokens(record, tokens, suffixToken);
+                ExecuteTokens(processedTokens, closeAfterType: false);
+            };
+
+            Helpers.ScaleButton(button);
+            return button;
         }
 
         private void ExecuteTokens(IEnumerable<AutotypeToken> tokens, bool closeAfterType) {
