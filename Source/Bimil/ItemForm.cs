@@ -60,7 +60,7 @@ namespace Bimil {
         #endregion
 
 
-        private void EditItemForm_Load(object sender, EventArgs e) {
+        private void Form_Load(object sender, EventArgs e) {
             if (this.Editable) {
                 btnEdit_Click(null, null);
             }
@@ -256,6 +256,21 @@ namespace Bimil {
                                 }
                             }, "Password policy configuration."));
                             pnl.Controls.Add(NewGeneratePasswordButton(textBox));
+
+                            void showPasswordWarnings() {
+                                if (BadPasswords.IsCommon(textBox.Text, out var matchedPassword)) {
+                                    erp.SetIconAlignment(textBox, ErrorIconAlignment.MiddleLeft);
+                                    erp.SetIconPadding(textBox, SystemInformation.BorderSize.Width);
+                                    erp.SetError(textBox, $"Password is similar to a common password ({matchedPassword}).");
+                                } else {
+                                    erp.SetError(textBox, null);
+                                }
+                            }
+                            showPasswordWarnings();
+
+                            textBox.TextChanged += delegate (object sender2, EventArgs e2) {
+                                showPasswordWarnings();
+                            };
 
                             yH = textBox.Height;
                         }

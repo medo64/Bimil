@@ -58,6 +58,15 @@ namespace Bimil {
             set { Medo.Configuration.Settings.Write("EditableByDefault", value); }
         }
 
+        [Category("Behavior")]
+        [DisplayName("Show common password warnings")]
+        [Description("If true, warning will be shown if a password similar to common is used.")]
+        [DefaultValue(false)]
+        public static bool ShowCommonPasswordWarnings {
+            get { return Medo.Configuration.Settings.Read("ShowCommonPasswordWarnings", true); }
+            set { Medo.Configuration.Settings.Write("ShowCommonPasswordWarnings", value); }
+        }
+
 
         [Category("Compatibility")]
         [DisplayName("Show PasswordSafe warnings")]

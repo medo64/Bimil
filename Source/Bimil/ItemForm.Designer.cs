@@ -30,8 +30,10 @@ namespace Bimil {
             this.btnEdit = new System.Windows.Forms.Button();
             this.btnFields = new System.Windows.Forms.Button();
             this.tip = new System.Windows.Forms.ToolTip(this.components);
-            this.tmrClose = new System.Windows.Forms.Timer(this.components);
             this.btnAutotype = new System.Windows.Forms.Button();
+            this.tmrClose = new System.Windows.Forms.Timer(this.components);
+            this.erp = new System.Windows.Forms.ErrorProvider(this.components);
+            ((System.ComponentModel.ISupportInitialize)(this.erp)).BeginInit();
             this.SuspendLayout();
             // 
             // pnl
@@ -100,10 +102,6 @@ namespace Bimil {
             this.btnFields.Visible = false;
             this.btnFields.Click += new System.EventHandler(this.btnFields_Click);
             // 
-            // tmrClose
-            // 
-            this.tmrClose.Tick += new System.EventHandler(this.tmrClose_Tick);
-            // 
             // btnAutotype
             // 
             this.btnAutotype.Location = new System.Drawing.Point(12, 355);
@@ -114,6 +112,15 @@ namespace Bimil {
             this.tip.SetToolTip(this.btnAutotype, "Shows auto-type menu.");
             this.btnAutotype.UseVisualStyleBackColor = true;
             this.btnAutotype.Click += new System.EventHandler(this.btnAutotype_Click);
+            // 
+            // tmrClose
+            // 
+            this.tmrClose.Tick += new System.EventHandler(this.tmrClose_Tick);
+            // 
+            // erp
+            // 
+            this.erp.BlinkStyle = System.Windows.Forms.ErrorBlinkStyle.NeverBlink;
+            this.erp.ContainerControl = this;
             // 
             // ItemForm
             // 
@@ -139,9 +146,10 @@ namespace Bimil {
             this.Text = "Edit item";
             this.Activated += new System.EventHandler(this.Form_Activated);
             this.Deactivate += new System.EventHandler(this.Form_Deactivate);
-            this.Load += new System.EventHandler(this.EditItemForm_Load);
+            this.Load += new System.EventHandler(this.Form_Load);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form_KeyDown);
             this.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.Form_PreviewKeyDown);
+            ((System.ComponentModel.ISupportInitialize)(this.erp)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -156,5 +164,6 @@ namespace Bimil {
         private System.Windows.Forms.ToolTip tip;
         private System.Windows.Forms.Timer tmrClose;
         private System.Windows.Forms.Button btnAutotype;
+        private System.Windows.Forms.ErrorProvider erp;
     }
 }

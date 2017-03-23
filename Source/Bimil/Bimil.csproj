@@ -116,6 +116,7 @@
     <Compile Include="AutotypeHelpForm.Designer.cs">
       <DependentUpon>AutotypeHelpForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="BadPasswords.cs" />
     <Compile Include="BimilDocument\BimilDocument.cs" />
     <Compile Include="BimilDocument\BimilItem.cs" />
     <Compile Include="BimilDocument\BimilRecord.cs" />
@@ -289,6 +290,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Properties\App.ico" />
+    <EmbeddedResource Include="Resources\Common.passwords" />
     <EmbeddedResource Include="Resources\JaneAusten.words" />
     <EmbeddedResource Include="Resources\WilliamShakespeare.words" />
     <EmbeddedResource Include="Resources\Bible.words" />

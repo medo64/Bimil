@@ -36,13 +36,14 @@ namespace Bimil {
             this.txtAppTimeout = new System.Windows.Forms.TextBox();
             this.chbEditableByDefault = new System.Windows.Forms.CheckBox();
             this.chbAutoCloseSave = new System.Windows.Forms.CheckBox();
+            this.chbShowCommonPasswordWarnings = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // btnCancel
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(220, 216);
+            this.btnCancel.Location = new System.Drawing.Point(220, 243);
             this.btnCancel.Margin = new System.Windows.Forms.Padding(3, 15, 3, 3);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(90, 28);
@@ -55,11 +56,11 @@ namespace Bimil {
             // 
             this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOK.Location = new System.Drawing.Point(124, 216);
+            this.btnOK.Location = new System.Drawing.Point(124, 243);
             this.btnOK.Margin = new System.Windows.Forms.Padding(3, 15, 3, 3);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(90, 28);
-            this.btnOK.TabIndex = 10;
+            this.btnOK.TabIndex = 11;
             this.btnOK.Text = "OK";
             this.tip.SetToolTip(this.btnOK, "Save changes.");
             this.btnOK.UseVisualStyleBackColor = true;
@@ -90,10 +91,10 @@ namespace Bimil {
             // chbItemTimeout
             // 
             this.chbItemTimeout.AutoSize = true;
-            this.chbItemTimeout.Location = new System.Drawing.Point(12, 122);
+            this.chbItemTimeout.Location = new System.Drawing.Point(12, 149);
             this.chbItemTimeout.Name = "chbItemTimeout";
             this.chbItemTimeout.Size = new System.Drawing.Size(183, 21);
-            this.chbItemTimeout.TabIndex = 5;
+            this.chbItemTimeout.TabIndex = 6;
             this.chbItemTimeout.Text = "Auto-close entry timeout";
             this.tip.SetToolTip(this.chbItemTimeout, "Time in seconds for item window to automatically close if it loses focus.");
             this.chbItemTimeout.UseVisualStyleBackColor = true;
@@ -102,10 +103,10 @@ namespace Bimil {
             // chbAppTimeout
             // 
             this.chbAppTimeout.AutoSize = true;
-            this.chbAppTimeout.Location = new System.Drawing.Point(12, 150);
+            this.chbAppTimeout.Location = new System.Drawing.Point(12, 177);
             this.chbAppTimeout.Name = "chbAppTimeout";
             this.chbAppTimeout.Size = new System.Drawing.Size(219, 21);
-            this.chbAppTimeout.TabIndex = 7;
+            this.chbAppTimeout.TabIndex = 8;
             this.chbAppTimeout.Text = "Auto-close application timeout";
             this.tip.SetToolTip(this.chbAppTimeout, "Time in seconds for main window to automatically close if it loses focus.");
             this.chbAppTimeout.UseVisualStyleBackColor = true;
@@ -114,10 +115,10 @@ namespace Bimil {
             // chbPasswordSafeWarnings
             // 
             this.chbPasswordSafeWarnings.AutoSize = true;
-            this.chbPasswordSafeWarnings.Location = new System.Drawing.Point(12, 93);
+            this.chbPasswordSafeWarnings.Location = new System.Drawing.Point(12, 120);
             this.chbPasswordSafeWarnings.Name = "chbPasswordSafeWarnings";
             this.chbPasswordSafeWarnings.Size = new System.Drawing.Size(261, 21);
-            this.chbPasswordSafeWarnings.TabIndex = 4;
+            this.chbPasswordSafeWarnings.TabIndex = 5;
             this.chbPasswordSafeWarnings.Text = "PasswordSafe compatibility warnings";
             this.tip.SetToolTip(this.chbPasswordSafeWarnings, "If true, warning will be shown upon adding fields not compatible with PasswordSaf" +
         "e.");
@@ -127,12 +128,12 @@ namespace Bimil {
             // 
             this.txtItemTimeout.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.txtItemTimeout.Enabled = false;
-            this.txtItemTimeout.Location = new System.Drawing.Point(250, 120);
+            this.txtItemTimeout.Location = new System.Drawing.Point(250, 147);
             this.txtItemTimeout.MaxLength = 4;
             this.txtItemTimeout.Name = "txtItemTimeout";
             this.txtItemTimeout.ShortcutsEnabled = false;
             this.txtItemTimeout.Size = new System.Drawing.Size(60, 22);
-            this.txtItemTimeout.TabIndex = 6;
+            this.txtItemTimeout.TabIndex = 7;
             this.txtItemTimeout.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.tip.SetToolTip(this.txtItemTimeout, "Value between 10 and 3600 seconds.");
             this.txtItemTimeout.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtTimeout_KeyDown);
@@ -142,12 +143,12 @@ namespace Bimil {
             // 
             this.txtAppTimeout.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.txtAppTimeout.Enabled = false;
-            this.txtAppTimeout.Location = new System.Drawing.Point(250, 148);
+            this.txtAppTimeout.Location = new System.Drawing.Point(250, 175);
             this.txtAppTimeout.MaxLength = 4;
             this.txtAppTimeout.Name = "txtAppTimeout";
             this.txtAppTimeout.ShortcutsEnabled = false;
             this.txtAppTimeout.Size = new System.Drawing.Size(60, 22);
-            this.txtAppTimeout.TabIndex = 8;
+            this.txtAppTimeout.TabIndex = 9;
             this.txtAppTimeout.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.tip.SetToolTip(this.txtAppTimeout, "Value between 10 and 3600 seconds.");
             this.txtAppTimeout.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtTimeout_KeyDown);
@@ -167,13 +168,24 @@ namespace Bimil {
             // chbAutoCloseSave
             // 
             this.chbAutoCloseSave.AutoSize = true;
-            this.chbAutoCloseSave.Location = new System.Drawing.Point(12, 177);
+            this.chbAutoCloseSave.Location = new System.Drawing.Point(12, 204);
             this.chbAutoCloseSave.Name = "chbAutoCloseSave";
             this.chbAutoCloseSave.Size = new System.Drawing.Size(152, 21);
-            this.chbAutoCloseSave.TabIndex = 9;
+            this.chbAutoCloseSave.TabIndex = 10;
             this.chbAutoCloseSave.Text = "Save on auto-close";
             this.tip.SetToolTip(this.chbAutoCloseSave, "If checked, any pending changes will be saved on timeout.");
             this.chbAutoCloseSave.UseVisualStyleBackColor = true;
+            // 
+            // chbShowCommonPasswordWarnings
+            // 
+            this.chbShowCommonPasswordWarnings.AutoSize = true;
+            this.chbShowCommonPasswordWarnings.Location = new System.Drawing.Point(12, 93);
+            this.chbShowCommonPasswordWarnings.Name = "chbShowCommonPasswordWarnings";
+            this.chbShowCommonPasswordWarnings.Size = new System.Drawing.Size(209, 21);
+            this.chbShowCommonPasswordWarnings.TabIndex = 4;
+            this.chbShowCommonPasswordWarnings.Text = "Common password warnings";
+            this.tip.SetToolTip(this.chbShowCommonPasswordWarnings, "If true, warning will be shown when password is in the list of common passwords.");
+            this.chbShowCommonPasswordWarnings.UseVisualStyleBackColor = true;
             // 
             // SettingsForm
             // 
@@ -181,7 +193,8 @@ namespace Bimil {
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(322, 256);
+            this.ClientSize = new System.Drawing.Size(322, 283);
+            this.Controls.Add(this.chbShowCommonPasswordWarnings);
             this.Controls.Add(this.chbAutoCloseSave);
             this.Controls.Add(this.chbEditableByDefault);
             this.Controls.Add(this.txtAppTimeout);
@@ -221,5 +234,6 @@ namespace Bimil {
         private System.Windows.Forms.TextBox txtAppTimeout;
         private System.Windows.Forms.CheckBox chbEditableByDefault;
         private System.Windows.Forms.CheckBox chbAutoCloseSave;
+        private System.Windows.Forms.CheckBox chbShowCommonPasswordWarnings;
     }
 }
