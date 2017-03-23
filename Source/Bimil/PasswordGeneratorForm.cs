@@ -303,7 +303,7 @@ namespace Bimil {
                 var wordDictionary = new Dictionary<string, object>();
 
                 foreach (var streamName in Assembly.GetExecutingAssembly().GetManifestResourceNames()) {
-                    if (streamName.EndsWith(".txt")) {
+                    if (streamName.EndsWith(".words")) {
                         using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(streamName))
                         using (var textStream = new StreamReader(stream)) {
                             var items = textStream.ReadToEnd().Split(new string[] { "\r\n", "\n", "\r" }, StringSplitOptions.RemoveEmptyEntries);

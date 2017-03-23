@@ -289,12 +289,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Properties\App.ico" />
-    <EmbeddedResource Include="Resources\JaneAusten.txt" />
-    <EmbeddedResource Include="Resources\WilliamShakespeare.txt" />
-    <EmbeddedResource Include="Resources\Bible.txt" />
-    <EmbeddedResource Include="Resources\GeoFeatures.txt" />
-    <EmbeddedResource Include="Resources\Names.txt" />
-    <EmbeddedResource Include="Resources\Words.txt" />
+    <EmbeddedResource Include="Resources\JaneAusten.words" />
+    <EmbeddedResource Include="Resources\WilliamShakespeare.words" />
+    <EmbeddedResource Include="Resources\Bible.words" />
+    <EmbeddedResource Include="Resources\GeoFeatures.words" />
+    <EmbeddedResource Include="Resources\Names.words" />
+    <EmbeddedResource Include="Resources\English.words" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
