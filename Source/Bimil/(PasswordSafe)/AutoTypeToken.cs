@@ -52,7 +52,6 @@ namespace Medo.Security.Cryptography.PasswordSafe {
                 yield return new AutotypeToken("UserName", AutotypeTokenKind.Command);
                 yield return new AutotypeToken("{Tab}");
                 yield return new AutotypeToken("Password", AutotypeTokenKind.Command);
-                yield return new AutotypeToken("{Tab}");
                 yield return new AutotypeToken("{Enter}");
             } else {
                 var state = AutoTypeState.Default;

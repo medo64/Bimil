@@ -12,7 +12,7 @@ namespace Bimil {
             Medo.Windows.Forms.State.SetupOnLoadAndClose(this);
 
             if (string.IsNullOrEmpty(autotypeText)) {
-                txtAutotype.Text = @"\u\t\p\t\n";
+                txtAutotype.Text = @"\u\t\p\n";
             } else {
                 txtAutotype.Text = autotypeText;
             }
