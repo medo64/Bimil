@@ -47,8 +47,10 @@ namespace Bimil {
             this.chbWordRestrictBreak = new System.Windows.Forms.CheckBox();
             this.chbWordRestrictTitleCase = new System.Windows.Forms.CheckBox();
             this.chbWordRestrictSuffixOnly = new System.Windows.Forms.CheckBox();
+            this.txtWordPasswordLength = new System.Windows.Forms.TextBox();
             this.tabStyle = new System.Windows.Forms.TabControl();
             this.tabStyle_Words = new System.Windows.Forms.TabPage();
+            this.lblWordPasswordLength = new System.Windows.Forms.Label();
             this.grpWordRestrict = new System.Windows.Forms.GroupBox();
             this.lblWordCount = new System.Windows.Forms.Label();
             this.grpWordInclude = new System.Windows.Forms.GroupBox();
@@ -248,7 +250,7 @@ namespace Bimil {
             this.txtWordCount.Name = "txtWordCount";
             this.txtWordCount.ShortcutsEnabled = false;
             this.txtWordCount.Size = new System.Drawing.Size(50, 22);
-            this.txtWordCount.TabIndex = 2;
+            this.txtWordCount.TabIndex = 3;
             this.txtWordCount.Text = "5";
             this.txtWordCount.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.tip.SetToolTip(this.txtWordCount, "Number of words to use (1-9)");
@@ -360,6 +362,19 @@ namespace Bimil {
             this.chbWordRestrictSuffixOnly.UseVisualStyleBackColor = true;
             this.chbWordRestrictSuffixOnly.CheckedChanged += new System.EventHandler(this.btnGenerate_Click);
             // 
+            // txtWordPasswordLength
+            // 
+            this.txtWordPasswordLength.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.txtWordPasswordLength.Location = new System.Drawing.Point(371, 150);
+            this.txtWordPasswordLength.MaxLength = 2;
+            this.txtWordPasswordLength.Name = "txtWordPasswordLength";
+            this.txtWordPasswordLength.ReadOnly = true;
+            this.txtWordPasswordLength.ShortcutsEnabled = false;
+            this.txtWordPasswordLength.Size = new System.Drawing.Size(50, 22);
+            this.txtWordPasswordLength.TabIndex = 5;
+            this.txtWordPasswordLength.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.tip.SetToolTip(this.txtWordPasswordLength, "Length of password (1-99).");
+            // 
             // tabStyle
             // 
             this.tabStyle.Controls.Add(this.tabStyle_Words);
@@ -373,6 +388,8 @@ namespace Bimil {
             // 
             // tabStyle_Words
             // 
+            this.tabStyle_Words.Controls.Add(this.lblWordPasswordLength);
+            this.tabStyle_Words.Controls.Add(this.txtWordPasswordLength);
             this.tabStyle_Words.Controls.Add(this.grpWordRestrict);
             this.tabStyle_Words.Controls.Add(this.lblWordCount);
             this.tabStyle_Words.Controls.Add(this.txtWordCount);
@@ -384,6 +401,16 @@ namespace Bimil {
             this.tabStyle_Words.TabIndex = 0;
             this.tabStyle_Words.Text = "Word-based";
             this.tabStyle_Words.UseVisualStyleBackColor = true;
+            // 
+            // lblWordPasswordLength
+            // 
+            this.lblWordPasswordLength.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.lblWordPasswordLength.AutoSize = true;
+            this.lblWordPasswordLength.Location = new System.Drawing.Point(224, 153);
+            this.lblWordPasswordLength.Name = "lblWordPasswordLength";
+            this.lblWordPasswordLength.Size = new System.Drawing.Size(116, 17);
+            this.lblWordPasswordLength.TabIndex = 4;
+            this.lblWordPasswordLength.Text = "Password length:";
             // 
             // grpWordRestrict
             // 
@@ -408,7 +435,7 @@ namespace Bimil {
             this.lblWordCount.Location = new System.Drawing.Point(6, 153);
             this.lblWordCount.Name = "lblWordCount";
             this.lblWordCount.Size = new System.Drawing.Size(85, 17);
-            this.lblWordCount.TabIndex = 1;
+            this.lblWordCount.TabIndex = 2;
             this.lblWordCount.Text = "Word count:";
             // 
             // grpWordInclude
@@ -563,5 +590,7 @@ namespace Bimil {
         private System.Windows.Forms.CheckBox chbWordRestrictTitleCase;
         private System.Windows.Forms.CheckBox chbWordRestrictSuffixOnly;
         private System.Windows.Forms.PictureBox picSecurityRating;
+        private System.Windows.Forms.Label lblWordPasswordLength;
+        private System.Windows.Forms.TextBox txtWordPasswordLength;
     }
 }

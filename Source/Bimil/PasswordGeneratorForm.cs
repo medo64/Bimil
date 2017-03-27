@@ -263,6 +263,7 @@ namespace Bimil {
 
                     password = GenerateWordPassword(includeUpperCase, includeNumber, includeSpecial, includeIncomplete, restrictAddSpace, restrictTitleCase, restrictSuffixOnly, restrictBreak, count);
                     combinations = CalculateWordCombinations(includeUpperCase, includeNumber, includeSpecial, includeIncomplete, restrictAddSpace, restrictTitleCase, restrictSuffixOnly, restrictBreak, count);
+                    txtWordPasswordLength.Text = password.Length.ToString(CultureInfo.InvariantCulture);
                 }
             }
 
