@@ -99,8 +99,7 @@ namespace Bimil {
                 Settings.PasswordGeneratorWordRestrictTitleCase = chbWordRestrictTitleCase.Checked;
                 Settings.PasswordGeneratorWordRestrictSuffixOnly = chbWordRestrictSuffixOnly.Checked;
 
-                int count;
-                if (int.TryParse(txtWordCount.Text, NumberStyles.Integer, CultureInfo.CurrentCulture, out count)) {
+                if (int.TryParse(txtWordCount.Text, NumberStyles.Integer, CultureInfo.CurrentCulture, out int count)) {
                     Settings.PasswordGeneratorWordCount = count;
                 }
             }
@@ -116,8 +115,7 @@ namespace Bimil {
                 Settings.PasswordGeneratorRestrictPronounceable = chbRestrictPronounceable.Checked;
                 Settings.PasswordGeneratorRestrictRepeated = chbRestrictRepeated.Checked;
 
-                int length;
-                if (int.TryParse(txtLength.Text, NumberStyles.Integer, CultureInfo.CurrentCulture, out length)) {
+                if (int.TryParse(txtLength.Text, NumberStyles.Integer, CultureInfo.CurrentCulture, out int length)) {
                     Settings.PasswordGeneratorLength = length;
                 }
             }
@@ -179,24 +177,21 @@ namespace Bimil {
         }
 
         private void txtWordCount_Leave(object sender, EventArgs e) {
-            int count;
-            if (!int.TryParse(txtWordCount.Text, NumberStyles.Integer, CultureInfo.CurrentCulture, out count)) {
+            if (!int.TryParse(txtWordCount.Text, NumberStyles.Integer, CultureInfo.CurrentCulture, out int count)) {
                 count = Settings.PasswordGeneratorWordCount;
             }
             txtWordCount.Text = Math.Min(Math.Max(count, 1), 9).ToString(CultureInfo.CurrentCulture);
         }
 
         private void txtLength_Leave(object sender, EventArgs e) {
-            int length;
-            if (!int.TryParse(txtLength.Text, NumberStyles.Integer, CultureInfo.CurrentCulture, out length)) {
+            if (!int.TryParse(txtLength.Text, NumberStyles.Integer, CultureInfo.CurrentCulture, out int length)) {
                 length = Settings.PasswordGeneratorLength;
             }
             txtLength.Text = Math.Min(Math.Max(length, 4), 99).ToString(CultureInfo.CurrentCulture);
         }
 
         private void ChangeLength(TextBox textBox, int delta) {
-            int length;
-            if (int.TryParse(textBox.Text, NumberStyles.Integer, CultureInfo.CurrentCulture, out length)) {
+            if (int.TryParse(textBox.Text, NumberStyles.Integer, CultureInfo.CurrentCulture, out int length)) {
                 var newLength = Math.Min(Math.Max(length + delta, 1), (int)Math.Pow(10, textBox.TextLength) - 1);
                 textBox.Text = newLength.ToString(CultureInfo.CurrentCulture);
                 textBox.SelectAll();
@@ -235,8 +230,7 @@ namespace Bimil {
             double combinations = double.NaN;
 
             if (tabStyle.SelectedTab.Equals(tabStyle_Classic)) {
-                int length;
-                if (int.TryParse(txtLength.Text, NumberStyles.Integer, CultureInfo.InvariantCulture, out length) && (length >= 4) && (length <= 99)) {
+                if (int.TryParse(txtLength.Text, NumberStyles.Integer, CultureInfo.InvariantCulture, out int length) && (length >= 4) && (length <= 99)) {
                     var includeUpperCase = chbIncludeUpperCase.Checked;
                     var includeLowerCase = chbIncludeLowerCase.Checked;
                     var includeNumbers = chbIncludeNumbers.Checked;
@@ -250,8 +244,7 @@ namespace Bimil {
                     combinations = CalculateClassicCombinations(includeUpperCase, includeLowerCase, includeNumbers, includeSpecial, restrictSimilar, restrictMovable, restrictPronounceable, restrictRepeated, length);
                 }
             } else {
-                int count;
-                if (int.TryParse(txtWordCount.Text, NumberStyles.Integer, CultureInfo.InvariantCulture, out count) && (count >= 1) && (count <= 9)) {
+                if (int.TryParse(txtWordCount.Text, NumberStyles.Integer, CultureInfo.InvariantCulture, out int count) && (count >= 1) && (count <= 9)) {
                     var includeUpperCase = chbWordIncludeUpperCase.Checked;
                     var includeNumber = chbWordIncludeNumber.Checked;
                     var includeSpecial = chbWordIncludeSpecialCharacter.Checked;
