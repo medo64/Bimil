@@ -302,15 +302,25 @@ namespace Bimil {
 
                 var wordDictionary = new Dictionary<string, object>();
 
+                //read all word files
                 foreach (var streamName in Assembly.GetExecutingAssembly().GetManifestResourceNames()) {
                     if (streamName.EndsWith(".words")) {
                         using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(streamName))
                         using (var textStream = new StreamReader(stream)) {
-                            var items = textStream.ReadToEnd().Split(new string[] { "\r\n", "\n", "\r" }, StringSplitOptions.RemoveEmptyEntries);
-                            foreach (var item in items) {
-                                if (!wordDictionary.ContainsKey(item)) { wordDictionary.Add(item, null); }
+                            var words = textStream.ReadToEnd().Split(new string[] { "\r\n", "\n", "\r" }, StringSplitOptions.RemoveEmptyEntries);
+                            foreach (var word in words) {
+                                if (!wordDictionary.ContainsKey(word)) { wordDictionary.Add(word, null); }
                             }
                         }
+                    }
+                }
+
+                //remove common passwords
+                using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Bimil.Resources.Common.passwords"))
+                using (var textStream = new StreamReader(stream)) {
+                    var words = textStream.ReadToEnd().Split(new string[] { "\r\n", "\n", "\r" }, StringSplitOptions.RemoveEmptyEntries);
+                    foreach (var word in words) {
+                        if (wordDictionary.ContainsKey(word)) { wordDictionary.Remove(word); }
                     }
                 }
 
