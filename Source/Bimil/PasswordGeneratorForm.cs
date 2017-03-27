@@ -226,7 +226,7 @@ namespace Bimil {
         private readonly char[] RestrictedSimilar = new char[] { 'I', 'O', 'Q', 'l', '0', '`', '-', '_', ';', ':', '\'', '\"', ',', '.' };
         private readonly char[] RestrictedMoveable = new char[] { 'Y', 'Z', 'y', 'z', '`', '~', '#', '$', '%', '-', ',', '.' };
 
-        private readonly double CracksPerSecond = 100000000000000;
+        private readonly double CracksPerSecond = 100_000_000_000_000; //100 trillion
 
         private static readonly RandomNumberGenerator Rnd = RandomNumberGenerator.Create();
 
