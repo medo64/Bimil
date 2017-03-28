@@ -34,8 +34,7 @@ namespace Bimil {
             Settings.ShowPasswordSafeWarnings = chbPasswordSafeWarnings.Checked;
 
             if (chbItemTimeout.Checked) {
-                int seconds;
-                if (int.TryParse(txtItemTimeout.Text, NumberStyles.Integer, CultureInfo.CurrentCulture, out seconds)) {
+                if (int.TryParse(txtItemTimeout.Text, NumberStyles.Integer, CultureInfo.CurrentCulture, out var seconds)) {
                     Settings.AutoCloseItemTimeout = seconds;
                 }
             } else {
@@ -43,8 +42,7 @@ namespace Bimil {
             }
 
             if (chbAppTimeout.Checked) {
-                int seconds;
-                if (int.TryParse(txtAppTimeout.Text, NumberStyles.Integer, CultureInfo.CurrentCulture, out seconds)) {
+                if (int.TryParse(txtAppTimeout.Text, NumberStyles.Integer, CultureInfo.CurrentCulture, out var seconds)) {
                     Settings.AutoCloseTimeout = seconds;
                 }
             } else {
@@ -106,8 +104,7 @@ namespace Bimil {
         }
 
         private void ChangeTimeout(TextBox textBox, int delta) {
-            int seconds;
-            if (int.TryParse(textBox.Text, NumberStyles.Integer, CultureInfo.CurrentCulture, out seconds)) {
+            if (int.TryParse(textBox.Text, NumberStyles.Integer, CultureInfo.CurrentCulture, out var seconds)) {
                 var newSeconds = Math.Min(Math.Max(seconds + delta, 10), 3600);
                 textBox.Text = newSeconds.ToString(CultureInfo.CurrentCulture);
                 textBox.SelectAll();
@@ -115,16 +112,14 @@ namespace Bimil {
         }
 
         private void txtItemTimeout_Leave(object sender, EventArgs e) {
-            int seconds;
-            if (!int.TryParse(txtItemTimeout.Text, NumberStyles.Integer, CultureInfo.CurrentCulture, out seconds)) {
+            if (!int.TryParse(txtItemTimeout.Text, NumberStyles.Integer, CultureInfo.CurrentCulture, out var seconds)) {
                 seconds = (Settings.AutoCloseItemTimeout > 0) ? Settings.AutoCloseItemTimeout : 120;
             }
             txtItemTimeout.Text = Math.Min(Math.Max(seconds, 10), 3600).ToString(CultureInfo.CurrentCulture);
         }
 
         private void txtAppTimeout_Leave(object sender, EventArgs e) {
-            int seconds;
-            if (!int.TryParse(txtAppTimeout.Text, NumberStyles.Integer, CultureInfo.CurrentCulture, out seconds)) {
+            if (!int.TryParse(txtAppTimeout.Text, NumberStyles.Integer, CultureInfo.CurrentCulture, out var seconds)) {
                 seconds = (Settings.AutoCloseTimeout > 0) ? Settings.AutoCloseTimeout : 900;
             }
             txtAppTimeout.Text = Math.Min(Math.Max(seconds, 10), 3600).ToString(CultureInfo.CurrentCulture);

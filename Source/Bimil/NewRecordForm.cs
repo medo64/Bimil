@@ -67,8 +67,7 @@ namespace Bimil {
             public string Text { get; private set; }
             public RecordType Format { get; private set; }
             public override bool Equals(object obj) {
-                if (obj is RecordType) {
-                    var otherFormat = (RecordType)obj;
+                if (obj is RecordType otherFormat) {
                     return (this.Format == otherFormat);
                 }
                 return base.Equals(obj);

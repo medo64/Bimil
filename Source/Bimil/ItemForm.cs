@@ -87,17 +87,13 @@ namespace Bimil {
                 case Keys.F7: //show all
                     bool alreadyHidden = false;
                     foreach (var control in this.pnl.Controls) {
-                        var textBox = control as TextBox;
-                        if (textBox != null) {
-                            var record = textBox.Tag as Record;
-                            if ((record != null) && Helpers.GetIsHideable(record.RecordType) && (textBox.UseSystemPasswordChar)) { alreadyHidden = true; break; }
+                        if (control is TextBox textBox) {
+                            if ((textBox.Tag is Record record) && Helpers.GetIsHideable(record.RecordType) && (textBox.UseSystemPasswordChar)) { alreadyHidden = true; break; }
                         }
                     }
                     foreach (var control in this.pnl.Controls) {
-                        var textBox = control as TextBox;
-                        if (textBox != null) {
-                            var record = textBox.Tag as Record;
-                            if ((record != null) && Helpers.GetIsHideable(record.RecordType)) { textBox.UseSystemPasswordChar = !alreadyHidden; }
+                        if (control is TextBox textBox) {
+                            if ((textBox.Tag is Record record) && Helpers.GetIsHideable(record.RecordType)) { textBox.UseSystemPasswordChar = !alreadyHidden; }
                         }
                     }
                     e.Handled = true;
@@ -398,12 +394,10 @@ namespace Bimil {
 
         private void btnEdit_Click(object sender, EventArgs e) {
             foreach (Control control in pnl.Controls) {
-                var textBox = control as TextBox;
-                if (textBox != null) {
+                if (control is TextBox textBox) {
                     textBox.ReadOnly = false;
                 }
-                var comboBox = control as ComboBox;
-                if (comboBox != null) {
+                if (control is ComboBox comboBox) {
                     comboBox.Enabled = true;
                 }
             }
@@ -437,13 +431,11 @@ namespace Bimil {
 
         private void btnOK_Click(object sender, EventArgs e) {
             foreach (Control control in pnl.Controls) {
-                var record = control.Tag as Record;
-                if (record != null) {
+                if (control.Tag is Record record) {
                     if (record.RecordType == RecordType.TwoFactorKey) {
                         var buffer = new byte[1024];
-                        int bytesLength;
                         try {
-                            OneTimePassword.FromBase32(control.Text, buffer, out bytesLength);
+                            OneTimePassword.FromBase32(control.Text, buffer, out var bytesLength);
                             var bytes = new byte[bytesLength];
                             try {
                                 Buffer.BlockCopy(buffer, 0, bytes, 0, bytes.Length);
@@ -481,7 +473,7 @@ namespace Bimil {
             var padding = SystemInformation.VerticalScrollBarWidth + 1;
 
             var textBox = new TextBoxEx() { Font = this.Font, Location = new Point(x + padding, y), Tag = record, Width = pnl.ClientSize.Width - x - padding, ReadOnly = !this.Editable, Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right };
-            textBox.Text = (text != null) ? text : record.Text;
+            textBox.Text = text ?? record.Text;
 
             if (urlLookAndFeel) {
                 textBox.Font = ItemForm.UnderlineFont;
@@ -556,7 +548,7 @@ namespace Bimil {
             };
             Helpers.ScaleButton(button);
 
-            tip.SetToolTip(button, (tipText != null) ? tipText : "Copy to clipboard.");
+            tip.SetToolTip(button, tipText ?? "Copy to clipboard.");
 
             button.Click += (object sender, EventArgs e) => {
                 var textBox = (TextBox)(((Control)sender).Tag);
@@ -589,7 +581,7 @@ namespace Bimil {
             };
             Helpers.ScaleButton(button);
 
-            tip.SetToolTip(button, (tipText != null) ? tipText : "Show password.");
+            tip.SetToolTip(button, tipText ?? "Show password.");
 
             button.Click += (object sender, EventArgs e) => {
                 var textBox = (TextBox)(((Control)sender).Tag);

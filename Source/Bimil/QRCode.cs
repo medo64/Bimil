@@ -65,10 +65,7 @@ namespace QRCoder {
         /// <exception cref="System.ArgumentNullException">Value cannot be null.</exception>
         public string Text {
             get { return this._text; }
-            set {
-                if (value == null) { throw new ArgumentNullException(nameof(value), "Value cannot be null."); }
-                this._text = value;
-            }
+            set { this._text = value ?? throw new ArgumentNullException(nameof(value), "Value cannot be null."); }
         }
 
         /// <summary>
@@ -1156,8 +1153,7 @@ namespace QRCoder {
                     }
                 }
                 foreach (var poly in resultPolynom) {
-                    int count = 0;
-                    if (duplicatePolyDict.TryGetValue(poly.Exponent, out count) && (count > 1)) {
+                    if (duplicatePolyDict.TryGetValue(poly.Exponent, out var count) && (count > 1)) {
                         toGlue.Add(poly.Exponent);
                         duplicatePolyDict.Remove(poly.Exponent);
                     }

@@ -123,16 +123,14 @@ namespace Bimil {
 
                     switch (command) {
                         case "Delay": {
-                                int ms;
-                                if (int.TryParse(argument, NumberStyles.Integer, CultureInfo.InvariantCulture, out ms)) {
+                                if (int.TryParse(argument, NumberStyles.Integer, CultureInfo.InvariantCulture, out var ms)) {
                                     this.Delay = ms;
                                 }
                             }
                             break;
 
                         case "Wait": {
-                                int ms;
-                                if (int.TryParse(argument, NumberStyles.Integer, CultureInfo.InvariantCulture, out ms)) {
+                                if (int.TryParse(argument, NumberStyles.Integer, CultureInfo.InvariantCulture, out var ms)) {
                                     Thread.Sleep(ms);
                                 }
                             }

@@ -223,8 +223,7 @@ namespace Bimil {
 
             var groupDictionary = new Dictionary<string, ListViewGroup>();
             foreach (var item in resultList) {
-                ListViewGroup group;
-                if (!groupDictionary.TryGetValue(item.Group, out group)) {
+                if (!groupDictionary.TryGetValue(item.Group, out var group)) {
                     group = new ListViewGroup(string.IsNullOrEmpty(item.Group) ? "(no group)" : item.Group);
                     listView.Groups.Add(group);
                     groupDictionary.Add(item.Group, group);
@@ -384,8 +383,7 @@ namespace Bimil {
 #endif
                     }
 
-                    var toolstripSplitButton = item as ToolStripSplitButton;
-                    if (toolstripSplitButton != null) { ScaleToolstrip(toolstripSplitButton.DropDown); }
+                    if (item is ToolStripSplitButton toolstripSplitButton) { ScaleToolstrip(toolstripSplitButton.DropDown); }
                 }
             }
         }

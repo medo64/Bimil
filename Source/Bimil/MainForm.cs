@@ -419,8 +419,7 @@ namespace Bimil {
 
         private void mnuOpen_DropDownOpening(object sender, EventArgs e) {
             foreach (ToolStripDropDownItem item in mnuOpen.DropDownItems) {
-                var recentFile = item.Tag as RecentFile;
-                if (recentFile != null) {
+                if (item.Tag is RecentFile recentFile) {
                     var fileName = recentFile.FileName;
                     if (fileName != null) {
                         var isReadOnly = Helpers.GetReadOnly(fileName);
@@ -528,9 +527,8 @@ namespace Bimil {
                         foreach (var entry in document.Entries) {
                             if (entry.Records.Contains(RecordType.TemporaryBimilTwoFactorKey)) {
                                 var buffer = new byte[1024];
-                                int bytesLength;
                                 try {
-                                    OneTimePassword.FromBase32(entry[RecordType.TemporaryBimilTwoFactorKey].Text, buffer, out bytesLength);
+                                    OneTimePassword.FromBase32(entry[RecordType.TemporaryBimilTwoFactorKey].Text, buffer, out var bytesLength);
                                     var bytes = new byte[bytesLength];
                                     try {
                                         Buffer.BlockCopy(buffer, 0, bytes, 0, bytes.Length);
@@ -704,8 +702,7 @@ namespace Bimil {
             if ((this.Document == null) || !isAnyEntrySelected) { return; }
 
             for (int i = lsvEntries.SelectedItems.Count - 1; i >= 0; i--) {
-                var item = lsvEntries.SelectedItems[i].Tag as Entry;
-                if (item != null) {
+                if (lsvEntries.SelectedItems[i].Tag is Entry item) {
                     this.Document.Entries.Remove(item);
                     lsvEntries.Items.Remove(lsvEntries.SelectedItems[i]);
                 }
