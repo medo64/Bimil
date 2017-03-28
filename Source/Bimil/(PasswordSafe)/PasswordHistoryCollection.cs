@@ -23,13 +23,12 @@ namespace Medo.Security.Cryptography.PasswordSafe {
                         this._maximumCount = DefaultMaximumCount;
                     }
 
-                    int count;
-                    if (int.TryParse(text.Substring(3, 2), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out count)) {
+                    if (int.TryParse(text.Substring(3, 2), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out var count)) {
                         var j = 5; //where parsing starts
                         for (var i = 0; i < count; i++) {
                             if (text.Length >= j + 12) {
-                                int time, length;
-                                if (int.TryParse(text.Substring(j, 8), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out time) && int.TryParse(text.Substring(j + 8, 4), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out length)) {
+                                if (int.TryParse(text.Substring(j, 8), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out var time)
+                                    && int.TryParse(text.Substring(j + 8, 4), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out var length)) {
                                     j += 12; //skip time and length
                                     if (text.Length >= j + length) {
                                         var item = new PasswordHistoryItem(this, UnixEpoch.AddSeconds(time), text.Substring(j, length));

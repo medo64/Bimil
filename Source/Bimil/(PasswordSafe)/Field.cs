@@ -115,8 +115,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
                             var seconds = BitConverter.ToUInt32(this.RawData, 0);
                             return TimeMin.AddSeconds(seconds);
                         } else if (data.Length == 8) { //try hexadecimal
-                            uint seconds;
-                            if (uint.TryParse(Utf8Encoding.GetString(data), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out seconds)) {
+                            if (uint.TryParse(Utf8Encoding.GetString(data), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out var seconds)) {
                                 return TimeMin.AddSeconds(seconds);
                             } else {
                                 return DateTime.MinValue;

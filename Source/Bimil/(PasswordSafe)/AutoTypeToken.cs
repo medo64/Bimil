@@ -233,8 +233,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
                                     yield return key;
                                 }
                             } else {
-                                int lineNumber;
-                                if (int.TryParse(argument, NumberStyles.Integer, CultureInfo.InvariantCulture, out lineNumber)) {
+                                if (int.TryParse(argument, NumberStyles.Integer, CultureInfo.InvariantCulture, out var lineNumber)) {
                                     if (lineNumber <= noteLines.Length) {
                                         var lineText = noteLines[lineNumber - 1];
                                         if (lineText.Length > 0) {

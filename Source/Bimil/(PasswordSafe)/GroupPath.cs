@@ -109,8 +109,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// </summary>
         /// <param name="obj">The object to compare with the current object.</param>
         public override bool Equals(object obj) {
-            var path = obj as GroupPath;
-            if (path != null) { return this.Group.Equals(path.Group, StringComparison.OrdinalIgnoreCase); }
+            if (obj is GroupPath path) { return this.Group.Equals(path.Group, StringComparison.OrdinalIgnoreCase); }
 
             var group = obj as string;
             return this.Group.Equals(group, StringComparison.OrdinalIgnoreCase);

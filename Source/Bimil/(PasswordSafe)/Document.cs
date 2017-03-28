@@ -29,9 +29,8 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// <param name="passphraseBuffer">Password bytes. Caller has to avoid keeping bytes unencrypted in memory.</param>
         public Document(byte[] passphraseBuffer)
             : this() {
-            if (passphraseBuffer == null) { throw new ArgumentNullException(nameof(passphraseBuffer), "Passphrase cannot be null."); }
-
-            this.Passphrase = passphraseBuffer; //no need for copy - will be done in property setter
+            //no need for passphraseBuffer copy - will be done in property setter
+            this.Passphrase = passphraseBuffer ?? throw new ArgumentNullException(nameof(passphraseBuffer), "Passphrase cannot be null.");
         }
 
         /// <summary>
@@ -282,9 +281,10 @@ namespace Medo.Security.Cryptography.PasswordSafe {
                         throw new CryptographicException("Authentication mismatch.");
                     }
 
-                    var document = new Document(headerFields, recordFields.ToArray());
-                    document._iterations = (int)iter; //to avoid rounding up if iteration count is less than 2048
-                    document.Passphrase = passphraseBuffer; //to avoid keeping password in memory for save - at least we don't need to deal with string's immutability.
+                    var document = new Document(headerFields, recordFields.ToArray()) {
+                        _iterations = (int)iter, //to avoid rounding up if iteration count is less than 2048
+                        Passphrase = passphraseBuffer //to avoid keeping password in memory for save - at least we don't need to deal with string's immutability.
+                    };
                     return document;
                 }
             } catch (CryptographicException ex) {
@@ -430,9 +430,8 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// </summary>
         /// <param name="newPassphraseBuffer">New password bytes. Caller has to avoid keeping bytes unencrypted in memory.</param>
         public void ChangePassphrase(byte[] newPassphraseBuffer) {
-            if (newPassphraseBuffer == null) { throw new ArgumentNullException(nameof(newPassphraseBuffer), "Passphrase cannot be null."); }
-
-            this.Passphrase = newPassphraseBuffer; //no need for copy - will be done in property setter
+            //no need for passphraseBuffer copy - will be done in property setter
+            this.Passphrase = newPassphraseBuffer ?? throw new ArgumentNullException(nameof(newPassphraseBuffer), "Passphrase cannot be null.");
             this.MarkAsChanged();
         }
 
