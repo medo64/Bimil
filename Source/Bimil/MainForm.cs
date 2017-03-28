@@ -802,6 +802,23 @@ namespace Bimil {
                         mnxEntry.Items.Add(mnxItem);
                     }
                 }
+
+                { //add URL items
+                    var hasSeparator = (mnxEntry.Items[mnxEntry.Items.Count - 1] is ToolStripSeparator);
+                    foreach (var record in entry.Records) {
+                        if (record.RecordType == RecordType.Url) {
+                            if (!hasSeparator) {
+                                mnxEntry.Items.Add(new ToolStripSeparator());
+                                hasSeparator = true;
+                            }
+                            var mnxItem = new ToolStripMenuItem("Go to " + record.Text);
+                            mnxItem.Click += delegate {
+                                Helpers.ExecuteUrl(record.Text);
+                            };
+                            mnxEntry.Items.Add(mnxItem);
+                        }
+                    }
+                }
             }
         }
 
@@ -871,7 +888,7 @@ namespace Bimil {
 
             var entries = new List<Entry>(ClipboardHelper.GetClipboardData());
             foreach (var entry in entries) {
-                if (category != null) { entry.Group = category;  } //switch category of pasted item to currently selected category
+                if (category != null) { entry.Group = category; } //switch category of pasted item to currently selected category
                 this.Document.Entries.Add(entry);
             }
             RefreshCategories();

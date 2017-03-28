@@ -549,6 +549,20 @@ namespace Bimil {
             return string.Join(" ", parts);
         }
 
+        public static void ExecuteUrl(string urlText) {
+            var url = NormalizeUrl(urlText);
+            if (url != "") { Process.Start(url); }
+        }
+
+        public static string NormalizeUrl(string urlText) {
+            var url = urlText.Trim();
+            if (url.Length > 0) {
+                return (url.IndexOf("://", StringComparison.OrdinalIgnoreCase) > 0) ? url : ("http:" + url);
+            } else {
+                return "";
+            }
+        }
+
 
         public static bool IsRunningOnMono {
             get { return (Type.GetType("Mono.Runtime") != null); }

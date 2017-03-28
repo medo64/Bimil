@@ -257,7 +257,8 @@ namespace Bimil {
                             }, "Password policy configuration."));
                             pnl.Controls.Add(NewGeneratePasswordButton(textBox));
 
-                            void showPasswordWarnings() {
+                            void showPasswordWarnings()
+                            {
                                 if (BadPasswords.IsCommon(textBox.Text, out var matchedPassword)) {
                                     erp.SetIconAlignment(textBox, ErrorIconAlignment.MiddleLeft);
                                     erp.SetIconPadding(textBox, SystemInformation.BorderSize.Width);
@@ -280,7 +281,7 @@ namespace Bimil {
                             var textBox = NewTextBox(labelWidth, y, record, urlLookAndFeel: true);
                             pnl.Controls.Add(textBox);
 
-                            pnl.Controls.Add(NewCopyButton(textBox, copyText: delegate () { return GetUrl(textBox.Text); }));
+                            pnl.Controls.Add(NewCopyButton(textBox, copyText: delegate () { return Helpers.NormalizeUrl(textBox.Text); }));
                             pnl.Controls.Add(NewExecuteUrlButton(textBox));
                             pnl.Controls.Add(NewExecuteUrlQRButton(textBox));
 
@@ -666,8 +667,7 @@ namespace Bimil {
                 var textBox = (TextBox)(((Control)sender).Tag);
                 textBox.Select();
 
-                var url = GetUrl(textBox.Text);
-                if (url != "") { Process.Start(url); }
+                Helpers.ExecuteUrl(textBox.Text);
             });
 
             return button;
@@ -692,7 +692,7 @@ namespace Bimil {
                 var textBox = (TextBox)(((Control)sender).Tag);
                 textBox.Select();
 
-                var url = GetUrl(textBox.Text);
+                var url = Helpers.NormalizeUrl(textBox.Text);
                 if (url != "") {
                     using (var frm = new QRCodeForm(url)) {
                         frm.ShowDialog(this);
@@ -881,16 +881,6 @@ namespace Bimil {
             });
 
             return button;
-        }
-
-
-        private string GetUrl(string text) {
-            var url = text.Trim();
-            if (url.Length > 0) {
-                return (url.IndexOf("://", StringComparison.OrdinalIgnoreCase) > 0) ? url : ("http:" + url);
-            } else {
-                return "";
-            }
         }
 
         private string GetEmailUrl(string text) {
