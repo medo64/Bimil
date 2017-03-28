@@ -152,8 +152,8 @@ namespace Bimil {
             {
                 var record = this.Item[RecordType.Title];
                 titleTextBox = new TextBox() { Font = this.Font, Location = new Point(labelWidth + labelBuffer, 0), Tag = record, Text = record.ToString(), Width = pnl.ClientSize.Width - labelWidth - labelBuffer, ReadOnly = !this.Editable, Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right };
-                titleTextBox.GotFocus += new EventHandler(delegate (object sender2, EventArgs e2) { ((TextBox)sender2).SelectAll(); });
-                titleTextBox.TextChanged += new EventHandler(delegate (object sender2, EventArgs e2) { btnOK.Enabled = (((Control)sender2).Text.Trim().Length > 0); });
+                titleTextBox.GotFocus += (object sender2, EventArgs e2) => { ((TextBox)sender2).SelectAll(); };
+                titleTextBox.TextChanged += (object sender2, EventArgs e2) => { btnOK.Enabled = (((Control)sender2).Text.Trim().Length > 0); };
                 pnl.Controls.Add(titleTextBox);
                 var label = new Label() { AutoEllipsis = true, Location = new Point(0, y), Size = new Size(labelWidth, unitHeight), Text = "Name:", TextAlign = ContentAlignment.MiddleLeft, UseMnemonic = false };
                 pnl.Controls.Add(label);
@@ -165,7 +165,7 @@ namespace Bimil {
             {
                 var record = this.Item[RecordType.Group];
                 categoryComboBox = new ComboBox() { Font = this.Font, Location = new Point(labelWidth + labelBuffer, y), Tag = record, Text = record.ToString(), Width = pnl.ClientSize.Width - labelWidth - labelBuffer, Enabled = this.Editable, Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right };
-                categoryComboBox.GotFocus += new EventHandler(delegate (object sender2, EventArgs e2) { ((ComboBox)sender2).SelectAll(); });
+                categoryComboBox.GotFocus += (object sender2, EventArgs e2) => { ((ComboBox)sender2).SelectAll(); };
                 foreach (var category in this.Categories) {
                     categoryComboBox.Items.Add(category);
                 }
@@ -175,7 +175,7 @@ namespace Bimil {
                 pnl.Controls.Add(label);
 
                 if (!string.IsNullOrEmpty(record.Text)) {
-                    var renameButton = NewCustomCommandButton(categoryComboBox, delegate (object sender2, EventArgs e2) {
+                    var renameButton = NewCustomCommandButton(categoryComboBox, delegate {
                         using (var frm = new InputBox($"Rename all categories named \"{record.Text}\" to:", categoryComboBox.Text)) {
                             if (frm.ShowDialog(this) == DialogResult.OK) {
                                 var groupFrom = this.Item.Group;
@@ -192,7 +192,7 @@ namespace Bimil {
                     pnl.Controls.Add(renameButton);
                     renameButton.Enabled = categoryComboBox.Enabled;
 
-                    btnEdit.Click += delegate (object sender2, EventArgs e2) {
+                    btnEdit.Click += delegate {
                         renameButton.Enabled = categoryComboBox.Enabled;
                     };
                 }
@@ -249,7 +249,7 @@ namespace Bimil {
 
                             pnl.Controls.Add(NewCopyButton(textBox));
                             pnl.Controls.Add(NewShowPasswordButton(textBox));
-                            pnl.Controls.Add(NewConfigureButton(textBox, delegate (object sender2, EventArgs e2) {
+                            pnl.Controls.Add(NewConfigureButton(textBox, delegate {
                                 using (var frm = new PasswordDetailsForm(this.Item, textBox.ReadOnly)) {
                                     frm.ShowDialog(this);
                                 }
@@ -266,11 +266,9 @@ namespace Bimil {
                                     erp.SetError(textBox, null);
                                 }
                             }
-                            showPasswordWarnings();
 
-                            textBox.TextChanged += delegate (object sender2, EventArgs e2) {
-                                showPasswordWarnings();
-                            };
+                            showPasswordWarnings();
+                            textBox.TextChanged += delegate { showPasswordWarnings(); };
 
                             yH = textBox.Height;
                         }
@@ -280,7 +278,7 @@ namespace Bimil {
                             var textBox = NewTextBox(labelWidth, y, record, urlLookAndFeel: true);
                             pnl.Controls.Add(textBox);
 
-                            pnl.Controls.Add(NewCopyButton(textBox, copyText: delegate () { return Execute.NormalizeUrl(textBox.Text); }));
+                            pnl.Controls.Add(NewCopyButton(textBox, copyText: delegate { return Execute.NormalizeUrl(textBox.Text); }));
                             pnl.Controls.Add(NewExecuteUrlButton(textBox));
                             pnl.Controls.Add(NewExecuteUrlQRButton(textBox));
 
@@ -314,7 +312,7 @@ namespace Bimil {
                             pnl.Controls.Add(textBox);
                             Array.Clear(bytes, 0, bytes.Length);
 
-                            pnl.Controls.Add(NewCopyButton(textBox, tipText: "Copy two-factor key to clipboard.", copyText: delegate () { return Helpers.GetTwoFactorCode(textBox.Text); }));
+                            pnl.Controls.Add(NewCopyButton(textBox, tipText: "Copy two-factor key to clipboard.", copyText: delegate { return Helpers.GetTwoFactorCode(textBox.Text); }));
                             pnl.Controls.Add(NewViewTwoFactorCode(textBox));
                             pnl.Controls.Add(NewExecuteOAuthQRButton(textBox));
                             pnl.Controls.Add(NewShowPasswordButton(textBox, tipText: "Show two-factor key."));
@@ -348,7 +346,7 @@ namespace Bimil {
                             var textBox = NewTextBox(labelWidth, y, record);
                             pnl.Controls.Add(textBox);
 
-                            pnl.Controls.Add(NewConfigureButton(textBox, delegate (object sender2, EventArgs e2) {
+                            pnl.Controls.Add(NewConfigureButton(textBox, delegate {
                                 using (var frm = new AutotypeHelpForm(textBox.Text, textBox.ReadOnly)) {
                                     if (frm.ShowDialog(this) == DialogResult.OK) {
                                         if (!textBox.ReadOnly) {
@@ -427,10 +425,10 @@ namespace Bimil {
             this.Close();
 
             var frm = new AutotypeForm(this.Item);
-            frm.Shown += delegate (object sender2, EventArgs e2) {
+            frm.Shown += delegate {
                 ownerForm.Visible = false;
             };
-            frm.FormClosed += delegate (object sender2, FormClosedEventArgs e2) {
+            frm.FormClosed += delegate {
                 ownerForm.Visible = true;
                 ownerForm.Select();
             };
@@ -497,15 +495,15 @@ namespace Bimil {
                 textBox.ScrollBars = ScrollBars.Vertical;
             }
 
-            textBox.GotFocus += new EventHandler(delegate (object sender, EventArgs e) {
+            textBox.GotFocus += (object sender, EventArgs e) => {
                 ((TextBox)sender).SelectAll();
-            });
+            };
 
-            textBox.KeyDown += new KeyEventHandler(delegate (object sender, KeyEventArgs e) {
+            textBox.KeyDown += (object sender, KeyEventArgs e) => {
                 switch (e.KeyData) {
                     case Keys.Control | Keys.A: ((TextBox)sender).SelectAll(); break;
                 }
-            });
+            };
 
             return textBox;
         }
@@ -517,13 +515,13 @@ namespace Bimil {
             control.Items.Add("Open dropdown to show password history (" + entry.PasswordHistory.Count.ToString(CultureInfo.CurrentCulture) + ")");
             control.SelectedIndex = 0;
 
-            control.DropDownClosed += new EventHandler(delegate (object sender, EventArgs e) {
+            control.DropDownClosed += delegate {
                 control.Items.Clear();
                 control.Items.Add("Open dropdown to show password history (" + entry.PasswordHistory.Count.ToString(CultureInfo.CurrentCulture) + ")");
                 control.SelectedIndex = 0;
-            });
+            };
 
-            control.DropDown += new EventHandler(delegate (object sender, EventArgs e) {
+            control.DropDown += delegate {
                 control.ForeColor = SystemColors.ControlText;
                 control.Items.Clear();
                 if (entry.PasswordHistory.Count == 0) {
@@ -534,13 +532,13 @@ namespace Bimil {
                         control.Items.Insert(0, timeString + ": " + item.HistoricalPassword);
                     }
                 }
-            });
+            };
 
-            control.KeyDown += new KeyEventHandler(delegate (object sender, KeyEventArgs e) {
+            control.KeyDown += (object sender, KeyEventArgs e) => {
                 switch (e.KeyData) {
                     case Keys.Down: control.DroppedDown = true; break;
                 }
-            });
+            };
 
             return control;
         }
@@ -560,7 +558,7 @@ namespace Bimil {
 
             tip.SetToolTip(button, (tipText != null) ? tipText : "Copy to clipboard.");
 
-            button.Click += new EventHandler(delegate (object sender, EventArgs e) {
+            button.Click += (object sender, EventArgs e) => {
                 var textBox = (TextBox)(((Control)sender).Tag);
                 textBox.Select();
 
@@ -573,7 +571,7 @@ namespace Bimil {
                 text = Helpers.FilterText(text, allowedCopyCharacters);
 
                 Execute.ClipboardCopyText(text);
-            });
+            };
 
             return button;
         }
@@ -593,12 +591,12 @@ namespace Bimil {
 
             tip.SetToolTip(button, (tipText != null) ? tipText : "Show password.");
 
-            button.Click += new EventHandler(delegate (object sender, EventArgs e) {
+            button.Click += (object sender, EventArgs e) => {
                 var textBox = (TextBox)(((Control)sender).Tag);
                 textBox.Select();
 
                 textBox.UseSystemPasswordChar = !textBox.UseSystemPasswordChar;
-            });
+            };
 
             return button;
         }
@@ -619,11 +617,11 @@ namespace Bimil {
 
             tip.SetToolTip(button, "Generate password (available only when no password already present).");
 
-            parentTextBox.ReadOnlyChanged += delegate (object sender2, EventArgs e2) {
+            parentTextBox.ReadOnlyChanged += delegate {
                 button.Enabled = !parentTextBox.ReadOnly;
             };
 
-            button.Click += new EventHandler(delegate (object sender, EventArgs e) {
+            button.Click += (object sender, EventArgs e) => {
                 var textBox = (TextBox)(((Control)sender).Tag);
                 textBox.Select();
 
@@ -639,7 +637,7 @@ namespace Bimil {
                         }
                     }
                 }
-            });
+            };
 
             return button;
         }
@@ -659,12 +657,12 @@ namespace Bimil {
 
             tip.SetToolTip(button, "Go to URL.");
 
-            button.Click += new EventHandler(delegate (object sender, EventArgs e) {
+            button.Click += (object sender, EventArgs e) => {
                 var textBox = (TextBox)(((Control)sender).Tag);
                 textBox.Select();
 
                 Execute.StartUrl(textBox.Text);
-            });
+            };
 
             return button;
         }
@@ -684,7 +682,7 @@ namespace Bimil {
 
             tip.SetToolTip(button, "Create URL QR code.");
 
-            button.Click += new EventHandler(delegate (object sender, EventArgs e) {
+            button.Click += (object sender, EventArgs e) => {
                 var textBox = (TextBox)(((Control)sender).Tag);
                 textBox.Select();
 
@@ -694,7 +692,7 @@ namespace Bimil {
                         frm.ShowDialog(this);
                     }
                 }
-            });
+            };
 
             return button;
         }
@@ -714,14 +712,13 @@ namespace Bimil {
 
             tip.SetToolTip(button, "E-mail.");
 
-            button.Click += new EventHandler(delegate (object sender, EventArgs e) {
+            button.Click += (object sender, EventArgs e) => {
                 var textBox = (TextBox)(((Control)sender).Tag);
                 textBox.Select();
 
                 var email = GetEmailUrl(textBox.Text);
                 if (email != "") { Process.Start(email); }
-            });
-
+            };
 
             return button;
         }
@@ -741,7 +738,7 @@ namespace Bimil {
 
             tip.SetToolTip(button, "Create QR code.");
 
-            button.Click += new EventHandler(delegate (object sender, EventArgs e) {
+            button.Click += (object sender, EventArgs e) => {
                 var textBox = (TextBox)(((Control)sender).Tag);
                 textBox.Select();
 
@@ -752,7 +749,7 @@ namespace Bimil {
                         frm.ShowDialog(this);
                     }
                 }
-            });
+            };
 
             return button;
         }
@@ -772,13 +769,13 @@ namespace Bimil {
 
             tip.SetToolTip(button, "View two-factor code.");
 
-            button.Click += new EventHandler(delegate (object sender, EventArgs e) {
+            button.Click += (object sender, EventArgs e) => {
                 var textBox = (TextBox)(((Control)sender).Tag);
                 textBox.Select();
 
                 var code = Helpers.GetTwoFactorCode(textBox.Text, space: true);
                 if (code != "") { Medo.MessageBox.ShowInformation(this, code); }
-            });
+            };
 
             return button;
         }
@@ -798,7 +795,7 @@ namespace Bimil {
 
             tip.SetToolTip(button, "Shows QR code.");
 
-            button.Click += new EventHandler(delegate (object sender, EventArgs e) {
+            button.Click += (object sender, EventArgs e) => {
                 var textBox = (TextBox)(((Control)sender).Tag);
                 textBox.Select();
 
@@ -808,7 +805,7 @@ namespace Bimil {
                         frm.ShowDialog(this);
                     }
                 }
-            });
+            };
 
             return button;
         }
@@ -818,7 +815,7 @@ namespace Bimil {
 
             if (trackReadonly) {
                 button.Enabled = !parentTextBox.ReadOnly;
-                parentTextBox.ReadOnlyChanged += delegate (object sender2, EventArgs e2) {
+                parentTextBox.ReadOnlyChanged += delegate {
                     button.Enabled = !parentTextBox.ReadOnly;
                 };
             }
@@ -841,9 +838,9 @@ namespace Bimil {
 
             tip.SetToolTip(button, tipText ?? "Command");
 
-            button.Click += new EventHandler(delegate (object sender, EventArgs e) {
+            button.Click += (object sender, EventArgs e) => {
                 clickHandler.Invoke(sender, e);
-            });
+            };
 
             return button;
         }
@@ -863,9 +860,9 @@ namespace Bimil {
 
             tip.SetToolTip(button, "Execute command");
 
-            button.Click += new EventHandler(delegate (object sender, EventArgs e) {
+            button.Click += (object sender, EventArgs e) => {
                 Execute.StartCommand(((TextBox)button.Tag).Text, this);
-            });
+            };
 
             return button;
         }

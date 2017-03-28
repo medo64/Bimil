@@ -79,7 +79,7 @@ namespace Bimil {
             y += SystemInformation.DragSize.Height;
 
             var btnClose = AddGenericButton(y, "Close");
-            btnClose.Click += delegate (object sender, EventArgs e) { this.Close(); };
+            btnClose.Click += delegate { this.Close(); };
 
             this.ClientSize = new Size(SystemInformation.VerticalScrollBarWidth * 12, btnClose.Bottom);
             this.MinimumSize = new Size(SystemInformation.VerticalScrollBarWidth * 10, this.Height);
@@ -219,7 +219,7 @@ namespace Bimil {
                 }
             };
 
-            btn.Click += delegate (object sender, EventArgs e) {
+            btn.Click += delegate {
                 var processedTokens = GetProcessedTokens(record, tokens);
                 ExecuteTokens(processedTokens, isDefinedAutoType);
             };
@@ -284,7 +284,7 @@ namespace Bimil {
                     break;
             }
 
-            button.Click += delegate (object sender2, EventArgs e2) {
+            button.Click += delegate {
                 var processedTokens = GetProcessedTokens(record, tokens, suffixToken);
                 ExecuteTokens(processedTokens, closeAfterType: false);
             };

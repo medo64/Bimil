@@ -411,7 +411,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// Sorts all entries according to group and title.
         /// </summary>
         public void Sort() {
-            this.BaseCollection.Sort(delegate (Entry item1, Entry item2) {
+            this.BaseCollection.Sort((Entry item1, Entry item2) => {
                 var groupValue = string.Compare(item1.Group, item2.Group, StringComparison.CurrentCultureIgnoreCase);
                 if (groupValue != 0) {
                     return groupValue;

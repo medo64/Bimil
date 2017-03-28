@@ -1176,7 +1176,7 @@ namespace QRCoder {
                 }
                 resultPolynom.RemoveAll(x => toGlue.Contains(x.Exponent));
                 resultPolynom.AddRange(gluedPolynoms);
-                resultPolynom.Sort(delegate (PolynomItem item1, PolynomItem item2) {
+                resultPolynom.Sort((PolynomItem item1, PolynomItem item2) => {
                     return -item1.Exponent.CompareTo(item2.Exponent);
                 });
                 return resultPolynom;

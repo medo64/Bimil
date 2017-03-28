@@ -240,11 +240,11 @@ namespace Bimil {
             }
             foreach (var file in this.RecentFiles) {
                 var item = new ToolStripMenuItem(file.Title) { Tag = file, ToolTipText = file.FileName };
-                item.Click += new EventHandler(delegate (object sender2, EventArgs e2) {
+                item.Click += delegate {
                     if (SaveIfNeeded() != DialogResult.OK) { return; }
                     var fileName = ((RecentFile)item.Tag).FileName;
                     LoadFile(fileName);
-                });
+                };
                 mnuOpen.DropDownItems.Add(item);
             }
         }
@@ -912,10 +912,10 @@ namespace Bimil {
             var entry = (Entry)(lsvEntries.SelectedItems[0].Tag);
 
             var frm = new AutotypeForm(entry);
-            frm.Shown += delegate (object sender2, EventArgs e2) {
+            frm.Shown += delegate {
                 this.Visible = false;
             };
-            frm.FormClosed += delegate (object sender2, FormClosedEventArgs e2) {
+            frm.FormClosed += delegate {
                 this.Visible = true;
                 this.Select();
             };
