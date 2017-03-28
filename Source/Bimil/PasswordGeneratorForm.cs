@@ -205,8 +205,7 @@ namespace Bimil {
             if (this.UseCopyAsSave) {
                 this.Password = txtPassword.Text;
             } else {
-                Clipboard.Clear();
-                Clipboard.SetText(txtPassword.Text, TextDataFormat.Text);
+                Execute.ClipboardCopyText(txtPassword.Text);
             }
         }
 

@@ -795,10 +795,7 @@ namespace Bimil {
                     if (mnxItem != null) {
                         if (!hasCopyEntries) { mnxEntry.Items.Add(new ToolStripSeparator()); }
                         hasCopyEntries = true;
-                        mnxItem.Click += delegate (object sender2, EventArgs e2) {
-                            Clipboard.Clear();
-                            Clipboard.SetText(record.Text);
-                        };
+                        mnxItem.Click += delegate { Execute.ClipboardCopyText(record.Text); };
                         mnxEntry.Items.Add(mnxItem);
                     }
                 }
@@ -812,7 +809,7 @@ namespace Bimil {
                                 hasSeparator = true;
                             }
                             var mnxItem = new ToolStripMenuItem("Go to " + record.Text);
-                            mnxItem.Click += delegate { Helpers.ExecuteUrl(record.Text); };
+                            mnxItem.Click += delegate { Execute.StartUrl(record.Text); };
                             mnxEntry.Items.Add(mnxItem);
                         }
                     }
@@ -826,8 +823,8 @@ namespace Bimil {
                                 mnxEntry.Items.Add(new ToolStripSeparator());
                                 hasSeparator = true;
                             }
-                            var mnxItem = new ToolStripMenuItem("Execute " + record.Text.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)[0]);
-                            mnxItem.Click += delegate { Helpers.ExecuteCommand(record.Text, this); };
+                            var mnxItem = new ToolStripMenuItem("Execute " + Execute.GetStartInfo(record.Text).FileName);
+                            mnxItem.Click += delegate { Execute.StartCommand(record.Text, this); };
                             mnxEntry.Items.Add(mnxItem);
                         }
                     }

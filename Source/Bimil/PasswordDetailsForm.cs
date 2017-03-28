@@ -101,8 +101,7 @@ namespace Bimil {
             if (lsvHistoryPasswords.SelectedItems.Count != 1) { return; }
 
             var item = (PasswordHistoryItem)(lsvHistoryPasswords.SelectedItems[0].Tag);
-            Clipboard.Clear();
-            Clipboard.SetText(item.HistoricalPassword);
+            Execute.ClipboardCopyText(item.HistoricalPassword);
         }
 
 

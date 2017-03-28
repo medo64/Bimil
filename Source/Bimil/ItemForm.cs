@@ -7,7 +7,6 @@ using Medo.Security.Cryptography.PasswordSafe;
 using System.Collections.Generic;
 using System.Web;
 using Medo.Security.Cryptography;
-using System.Text;
 using Medo.Windows.Forms;
 
 namespace Bimil {
@@ -281,7 +280,7 @@ namespace Bimil {
                             var textBox = NewTextBox(labelWidth, y, record, urlLookAndFeel: true);
                             pnl.Controls.Add(textBox);
 
-                            pnl.Controls.Add(NewCopyButton(textBox, copyText: delegate () { return Helpers.NormalizeUrl(textBox.Text); }));
+                            pnl.Controls.Add(NewCopyButton(textBox, copyText: delegate () { return Execute.NormalizeUrl(textBox.Text); }));
                             pnl.Controls.Add(NewExecuteUrlButton(textBox));
                             pnl.Controls.Add(NewExecuteUrlQRButton(textBox));
 
@@ -573,10 +572,7 @@ namespace Bimil {
                 }
                 text = Helpers.FilterText(text, allowedCopyCharacters);
 
-                Clipboard.Clear();
-                if (text.Length > 0) {
-                    Clipboard.SetText(text);
-                }
+                Execute.ClipboardCopyText(text);
             });
 
             return button;
@@ -667,7 +663,7 @@ namespace Bimil {
                 var textBox = (TextBox)(((Control)sender).Tag);
                 textBox.Select();
 
-                Helpers.ExecuteUrl(textBox.Text);
+                Execute.StartUrl(textBox.Text);
             });
 
             return button;
@@ -692,7 +688,7 @@ namespace Bimil {
                 var textBox = (TextBox)(((Control)sender).Tag);
                 textBox.Select();
 
-                var url = Helpers.NormalizeUrl(textBox.Text);
+                var url = Execute.NormalizeUrl(textBox.Text);
                 if (url != "") {
                     using (var frm = new QRCodeForm(url)) {
                         frm.ShowDialog(this);
@@ -868,7 +864,7 @@ namespace Bimil {
             tip.SetToolTip(button, "Execute command");
 
             button.Click += new EventHandler(delegate (object sender, EventArgs e) {
-                Helpers.ExecuteCommand(((TextBox)button.Tag).Text, this);
+                Execute.StartCommand(((TextBox)button.Tag).Text, this);
             });
 
             return button;

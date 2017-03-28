@@ -130,6 +130,7 @@
     <Compile Include="AutotypeForm.Designer.cs">
       <DependentUpon>AutotypeForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Execute.cs" />
     <Compile Include="ItemForm.cs">
       <SubType>Form</SubType>
     </Compile>
