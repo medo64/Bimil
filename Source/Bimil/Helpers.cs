@@ -130,7 +130,7 @@ namespace Bimil {
                 var curWord = new StringBuilder();
                 searchText = searchText.Trim();
                 foreach (var ch in searchText) {
-                    if (char.IsLetterOrDigit(ch) || (ch == '.')) {
+                    if (char.IsLetterOrDigit(ch) || char.IsPunctuation(ch)) {
                         curWord.Append(ch);
                     } else if (curWord.Length > 0) {
                         words.Add(curWord.ToString());
@@ -146,10 +146,13 @@ namespace Bimil {
                     if (!searchText.Equals("*")) { //if text is literal *, show all
                         foreach (var text in words) {
                             var successfulCheck = false;
-                            if (string.Equals(item.Group, searchText, StringComparison.CurrentCultureIgnoreCase) //if group name fully matches
-                                || ((text.Length > 0) && item.Group.StartsWith(text, StringComparison.CurrentCultureIgnoreCase))) { //if group name starts with any word
-                                item.AddMatch("Group");
-                                successfulCheck = true;
+                            foreach (var groupPart in item.Group.Split(new char[] { '.' }, StringSplitOptions.RemoveEmptyEntries)) {
+                                if (string.Equals(groupPart, searchText, StringComparison.CurrentCultureIgnoreCase) //if group name fully matches
+                                    || ((text.Length > 0) && groupPart.StartsWith(text, StringComparison.CurrentCultureIgnoreCase))) { //if group name starts with any word
+                                    item.AddMatch("Group");
+                                    successfulCheck = true;
+                                    break;
+                                }
                             }
                             if ((text.Length > 0) && (item.Title.IndexOf(text, StringComparison.CurrentCultureIgnoreCase) >= 0)) { //if text matches any part of title
                                 item.AddMatch("Title");
