@@ -868,16 +868,7 @@ namespace Bimil {
             tip.SetToolTip(button, "Execute command");
 
             button.Click += new EventHandler(delegate (object sender, EventArgs e) {
-                var text = ((TextBox)button.Tag).Text;
-                var startInfo = GetStartInfo(text);
-
-                try {
-                    Process.Start(startInfo);
-                } catch (InvalidOperationException ex) { //inproper call
-                    Medo.MessageBox.ShowError(this, "Cannot parse command.\n\n" + ex.Message);
-                } catch (SystemException ex) {
-                    Medo.MessageBox.ShowError(this, ex.Message);
-                }
+                Helpers.ExecuteCommand(((TextBox)button.Tag).Text, this);
             });
 
             return button;
@@ -891,103 +882,6 @@ namespace Bimil {
                 return "";
             }
         }
-
-        private ProcessStartInfo GetStartInfo(string text) {
-            var sbFileName = new StringBuilder();
-            var sbArguments = new StringBuilder();
-
-            var state = StartInfoState.Default;
-            foreach (var ch in text.Trim()) {
-                switch (state) {
-                    case StartInfoState.Default:
-                        if (ch == '\"') {
-                            state = StartInfoState.QuotedFileName;
-                        } else {
-                            sbFileName.Append(ch);
-                            state = StartInfoState.FileName;
-                        }
-                        break;
-
-                    case StartInfoState.FileName:
-                        if ((ch == ' ') || (ch == '\"')) {
-                            state = StartInfoState.Arguments;
-                        } else {
-                            sbFileName.Append(ch);
-                        }
-                        break;
-
-                    case StartInfoState.QuotedFileName:
-                        if (ch == '\"') {
-                            state = StartInfoState.Arguments;
-                        } else {
-                            sbFileName.Append(ch);
-                        }
-                        break;
-
-                    case StartInfoState.Arguments:
-                        sbArguments.Append(ch);
-                        break;
-                }
-            }
-
-            var fileName = FillEnvironment(sbFileName.ToString().Trim());
-            var arguments = FillEnvironment(sbArguments.ToString().Trim());
-
-            return new ProcessStartInfo(fileName, arguments);
-        }
-
-        private enum StartInfoState {
-            Default,
-            FileName,
-            QuotedFileName,
-            Arguments,
-        }
-
-
-        private string FillEnvironment(string text) {
-            var sb = new StringBuilder();
-            var sbVariable = new StringBuilder();
-
-            var state = EnvironmentState.Default;
-            foreach (var ch in text) {
-                switch (state) {
-                    case EnvironmentState.Default:
-                        if (ch == '%') {
-                            state = EnvironmentState.PercentVariable;
-                        } else {
-                            sb.Append(ch);
-                        }
-                        break;
-
-                    case EnvironmentState.PercentVariable:
-                        if (ch == '%') {
-                            if (sbVariable.Length == 0) { //just double percent
-                                sb.Append("%");
-                            } else {
-                                var value = Environment.GetEnvironmentVariable(sbVariable.ToString().Trim());
-                                if (value != null) {
-                                    sb.Append(value);
-                                } else { //just copy it all if environment variable is not found
-                                    sb.Append("%" + sbVariable.ToString() + "%");
-                                }
-                                sbVariable.Length = 0;
-                            }
-                            state = EnvironmentState.Default;
-                        } else {
-                            sbVariable.Append(ch);
-                        }
-                        break;
-                }
-            }
-
-            return sb.ToString();
-        }
-
-        private enum EnvironmentState {
-            Default,
-            PercentVariable,
-        }
-
 
         private delegate string GetText();
 

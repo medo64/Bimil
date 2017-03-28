@@ -812,9 +812,22 @@ namespace Bimil {
                                 hasSeparator = true;
                             }
                             var mnxItem = new ToolStripMenuItem("Go to " + record.Text);
-                            mnxItem.Click += delegate {
-                                Helpers.ExecuteUrl(record.Text);
-                            };
+                            mnxItem.Click += delegate { Helpers.ExecuteUrl(record.Text); };
+                            mnxEntry.Items.Add(mnxItem);
+                        }
+                    }
+                }
+
+                { //add RunCommand items
+                    var hasSeparator = (mnxEntry.Items[mnxEntry.Items.Count - 1] is ToolStripSeparator);
+                    foreach (var record in entry.Records) {
+                        if (record.RecordType == RecordType.RunCommand) {
+                            if (!hasSeparator) {
+                                mnxEntry.Items.Add(new ToolStripSeparator());
+                                hasSeparator = true;
+                            }
+                            var mnxItem = new ToolStripMenuItem("Execute " + record.Text.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)[0]);
+                            mnxItem.Click += delegate { Helpers.ExecuteCommand(record.Text, this); };
                             mnxEntry.Items.Add(mnxItem);
                         }
                     }
