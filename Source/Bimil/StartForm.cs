@@ -124,8 +124,10 @@ namespace Bimil {
         }
 
         private void mnxListRemove_Click(object sender, EventArgs e) {
-            var fileName = ((RecentFile)lsvRecent.SelectedItems[0].Tag).FileName;
+            var selectedItem = lsvRecent.SelectedItems[0];
+            var fileName = ((RecentFile)selectedItem.Tag).FileName;
             this.RecentFiles.Remove(fileName);
+            lsvRecent.Items.RemoveAt(selectedItem.Index);
         }
 
         private void mnxListReadOnly_Click(object sender, EventArgs e) {
