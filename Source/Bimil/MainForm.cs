@@ -460,7 +460,7 @@ namespace Bimil {
                         if (frm.ShowDialog(this) == DialogResult.OK) {
                             password = frm.Password;
                         } else {
-                            return true; //don't signal file doesn't exist just because password has been canceled
+                            return false;
                         }
                     }
 
