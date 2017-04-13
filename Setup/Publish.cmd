@@ -10,13 +10,15 @@ SET   COMPILE_TOOL_15="%PROGRAMFILES(X86)%\Microsoft Visual Studio\2017\Communit
 
 SET        SETUP_TOOL="%PROGRAMFILES(x86)%\Inno Setup 5\iscc.exe"
 
-SET       SIGN_TOOL_1="%PROGRAMFILES(X86)%\Windows Kits\10\bin\x86\signtool.exe"
-SET       SIGN_TOOL_2="%PROGRAMFILES(X86)%\Windows Kits\8.1\bin\x86\signtool.exe"
-SET       SIGN_TOOL_3="%PROGRAMFILES(X86)%\Windows Kits\8.0\bin\x86\signtool.exe"
+SET       SIGN_TOOL_1="%PROGRAMFILES(X86)%\Microsoft SDKs\ClickOnce\SignTool\signtool.exe"
+SET       SIGN_TOOL_2="%PROGRAMFILES(X86)%\Windows Kits\10\App Certification Kit\signtool.exe"
+SET       SIGN_TOOL_3="%PROGRAMFILES(X86)%\Windows Kits\10\bin\x86\signtool.exe"
 SET   SIGN_THUMBPRINT="df26e797ffaee47a40c1fab756e995d3763da968"
 SET SIGN_TIMESTAMPURL="http://timestamp.comodoca.com/rfc3161"
 
 SET        GIT_TOOL_1="%PROGRAMFILES%\Git\mingw64\bin\git.exe"
+
+SET          RAR_TOOL="%PROGRAMFILES%\WinRAR\WinRAR.exe"
 
 
 ECHO --- DISCOVER TOOLS
@@ -38,15 +40,15 @@ IF EXIST %SETUP_TOOL% (
 )
 
 IF EXIST %SIGN_TOOL_1% (
-    ECHO Windows SignTool 10
+    ECHO Windows SignTool 10 ^(ClickOnce^)
     SET SIGN_TOOL=%SIGN_TOOL_1%
 ) ELSE (
     IF EXIST %SIGN_TOOL_2% (
-        ECHO Windows SignTool 8.1
+        ECHO Windows SignTool 10 ^(App Certification Kit^)
         SET SIGN_TOOL=%SIGN_TOOL_2%
     ) ELSE (
         IF EXIST %SIGN_TOOL_3% (
-            ECHO Windows SignTool 8.0
+            ECHO Windows SignTool 10 ^(SDK^)
             SET SIGN_TOOL=%SIGN_TOOL_3%
         ) ELSE (
             ECHO Cannot find Windows SignTool^^!
@@ -60,6 +62,10 @@ IF EXIST %GIT_TOOL_1% (
     SET GIT_TOOL=%GIT_TOOL_1%
 ) ELSE (
     GIT_TOOL="git"
+)
+
+IF NOT EXIST %RAR_TOOL% (
+    ECHO WinRAR not present^^!
 )
 
 ECHO.
@@ -176,9 +182,13 @@ ECHO.
 ECHO --- BUILD ZIP
 ECHO.
 
-ECHO Zipping into %_SETUPEXE:.exe=.zip%
-"%PROGRAMFILES%\WinRAR\WinRAR.exe" a -afzip -ep -m5 ".\Temp\%_SETUPEXE:.exe=.zip%" %FILES_EXECUTABLE% %FILES_OTHER%
-IF ERRORLEVEL 1 PAUSE && EXIT /B %ERRORLEVEL%
+IF EXIST %RAR_TOOL% (
+    ECHO Zipping into %_SETUPEXE:.exe=.zip%
+    "%PROGRAMFILES%\WinRAR\WinRAR.exe" a -afzip -ep -m5 ".\Temp\%_SETUPEXE:.exe=.zip%" %FILES_EXECUTABLE% %FILES_OTHER%
+    IF ERRORLEVEL 1 PAUSE && EXIT /B %ERRORLEVEL%
+) ELSE (
+    ECHO No WinRAR
+)
 
 ECHO.
 ECHO.
