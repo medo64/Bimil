@@ -163,7 +163,6 @@ namespace Bimil {
 
             this.Document = null;
             this.DocumentFileName = null;
-            Application.Exit();
         }
 
         private void Form_Resize(object sender, EventArgs e) {
