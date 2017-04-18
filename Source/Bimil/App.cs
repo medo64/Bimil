@@ -1,14 +1,17 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
+using Medo.Configuration;
 
 namespace Bimil {
     internal static class App {
 
         private static readonly Mutex SetupMutex = new Mutex(false, @"Global\JosipMedved_Bimil");
+        internal static RecentlyUsed Recent;
 
         [STAThread]
         internal static void Main() {
@@ -18,6 +21,23 @@ namespace Bimil {
 
             Medo.Application.UnhandledCatch.ThreadException += new EventHandler<ThreadExceptionEventArgs>(UnhandledCatch_ThreadException);
             Medo.Application.UnhandledCatch.Attach();
+
+
+            var recentLegacy = new RecentFiles();
+            if (recentLegacy.Count > 0) {
+                var fileList = new List<string>();
+                foreach (var item in recentLegacy.Items) {
+                    fileList.Add(item.FileName);
+                }
+                Recent = new RecentlyUsed(fileList);
+                Medo.Configuration.Properties.Write("RecentFile", Recent.FileNames);
+                recentLegacy.Clear();
+            } else {
+                Recent = new RecentlyUsed(Medo.Configuration.Properties.Read("RecentFile"));
+            }
+            Recent.Changed += (o, i) => {
+                Medo.Configuration.Properties.Write("RecentFile", Recent.FileNames);
+            };
 
 
             Application.Run(new MainForm());

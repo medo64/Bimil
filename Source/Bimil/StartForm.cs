@@ -5,16 +5,14 @@ using System.Windows.Forms;
 
 namespace Bimil {
     internal partial class StartForm : Form {
-        public StartForm(RecentFiles recentFiles) {
+        public StartForm() {
             InitializeComponent();
             this.Font = SystemFonts.MessageBoxFont;
             Medo.Windows.Forms.State.SetupOnLoadAndClose(this);
 
-            this.RecentFiles = recentFiles;
-
             lsvRecent.SmallImageList = Helpers.GetImageList(this, "picNonexistent", "mnuReadOnly");
 
-            foreach (var file in recentFiles) {
+            foreach (var file in App.Recent.Files) {
                 var lvi = new ListViewItem(file.Title) { Tag = file, ToolTipText = file.FileName };
                 var readOnly = Helpers.GetReadOnly(file.FileName);
                 if (readOnly == null) {
@@ -32,8 +30,6 @@ namespace Bimil {
                 lsvRecent.ForeColor = SystemColors.GrayText;
             }
         }
-
-        private readonly RecentFiles RecentFiles;
 
 
         #region Disable minimize
@@ -66,7 +62,7 @@ namespace Bimil {
 
 
         private void lsvRecent_SelectedIndexChanged(object sender, EventArgs e) {
-            var fileName = (lsvRecent.SelectedItems.Count == 1) ? ((RecentFile)lsvRecent.SelectedItems[0].Tag).FileName : null;
+            var fileName = (lsvRecent.SelectedItems.Count == 1) ? ((RecentlyUsedFile)lsvRecent.SelectedItems[0].Tag).FileName : null;
             var isReadOnly = Helpers.GetReadOnly(fileName);
 
             btnOpen.Enabled = (isReadOnly == false);
@@ -76,11 +72,11 @@ namespace Bimil {
         }
 
         private void lsvRecent_ItemActivate(object sender, EventArgs e) {
-            var fileName = ((RecentFile)lsvRecent.SelectedItems[0].Tag).FileName;
+            var fileName = ((RecentlyUsedFile)lsvRecent.SelectedItems[0].Tag).FileName;
             var readOnly = Helpers.GetReadOnly(fileName);
             var isReadOnly = (readOnly == true); //treats non-existing files as false (to allow opening them)
 
-            SelectFileName(((RecentFile)lsvRecent.SelectedItems[0].Tag).FileName, isReadOnly);
+            SelectFileName(((RecentlyUsedFile)lsvRecent.SelectedItems[0].Tag).FileName, isReadOnly);
             this.DialogResult = DialogResult.OK;
         }
 
@@ -90,11 +86,11 @@ namespace Bimil {
 
 
         private void btnOpen_Click(object sender, EventArgs e) {
-            SelectFileName(((RecentFile)lsvRecent.SelectedItems[0].Tag).FileName);
+            SelectFileName(((RecentlyUsedFile)lsvRecent.SelectedItems[0].Tag).FileName);
         }
 
         private void btnOpenReadOnly_Click(object sender, EventArgs e) {
-            SelectFileName(((RecentFile)lsvRecent.SelectedItems[0].Tag).FileName, readOnly: true);
+            SelectFileName(((RecentlyUsedFile)lsvRecent.SelectedItems[0].Tag).FileName, readOnly: true);
         }
 
         private void btnNew_Click(object sender, EventArgs e) {
@@ -103,7 +99,7 @@ namespace Bimil {
 
 
         private void mnxList_Opening(object sender, System.ComponentModel.CancelEventArgs e) {
-            var fileName = (lsvRecent.SelectedItems.Count == 1) ? ((RecentFile)lsvRecent.SelectedItems[0].Tag).FileName : null;
+            var fileName = (lsvRecent.SelectedItems.Count == 1) ? ((RecentlyUsedFile)lsvRecent.SelectedItems[0].Tag).FileName : null;
             var isReadOnly = Helpers.GetReadOnly(fileName);
 
             mnxListOpen.Enabled = (isReadOnly == false);
@@ -125,14 +121,14 @@ namespace Bimil {
 
         private void mnxListRemove_Click(object sender, EventArgs e) {
             var selectedItem = lsvRecent.SelectedItems[0];
-            var fileName = ((RecentFile)selectedItem.Tag).FileName;
-            this.RecentFiles.Remove(fileName);
+            var fileName = ((RecentlyUsedFile)selectedItem.Tag).FileName;
+            App.Recent.Remove(fileName);
             lsvRecent.Items.RemoveAt(selectedItem.Index);
         }
 
         private void mnxListReadOnly_Click(object sender, EventArgs e) {
             var newReadOnly = !mnxListReadOnly.Checked;
-            var fileName = ((RecentFile)lsvRecent.SelectedItems[0].Tag).FileName;
+            var fileName = ((RecentlyUsedFile)lsvRecent.SelectedItems[0].Tag).FileName;
             try {
                 Helpers.SetReadOnly(fileName, newReadOnly);
                 lsvRecent.SelectedItems[0].ImageIndex = newReadOnly ? 1 : -1;

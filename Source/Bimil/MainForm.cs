@@ -18,7 +18,6 @@ namespace Bimil {
         private Document Document = null;
         private string DocumentFileName = null;
         private bool DocumentReadOnlyChanged = false;
-        private RecentFiles RecentFiles = new RecentFiles();
         private readonly List<string> Categories = new List<string>();
 
         public MainForm() {
@@ -139,7 +138,7 @@ namespace Bimil {
             if (fileName != null) {
                 LoadFile(fileName);
             } else if (Settings.ShowStart) {
-                using (var frm = new StartForm(this.RecentFiles)) {
+                using (var frm = new StartForm()) {
                     if (frm.ShowDialog(this) == DialogResult.OK) {
                         if (frm.FileName != null) {
                             LoadFile(frm.FileName, isReadOnly: frm.IsReadOnly);
@@ -232,17 +231,17 @@ namespace Bimil {
 
         private void RefreshFiles() {
             for (int i = mnuOpen.DropDownItems.Count - 1; i >= 0; i--) {
-                if ((mnuOpen.DropDownItems[i] is ToolStripMenuItem) && (mnuOpen.DropDownItems[i].Tag is RecentFile)) {
+                if ((mnuOpen.DropDownItems[i] is ToolStripMenuItem) && (mnuOpen.DropDownItems[i].Tag is RecentlyUsedFile)) {
                     mnuOpen.DropDownItems.RemoveAt(i);
                 } else {
                     break;
                 }
             }
-            foreach (var file in this.RecentFiles) {
+            foreach (var file in App.Recent.Files) {
                 var item = new ToolStripMenuItem(file.Title) { Tag = file, ToolTipText = file.FileName };
                 item.Click += delegate {
                     if (SaveIfNeeded() != DialogResult.OK) { return; }
-                    var fileName = ((RecentFile)item.Tag).FileName;
+                    var fileName = ((RecentlyUsedFile)item.Tag).FileName;
                     LoadFile(fileName);
                 };
                 mnuOpen.DropDownItems.Add(item);
@@ -419,7 +418,7 @@ namespace Bimil {
 
         private void mnuOpen_DropDownOpening(object sender, EventArgs e) {
             foreach (ToolStripDropDownItem item in mnuOpen.DropDownItems) {
-                if (item.Tag is RecentFile recentFile) {
+                if (item.Tag is RecentlyUsedFile recentFile) {
                     var fileName = recentFile.FileName;
                     if (fileName != null) {
                         var isReadOnly = Helpers.GetReadOnly(fileName);
@@ -443,10 +442,10 @@ namespace Bimil {
             var isFileReadOnly = Helpers.GetReadOnly(fileName);
             try {
                 if (isFileReadOnly == null) {
-                    foreach (var recentFile in this.RecentFiles) {
+                    foreach (var recentFile in App.Recent.Files) {
                         if (string.Equals(fileName, recentFile.FileName, StringComparison.OrdinalIgnoreCase)) {
                             if (Medo.MessageBox.ShowQuestion(this, "File " + Path.GetFileName(fileName) + " could not be open.\nDo you wish to remove it from the recent list?", MessageBoxButtons.YesNo) == DialogResult.Yes) {
-                                this.RecentFiles.Remove(recentFile.FileName);
+                                App.Recent.Remove(recentFile.FileName);
                                 this.RefreshFiles();
                                 break;
                             }
@@ -565,7 +564,7 @@ namespace Bimil {
                     }
                 }
 
-                this.RecentFiles.Push(fileName);
+                App.Recent.Push(fileName);
                 RefreshFiles();
 
                 return new DocumentResult(document, fileName);
@@ -617,7 +616,7 @@ namespace Bimil {
                     if (this.Document.IsReadOnly) { Helpers.SetReadOnly(frm.FileName, true); }
                     this.DocumentFileName = frm.FileName;
                     this.DocumentReadOnlyChanged = false;
-                    this.RecentFiles.Push(this.DocumentFileName);
+                    App.Recent.Push(this.DocumentFileName);
                     RefreshFiles();
                     UpdateMenu();
                 }
