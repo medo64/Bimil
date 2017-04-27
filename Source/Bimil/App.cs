@@ -30,13 +30,13 @@ namespace Bimil {
                     fileList.Add(item.FileName);
                 }
                 Recent = new RecentlyUsed(fileList);
-                Medo.Configuration.Properties.Write("RecentFile", Recent.FileNames);
+                Config.Write("RecentFile", Recent.FileNames);
                 recentLegacy.Clear();
             } else {
-                Recent = new RecentlyUsed(Medo.Configuration.Properties.Read("RecentFile"));
+                Recent = new RecentlyUsed(Config.Read("RecentFile"));
             }
             Recent.Changed += (o, i) => {
-                Medo.Configuration.Properties.Write("RecentFile", Recent.FileNames);
+                Config.Write("RecentFile", Recent.FileNames);
             };
 
 

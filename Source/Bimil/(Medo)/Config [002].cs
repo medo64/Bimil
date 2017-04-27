@@ -1,5 +1,8 @@
 //Copyright 2017 by Josip Medved <jmedved@jmedved.com> (www.medo64.com) MIT License
 
+//2017-04-26: Renamed from Properties.
+//            Added \0 escape sequence.
+//            Fixed alignment issues.
 //2017-04-17: First version.
 
 
@@ -18,13 +21,13 @@ namespace Medo.Configuration {
     /// This class is thread-safe.
     /// </summary>
     /// <remarks>
-    /// File name is the same as name of the &lt;executable&gt;.properties under windows or .&lt;executable&gt; under Linux.
+    /// File name is the same as name of the &lt;executable&gt;.cfg under windows or .&lt;executable&gt; under Linux.
     /// File format is as follows:
     /// * hash characters (#) denotes comment.
     /// * key and value are colon (:) separated although equals (=) is also supported.
     /// * backslash (\) is used for escaping.
     /// </remarks>
-    public static class Properties {
+    public static class Config {
 
         /// <summary>
         /// Returns the value for the specified key.
@@ -373,7 +376,7 @@ namespace Medo.Configuration {
             application = productValue ?? titleValue ?? assembly.GetName().Name;
             executablePath = assembly.Location;
 
-            return IsOSWindows ? application + ".properties" : "." + application.ToLowerInvariant();
+            return IsOSWindows ? application + ".cfg" : "." + application.ToLowerInvariant();
         }
 
         private static string GetFileName(out string priorityFileName) {
@@ -584,6 +587,7 @@ namespace Medo.Configuration {
                                 } else {
                                     char newCh;
                                     switch (ch) {
+                                        case '0': newCh = '\0'; break;
                                         case 'b': newCh = '\b'; break;
                                         case 't': newCh = '\t'; break;
                                         case 'n': newCh = '\n'; break;
@@ -704,6 +708,15 @@ namespace Medo.Configuration {
                           template?.SeparatorSuffix ?? " ",
                           value,
                           null, null) {
+                    if (template != null) {
+                        var firstKeyTotalLength = (template.Key?.Length ?? 0) + (template.SeparatorPrefix?.Length ?? 0) + 1 + (template.SeparatorSuffix?.Length ?? 0);
+                        var totalLengthWithoutSuffix = key.Length + (template.SeparatorPrefix?.Length ?? 0) + 1;
+                        var maxSuffixLength = firstKeyTotalLength - totalLengthWithoutSuffix;
+                        if (maxSuffixLength < 1) { maxSuffixLength = 1; } //leave at least one space
+                        if (this.SeparatorSuffix.Length > maxSuffixLength) {
+                            this.SeparatorSuffix = this.SeparatorSuffix.Substring(0, maxSuffixLength);
+                        }
+                    }
                 }
 
                 public LineData(string key, string separatorPrefix, char? separator, string separatorSuffix, string value, string commentPrefix, string comment) {
@@ -761,6 +774,7 @@ namespace Medo.Configuration {
                         var ch = text[i];
                         switch (ch) {
                             case '\\': sb.Append(@"\\"); break;
+                            case '\0': sb.Append(@"\0"); break;
                             case '\b': sb.Append(@"\b"); break;
                             case '\t': sb.Append(@"\t"); break;
                             case '\r': sb.Append(@"\r"); break;
@@ -777,6 +791,7 @@ namespace Medo.Configuration {
                                     }
                                 } else if (char.IsWhiteSpace(ch)) {
                                     switch (ch) {
+                                        case '\0': sb.Append(@"\0"); break;
                                         case '\b': sb.Append(@"\b"); break;
                                         case '\t': sb.Append(@"\t"); break;
                                         case '\n': sb.Append(@"\n"); break;
