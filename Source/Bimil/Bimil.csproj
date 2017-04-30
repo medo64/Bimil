@@ -103,7 +103,7 @@
     <Compile Include="%28Medo%29\LifetimeWatch [001].cs" />
     <Compile Include="%28Medo%29\MessageBox [006].cs" />
     <Compile Include="%28Medo%29\OneTimePassword.cs" />
-    <Compile Include="%28Medo%29\Config [002].cs" />
+    <Compile Include="%28Medo%29\Config [003].cs" />
     <Compile Include="%28Medo%29\RecentFiles.cs" />
     <Compile Include="%28Medo%29\RecentlyUsed [001].cs" />
     <Compile Include="%28Medo%29\Settings [011].cs" />

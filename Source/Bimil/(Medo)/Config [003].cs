@@ -1,5 +1,7 @@
 //Copyright 2017 by Josip Medved <jmedved@jmedved.com> (www.medo64.com) MIT License
 
+//2017-04-29: Added IsAssumedInstalled property.
+//            Added Reset and DeleteAll methods.
 //2017-04-26: Renamed from Properties.
 //            Added \0 escape sequence.
 //            Fixed alignment issues.
@@ -247,19 +249,28 @@ namespace Medo.Configuration {
 
         #region Loading and saving
 
-        /// <summary>
-        /// Gets/sets if setting is saved immediatelly.
-        /// </summary>
-        public static bool ImmediateSave { get; set; } = true;
-
-
+        private static bool IsInitialized { get; set; }
         private static bool IsLoaded { get; set; }
         private static PropertiesFile DefaultPropertiesFile;
         private static PropertiesFile OverridePropertiesFile;
         private static readonly object SyncReadWrite = new object();
 
 
-        private static string _fileName = GetFileName(out string _);
+        private static bool IsAssumedInstalledBacking;
+        /// <summary>
+        /// Gets if application is assumed to be installed.
+        /// Application is considered installed if it is located in Program Files directory (or bin) or if file is already present in Application Data folder.
+        /// </summary>
+        public static bool IsAssumedInstalled {
+            get {
+                lock (SyncReadWrite) {
+                    if (!IsInitialized) { Initialize(); }
+                    return IsAssumedInstalledBacking;
+                }
+            }
+        }
+
+        private static string FileNameBacking;
         /// <summary>
         /// Gets/sets the name of the file used for settings.
         /// If executable is located under Program Files, properties file will be under Application Data.
@@ -268,22 +279,28 @@ namespace Medo.Configuration {
         /// <exception cref="ArgumentNullException">Value cannot be null.</exception>
         /// <exception cref="ArgumentOutOfRangeException">Value is not a valid path.</exception>
         public static string FileName {
-            get { return _fileName; }
+            get {
+                lock (SyncReadWrite) {
+                    if (!IsInitialized) { Initialize(); }
+                    return FileNameBacking;
+                }
+            }
             set {
                 lock (SyncReadWrite) {
+                    if (!IsInitialized) { Initialize(); }
                     if (value == null) {
                         throw new ArgumentNullException(nameof(value), "Value cannot be null.");
                     } else if (value.IndexOfAny(Path.GetInvalidPathChars()) >= 0) {
                         throw new ArgumentOutOfRangeException(nameof(value), "Value is not a valid path.");
                     } else {
-                        _fileName = value;
+                        FileNameBacking = value;
                         IsLoaded = false; //force loading
                     }
                 }
             }
         }
 
-        private static string _overrideFileName = GetOverrideFileName();
+        private static string OverrideFileNameBacking;
         /// <summary>
         /// Gets/sets the name of the file used for settings override.
         /// This file is not written to.
@@ -292,13 +309,19 @@ namespace Medo.Configuration {
         /// </summary>
         /// <exception cref="ArgumentOutOfRangeException">Value is not a valid path.</exception>
         public static string OverrideFileName {
-            get { return _overrideFileName; }
+            get {
+                lock (SyncReadWrite) {
+                    if (!IsInitialized) { Initialize(); }
+                    return OverrideFileNameBacking;
+                }
+            }
             set {
                 lock (SyncReadWrite) {
+                    if (!IsInitialized) { Initialize(); }
                     if ((value != null) && (value.IndexOfAny(Path.GetInvalidPathChars()) >= 0)) {
                         throw new ArgumentOutOfRangeException(nameof(value), "Value is not a valid path.");
                     } else {
-                        _overrideFileName = value;
+                        OverrideFileNameBacking = value;
                         IsLoaded = false;
                     }
                 }
@@ -354,33 +377,59 @@ namespace Medo.Configuration {
         }
 
 
+        /// <summary>
+        /// Deletes all settings.
+        /// </summary>
+        public static void DeleteAll() {
+            lock (SyncReadWrite) {
+                if (!IsLoaded) { Load(); }
+                DefaultPropertiesFile.DeleteAll();
+                if (ImmediateSave) { Save(); }
+            }
+            Debug.WriteLine("[Settings] Settings deleted.");
+        }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1308:NormalizeStringsToUppercase", Justification = "Lower case form of application name is only used to generate properties file name.")]
-        private static string GetBaseFileName(out string company, out string application, out string executablePath) {
+
+        /// <summary>
+        /// Resets configuration. This includes file names and installation status.
+        /// </summary>
+        public static void Reset() {
+            lock (SyncReadWrite) {
+                IsLoaded = false;
+                IsInitialized = false;
+            }
+        }
+
+        /// <summary>
+        /// Gets/sets if setting is saved immediatelly.
+        /// </summary>
+        public static bool ImmediateSave { get; set; } = true;
+
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1308:NormalizeStringsToUppercase", Justification = "Lower case form of application name is only used to generate properties file name which is not compared against other text.")]
+        private static void Initialize() {
             var assembly = Assembly.GetEntryAssembly();
 
             string companyValue = null;
             string productValue = null;
             string titleValue = null;
+
 #if NETSTANDARD1_6
-            foreach (var attribute in assembly.GetCustomAttributes()) {
+            var attributes = assembly.GetCustomAttributes();
 #else
-            foreach (var attribute in assembly.GetCustomAttributes(true)) {
+            var attributes = assembly.GetCustomAttributes(true);
 #endif
+            foreach (var attribute in attributes) {
                 if (attribute is AssemblyCompanyAttribute companyAttribute) { companyValue = companyAttribute.Company.Trim(); }
                 if (attribute is AssemblyProductAttribute productAttribute) { productValue = productAttribute.Product.Trim(); }
                 if (attribute is AssemblyTitleAttribute titleAttribute) { titleValue = titleAttribute.Title.Trim(); }
             }
 
-            company = companyValue ?? "";
-            application = productValue ?? titleValue ?? assembly.GetName().Name;
-            executablePath = assembly.Location;
+            var company = companyValue ?? "";
+            var application = productValue ?? titleValue ?? assembly.GetName().Name;
+            var executablePath = assembly.Location;
 
-            return IsOSWindows ? application + ".cfg" : "." + application.ToLowerInvariant();
-        }
-
-        private static string GetFileName(out string priorityFileName) {
-            var baseFileName = GetBaseFileName(out string company, out string application, out string executablePath);
+            var baseFileName = IsOSWindows ? application + ".cfg" : "." + application.ToLowerInvariant();
 
             var userFileLocation = IsOSWindows
                 ? Path.Combine(Environment.GetEnvironmentVariable("AppData"), company, application, baseFileName)
@@ -392,19 +441,11 @@ namespace Medo.Configuration {
                 ? executablePath.StartsWith(Environment.GetEnvironmentVariable("ProgramFiles") + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase) || executablePath.StartsWith(Environment.GetEnvironmentVariable("ProgramFiles(x86)") + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase)
                 : executablePath.StartsWith(Path.DirectorySeparatorChar + "bin" + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase) || executablePath.StartsWith(Path.DirectorySeparatorChar + "usr" + Path.DirectorySeparatorChar + "bin" + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase);
 
-            bool isInstalled = File.Exists(userFileLocation) || isInProgramFiles;
-            if (isInstalled) {
-                priorityFileName = priorityFileLocation;
-                return userFileLocation;
-            } else {
-                priorityFileName = null; //no priority file - one in current directory is the default one
-                return priorityFileLocation;
-            }
-        }
+            IsAssumedInstalledBacking = File.Exists(userFileLocation) || isInProgramFiles;
+            FileNameBacking = IsAssumedInstalledBacking ? userFileLocation : priorityFileLocation;
+            OverrideFileNameBacking = IsAssumedInstalledBacking ? priorityFileLocation : null; //no priority file - one in current directory is the default one
 
-        private static string GetOverrideFileName() {
-            GetFileName(out string overrideFileName);
-            return overrideFileName;
+            IsInitialized = true;
         }
 
 #if NETSTANDARD1_6
@@ -929,6 +970,11 @@ namespace Medo.Configuration {
                         this.Lines.RemoveAt(i);
                     }
                 }
+            }
+
+            public void DeleteAll() {
+                this.Lines.Clear();
+                this.FillCache();
             }
 
         }
