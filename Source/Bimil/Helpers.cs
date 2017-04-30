@@ -145,18 +145,26 @@ namespace Bimil {
                     if (!searchText.Equals("*")) { //if text is literal *, show all
                         foreach (var text in words) {
                             var successfulCheck = false;
-                            foreach (var groupPart in item.Group.Split(new char[] { '.' }, StringSplitOptions.RemoveEmptyEntries)) {
-                                if (string.Equals(groupPart, searchText, StringComparison.CurrentCultureIgnoreCase) //if group name fully matches
-                                    || ((text.Length > 0) && groupPart.StartsWith(text, StringComparison.CurrentCultureIgnoreCase))) { //if group name starts with any word
-                                    item.AddMatch("Group");
-                                    successfulCheck = true;
-                                    break;
+
+                            if (string.Equals(item.Group, searchText, StringComparison.CurrentCultureIgnoreCase)) { //if group name fully matches
+                                item.AddMatch("Group");
+                                successfulCheck = true;
+                                break;
+                            } else {
+                                foreach (var groupPart in item.Group.Split(new char[] { '.' }, StringSplitOptions.RemoveEmptyEntries)) {
+                                    if ((text.Length > 0) && groupPart.StartsWith(text, StringComparison.CurrentCultureIgnoreCase)) { //if group name starts with any word
+                                        item.AddMatch("Group");
+                                        successfulCheck = true;
+                                        break;
+                                    }
                                 }
                             }
+
                             if ((text.Length > 0) && (item.Title.IndexOf(text, StringComparison.CurrentCultureIgnoreCase) >= 0)) { //if text matches any part of title
                                 item.AddMatch("Title");
                                 successfulCheck = true;
                             }
+
                             if ((text.Length > 0) && extendedSearch) { //if other text fields are to be checked
                                 foreach (var record in entry.Records) {
                                     if (record.RecordType == RecordType.Title) { continue; }
