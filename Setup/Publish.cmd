@@ -1,5 +1,7 @@
 @ECHO OFF
-SETLOCAL enabledelayedexpansion
+SETLOCAL EnableDelayedExpansion
+
+SET              NAME="Bimil"
 
 SET        FILE_SETUP=".\Bimil.iss"
 SET     FILE_SOLUTION="..\Source\Bimil.sln"
@@ -9,6 +11,8 @@ SET       FILES_OTHER="..\Binaries\ReadMe.txt"
 SET   COMPILE_TOOL_15="%PROGRAMFILES(X86)%\Microsoft Visual Studio\2017\Community\Common7\IDE\devenv.exe"
 
 SET        SETUP_TOOL="%PROGRAMFILES(x86)%\Inno Setup 5\iscc.exe"
+
+SET      MSI_TOOL_DIR="%PROGRAMFILES(x86)%\WiX Toolset v3.11\bin"
 
 SET       SIGN_TOOL_1="%PROGRAMFILES(X86)%\Microsoft SDKs\ClickOnce\SignTool\signtool.exe"
 SET       SIGN_TOOL_2="%PROGRAMFILES(X86)%\Windows Kits\10\App Certification Kit\signtool.exe"
@@ -37,6 +41,13 @@ IF EXIST %SETUP_TOOL% (
 ) ELSE (
     ECHO Cannot find Inno Setup 5^^!
     PAUSE && EXIT /B 255
+)
+
+IF EXIST %MSI_TOOL_DIR% (
+    ECHO Wix 3.11
+) ELSE (
+    ECHO Cannot find Wix. Not creating MSI file.
+    SET MSI_TOOL_DIR=
 )
 
 IF EXIST %SIGN_TOOL_1% (
@@ -188,6 +199,39 @@ IF EXIST %RAR_TOOL% (
     IF ERRORLEVEL 1 PAUSE && EXIT /B %ERRORLEVEL%
 ) ELSE (
     ECHO No WinRAR
+)
+
+ECHO.
+ECHO.
+
+
+ECHO --- BUILD MSI
+ECHO.
+
+IF EXIST %MSI_TOOL_DIR% (
+    %MSI_TOOL_DIR%\candle.exe -out Temp\Setup.wixobj -nologo -pedantic %FILE_SETUP:.iss=.wxs%
+    IF ERRORLEVEL 1 PAUSE && EXIT /B %ERRORLEVEL%
+
+    %MSI_TOOL_DIR%\light.exe -out Temp\%_SETUPEXE:.exe=.msi% -b ..\Binaries -nologo -pedantic -sacl -spdb Temp\Setup.wixobj
+    IF ERRORLEVEL 1 PAUSE && EXIT /B %ERRORLEVEL%
+    
+    DEL Temp\Setup.wixobj
+
+    CERTUTIL -silent -verifystore -user My %SIGN_THUMBPRINT% > NUL
+    IF %ERRORLEVEL%==0 (
+        ECHO --- SIGN SETUP
+        ECHO.
+        
+        IF [%SIGN_TIMESTAMPURL%]==[] (
+            %SIGN_TOOL% sign /s "My" /sha1 %SIGN_THUMBPRINT% /v /d "%NAME% Installer" ".\Temp\%_SETUPEXE:.exe=.msi%"
+        ) ELSE (
+            %SIGN_TOOL% sign /s "My" /sha1 %SIGN_THUMBPRINT% /tr %SIGN_TIMESTAMPURL% /v /d "%NAME% Installer" ".\Temp\%_SETUPEXE:.exe=.msi%"
+        )
+        IF ERRORLEVEL 1 PAUSE && EXIT /B %ERRORLEVEL%
+    )
+
+) ELSE (
+    ECHO No Wix
 )
 
 ECHO.
