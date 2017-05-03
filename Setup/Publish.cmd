@@ -33,14 +33,14 @@ IF EXIST %COMPILE_TOOL_15% (
     SET COMPILE_TOOL=%COMPILE_TOOL_15%
 ) ELSE (
     ECHO Cannot find Visual Studio^^!
-    PAUSE && EXIT /B 255
+    GOTO Error
 )
 
 IF EXIST %SETUP_TOOL% (
     ECHO Inno Setup 5
 ) ELSE (
     ECHO Cannot find Inno Setup 5^^!
-    PAUSE && EXIT /B 255
+    GOTO Error
 )
 
 IF EXIST %MSI_TOOL_DIR% (
@@ -63,7 +63,7 @@ IF EXIST %SIGN_TOOL_1% (
             SET SIGN_TOOL=%SIGN_TOOL_3%
         ) ELSE (
             ECHO Cannot find Windows SignTool^^!
-            PAUSE && EXIT /B 255
+            SET SIGN_TOOL=
         )
     )
 )
@@ -104,13 +104,13 @@ ECHO.
 
 RMDIR /Q /S "..\Binaries" 2> NUL
 %COMPILE_TOOL% /Build "Release" %FILE_SOLUTION%
-IF ERRORLEVEL 1 PAUSE && EXIT /B %ERRORLEVEL%
+IF ERRORLEVEL 1 GOTO Error
 
 COPY ..\README.md ..\Binaries\ReadMe.txt > NUL
-IF ERRORLEVEL 1 PAUSE && EXIT /B %ERRORLEVEL%
+IF ERRORLEVEL 1 GOTO Error
 
 COPY ..\LICENSE.md ..\Binaries\License.txt > NUL
-IF ERRORLEVEL 1 PAUSE && EXIT /B %ERRORLEVEL%
+IF ERRORLEVEL 1 GOTO Error
 
 ECHO Completed.
 
@@ -128,7 +128,7 @@ IF %ERRORLEVEL%==0 (
     ) ELSE (
         %SIGN_TOOL% sign /s "My" /sha1 %SIGN_THUMBPRINT% /tr %SIGN_TIMESTAMPURL% /v %FILES_EXECUTABLE%
     )
-    IF ERRORLEVEL 1 PAUSE && EXIT /B %ERRORLEVEL%
+    IF ERRORLEVEL 1 GOTO Error
 ) ELSE (
     ECHO --- DID NOT SIGN SOLUTION
     IF NOT [%SIGN_THUMBPRINT%]==[] (
@@ -145,7 +145,7 @@ ECHO.
 
 RMDIR /Q /S ".\Temp" 2> NUL
 CALL %SETUP_TOOL% /DVersionHash=%VERSION_HASH% /O".\Temp" %FILE_SETUP%
-IF ERRORLEVEL 1 PAUSE && EXIT /B %ERRORLEVEL%
+IF ERRORLEVEL 1 GOTO Error
 
 FOR /F %%I IN ('DIR ".\Temp\*.exe" /B') DO SET _SETUPEXE=%%I
 ECHO Setup is in file %_SETUPEXE%
@@ -182,7 +182,7 @@ IF %ERRORLEVEL%==0 (
     ) ELSE (
         %SIGN_TOOL% sign /s "My" /sha1 %SIGN_THUMBPRINT% /tr %SIGN_TIMESTAMPURL% /v ".\Temp\%_SETUPEXE%"
     )
-    IF ERRORLEVEL 1 PAUSE && EXIT /B %ERRORLEVEL%
+    IF ERRORLEVEL 1 GOTO Error
 ) ELSE (
     ECHO --- DID NOT SIGN SETUP
 )
@@ -196,7 +196,7 @@ ECHO.
 IF EXIST %RAR_TOOL% (
     ECHO Zipping into %_SETUPEXE:.exe=.zip%
     "%PROGRAMFILES%\WinRAR\WinRAR.exe" a -afzip -ep -m5 ".\Temp\%_SETUPEXE:.exe=.zip%" %FILES_EXECUTABLE% %FILES_OTHER%
-    IF ERRORLEVEL 1 PAUSE && EXIT /B %ERRORLEVEL%
+    IF ERRORLEVEL 1 GOTO Error
 ) ELSE (
     ECHO No WinRAR
 )
@@ -210,10 +210,10 @@ ECHO.
 
 IF EXIST %MSI_TOOL_DIR% (
     %MSI_TOOL_DIR%\candle.exe -out Temp\Setup.wixobj -nologo -pedantic %FILE_SETUP:.iss=.wxs%
-    IF ERRORLEVEL 1 PAUSE && EXIT /B %ERRORLEVEL%
+    IF ERRORLEVEL 1 GOTO Error
 
     %MSI_TOOL_DIR%\light.exe -out Temp\%_SETUPEXE:.exe=.msi% -b ..\Binaries -nologo -pedantic -sacl -spdb Temp\Setup.wixobj
-    IF ERRORLEVEL 1 PAUSE && EXIT /B %ERRORLEVEL%
+    IF ERRORLEVEL 1 GOTO Error
     
     DEL Temp\Setup.wixobj
 
@@ -227,7 +227,7 @@ IF EXIST %MSI_TOOL_DIR% (
         ) ELSE (
             %SIGN_TOOL% sign /s "My" /sha1 %SIGN_THUMBPRINT% /tr %SIGN_TIMESTAMPURL% /v /d "%NAME% Installer" ".\Temp\%_SETUPEXE:.exe=.msi%"
         )
-        IF ERRORLEVEL 1 PAUSE && EXIT /B %ERRORLEVEL%
+        IF ERRORLEVEL 1 GOTO Error
     )
 
 ) ELSE (
@@ -243,7 +243,7 @@ ECHO.
 
 MKDIR "..\Releases" 2> NUL
 MOVE ".\Temp\*.*" "..\Releases\." > NUL
-IF ERRORLEVEL 1 PAUSE && EXIT /B %ERRORLEVEL%
+IF ERRORLEVEL 1 GOTO Error
 RMDIR /Q /S ".\Temp"
 
 ECHO.
@@ -253,3 +253,12 @@ ECHO --- DONE
 ECHO.
 
 explorer /select,"..\Releases\%_SETUPEXE%"
+
+ENDLOCAL
+EXIT /B 0
+
+
+:Error
+ENDLOCAL
+PAUSE
+EXIT /B 1
