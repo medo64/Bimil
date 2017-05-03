@@ -19,10 +19,13 @@
                             <File Id='BimilPdb' Name='Bimil.pdb' DiskId='1' Source='Bimil.pdb' KeyPath='yes' />
                         </Component>
                         <Component Id='ReadMe' Guid='999D5955-C760-44E4-9B3A-3A23008C30FD'>
-                            <File Id='ReadMeTxt' Name='ReadMe.txt' DiskId='1' Source='ReadMe.txt' KeyPath='yes' />
+                            <File Id='ReadMeTxt' Name='ReadMe.txt' DiskId='1' Source='..\README.md' KeyPath='yes' />
                         </Component>
                         <Component Id='License' Guid='9CB15DAC-D4DE-4C54-AE21-DCF507B53229'>
-                            <File Id='LicenseTxt' Name='License.txt' DiskId='1' Source='License.txt' KeyPath='yes' />
+                            <File Id='LicenseTxt' Name='License.txt' DiskId='1' Source='..\LICENSE.md' KeyPath='yes' />
+                        </Component>
+                        <Component Id='Words' Guid='9A11CFC5-7838-4ECB-A5BC-A6F50D3FDA09'>
+                            <File Id='WordsTxt' Name='Words.txt' DiskId='1' Source='..\WORDS.md' KeyPath='yes' />
                         </Component>
                     </Directory>
                 </Directory>
@@ -45,6 +48,7 @@
               <ComponentRef Id='ExecutableDebug' />
               <ComponentRef Id='ReadMe' />
               <ComponentRef Id='License' />
+              <ComponentRef Id='Words' />
               <ComponentRef Id='ProgramMenuDir' />
         </Feature>
 

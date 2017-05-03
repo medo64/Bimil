@@ -19,7 +19,7 @@ AppName={#AppName}
 AppVersion={#AppVersion}
 AppVerName={#AppName} {#AppVersion}
 AppPublisher={#AppCompany}
-AppPublisherURL=http://jmedved.com/{#AppBase}/
+AppPublisherURL=https://medo64.com/{#AppBase}/
 AppCopyright={#AppCopyright}
 VersionInfoProductVersion={#AppVersion}
 VersionInfoProductTextVersion={#AppVersionEx}
@@ -49,7 +49,7 @@ LicenseFile=..\Setup\License.rtf
 [Messages]
 SetupAppTitle=Setup {#AppName} {#AppVersionEx}
 SetupWindowTitle=Setup {#AppName} {#AppVersionEx}
-BeveledLabel=jmedved.com
+BeveledLabel=medo64.com
 
 
 [Tasks]
@@ -57,9 +57,11 @@ Name: extension_psafe3;  GroupDescription: "Associate additional extension:";  D
 
 
 [Files]
-Source: "Bimil.exe";   DestDir: "{app}";  Flags: ignoreversion;
-Source: "Bimil.pdb";   DestDir: "{app}";  Flags: ignoreversion;
-Source: "ReadMe.txt";  DestDir: "{app}";  Flags: overwritereadonly uninsremovereadonly;  Attribs: readonly;
+Source: "Bimil.exe";      DestDir: "{app}";                            Flags: ignoreversion;
+Source: "Bimil.pdb";      DestDir: "{app}";                            Flags: ignoreversion;
+Source: "..\README.md";   DestDir: "{app}";  DestName: "ReadMe.txt";   Flags: overwritereadonly uninsremovereadonly;  Attribs: readonly;
+Source: "..\LICENSE.md";  DestDir: "{app}";  DestName: "License.txt";  Flags: overwritereadonly uninsremovereadonly;  Attribs: readonly;
+Source: "..\WORDS.md";    DestDir: "{app}";  DestName: "Words.txt";    Flags: overwritereadonly uninsremovereadonly;  Attribs: readonly;
 
 
 [Icons]

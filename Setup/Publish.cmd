@@ -1,258 +1,264 @@
 @ECHO OFF
 SETLOCAL EnableDelayedExpansion
 
-SET              NAME="Bimil"
+SET                   NAME="Bimil"
+SET                  FILES="..\Binaries\Bimil.exe" "..\LICENSE.md" "..\README.md" "..\WORDS.md"
+SET        SOURCE_SOLUTION="..\Source\Bimil.sln"
+SET       SOURCE_INNOSETUP=".\Bimil.iss"
+SET             SOURCE_WIX=".\Bimil.wxs"
 
-SET        FILE_SETUP=".\Bimil.iss"
-SET     FILE_SOLUTION="..\Source\Bimil.sln"
-SET  FILES_EXECUTABLE="..\Binaries\Bimil.exe"
-SET       FILES_OTHER="..\Binaries\ReadMe.txt"
+SET              TOOLS_GIT="%PROGRAMFILES%\Git\mingw64\bin\git.exe"
+SET     TOOLS_VISUALSTUDIO="%PROGRAMFILES(X86)%\Microsoft Visual Studio\2017\Community\Common7\IDE\devenv.exe"
+SET         TOOLS_SIGNTOOL="%PROGRAMFILES(X86)%\Microsoft SDKs\ClickOnce\SignTool\signtool.exe" "%PROGRAMFILES(X86)%\Windows Kits\10\App Certification Kit\signtool.exe" "%PROGRAMFILES(X86)%\Windows Kits\10\bin\x86\signtool.exe"
+SET        TOOLS_INNOSETUP="%PROGRAMFILES(x86)%\Inno Setup 5\iscc.exe"
+SET           TOOLS_WINRAR="%PROGRAMFILES%\WinRAR\WinRAR.exe"
+SET    TOOLS_WIX_DIRECTORY="%PROGRAMFILES(x86)%\WiX Toolset v3.11\bin"
 
-SET   COMPILE_TOOL_15="%PROGRAMFILES(X86)%\Microsoft Visual Studio\2017\Community\Common7\IDE\devenv.exe"
+SET CERTIFICATE_THUMBPRINT="df26e797ffaee47a40c1fab756e995d3763da968"
+SET      SIGN_TIMESTAMPURL="http://timestamp.comodoca.com/rfc3161"
 
-SET        SETUP_TOOL="%PROGRAMFILES(x86)%\Inno Setup 5\iscc.exe"
-
-SET      MSI_TOOL_DIR="%PROGRAMFILES(x86)%\WiX Toolset v3.11\bin"
-
-SET       SIGN_TOOL_1="%PROGRAMFILES(X86)%\Microsoft SDKs\ClickOnce\SignTool\signtool.exe"
-SET       SIGN_TOOL_2="%PROGRAMFILES(X86)%\Windows Kits\10\App Certification Kit\signtool.exe"
-SET       SIGN_TOOL_3="%PROGRAMFILES(X86)%\Windows Kits\10\bin\x86\signtool.exe"
-SET   SIGN_THUMBPRINT="df26e797ffaee47a40c1fab756e995d3763da968"
-SET SIGN_TIMESTAMPURL="http://timestamp.comodoca.com/rfc3161"
-
-SET        GIT_TOOL_1="%PROGRAMFILES%\Git\mingw64\bin\git.exe"
-
-SET          RAR_TOOL="%PROGRAMFILES%\WinRAR\WinRAR.exe"
 
 
 ECHO --- DISCOVER TOOLS
-ECHO.
+ECHO:
 
-IF EXIST %COMPILE_TOOL_15% (
-    ECHO Visual Studio 2017
-    SET COMPILE_TOOL=%COMPILE_TOOL_15%
+WHERE /Q git
+IF ERRORLEVEL 0 (
+    SET TOOL_GIT="git"
 ) ELSE (
-    ECHO Cannot find Visual Studio^^!
-    GOTO Error
+    FOR %%I IN (%TOOLS_GIT%) DO (
+        IF EXIST %%I IF NOT DEFINED TOOL_GIT SET TOOL_GIT=%%I
+    )
 )
+IF [%TOOLS_GIT%]==[] SET WARNING=1
+ECHO Git .........: %TOOL_GIT%
 
-IF EXIST %SETUP_TOOL% (
-    ECHO Inno Setup 5
-) ELSE (
-    ECHO Cannot find Inno Setup 5^^!
-    GOTO Error
+FOR %%I IN (%TOOLS_VISUALSTUDIO%) DO (
+    IF EXIST %%I IF NOT DEFINED TOOL_VISUALSTUDIO SET TOOL_VISUALSTUDIO=%%I
 )
+ECHO Visual Studio: %TOOL_VISUALSTUDIO%
+IF [%TOOL_VISUALSTUDIO%]==[] ECHO Not found^^! & GOTO Error
 
-IF EXIST %MSI_TOOL_DIR% (
-    ECHO Wix 3.11
-) ELSE (
-    ECHO Cannot find Wix. Not creating MSI file.
-    SET MSI_TOOL_DIR=
+FOR %%I IN (%TOOLS_SIGNTOOL%) DO (
+    IF EXIST %%I IF NOT DEFINED TOOL_SIGNTOOL SET TOOL_SIGNTOOL=%%I
 )
+IF [%TOOL_SIGNTOOL%]==[] SET WARNING=1
+ECHO SignTool ....: %TOOL_SIGNTOOL%
 
-IF EXIST %SIGN_TOOL_1% (
-    ECHO Windows SignTool 10 ^(ClickOnce^)
-    SET SIGN_TOOL=%SIGN_TOOL_1%
-) ELSE (
-    IF EXIST %SIGN_TOOL_2% (
-        ECHO Windows SignTool 10 ^(App Certification Kit^)
-        SET SIGN_TOOL=%SIGN_TOOL_2%
-    ) ELSE (
-        IF EXIST %SIGN_TOOL_3% (
-            ECHO Windows SignTool 10 ^(SDK^)
-            SET SIGN_TOOL=%SIGN_TOOL_3%
-        ) ELSE (
-            ECHO Cannot find Windows SignTool^^!
-            SET SIGN_TOOL=
-        )
+FOR %%I IN (%TOOLS_INNOSETUP%) DO (
+    IF EXIST %%I IF NOT DEFINED TOOL_INNOSETUP SET TOOL_INNOSETUP=%%I
+)
+IF [%TOOL_INNOSETUP%]==[] SET WARNING=1
+ECHO InnoSetup ...: %TOOL_INNOSETUP%
+
+FOR %%I IN (%TOOLS_WINRAR%) DO (
+    IF EXIST %%I IF NOT DEFINED TOOL_WINRAR SET TOOL_WINRAR=%%I
+)
+IF [%TOOL_WINRAR%]==[] SET WARNING=1
+ECHO WinRAR ......: %TOOL_WINRAR%
+
+FOR %%I IN (%TOOLS_WIX_DIRECTORY%) DO (
+    IF EXIST %%I\candle.exe IF EXIST %%I\light.exe IF NOT DEFINED TOOL_WIX_CANDLE (
+        SET TOOL_WIX_CANDLE="%%~I\candle.exe"
+        SET TOOL_WIX_LIGHT="%%~I\light.exe"
+    )
+)
+IF [%TOOL_WIX_CANDLE%]==[] SET WARNING=1
+ECHO Wix (candle) : %TOOL_WIX_CANDLE%
+ECHO Wix (light) .: %TOOL_WIX_LIGHT%
+
+IF NOT [%CERTIFICATE_THUMBPRINT%]==[] (
+    CERTUTIL -silent -verifystore -user My %CERTIFICATE_THUMBPRINT% > NUL
+    IF NOT ERRORLEVEL 0 (
+        SET CERTIFICATE_THUMBPRINT=
+        SET WARNING=1
     )
 )
 
-IF EXIST %GIT_TOOL_1% (
-    ECHO Git
-    SET GIT_TOOL=%GIT_TOOL_1%
-) ELSE (
-    GIT_TOOL="git"
+ECHO:
+ECHO:
+
+
+IF NOT [%TOOL_GIT%]==[] (
+    ECHO --- DISCOVER VERSION
+    ECHO:
+
+    FOR /F "delims=" %%I IN ('%TOOL_GIT% log -n 1 --format^=%%h') DO @SET VERSION_HASH=%%I%
+
+    IF NOT [!VERSION_HASH!]==[] (
+        FOR /F "delims=" %%I IN ('%TOOL_GIT% rev-list --count HEAD') DO @SET VERSION_NUMBER=%%I%
+        %TOOL_GIT% diff --exit-code --quiet
+        IF NOT ERRORLEVEL 0 SET VERSION_HASH=%VERSION_HASH%+
+    )
+    ECHO Hash ...: !VERSION_HASH!
+    ECHO Revision: !VERSION_NUMBER!
+
+    ECHO:
+    ECHO:
 )
-
-IF NOT EXIST %RAR_TOOL% (
-    ECHO WinRAR not present^^!
-)
-
-ECHO.
-ECHO.
-
-
-ECHO --- DISCOVER VERSION
-ECHO.
-
-FOR /F "delims=" %%N IN ('%GIT_TOOL% log -n 1 --format^=%%h') DO @SET VERSION_HASH=%%N%
-
-IF NOT [%VERSION_HASH%]==[] (
-    FOR /F "delims=" %%N IN ('%GIT_TOOL% rev-list --count HEAD') DO @SET VERSION_NUMBER=%%N%
-    %GIT_TOOL% diff --exit-code --quiet
-    IF ERRORLEVEL 1 SET VERSION_HASH=%VERSION_HASH%+
-    ECHO %VERSION_HASH%
-)
-
-ECHO.
-ECHO.
 
 
 ECHO --- BUILD SOLUTION
-ECHO.
+ECHO:
 
 RMDIR /Q /S "..\Binaries" 2> NUL
-%COMPILE_TOOL% /Build "Release" %FILE_SOLUTION%
-IF ERRORLEVEL 1 GOTO Error
+%TOOL_VISUALSTUDIO% /Build "Release" %SOURCE_SOLUTION%
+IF NOT ERRORLEVEL 0 ECHO Build failed^^! & GOTO Error
 
-COPY ..\README.md ..\Binaries\ReadMe.txt > NUL
-IF ERRORLEVEL 1 GOTO Error
+ECHO Build successful.
 
-COPY ..\LICENSE.md ..\Binaries\License.txt > NUL
-IF ERRORLEVEL 1 GOTO Error
-
-ECHO Completed.
-
-ECHO.
-ECHO.
+ECHO:
+ECHO:
 
 
-CERTUTIL -silent -verifystore -user My %SIGN_THUMBPRINT% > NUL
-IF %ERRORLEVEL%==0 (
-    ECHO --- SIGN SOLUTION
-    ECHO.
-    
-    IF [%SIGN_TIMESTAMPURL%]==[] (
-        %SIGN_TOOL% sign /s "My" /sha1 %SIGN_THUMBPRINT% /v %FILES_EXECUTABLE%
-    ) ELSE (
-        %SIGN_TOOL% sign /s "My" /sha1 %SIGN_THUMBPRINT% /tr %SIGN_TIMESTAMPURL% /v %FILES_EXECUTABLE%
+IF NOT [%TOOL_SIGNTOOL%]==[] IF NOT [%CERTIFICATE_THUMBPRINT%]==[] (
+    ECHO --- SIGN EXECUTABLES
+    ECHO:
+
+    FOR %%I IN (%FILES%) DO (
+        IF [%%~xI]==[.exe] (
+            IF [%SIGN_TIMESTAMPURL%]==[] (
+                %TOOL_SIGNTOOL% sign /s "My" /sha1 %CERTIFICATE_THUMBPRINT% /v %%I
+            ) ELSE (
+                %TOOL_SIGNTOOL% sign /s "My" /sha1 %CERTIFICATE_THUMBPRINT% /tr %SIGN_TIMESTAMPURL% /v %%I
+            )
+            IF NOT ERRORLEVEL 0 GOTO Error
+        )
     )
-    IF ERRORLEVEL 1 GOTO Error
-) ELSE (
-    ECHO --- DID NOT SIGN SOLUTION
-    IF NOT [%SIGN_THUMBPRINT%]==[] (
-        ECHO.
-        ECHO No certificate with hash %SIGN_THUMBPRINT%.
-    ) 
+
+    ECHO:
+    ECHO:
 )
-ECHO.
-ECHO.
 
-
-ECHO --- BUILD SETUP
-ECHO.
 
 RMDIR /Q /S ".\Temp" 2> NUL
-CALL %SETUP_TOOL% /DVersionHash=%VERSION_HASH% /O".\Temp" %FILE_SETUP%
-IF ERRORLEVEL 1 GOTO Error
-
-FOR /F %%I IN ('DIR ".\Temp\*.exe" /B') DO SET _SETUPEXE=%%I
-ECHO Setup is in file %_SETUPEXE%
-
-ECHO.
-ECHO.
+MKDIR ".\Temp"
 
 
-ECHO --- RENAME BUILD
-ECHO.
+IF NOT [%TOOL_INNOSETUP%]==[] (
+    ECHO --- BUILD SETUP
+    ECHO:
 
-SET _OLDSETUPEXE=%_SETUPEXE%
-IF NOT [%VERSION_HASH%]==[] (
-    SET _SETUPEXE=!_SETUPEXE:000=-rev%VERSION_NUMBER%-%VERSION_HASH%!
-)
-IF NOT "%_OLDSETUPEXE%"=="%_SETUPEXE%" (
-    ECHO Renaming %_OLDSETUPEXE% to %_SETUPEXE%
-    MOVE ".\Temp\%_OLDSETUPEXE%" ".\Temp\%_SETUPEXE%"
-) ELSE (
-    ECHO No rename needed.
-)
+    RMDIR /Q /S ".\Temp" 2> NUL
+    CALL %TOOL_INNOSETUP% /DVersionHash=%VERSION_HASH% /O".\Temp" %SOURCE_INNOSETUP%
+    IF NOT ERRORLEVEL 0 GOTO Error
 
-ECHO.
-ECHO.
+    FOR /F %%I IN ('DIR ".\Temp\*.exe" /B') DO SET SETUPEXE=%%I
+
+    ECHO:
+    ECHO:
 
 
-CERTUTIL -silent -verifystore -user My %SIGN_THUMBPRINT% > NUL
-IF %ERRORLEVEL%==0 (
-    ECHO --- SIGN SETUP
-    ECHO.
-    
-    IF [%SIGN_TIMESTAMPURL%]==[] (
-        %SIGN_TOOL% sign /s "My" /sha1 %SIGN_THUMBPRINT% /v ".\Temp\%_SETUPEXE%"
-    ) ELSE (
-        %SIGN_TOOL% sign /s "My" /sha1 %SIGN_THUMBPRINT% /tr %SIGN_TIMESTAMPURL% /v ".\Temp\%_SETUPEXE%"
-    )
-    IF ERRORLEVEL 1 GOTO Error
-) ELSE (
-    ECHO --- DID NOT SIGN SETUP
-)
-ECHO.
-ECHO.
-
-
-ECHO --- BUILD ZIP
-ECHO.
-
-IF EXIST %RAR_TOOL% (
-    ECHO Zipping into %_SETUPEXE:.exe=.zip%
-    "%PROGRAMFILES%\WinRAR\WinRAR.exe" a -afzip -ep -m5 ".\Temp\%_SETUPEXE:.exe=.zip%" %FILES_EXECUTABLE% %FILES_OTHER%
-    IF ERRORLEVEL 1 GOTO Error
-) ELSE (
-    ECHO No WinRAR
-)
-
-ECHO.
-ECHO.
-
-
-ECHO --- BUILD MSI
-ECHO.
-
-IF EXIST %MSI_TOOL_DIR% (
-    %MSI_TOOL_DIR%\candle.exe -out Temp\Setup.wixobj -nologo -pedantic %FILE_SETUP:.iss=.wxs%
-    IF ERRORLEVEL 1 GOTO Error
-
-    %MSI_TOOL_DIR%\light.exe -out Temp\%_SETUPEXE:.exe=.msi% -b ..\Binaries -nologo -pedantic -sacl -spdb Temp\Setup.wixobj
-    IF ERRORLEVEL 1 GOTO Error
-    
-    DEL Temp\Setup.wixobj
-
-    CERTUTIL -silent -verifystore -user My %SIGN_THUMBPRINT% > NUL
-    IF %ERRORLEVEL%==0 (
+    IF NOT [%TOOL_SIGNTOOL%]==[] IF NOT [%CERTIFICATE_THUMBPRINT%]==[] (
         ECHO --- SIGN SETUP
-        ECHO.
+        ECHO:
         
         IF [%SIGN_TIMESTAMPURL%]==[] (
-            %SIGN_TOOL% sign /s "My" /sha1 %SIGN_THUMBPRINT% /v /d "%NAME% Installer" ".\Temp\%_SETUPEXE:.exe=.msi%"
+            %TOOL_SIGNTOOL% sign /s "My" /sha1 %CERTIFICATE_THUMBPRINT% /v ".\Temp\!SETUPEXE!"
         ) ELSE (
-            %SIGN_TOOL% sign /s "My" /sha1 %SIGN_THUMBPRINT% /tr %SIGN_TIMESTAMPURL% /v /d "%NAME% Installer" ".\Temp\%_SETUPEXE:.exe=.msi%"
+            %TOOL_SIGNTOOL% sign /s "My" /sha1 %CERTIFICATE_THUMBPRINT% /tr %SIGN_TIMESTAMPURL% /v ".\Temp\!SETUPEXE!"
         )
-        IF ERRORLEVEL 1 GOTO Error
-    )
+        IF NOT ERRORLEVEL 0 GOTO Error
 
+        ECHO:
+        ECHO:
+    )
 ) ELSE (
-    ECHO No Wix
+    FOR %%I IN (%FILES%) DO (
+        IF [%%~xI]==[.exe] (
+            IF NOT DEFINED SETUPEXE SET SETUPEXE=%%~nI000%%~xI
+        )
+    )
 )
 
-ECHO.
-ECHO.
+
+IF NOT [%TOOL_WINRAR%]==[] (
+    ECHO --- BUILD ZIP
+    ECHO:
+
+    ECHO Zipping into !SETUPEXE:.exe=.zip!
+    %TOOL_WINRAR% a -afzip -ep -m5 ".\Temp\!SETUPEXE:.exe=.zip!" %FILES%
+    %TOOL_WINRAR% rn ".\Temp\!SETUPEXE:.exe=.zip!" *.md *.txt
+    IF NOT ERRORLEVEL 0 GOTO Error
+
+    ECHO:
+    ECHO:
+)
+
+
+IF NOT [%TOOL_WIX_CANDLE%]==[] (
+    ECHO --- BUILD MSI INSTALLER
+    ECHO:
+
+    %TOOL_WIX_CANDLE% -out Temp\Setup.wixobj -nologo -pedantic %SOURCE_WIX% > NUL
+    IF NOT ERRORLEVEL 0 GOTO Error
+
+    %TOOL_WIX_LIGHT% -out Temp\!SETUPEXE:.exe=.msi! -b ..\Binaries -nologo -pedantic -sacl -spdb Temp\Setup.wixobj
+    IF NOT ERRORLEVEL 0 GOTO Error
+
+    DEL Temp\Setup.wixobj
+    
+    ECHO MSI created.
+    
+    ECHO:
+    ECHO:
+
+    IF NOT [%TOOL_SIGNTOOL%]==[] IF NOT [%CERTIFICATE_THUMBPRINT%]==[] (
+        ECHO --- SIGN MSI INSTALLER
+        ECHO:
+        
+        IF [%SIGN_TIMESTAMPURL%]==[] (
+            %TOOL_SIGNTOOL% sign /s "My" /sha1 %CERTIFICATE_THUMBPRINT% /v /d "%NAME% Installer" ".\Temp\!SETUPEXE:.exe=.msi!"
+        ) ELSE (
+            %TOOL_SIGNTOOL% sign /s "My" /sha1 %CERTIFICATE_THUMBPRINT% /tr %SIGN_TIMESTAMPURL% /v /d "%NAME% Installer" ".\Temp\!SETUPEXE:.exe=.msi!"
+        )
+        IF NOT ERRORLEVEL 0 GOTO Error
+
+        ECHO:
+        ECHO:
+    )
+)
 
 
 ECHO --- RELEASE
-ECHO.
+ECHO:
 
 MKDIR "..\Releases" 2> NUL
-MOVE ".\Temp\*.*" "..\Releases\." > NUL
-IF ERRORLEVEL 1 GOTO Error
-RMDIR /Q /S ".\Temp"
+FOR %%I IN (".\Temp\*.*") DO (
+    SET FILE_FROM=%%~nI%%~xI
+    IF NOT [%VERSION_HASH%]==[] (
+        SET FILE_TO=!FILE_FROM:000=-rev%VERSION_NUMBER%-%VERSION_HASH%!
+    ) ELSE (
+        SET FILE_TO=!FILE_FROM!
+    )
+    MOVE ".\Temp\!FILE_FROM!" "..\Releases\!FILE_TO!" > NUL
+    IF NOT ERRORLEVEL 0 GOTO Error
+    ECHO !FILE_TO!
+    IF NOT DEFINED FILE_RELEASED SET FILE_RELEASED=!FILE_TO!
+)
 
-ECHO.
+RMDIR /Q /S ".\Temp" 2> NUL
+IF [%FILE_RELEASED%]==[] ECHO No files.
+
+ECHO:
+ECHO:
 
 
 ECHO --- DONE
-ECHO.
 
-explorer /select,"..\Releases\%_SETUPEXE%"
+IF NOT [%WARNING%]==[] (
+    ECHO:
+    IF [%TOOL_GIT%]==[] ECHO Git executable not found.
+    IF [%TOOL_SIGNTOOL%]==[] ECHO SignTool executable not found.
+    IF [%TOOL_INNOSETUP%]==[] ECHO InnoSetup executable not found.
+    IF [%TOOL_WINRAR%]==[] ECHO WinRAR executable not found.
+    IF [%TOOL_WIX_CANDLE%]==[] ECHO Wix executables not found.
+
+    IF [%CERTIFICATE_THUMBPRINT%]==[] ECHO Executables not signed.
+    PAUSE
+)
+
+IF NOT [%FILE_RELEASED%]==[] explorer /select,"..\Releases\!FILE_RELEASED!"
 
 ENDLOCAL
 EXIT /B 0
