@@ -23,7 +23,7 @@ if [[ "$BRANCH" == "master" ]]; then
         if [[ $? == 0 ]]; then
             ./Publish.cmd
 
-            for FILE_EXTENSION in "exe" "zip"; do
+            for FILE_EXTENSION in "exe" "msi" "zip"; do
                 if [ ! -e ../Releases/$FILE_PREFIX.$FILE_EXTENSION ]; then                
                     echo "Executables cannot be found." >&2
                     exit 1
@@ -38,7 +38,7 @@ if [[ "$BRANCH" == "master" ]]; then
             git push origin :refs/tags/latest 2> /dev/null
             
             ASSET_UPLOAD_URL=`curl -s -H "Authorization: token $TOKEN" --data "{\"tag_name\": \"latest\", \"target_commitish\": \"master\", \"name\": \"Most recent build\", \"body\": \"This is the most recent automated build (#$VERSION_HASH, revision $VERSION_NUMBER).\n\nFor the latest stable release go to https://www.medo64.com/$REPOSITORY/.\", \"draft\": false, \"prerelease\": true}" -X POST https://api.github.com/repos/$OWNER/$REPOSITORY/releases | grep "\"upload_url\"" | cut -d\" -f4 | cut -d{ -f1`
-            for FILE_EXTENSION in "exe" "zip"; do
+            for FILE_EXTENSION in "exe" "msi" "zip"; do
                 UPLOAD_RESULT=`curl -s -H "Authorization: token $TOKEN" -H "Content-Type: application/octet-stream" --data-binary @../Releases/$FILE_PREFIX.$FILE_EXTENSION -X POST $ASSET_UPLOAD_URL?name=$FILE_PREFIX.$FILE_EXTENSION`
                 echo $UPLOAD_RESULT | grep --quiet "browser_download_url"
                 if [[ $? == 0 ]]; then
