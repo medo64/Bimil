@@ -244,12 +244,12 @@ namespace Bimil {
                             pnl.Controls.Add(textBox);
 
                             pnl.Controls.Add(NewCopyButton(textBox));
-                            pnl.Controls.Add(NewShowPasswordButton(textBox));
                             pnl.Controls.Add(NewConfigureButton(textBox, delegate {
                                 using (var frm = new PasswordDetailsForm(this.Item, textBox.ReadOnly)) {
                                     frm.ShowDialog(this);
                                 }
                             }, "Password policy configuration."));
+                            pnl.Controls.Add(NewShowPasswordButton(textBox));
                             pnl.Controls.Add(NewGeneratePasswordButton(textBox));
 
                             void showPasswordWarnings()
