@@ -58,11 +58,19 @@ namespace Bimil {
                     return true;
 
                 case Keys.Control | Keys.O:
-                    mnuOpen.PerformButtonClick();
+                    if (mnuOpen.Visible) {
+                        mnuOpen.PerformButtonClick();
+                    } else {
+                        mnuOpenAlone.PerformClick();
+                    }
                     return true;
 
                 case Keys.Alt | Keys.O:
-                    mnuOpen.ShowDropDown();
+                    if (mnuOpen.Visible) {
+                        mnuOpen.ShowDropDown();
+                    } else {
+                        mnuOpenAlone.PerformClick();
+                    }
                     return true;
 
                 case Keys.Control | Keys.S:
@@ -245,6 +253,9 @@ namespace Bimil {
                 };
                 mnuOpen.DropDownItems.Add(item);
             }
+
+            mnuOpen.Visible = (mnuOpen.DropDownItems.Count > 0);
+            mnuOpenAlone.Visible = !mnuOpen.Visible;
         }
 
         private void lsvEntries_ItemActivate(object sender, EventArgs e) {
@@ -980,6 +991,9 @@ namespace Bimil {
             var isSingleEntrySelected = (lsvEntries.SelectedItems.Count == 1) && ((lsvEntries.SelectedItems[0].Tag as Entry) != null);
 
             mnuSave.Enabled = (this.Document != null);
+            mnuSave.Visible = mnuSave.Enabled;
+            mnuSaveAlone.Visible = !mnuSave.Visible;
+
             mnuProperties.Enabled = (this.Document != null);
             mnuAdd.Enabled = (this.Document != null) && (!this.Document.IsReadOnly);
             mnuEdit.Enabled = (this.Document != null) && isSingleEntrySelected;
