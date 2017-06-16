@@ -190,13 +190,16 @@ IF NOT [%TOOL_WIX_CANDLE%]==[] (
     ECHO --- BUILD MSI INSTALLER
     ECHO:
 
+    COPY NUL ..\Binaries\Bimil.cfg > NUL
+
     %TOOL_WIX_CANDLE% -out Temp\Setup.wixobj -nologo -pedantic %SOURCE_WIX% > NUL
     IF NOT ERRORLEVEL 0 GOTO Error
 
-    %TOOL_WIX_LIGHT% -out Temp\!SETUPEXE:.exe=.msi! -b ..\Binaries -nologo -pedantic -sacl -spdb Temp\Setup.wixobj
+    %TOOL_WIX_LIGHT% -out Temp\!SETUPEXE:.exe=.msi! -b ..\Binaries -nologo -pedantic -sice:ICE91 -sacl -spdb Temp\Setup.wixobj
     IF NOT ERRORLEVEL 0 GOTO Error
 
     DEL Temp\Setup.wixobj
+    DEL ..\Binaries\Bimil.cfg
     
     ECHO MSI created.
     

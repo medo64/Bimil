@@ -1,31 +1,45 @@
-<?xml version='1.0' encoding='utf-8'?>
-<Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
-    <Product Name='Bimil' Id='*' UpgradeCode='B30CDCE3-D4A0-4B0A-AA44-514533B13C56' Version='!(bind.FileVersion.BimilExe)' Language="1033" Manufacturer='Josip Medved'>
-        <Package Id='*' InstallerVersion="200" Description="Bimil Installer" Manufacturer='Josip Medved' Compressed="yes" />
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Product Name="Bimil" Id="*" UpgradeCode="B30CDCE3-D4A0-4B0A-AA44-514533B13C56" Version="!(bind.FileVersion.BimilExe)" Language="1033" Manufacturer="Josip Medved">
+        <Package Id="*" InstallerVersion="200" Description="Bimil Installer" Manufacturer="Josip Medved" Compressed="yes" />
 
-        <Media Id='1' Cabinet='Bimil.cab' CompressionLevel = "high" EmbedCab='yes' />
+        <Media Id="1" Cabinet="Bimil.cab" CompressionLevel = "high" EmbedCab="yes" />
 
-        <Directory Id='TARGETDIR' Name='SourceDir'>
-            <Directory Id='ProgramFilesFolder' Name='PFiles'>
-                <Directory Id='Bimil' Name='Bimil'>
-                    <Directory Id='INSTALLDIR' Name='Foobar 1.0'>
-                        <Component Id='Executable' Guid='F1ADBDB1-E839-4C61-ADED-CD14515F95E1'>
-                            <File Id='BimilExe' Name='Bimil.exe' DiskId='1' Source='Bimil.exe' KeyPath='yes'>
-                                <Shortcut Id="startmenuBimilExe" Directory="ProgramMenuDir" Name="Bimil" WorkingDirectory='INSTALLDIR' Icon="Bimil.exe" IconIndex="0" Advertise="yes" />
-                                <Shortcut Id="desktopBimilExe" Directory="DesktopFolder" Name="Bimil" WorkingDirectory='INSTALLDIR' Icon="Bimil.exe" IconIndex="0" Advertise="yes" />
+        <Directory Id="TARGETDIR" Name="SourceDir">
+            <Directory Id="ProgramFilesFolder">
+                <Directory Id="JosipMedvedPF" Name="Josip Medved">
+                    <Directory Id="ExecutableFolder" Name="Bimil">
+                        <Component Id="Executable" Guid="F1ADBDB1-E839-4C61-ADED-CD14515F95E1">
+                            <File Id="BimilExe" Name="Bimil.exe" DiskId="1" Source="Bimil.exe" KeyPath="yes">
+                                <Shortcut Id="startmenuBimilExe" Directory="ProgramMenuDir" Name="Bimil" WorkingDirectory="ExecutableFolder" Icon="Bimil.exe" IconIndex="0" Advertise="yes" />
+                                <Shortcut Id="desktopBimilExe" Directory="DesktopFolder" Name="Bimil" WorkingDirectory="ExecutableFolder" Icon="Bimil.exe" IconIndex="0" Advertise="yes" />
                             </File>
                         </Component>
-                        <Component Id='ExecutableDebug' Guid='3895CFCF-8C71-4F6F-8C93-3DCC966339EE'>
-                            <File Id='BimilPdb' Name='Bimil.pdb' DiskId='1' Source='Bimil.pdb' KeyPath='yes' />
+                        <Component Id="ExecutableDebug" Guid="3895CFCF-8C71-4F6F-8C93-3DCC966339EE">
+                            <File Id="BimilPdb" Name="Bimil.pdb" DiskId="1" Source="Bimil.pdb" KeyPath="yes" />
                         </Component>
-                        <Component Id='ReadMe' Guid='999D5955-C760-44E4-9B3A-3A23008C30FD'>
-                            <File Id='ReadMeTxt' Name='ReadMe.txt' DiskId='1' Source='..\README.md' KeyPath='yes' />
+                        <Component Id="ReadMe" Guid="999D5955-C760-44E4-9B3A-3A23008C30FD">
+                            <File Id="ReadMeTxt" Name="ReadMe.txt" DiskId="1" Source="..\README.md" KeyPath="yes" />
                         </Component>
-                        <Component Id='License' Guid='9CB15DAC-D4DE-4C54-AE21-DCF507B53229'>
-                            <File Id='LicenseTxt' Name='License.txt' DiskId='1' Source='..\LICENSE.md' KeyPath='yes' />
+                        <Component Id="License" Guid="9CB15DAC-D4DE-4C54-AE21-DCF507B53229">
+                            <File Id="LicenseTxt" Name="License.txt" DiskId="1" Source="..\LICENSE.md" KeyPath="yes" />
                         </Component>
-                        <Component Id='Words' Guid='9A11CFC5-7838-4ECB-A5BC-A6F50D3FDA09'>
-                            <File Id='WordsTxt' Name='Words.txt' DiskId='1' Source='..\WORDS.md' KeyPath='yes' />
+                        <Component Id="Words" Guid="9A11CFC5-7838-4ECB-A5BC-A6F50D3FDA09">
+                            <File Id="WordsTxt" Name="Words.txt" DiskId="1" Source="..\WORDS.md" KeyPath="yes" />
+                        </Component>
+                    </Directory>
+                </Directory>
+            </Directory>
+
+            <Directory Id="AppDataFolder">
+                <Directory Id="JosipMedvedData" Name="Josip Medved">
+                    <Directory Id="Config" Name="Bimil">
+                        <Component Id="Config" Guid="A100605E-77A4-4306-9EF3-F06743F23C1C">
+                            <File Id="ConfigFile" Name="Bimil.cfg" DiskId="1" Source="Bimil.cfg" />
+                            <RegistryValue Root="HKCU" Key="Software\[Manufacturer]\[ProductName]" Type="string" Value="" KeyPath="yes" />
+                            <RemoveFolder Id="Config" On="uninstall" />
+                            <RemoveFolder Id="JosipMedvedData" Directory="JosipMedvedData" On="uninstall" />
+                            <RemoveFile Id="ConfigFile" Name="Bimil.cfg" On="uninstall" />
                         </Component>
                     </Directory>
                 </Directory>
@@ -34,8 +48,8 @@
             <Directory Id="ProgramMenuFolder" Name="Programs">
                 <Directory Id="ProgramMenuDir" Name="Bimil">
                     <Component Id="ProgramMenuDir" Guid="469304E7-DA2D-48A2-A879-EA346FC2124A">
-                        <RemoveFolder Id='ProgramMenuDir' On='uninstall' />
-                        <RegistryValue Root='HKCU' Key='Software\[Manufacturer]\[ProductName]' Type='string' Value='' KeyPath='yes' />
+                        <RemoveFolder Id="ProgramMenuDir" On="uninstall" />
+                        <RegistryValue Root="HKCU" Key="Software\[Manufacturer]\[ProductName]" Type="string" Value="" KeyPath="yes" />
                     </Component>
                 </Directory>
             </Directory>
@@ -43,13 +57,14 @@
             <Directory Id="DesktopFolder" Name="Desktop" />
         </Directory>
 
-        <Feature Id='Complete' Level='1'>
-              <ComponentRef Id='Executable' />
-              <ComponentRef Id='ExecutableDebug' />
-              <ComponentRef Id='ReadMe' />
-              <ComponentRef Id='License' />
-              <ComponentRef Id='Words' />
-              <ComponentRef Id='ProgramMenuDir' />
+        <Feature Id="Complete" Level="1">
+              <ComponentRef Id="Executable" />
+              <ComponentRef Id="ExecutableDebug" />
+              <ComponentRef Id="ReadMe" />
+              <ComponentRef Id="License" />
+              <ComponentRef Id="Words" />
+              <ComponentRef Id="Config" />
+              <ComponentRef Id="ProgramMenuDir" />
         </Feature>
 
         <Icon Id="Bimil.exe" SourceFile="Bimil.exe" />
