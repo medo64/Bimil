@@ -157,8 +157,12 @@ namespace Bimil {
                 }
             }
 
+#if WINDOWS_STORE
+            mnuAppUpgrade.Visible = false;
+#else
             var version = Assembly.GetExecutingAssembly().GetName().Version; //don't auto-check for development builds
             if ((version.Major != 0) || (version.Minor != 0)) { bwUpgradeCheck.RunWorkerAsync(); }
+#endif
         }
 
         private void Form_FormClosing(object sender, FormClosingEventArgs e) {

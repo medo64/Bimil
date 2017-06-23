@@ -1,5 +1,6 @@
 1) Copy whole project to a separate directory and change .NET to 4.6.2.
 2) Change version in SolutionInfo.cs
-3) Run Publish.cmd
-4) Run following commands in admin powershell window from Release directory:
+3) Add WINDOWS_STORE to Properties / Build / Conditional compilation symbols
+4) Run Publish.cmd
+5) Run following commands in admin powershell window from Release directory:
     > DesktopAppConverter.exe -Installer bimil200.msi -Destination . -PackageName "47887JosipMedved.Bimil" -Publisher "CN=8B14F350-D3A6-4EDE-81B2-7080A004A56B" -AppId Bimil -PackagePublisherDisplayName "Josip Medved" -PackageDisplayName "Bimil" -Version 2.0.0.0 -PackageArch x86 -MakeAppx -Verbose
