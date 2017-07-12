@@ -12,7 +12,9 @@ namespace Bimil {
                     new Template("User name and password", RecordType.UserName, RecordType.Password, RecordType.Url, RecordType.Notes),
                     new Template("User name and password with 2FA", RecordType.UserName, RecordType.Password, RecordType.TwoFactorKey, RecordType.Url, RecordType.Notes),
                     new Template("Just password", RecordType.Password, RecordType.Notes),
-                    new Template("Credit card", RecordType.CreditCardNumber, RecordType.CreditCardExpiration, RecordType.CreditCardVerificationValue, RecordType.CreditCardPin, RecordType.Notes)
+#if !WINDOWS_STORE
+                    new Template("Credit card", RecordType.CreditCardNumber, RecordType.CreditCardExpiration, RecordType.CreditCardVerificationValue, RecordType.CreditCardPin, RecordType.Notes),
+#endif
                 };
 
                 Templates.TemplatesCache = list.ToArray();
