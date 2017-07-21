@@ -782,10 +782,11 @@ namespace Bimil {
             mnxEntryPaste.Enabled = ClipboardHelper.HasDataOnClipboard;
             mnxEntryAutotype.Enabled = isSingleEntrySelected;
 
-            for (int i = mnxEntry.Items.Count - 1; i > mnxEntry.Items.IndexOf(mnxEntryAutotype); i--) {
+            for (int i = mnxEntry.Items.IndexOf(mnxEntrySeparatorBeforeCut) - 1; i > mnxEntry.Items.IndexOf(mnxEntryAutotype); i--) {
                 mnxEntry.Items.RemoveAt(i);
             }
 
+            var nextMenuIndex = mnxEntry.Items.IndexOf(mnxEntryAutotype) + 1;
             var hasCopyEntries = false;
             var entry = (lsvEntries.SelectedItems.Count == 1) ? lsvEntries.SelectedItems[0].Tag as Entry : null;
             if (entry != null) {
@@ -803,10 +804,10 @@ namespace Bimil {
                     }
 
                     if (mnxItem != null) {
-                        if (!hasCopyEntries) { mnxEntry.Items.Add(new ToolStripSeparator()); }
+                        if (!hasCopyEntries) { mnxEntry.Items.Insert(nextMenuIndex++, new ToolStripSeparator()); }
                         hasCopyEntries = true;
                         mnxItem.Click += delegate { Execute.ClipboardCopyText(record.Text); };
-                        mnxEntry.Items.Add(mnxItem);
+                        mnxEntry.Items.Insert(nextMenuIndex++, mnxItem);
                     }
                 }
 
@@ -815,12 +816,12 @@ namespace Bimil {
                     foreach (var record in entry.Records) {
                         if (record.RecordType == RecordType.Url) {
                             if (!hasSeparator) {
-                                mnxEntry.Items.Add(new ToolStripSeparator());
+                                mnxEntry.Items.Insert(nextMenuIndex++, new ToolStripSeparator());
                                 hasSeparator = true;
                             }
                             var mnxItem = new ToolStripMenuItem("Go to " + record.Text);
                             mnxItem.Click += delegate { Execute.StartUrl(record.Text); };
-                            mnxEntry.Items.Add(mnxItem);
+                            mnxEntry.Items.Insert(nextMenuIndex++, mnxItem);
                         }
                     }
                 }
@@ -830,12 +831,12 @@ namespace Bimil {
                     foreach (var record in entry.Records) {
                         if (record.RecordType == RecordType.RunCommand) {
                             if (!hasSeparator) {
-                                mnxEntry.Items.Add(new ToolStripSeparator());
+                                mnxEntry.Items.Insert(nextMenuIndex++, new ToolStripSeparator());
                                 hasSeparator = true;
                             }
                             var mnxItem = new ToolStripMenuItem("Execute " + Execute.GetStartInfo(record.Text).FileName);
                             mnxItem.Click += delegate { Execute.StartCommand(record.Text, this); };
-                            mnxEntry.Items.Add(mnxItem);
+                            mnxEntry.Items.Insert(nextMenuIndex++, mnxItem);
                         }
                     }
                 }

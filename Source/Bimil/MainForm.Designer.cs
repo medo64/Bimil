@@ -62,7 +62,7 @@ namespace Bimil {
             this.mnxEntryCut = new System.Windows.Forms.ToolStripMenuItem();
             this.mnxEntryCopy = new System.Windows.Forms.ToolStripMenuItem();
             this.mnxEntryPaste = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnxEntry2 = new System.Windows.Forms.ToolStripSeparator();
+            this.mnxEntrySeparatorBeforeCut = new System.Windows.Forms.ToolStripSeparator();
             this.mnxEntryAutotype = new System.Windows.Forms.ToolStripMenuItem();
             this.cmbSearch = new System.Windows.Forms.ComboBox();
             this.bwUpgradeCheck = new System.ComponentModel.BackgroundWorker();
@@ -94,7 +94,7 @@ namespace Bimil {
             this.mnu.Location = new System.Drawing.Point(0, 0);
             this.mnu.Name = "mnu";
             this.mnu.Padding = new System.Windows.Forms.Padding(1, 0, 1, 0);
-            this.mnu.Size = new System.Drawing.Size(610, 32);
+            this.mnu.Size = new System.Drawing.Size(542, 27);
             this.mnu.TabIndex = 1;
             // 
             // mnuNew
@@ -103,7 +103,7 @@ namespace Bimil {
             this.mnuNew.Image = global::Bimil.Properties.Resources.mnuNew_16;
             this.mnuNew.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.mnuNew.Name = "mnuNew";
-            this.mnuNew.Size = new System.Drawing.Size(24, 29);
+            this.mnuNew.Size = new System.Drawing.Size(24, 24);
             this.mnuNew.Text = "New";
             this.mnuNew.ToolTipText = "New (Ctrl+N)";
             this.mnuNew.Click += new System.EventHandler(this.mnuNew_Click);
@@ -114,7 +114,7 @@ namespace Bimil {
             this.mnuOpenAlone.Image = global::Bimil.Properties.Resources.mnuOpen_16;
             this.mnuOpenAlone.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.mnuOpenAlone.Name = "mnuOpenAlone";
-            this.mnuOpenAlone.Size = new System.Drawing.Size(24, 29);
+            this.mnuOpenAlone.Size = new System.Drawing.Size(24, 24);
             this.mnuOpenAlone.Tag = "mnuOpen";
             this.mnuOpenAlone.Text = "Open";
             this.mnuOpenAlone.ToolTipText = "Open (Ctrl+O)";
@@ -127,7 +127,7 @@ namespace Bimil {
             this.mnuOpen.Image = global::Bimil.Properties.Resources.mnuOpen_16;
             this.mnuOpen.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.mnuOpen.Name = "mnuOpen";
-            this.mnuOpen.Size = new System.Drawing.Size(41, 29);
+            this.mnuOpen.Size = new System.Drawing.Size(39, 24);
             this.mnuOpen.Text = "Open";
             this.mnuOpen.ToolTipText = "Open (Ctrl+O)";
             this.mnuOpen.ButtonClick += new System.EventHandler(this.mnuOpen_ButtonClick);
@@ -140,7 +140,7 @@ namespace Bimil {
             this.mnuSaveAlone.Image = global::Bimil.Properties.Resources.mnuSave_16;
             this.mnuSaveAlone.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.mnuSaveAlone.Name = "mnuSaveAlone";
-            this.mnuSaveAlone.Size = new System.Drawing.Size(24, 29);
+            this.mnuSaveAlone.Size = new System.Drawing.Size(24, 24);
             this.mnuSaveAlone.Tag = "mnuSave";
             this.mnuSaveAlone.Text = "Save";
             this.mnuSaveAlone.ToolTipText = "Save (Ctrl+S)";
@@ -154,7 +154,7 @@ namespace Bimil {
             this.mnuSave.Image = global::Bimil.Properties.Resources.mnuSave_16;
             this.mnuSave.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.mnuSave.Name = "mnuSave";
-            this.mnuSave.Size = new System.Drawing.Size(41, 29);
+            this.mnuSave.Size = new System.Drawing.Size(39, 24);
             this.mnuSave.Text = "Save";
             this.mnuSave.ToolTipText = "Save (Ctrl+S)";
             this.mnuSave.ButtonClick += new System.EventHandler(this.mnuSave_ButtonClick);
@@ -163,7 +163,7 @@ namespace Bimil {
             // 
             this.mnuSaveAs.Image = global::Bimil.Properties.Resources.mnuSave_16;
             this.mnuSaveAs.Name = "mnuSaveAs";
-            this.mnuSaveAs.Size = new System.Drawing.Size(210, 30);
+            this.mnuSaveAs.Size = new System.Drawing.Size(133, 26);
             this.mnuSaveAs.Tag = "mnuSave";
             this.mnuSaveAs.Text = "Save as";
             this.mnuSaveAs.Click += new System.EventHandler(this.mnuSaveAs_Click);
@@ -177,7 +177,7 @@ namespace Bimil {
             this.mnuProperties.Image = global::Bimil.Properties.Resources.mnuProperties_16;
             this.mnuProperties.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.mnuProperties.Name = "mnuProperties";
-            this.mnuProperties.Size = new System.Drawing.Size(38, 29);
+            this.mnuProperties.Size = new System.Drawing.Size(34, 24);
             this.mnuProperties.Tag = "";
             this.mnuProperties.Text = "Properties";
             this.mnuProperties.ToolTipText = "File properties";
@@ -187,7 +187,7 @@ namespace Bimil {
             // 
             this.mnuChangePassword.Image = global::Bimil.Properties.Resources.mnuChangePassword_16;
             this.mnuChangePassword.Name = "mnuChangePassword";
-            this.mnuChangePassword.Size = new System.Drawing.Size(238, 30);
+            this.mnuChangePassword.Size = new System.Drawing.Size(201, 26);
             this.mnuChangePassword.Text = "Change password";
             this.mnuChangePassword.Click += new System.EventHandler(this.mnuChangePassword_Click);
             // 
@@ -196,21 +196,21 @@ namespace Bimil {
             this.mnuReadOnly.CheckOnClick = true;
             this.mnuReadOnly.Image = global::Bimil.Properties.Resources.mnuReadOnly_16;
             this.mnuReadOnly.Name = "mnuReadOnly";
-            this.mnuReadOnly.Size = new System.Drawing.Size(238, 30);
+            this.mnuReadOnly.Size = new System.Drawing.Size(201, 26);
             this.mnuReadOnly.Text = "Read-only";
             this.mnuReadOnly.Click += new System.EventHandler(this.mnuReadOnly_Click);
             // 
             // mnu0
             // 
             this.mnu0.Name = "mnu0";
-            this.mnu0.Size = new System.Drawing.Size(6, 32);
+            this.mnu0.Size = new System.Drawing.Size(6, 27);
             // 
             // mnuAdd
             // 
             this.mnuAdd.Image = global::Bimil.Properties.Resources.mnuAdd_16;
             this.mnuAdd.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.mnuAdd.Name = "mnuAdd";
-            this.mnuAdd.Size = new System.Drawing.Size(70, 29);
+            this.mnuAdd.Size = new System.Drawing.Size(61, 24);
             this.mnuAdd.Text = "Add";
             this.mnuAdd.ToolTipText = "Add (Ins)";
             this.mnuAdd.Click += new System.EventHandler(this.mnuAdd_Click);
@@ -220,7 +220,7 @@ namespace Bimil {
             this.mnuEdit.Image = global::Bimil.Properties.Resources.mnuEdit_16;
             this.mnuEdit.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.mnuEdit.Name = "mnuEdit";
-            this.mnuEdit.Size = new System.Drawing.Size(66, 29);
+            this.mnuEdit.Size = new System.Drawing.Size(59, 24);
             this.mnuEdit.Text = "Edit";
             this.mnuEdit.ToolTipText = "Edit (F4)";
             this.mnuEdit.Click += new System.EventHandler(this.mnuEdit_Click);
@@ -230,7 +230,7 @@ namespace Bimil {
             this.mnuRemove.Image = global::Bimil.Properties.Resources.mnuRemove_16;
             this.mnuRemove.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.mnuRemove.Name = "mnuRemove";
-            this.mnuRemove.Size = new System.Drawing.Size(100, 29);
+            this.mnuRemove.Size = new System.Drawing.Size(87, 24);
             this.mnuRemove.Text = "Remove";
             this.mnuRemove.ToolTipText = "Remove (Del)";
             this.mnuRemove.Click += new System.EventHandler(this.mnuRemove_Click);
@@ -249,51 +249,51 @@ namespace Bimil {
             this.mnuApp.Image = global::Bimil.Properties.Resources.mnuApp_16;
             this.mnuApp.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.mnuApp.Name = "mnuApp";
-            this.mnuApp.Size = new System.Drawing.Size(38, 29);
+            this.mnuApp.Size = new System.Drawing.Size(34, 24);
             this.mnuApp.Text = "Application";
             // 
             // mnuAppOptions
             // 
             this.mnuAppOptions.Name = "mnuAppOptions";
-            this.mnuAppOptions.Size = new System.Drawing.Size(243, 30);
+            this.mnuAppOptions.Size = new System.Drawing.Size(206, 26);
             this.mnuAppOptions.Text = "&Options";
             this.mnuAppOptions.Click += new System.EventHandler(this.mnuAppOptions_Click);
             // 
             // mnuApp0
             // 
             this.mnuApp0.Name = "mnuApp0";
-            this.mnuApp0.Size = new System.Drawing.Size(240, 6);
+            this.mnuApp0.Size = new System.Drawing.Size(203, 6);
             // 
             // mnuSendFeedback
             // 
             this.mnuSendFeedback.Name = "mnuSendFeedback";
-            this.mnuSendFeedback.Size = new System.Drawing.Size(243, 30);
+            this.mnuSendFeedback.Size = new System.Drawing.Size(206, 26);
             this.mnuSendFeedback.Text = "Send &feedback";
             this.mnuSendFeedback.Click += new System.EventHandler(this.mnuAppFeedback_Click);
             // 
             // mnuAppUpgrade
             // 
             this.mnuAppUpgrade.Name = "mnuAppUpgrade";
-            this.mnuAppUpgrade.Size = new System.Drawing.Size(243, 30);
+            this.mnuAppUpgrade.Size = new System.Drawing.Size(206, 26);
             this.mnuAppUpgrade.Text = "Check for &upgrade";
             this.mnuAppUpgrade.Click += new System.EventHandler(this.mnuAppUpgrade_Click);
             // 
             // mnuApp1
             // 
             this.mnuApp1.Name = "mnuApp1";
-            this.mnuApp1.Size = new System.Drawing.Size(240, 6);
+            this.mnuApp1.Size = new System.Drawing.Size(203, 6);
             // 
             // mnuAppAbout
             // 
             this.mnuAppAbout.Name = "mnuAppAbout";
-            this.mnuAppAbout.Size = new System.Drawing.Size(243, 30);
+            this.mnuAppAbout.Size = new System.Drawing.Size(206, 26);
             this.mnuAppAbout.Text = "&About";
             this.mnuAppAbout.Click += new System.EventHandler(this.mnuAppAbout_Click);
             // 
             // mnu1
             // 
             this.mnu1.Name = "mnu1";
-            this.mnu1.Size = new System.Drawing.Size(6, 32);
+            this.mnu1.Size = new System.Drawing.Size(6, 27);
             // 
             // mnuSearch
             // 
@@ -301,7 +301,7 @@ namespace Bimil {
             this.mnuSearch.Image = global::Bimil.Properties.Resources.mnuSearch_16;
             this.mnuSearch.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.mnuSearch.Name = "mnuSearch";
-            this.mnuSearch.Size = new System.Drawing.Size(24, 29);
+            this.mnuSearch.Size = new System.Drawing.Size(24, 24);
             this.mnuSearch.Text = "Search";
             this.mnuSearch.ToolTipText = "Search (Ctrl+F)";
             this.mnuSearch.Click += new System.EventHandler(this.mnuSearch_Click);
@@ -312,7 +312,7 @@ namespace Bimil {
             this.mnuGeneratePassword.Image = global::Bimil.Properties.Resources.mnuGeneratePassword_16;
             this.mnuGeneratePassword.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.mnuGeneratePassword.Name = "mnuGeneratePassword";
-            this.mnuGeneratePassword.Size = new System.Drawing.Size(24, 29);
+            this.mnuGeneratePassword.Size = new System.Drawing.Size(24, 24);
             this.mnuGeneratePassword.Text = "Generate password";
             this.mnuGeneratePassword.Click += new System.EventHandler(this.mnuGeneratePassword_Click);
             // 
@@ -322,10 +322,9 @@ namespace Bimil {
             this.pnlDocument.Controls.Add(this.lsvEntries);
             this.pnlDocument.Controls.Add(this.cmbSearch);
             this.pnlDocument.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlDocument.Location = new System.Drawing.Point(0, 32);
-            this.pnlDocument.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.pnlDocument.Location = new System.Drawing.Point(0, 27);
             this.pnlDocument.Name = "pnlDocument";
-            this.pnlDocument.Size = new System.Drawing.Size(610, 459);
+            this.pnlDocument.Size = new System.Drawing.Size(542, 366);
             this.pnlDocument.TabIndex = 0;
             // 
             // lsvEntries
@@ -340,10 +339,9 @@ namespace Bimil {
             this.lsvEntries.HideSelection = false;
             this.lsvEntries.LabelEdit = true;
             this.lsvEntries.LabelWrap = false;
-            this.lsvEntries.Location = new System.Drawing.Point(0, 28);
-            this.lsvEntries.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.lsvEntries.Location = new System.Drawing.Point(0, 24);
             this.lsvEntries.Name = "lsvEntries";
-            this.lsvEntries.Size = new System.Drawing.Size(610, 431);
+            this.lsvEntries.Size = new System.Drawing.Size(542, 342);
             this.lsvEntries.TabIndex = 1;
             this.lsvEntries.UseCompatibleStateImageBehavior = false;
             this.lsvEntries.View = System.Windows.Forms.View.Details;
@@ -362,83 +360,83 @@ namespace Bimil {
             this.mnxEntryAdd,
             this.mnxEntryAddSimilar,
             this.mnxEntry1,
+            this.mnxEntryAutotype,
+            this.mnxEntrySeparatorBeforeCut,
             this.mnxEntryCut,
             this.mnxEntryCopy,
-            this.mnxEntryPaste,
-            this.mnxEntry2,
-            this.mnxEntryAutotype});
+            this.mnxEntryPaste});
             this.mnxEntry.Name = "mnxEntry";
-            this.mnxEntry.Size = new System.Drawing.Size(177, 262);
+            this.mnxEntry.Size = new System.Drawing.Size(176, 242);
             this.mnxEntry.Opening += new System.ComponentModel.CancelEventHandler(this.mnxEntry_Opening);
             // 
             // mnxEntryView
             // 
             this.mnxEntryView.Name = "mnxEntryView";
-            this.mnxEntryView.Size = new System.Drawing.Size(176, 30);
+            this.mnxEntryView.Size = new System.Drawing.Size(175, 24);
             this.mnxEntryView.Text = "&View";
             this.mnxEntryView.Click += new System.EventHandler(this.mnxEntryView_Click);
             // 
             // mnxEntryEdit
             // 
             this.mnxEntryEdit.Name = "mnxEntryEdit";
-            this.mnxEntryEdit.Size = new System.Drawing.Size(176, 30);
+            this.mnxEntryEdit.Size = new System.Drawing.Size(175, 24);
             this.mnxEntryEdit.Text = "&Edit";
             this.mnxEntryEdit.Click += new System.EventHandler(this.mnxEntryEdit_Click);
             // 
             // mnxEntry0
             // 
             this.mnxEntry0.Name = "mnxEntry0";
-            this.mnxEntry0.Size = new System.Drawing.Size(173, 6);
+            this.mnxEntry0.Size = new System.Drawing.Size(172, 6);
             // 
             // mnxEntryAdd
             // 
             this.mnxEntryAdd.Name = "mnxEntryAdd";
-            this.mnxEntryAdd.Size = new System.Drawing.Size(176, 30);
+            this.mnxEntryAdd.Size = new System.Drawing.Size(175, 24);
             this.mnxEntryAdd.Text = "&Add";
             this.mnxEntryAdd.Click += new System.EventHandler(this.mnxEntryAdd_Click);
             // 
             // mnxEntryAddSimilar
             // 
             this.mnxEntryAddSimilar.Name = "mnxEntryAddSimilar";
-            this.mnxEntryAddSimilar.Size = new System.Drawing.Size(176, 30);
+            this.mnxEntryAddSimilar.Size = new System.Drawing.Size(175, 24);
             this.mnxEntryAddSimilar.Text = "Add &Similar";
             this.mnxEntryAddSimilar.Click += new System.EventHandler(this.mnxEntryAddSimilar_Click);
             // 
             // mnxEntry1
             // 
             this.mnxEntry1.Name = "mnxEntry1";
-            this.mnxEntry1.Size = new System.Drawing.Size(173, 6);
+            this.mnxEntry1.Size = new System.Drawing.Size(172, 6);
             // 
             // mnxEntryCut
             // 
             this.mnxEntryCut.Name = "mnxEntryCut";
-            this.mnxEntryCut.Size = new System.Drawing.Size(176, 30);
+            this.mnxEntryCut.Size = new System.Drawing.Size(175, 24);
             this.mnxEntryCut.Text = "Cu&t";
             this.mnxEntryCut.Click += new System.EventHandler(this.mnxEntryCut_Click);
             // 
             // mnxEntryCopy
             // 
             this.mnxEntryCopy.Name = "mnxEntryCopy";
-            this.mnxEntryCopy.Size = new System.Drawing.Size(176, 30);
+            this.mnxEntryCopy.Size = new System.Drawing.Size(175, 24);
             this.mnxEntryCopy.Text = "&Copy";
             this.mnxEntryCopy.Click += new System.EventHandler(this.mnxEntryCopy_Click);
             // 
             // mnxEntryPaste
             // 
             this.mnxEntryPaste.Name = "mnxEntryPaste";
-            this.mnxEntryPaste.Size = new System.Drawing.Size(176, 30);
+            this.mnxEntryPaste.Size = new System.Drawing.Size(175, 24);
             this.mnxEntryPaste.Text = "&Paste";
             this.mnxEntryPaste.Click += new System.EventHandler(this.mnxEntryPaste_Click);
             // 
-            // mnxEntry2
+            // mnxEntrySeparatorBeforeCut
             // 
-            this.mnxEntry2.Name = "mnxEntry2";
-            this.mnxEntry2.Size = new System.Drawing.Size(173, 6);
+            this.mnxEntrySeparatorBeforeCut.Name = "mnxEntrySeparatorBeforeCut";
+            this.mnxEntrySeparatorBeforeCut.Size = new System.Drawing.Size(172, 6);
             // 
             // mnxEntryAutotype
             // 
             this.mnxEntryAutotype.Name = "mnxEntryAutotype";
-            this.mnxEntryAutotype.Size = new System.Drawing.Size(176, 30);
+            this.mnxEntryAutotype.Size = new System.Drawing.Size(175, 24);
             this.mnxEntryAutotype.Text = "Auto-t&ype";
             this.mnxEntryAutotype.Click += new System.EventHandler(this.mnxEntryAutotype_Click);
             // 
@@ -447,9 +445,8 @@ namespace Bimil {
             this.cmbSearch.Dock = System.Windows.Forms.DockStyle.Top;
             this.cmbSearch.FormattingEnabled = true;
             this.cmbSearch.Location = new System.Drawing.Point(0, 0);
-            this.cmbSearch.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cmbSearch.Name = "cmbSearch";
-            this.cmbSearch.Size = new System.Drawing.Size(610, 28);
+            this.cmbSearch.Size = new System.Drawing.Size(542, 24);
             this.cmbSearch.Sorted = true;
             this.cmbSearch.TabIndex = 0;
             this.cmbSearch.SelectedIndexChanged += new System.EventHandler(this.cmbSearch_SelectedIndexChanged);
@@ -468,15 +465,14 @@ namespace Bimil {
             // 
             // MainForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(610, 491);
+            this.ClientSize = new System.Drawing.Size(542, 393);
             this.Controls.Add(this.pnlDocument);
             this.Controls.Add(this.mnu);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.KeyPreview = true;
-            this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.MinimumSize = new System.Drawing.Size(447, 361);
+            this.MinimumSize = new System.Drawing.Size(399, 298);
             this.Name = "MainForm";
             this.Text = "Bimil";
             this.Activated += new System.EventHandler(this.Form_Activated);
@@ -527,7 +523,7 @@ namespace Bimil {
         private System.Windows.Forms.ContextMenuStrip mnxEntry;
         private System.Windows.Forms.ToolStripMenuItem mnxEntryView;
         private System.Windows.Forms.ToolStripMenuItem mnxEntryEdit;
-        private System.Windows.Forms.ToolStripSeparator mnxEntry2;
+        private System.Windows.Forms.ToolStripSeparator mnxEntrySeparatorBeforeCut;
         private System.Windows.Forms.ToolStripMenuItem mnxEntryAutotype;
         private System.Windows.Forms.ToolStripSeparator mnxEntry1;
         private System.Windows.Forms.ToolStripMenuItem mnxEntryCut;
