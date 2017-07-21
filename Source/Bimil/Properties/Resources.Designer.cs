@@ -743,6 +743,86 @@ namespace Bimil.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap mnuCopy_16 {
+            get {
+                object obj = ResourceManager.GetObject("mnuCopy_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap mnuCopy_24 {
+            get {
+                object obj = ResourceManager.GetObject("mnuCopy_24", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap mnuCopy_32 {
+            get {
+                object obj = ResourceManager.GetObject("mnuCopy_32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap mnuCopy_48 {
+            get {
+                object obj = ResourceManager.GetObject("mnuCopy_48", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap mnuCut_16 {
+            get {
+                object obj = ResourceManager.GetObject("mnuCut_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap mnuCut_24 {
+            get {
+                object obj = ResourceManager.GetObject("mnuCut_24", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap mnuCut_32 {
+            get {
+                object obj = ResourceManager.GetObject("mnuCut_32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap mnuCut_48 {
+            get {
+                object obj = ResourceManager.GetObject("mnuCut_48", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap mnuEdit_16 {
             get {
                 object obj = ResourceManager.GetObject("mnuEdit_16", resourceCulture);
@@ -896,6 +976,46 @@ namespace Bimil.Properties {
         internal static System.Drawing.Bitmap mnuOpen_48 {
             get {
                 object obj = ResourceManager.GetObject("mnuOpen_48", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap mnuPaste_16 {
+            get {
+                object obj = ResourceManager.GetObject("mnuPaste_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap mnuPaste_24 {
+            get {
+                object obj = ResourceManager.GetObject("mnuPaste_24", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap mnuPaste_32 {
+            get {
+                object obj = ResourceManager.GetObject("mnuPaste_32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap mnuPaste_48 {
+            get {
+                object obj = ResourceManager.GetObject("mnuPaste_48", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1096,6 +1216,46 @@ namespace Bimil.Properties {
         internal static System.Drawing.Bitmap mnuSearch_48 {
             get {
                 object obj = ResourceManager.GetObject("mnuSearch_48", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap mnuView_16 {
+            get {
+                object obj = ResourceManager.GetObject("mnuView_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap mnuView_24 {
+            get {
+                object obj = ResourceManager.GetObject("mnuView_24", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap mnuView_32 {
+            get {
+                object obj = ResourceManager.GetObject("mnuView_32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap mnuView_48 {
+            get {
+                object obj = ResourceManager.GetObject("mnuView_48", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

@@ -37,6 +37,7 @@ namespace Bimil {
             this.mnuReadOnly = new System.Windows.Forms.ToolStripMenuItem();
             this.mnu0 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuAdd = new System.Windows.Forms.ToolStripButton();
+            this.mnuView = new System.Windows.Forms.ToolStripButton();
             this.mnuEdit = new System.Windows.Forms.ToolStripButton();
             this.mnuRemove = new System.Windows.Forms.ToolStripButton();
             this.mnuApp = new System.Windows.Forms.ToolStripDropDownButton();
@@ -85,6 +86,7 @@ namespace Bimil {
             this.mnuProperties,
             this.mnu0,
             this.mnuAdd,
+            this.mnuView,
             this.mnuEdit,
             this.mnuRemove,
             this.mnuApp,
@@ -214,6 +216,17 @@ namespace Bimil {
             this.mnuAdd.Text = "Add";
             this.mnuAdd.ToolTipText = "Add (Ins)";
             this.mnuAdd.Click += new System.EventHandler(this.mnuAdd_Click);
+            // 
+            // mnuView
+            // 
+            this.mnuView.Image = global::Bimil.Properties.Resources.mnuView_16;
+            this.mnuView.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.mnuView.Name = "mnuView";
+            this.mnuView.Size = new System.Drawing.Size(65, 24);
+            this.mnuView.Text = "View";
+            this.mnuView.ToolTipText = "View (F4)";
+            this.mnuView.Visible = false;
+            this.mnuView.Click += new System.EventHandler(this.mnuView_Click);
             // 
             // mnuEdit
             // 
@@ -366,81 +379,93 @@ namespace Bimil {
             this.mnxEntryCopy,
             this.mnxEntryPaste});
             this.mnxEntry.Name = "mnxEntry";
-            this.mnxEntry.Size = new System.Drawing.Size(176, 242);
+            this.mnxEntry.Size = new System.Drawing.Size(180, 258);
             this.mnxEntry.Opening += new System.ComponentModel.CancelEventHandler(this.mnxEntry_Opening);
             // 
             // mnxEntryView
             // 
+            this.mnxEntryView.Image = global::Bimil.Properties.Resources.mnuView_16;
             this.mnxEntryView.Name = "mnxEntryView";
-            this.mnxEntryView.Size = new System.Drawing.Size(175, 24);
+            this.mnxEntryView.Size = new System.Drawing.Size(179, 26);
+            this.mnxEntryView.Tag = "mnuView";
             this.mnxEntryView.Text = "&View";
             this.mnxEntryView.Click += new System.EventHandler(this.mnxEntryView_Click);
             // 
             // mnxEntryEdit
             // 
+            this.mnxEntryEdit.Image = global::Bimil.Properties.Resources.mnuEdit_16;
             this.mnxEntryEdit.Name = "mnxEntryEdit";
-            this.mnxEntryEdit.Size = new System.Drawing.Size(175, 24);
+            this.mnxEntryEdit.Size = new System.Drawing.Size(179, 26);
+            this.mnxEntryEdit.Tag = "mnuEdit";
             this.mnxEntryEdit.Text = "&Edit";
             this.mnxEntryEdit.Click += new System.EventHandler(this.mnxEntryEdit_Click);
             // 
             // mnxEntry0
             // 
             this.mnxEntry0.Name = "mnxEntry0";
-            this.mnxEntry0.Size = new System.Drawing.Size(172, 6);
+            this.mnxEntry0.Size = new System.Drawing.Size(176, 6);
             // 
             // mnxEntryAdd
             // 
+            this.mnxEntryAdd.Image = global::Bimil.Properties.Resources.mnuAdd_16;
             this.mnxEntryAdd.Name = "mnxEntryAdd";
             this.mnxEntryAdd.ShortcutKeyDisplayString = "Ins";
-            this.mnxEntryAdd.Size = new System.Drawing.Size(175, 24);
+            this.mnxEntryAdd.Size = new System.Drawing.Size(179, 26);
+            this.mnxEntryAdd.Tag = "mnuAdd";
             this.mnxEntryAdd.Text = "&Add";
             this.mnxEntryAdd.Click += new System.EventHandler(this.mnxEntryAdd_Click);
             // 
             // mnxEntryAddSimilar
             // 
             this.mnxEntryAddSimilar.Name = "mnxEntryAddSimilar";
-            this.mnxEntryAddSimilar.Size = new System.Drawing.Size(175, 24);
+            this.mnxEntryAddSimilar.Size = new System.Drawing.Size(179, 26);
             this.mnxEntryAddSimilar.Text = "Add &Similar";
             this.mnxEntryAddSimilar.Click += new System.EventHandler(this.mnxEntryAddSimilar_Click);
             // 
             // mnxEntry1
             // 
             this.mnxEntry1.Name = "mnxEntry1";
-            this.mnxEntry1.Size = new System.Drawing.Size(172, 6);
+            this.mnxEntry1.Size = new System.Drawing.Size(176, 6);
             // 
             // mnxEntryAutotype
             // 
             this.mnxEntryAutotype.Name = "mnxEntryAutotype";
-            this.mnxEntryAutotype.Size = new System.Drawing.Size(175, 24);
+            this.mnxEntryAutotype.Size = new System.Drawing.Size(179, 26);
             this.mnxEntryAutotype.Text = "Auto-t&ype";
             this.mnxEntryAutotype.Click += new System.EventHandler(this.mnxEntryAutotype_Click);
             // 
             // mnxEntrySeparatorBeforeCut
             // 
             this.mnxEntrySeparatorBeforeCut.Name = "mnxEntrySeparatorBeforeCut";
-            this.mnxEntrySeparatorBeforeCut.Size = new System.Drawing.Size(172, 6);
+            this.mnxEntrySeparatorBeforeCut.Size = new System.Drawing.Size(176, 6);
             // 
             // mnxEntryCut
             // 
+            this.mnxEntryCut.Image = global::Bimil.Properties.Resources.mnuCut_16;
             this.mnxEntryCut.Name = "mnxEntryCut";
             this.mnxEntryCut.ShortcutKeyDisplayString = "Ctrl+X";
-            this.mnxEntryCut.Size = new System.Drawing.Size(175, 24);
+            this.mnxEntryCut.Size = new System.Drawing.Size(179, 26);
+            this.mnxEntryCut.Tag = "mnuCut";
             this.mnxEntryCut.Text = "Cu&t";
             this.mnxEntryCut.Click += new System.EventHandler(this.mnxEntryCut_Click);
             // 
             // mnxEntryCopy
             // 
+            this.mnxEntryCopy.Image = global::Bimil.Properties.Resources.mnuCopy_16;
             this.mnxEntryCopy.Name = "mnxEntryCopy";
             this.mnxEntryCopy.ShortcutKeyDisplayString = "Ctrl+C";
-            this.mnxEntryCopy.Size = new System.Drawing.Size(175, 24);
+            this.mnxEntryCopy.Size = new System.Drawing.Size(179, 26);
+            this.mnxEntryCopy.Tag = "mnuCopy";
             this.mnxEntryCopy.Text = "&Copy";
             this.mnxEntryCopy.Click += new System.EventHandler(this.mnxEntryCopy_Click);
             // 
             // mnxEntryPaste
             // 
+            this.mnxEntryPaste.Image = global::Bimil.Properties.Resources.mnuPaste_16;
             this.mnxEntryPaste.Name = "mnxEntryPaste";
             this.mnxEntryPaste.ShortcutKeyDisplayString = "Ctrl+V";
-            this.mnxEntryPaste.Size = new System.Drawing.Size(175, 24);
+            this.mnxEntryPaste.Size = new System.Drawing.Size(179, 26);
+            this.mnxEntryPaste.Tag = "mnuPaste";
             this.mnxEntryPaste.Text = "&Paste";
             this.mnxEntryPaste.Click += new System.EventHandler(this.mnxEntryPaste_Click);
             // 
@@ -538,6 +563,7 @@ namespace Bimil {
         private System.Windows.Forms.ToolStripMenuItem mnxEntryAddSimilar;
         private System.Windows.Forms.ToolStripButton mnuOpenAlone;
         private System.Windows.Forms.ToolStripButton mnuSaveAlone;
+        private System.Windows.Forms.ToolStripButton mnuView;
     }
 }
 

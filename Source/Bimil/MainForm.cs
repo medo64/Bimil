@@ -266,7 +266,11 @@ namespace Bimil {
         }
 
         private void lsvEntries_ItemActivate(object sender, EventArgs e) {
-            mnuEdit_Click(null, null);
+            if (mnuEdit.Visible) {
+                mnuEdit_Click(null, null);
+            } else {
+                mnuView_Click(null, null);
+            }
         }
 
 
@@ -324,7 +328,11 @@ namespace Bimil {
                     break;
 
                 case Keys.F4: {
-                        if (mnuEdit.Enabled) { mnuEdit_Click(null, null); }
+                        if (mnuEdit.Visible) {
+                            if (mnuEdit.Enabled) { mnuEdit_Click(null, null); }
+                        } else {
+                            if (mnuView.Enabled) { mnuView_Click(null, null); }
+                        }
                         e.Handled = true;
                         e.SuppressKeyPress = true;
                     }
@@ -527,8 +535,8 @@ namespace Bimil {
             lsvEntries.LabelEdit = !isReadOnly;
 
             cmbSearch.Text = "";
-            mnuEdit.Text = isReadOnly ? "View" : "Edit";
-            mnuEdit.ToolTipText = mnuEdit.Text + " (F4)";
+            mnuView.Visible = !isReadOnly;
+            mnuEdit.Visible = !isReadOnly;
         }
 
 
@@ -709,8 +717,13 @@ namespace Bimil {
             }
         }
 
+
+        private void mnuView_Click(object sender, EventArgs e) {
+            ShowEntry(false);
+        }
+
         private void mnuEdit_Click(object sender, EventArgs e) {
-            ShowEntry(Settings.EditableByDefault);
+            ShowEntry(true);
         }
 
         private void mnuRemove_Click(object sender, EventArgs e) {
@@ -848,6 +861,8 @@ namespace Bimil {
                     }
                 }
             }
+
+            Helpers.ScaleToolstrip(mnxEntry);
         }
 
         private void mnxEntryView_Click(object sender, EventArgs e) {
@@ -1002,12 +1017,16 @@ namespace Bimil {
             var isAnyEntrySelected = (lsvEntries.SelectedItems.Count >= 1) && ((lsvEntries.SelectedItems[0].Tag as Entry) != null);
             var isSingleEntrySelected = (lsvEntries.SelectedItems.Count == 1) && ((lsvEntries.SelectedItems[0].Tag as Entry) != null);
 
+            mnuView.Visible = !Settings.EditableByDefault || ((this.Document != null) && this.Document.IsReadOnly);
+            mnuEdit.Visible = !mnuView.Visible;
+
             mnuSave.Enabled = (this.Document != null);
             mnuSave.Visible = mnuSave.Enabled;
             mnuSaveAlone.Visible = !mnuSave.Visible;
 
             mnuProperties.Enabled = (this.Document != null);
             mnuAdd.Enabled = (this.Document != null) && (!this.Document.IsReadOnly);
+            mnuView.Enabled = (this.Document != null) && isSingleEntrySelected;
             mnuEdit.Enabled = (this.Document != null) && isSingleEntrySelected;
             mnuRemove.Enabled = (this.Document != null) && isAnyEntrySelected && (!this.Document.IsReadOnly);
             mnuSearch.Enabled = (this.Document != null);
@@ -1099,6 +1118,5 @@ namespace Bimil {
             public String FileName { get; }
 
         }
-
     }
 }
