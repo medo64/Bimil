@@ -760,6 +760,7 @@ namespace Bimil {
             using (var frm = new SettingsForm()) {
                 frm.ShowDialog(this);
             }
+            UpdateMenu();
             cmbSearch.Select();
         }
 
@@ -824,6 +825,8 @@ namespace Bimil {
                     }
 
                     if (mnxItem != null) {
+                        mnxItem.Image = Properties.Resources.btnCopy_16;
+                        mnxItem.Tag = "btnCopy";
                         if (!hasCopyEntries) { mnxEntry.Items.Insert(nextMenuIndex++, new ToolStripSeparator()); }
                         hasCopyEntries = true;
                         mnxItem.Click += delegate { Execute.ClipboardCopyText(record.Text); };
@@ -839,7 +842,10 @@ namespace Bimil {
                                 mnxEntry.Items.Insert(nextMenuIndex++, new ToolStripSeparator());
                                 hasSeparator = true;
                             }
-                            var mnxItem = new ToolStripMenuItem("Go to " + record.Text);
+                            var mnxItem = new ToolStripMenuItem("Go to " + record.Text) {
+                                Image = Bimil.Properties.Resources.btnExecuteUrl_16,
+                                Tag = "btnExecuteUrl"
+                            };
                             mnxItem.Click += delegate { Execute.StartUrl(record.Text); };
                             mnxEntry.Items.Insert(nextMenuIndex++, mnxItem);
                         }
@@ -854,7 +860,10 @@ namespace Bimil {
                                 mnxEntry.Items.Insert(nextMenuIndex++, new ToolStripSeparator());
                                 hasSeparator = true;
                             }
-                            var mnxItem = new ToolStripMenuItem("Execute " + Execute.GetStartInfo(record.Text).FileName);
+                            var mnxItem = new ToolStripMenuItem("Execute " + Execute.GetStartInfo(record.Text).FileName) {
+                                Image = Bimil.Properties.Resources.btnExecute_16,
+                                Tag = "btnExecute"
+                            };
                             mnxItem.Click += delegate { Execute.StartCommand(record.Text, this); };
                             mnxEntry.Items.Insert(nextMenuIndex++, mnxItem);
                         }
