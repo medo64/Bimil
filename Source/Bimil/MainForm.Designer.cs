@@ -59,11 +59,11 @@ namespace Bimil {
             this.mnxEntryAdd = new System.Windows.Forms.ToolStripMenuItem();
             this.mnxEntryAddSimilar = new System.Windows.Forms.ToolStripMenuItem();
             this.mnxEntry1 = new System.Windows.Forms.ToolStripSeparator();
+            this.mnxEntryAutotype = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnxEntrySeparatorBeforeCut = new System.Windows.Forms.ToolStripSeparator();
             this.mnxEntryCut = new System.Windows.Forms.ToolStripMenuItem();
             this.mnxEntryCopy = new System.Windows.Forms.ToolStripMenuItem();
             this.mnxEntryPaste = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnxEntrySeparatorBeforeCut = new System.Windows.Forms.ToolStripSeparator();
-            this.mnxEntryAutotype = new System.Windows.Forms.ToolStripMenuItem();
             this.cmbSearch = new System.Windows.Forms.ComboBox();
             this.bwUpgradeCheck = new System.ComponentModel.BackgroundWorker();
             this.tmrClose = new System.Windows.Forms.Timer(this.components);
@@ -391,6 +391,7 @@ namespace Bimil {
             // mnxEntryAdd
             // 
             this.mnxEntryAdd.Name = "mnxEntryAdd";
+            this.mnxEntryAdd.ShortcutKeyDisplayString = "Ins";
             this.mnxEntryAdd.Size = new System.Drawing.Size(175, 24);
             this.mnxEntryAdd.Text = "&Add";
             this.mnxEntryAdd.Click += new System.EventHandler(this.mnxEntryAdd_Click);
@@ -407,9 +408,22 @@ namespace Bimil {
             this.mnxEntry1.Name = "mnxEntry1";
             this.mnxEntry1.Size = new System.Drawing.Size(172, 6);
             // 
+            // mnxEntryAutotype
+            // 
+            this.mnxEntryAutotype.Name = "mnxEntryAutotype";
+            this.mnxEntryAutotype.Size = new System.Drawing.Size(175, 24);
+            this.mnxEntryAutotype.Text = "Auto-t&ype";
+            this.mnxEntryAutotype.Click += new System.EventHandler(this.mnxEntryAutotype_Click);
+            // 
+            // mnxEntrySeparatorBeforeCut
+            // 
+            this.mnxEntrySeparatorBeforeCut.Name = "mnxEntrySeparatorBeforeCut";
+            this.mnxEntrySeparatorBeforeCut.Size = new System.Drawing.Size(172, 6);
+            // 
             // mnxEntryCut
             // 
             this.mnxEntryCut.Name = "mnxEntryCut";
+            this.mnxEntryCut.ShortcutKeyDisplayString = "Ctrl+X";
             this.mnxEntryCut.Size = new System.Drawing.Size(175, 24);
             this.mnxEntryCut.Text = "Cu&t";
             this.mnxEntryCut.Click += new System.EventHandler(this.mnxEntryCut_Click);
@@ -417,6 +431,7 @@ namespace Bimil {
             // mnxEntryCopy
             // 
             this.mnxEntryCopy.Name = "mnxEntryCopy";
+            this.mnxEntryCopy.ShortcutKeyDisplayString = "Ctrl+C";
             this.mnxEntryCopy.Size = new System.Drawing.Size(175, 24);
             this.mnxEntryCopy.Text = "&Copy";
             this.mnxEntryCopy.Click += new System.EventHandler(this.mnxEntryCopy_Click);
@@ -424,21 +439,10 @@ namespace Bimil {
             // mnxEntryPaste
             // 
             this.mnxEntryPaste.Name = "mnxEntryPaste";
+            this.mnxEntryPaste.ShortcutKeyDisplayString = "Ctrl+V";
             this.mnxEntryPaste.Size = new System.Drawing.Size(175, 24);
             this.mnxEntryPaste.Text = "&Paste";
             this.mnxEntryPaste.Click += new System.EventHandler(this.mnxEntryPaste_Click);
-            // 
-            // mnxEntrySeparatorBeforeCut
-            // 
-            this.mnxEntrySeparatorBeforeCut.Name = "mnxEntrySeparatorBeforeCut";
-            this.mnxEntrySeparatorBeforeCut.Size = new System.Drawing.Size(172, 6);
-            // 
-            // mnxEntryAutotype
-            // 
-            this.mnxEntryAutotype.Name = "mnxEntryAutotype";
-            this.mnxEntryAutotype.Size = new System.Drawing.Size(175, 24);
-            this.mnxEntryAutotype.Text = "Auto-t&ype";
-            this.mnxEntryAutotype.Click += new System.EventHandler(this.mnxEntryAutotype_Click);
             // 
             // cmbSearch
             // 

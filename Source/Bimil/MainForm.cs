@@ -766,9 +766,13 @@ namespace Bimil {
             if (Settings.EditableByDefault) {
                 mnxEntryView.Font = new Font(mnxEntryView.Font, FontStyle.Regular);
                 mnxEntryEdit.Font = new Font(mnxEntryView.Font, FontStyle.Bold);
+                mnxEntryView.ShortcutKeyDisplayString = "";
+                mnxEntryEdit.ShortcutKeyDisplayString = "F4";
             } else {
                 mnxEntryView.Font = new Font(mnxEntryView.Font, FontStyle.Bold);
                 mnxEntryEdit.Font = new Font(mnxEntryView.Font, FontStyle.Regular);
+                mnxEntryView.ShortcutKeyDisplayString = "F4";
+                mnxEntryEdit.ShortcutKeyDisplayString = "";
             }
 
             var isAnyEntrySelected = (lsvEntries.SelectedItems.Count >= 1) && ((lsvEntries.SelectedItems[0].Tag as Entry) != null);
