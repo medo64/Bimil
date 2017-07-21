@@ -90,14 +90,17 @@ namespace Bimil {
                     return true;
 
                 case Keys.Control | Keys.X:
+                case Keys.Shift | Keys.Delete:
                     mnxEntryCut_Click(null, null);
                     return true;
 
                 case Keys.Control | Keys.C:
+                case Keys.Control | Keys.Insert:
                     mnxEntryCopy_Click(null, null);
                     return true;
 
                 case Keys.Control | Keys.V:
+                case Keys.Shift | Keys.Insert:
                     mnxEntryPaste_Click(null, null);
                     return true;
 
