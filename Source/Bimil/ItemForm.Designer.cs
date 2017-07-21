@@ -104,6 +104,7 @@ namespace Bimil {
             // 
             // btnAutotype
             // 
+            this.btnAutotype.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnAutotype.Location = new System.Drawing.Point(12, 355);
             this.btnAutotype.Name = "btnAutotype";
             this.btnAutotype.Size = new System.Drawing.Size(90, 28);
