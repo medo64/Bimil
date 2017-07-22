@@ -21,7 +21,7 @@ namespace Bimil {
         private readonly IList<string> Categories;
         private readonly string DefaultCategory;
 
-        public ItemForm(Document document, Entry item, IList<string> categories, bool startsAsEditable, bool isNew = false, string defaultCategory = null) {
+        public ItemForm(Document document, Entry item, IList<string> categories, bool startsAsEditable, bool isNew = false, string defaultCategory = null, bool hideAutotype = false) {
             InitializeComponent();
             this.Font = SystemFonts.MessageBoxFont;
 
@@ -33,7 +33,7 @@ namespace Bimil {
             this.DefaultCategory = categories.Contains(defaultCategory) ? defaultCategory : null;
 
             btnEdit.Visible = !this.Document.IsReadOnly;
-            btnAutotype.Visible = !Helpers.IsRunningOnMono; //filling form includes operations not supported under Linux - Mono under Windows might have some troubles too but it is disabled there because it enables easy testing :)
+            btnAutotype.Visible = !Helpers.IsRunningOnMono && !hideAutotype; //filling form includes operations not supported under Linux - Mono under Windows might have some troubles too but it is disabled there because it enables easy testing :)
 
             this.Text = this.Document.IsReadOnly ? "View" : "Edit";
         }

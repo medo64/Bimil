@@ -84,7 +84,7 @@ namespace Bimil {
             if ((this.Document == null) || (lsvEntries.SelectedItems.Count != 1)) { return; }
 
             var item = (Entry)(lsvEntries.SelectedItems[0].Tag);
-            using (var frm2 = new ItemForm(this.Document, item, this.Categories, startsAsEditable: Settings.EditableByDefault)) {
+            using (var frm2 = new ItemForm(this.Document, item, this.Categories, startsAsEditable: Settings.EditableByDefault, hideAutotype: true)) {
                 if (frm2.ShowDialog(this) == DialogResult.OK) {
                     Helpers.PerformEntrySearch(this.Document, lsvEntries, cmbSearch.Text, entriesToSelect: new Entry[] { item }, extendedSearch: true, addMatchDescription: true);
                     Form_Resize(null, null); //to support both ListView full row with and without scrollbar
