@@ -23,10 +23,15 @@ namespace Bimil {
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SearchForm));
             this.lblSearch = new System.Windows.Forms.Label();
             this.cmbSearch = new System.Windows.Forms.ComboBox();
             this.lsvEntries = new System.Windows.Forms.ListView();
             this.lsvEntries_colTitle = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.chbIncludeHiddenFields = new System.Windows.Forms.CheckBox();
+            this.erp = new System.Windows.Forms.ErrorProvider(this.components);
+            ((System.ComponentModel.ISupportInitialize)(this.erp)).BeginInit();
             this.SuspendLayout();
             // 
             // lblSearch
@@ -66,7 +71,7 @@ namespace Bimil {
             this.lsvEntries.MultiSelect = false;
             this.lsvEntries.Name = "lsvEntries";
             this.lsvEntries.ShowItemToolTips = true;
-            this.lsvEntries.Size = new System.Drawing.Size(358, 293);
+            this.lsvEntries.Size = new System.Drawing.Size(358, 266);
             this.lsvEntries.TabIndex = 2;
             this.lsvEntries.UseCompatibleStateImageBehavior = false;
             this.lsvEntries.View = System.Windows.Forms.View.Details;
@@ -77,11 +82,30 @@ namespace Bimil {
             // 
             this.lsvEntries_colTitle.Text = "Title";
             // 
+            // chbIncludeHiddenFields
+            // 
+            this.chbIncludeHiddenFields.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.chbIncludeHiddenFields.AutoSize = true;
+            this.chbIncludeHiddenFields.Location = new System.Drawing.Point(211, 320);
+            this.chbIncludeHiddenFields.Name = "chbIncludeHiddenFields";
+            this.chbIncludeHiddenFields.Size = new System.Drawing.Size(159, 21);
+            this.chbIncludeHiddenFields.TabIndex = 3;
+            this.chbIncludeHiddenFields.TabStop = false;
+            this.chbIncludeHiddenFields.Text = "Include &hidden fields";
+            this.chbIncludeHiddenFields.UseVisualStyleBackColor = true;
+            this.chbIncludeHiddenFields.CheckedChanged += new System.EventHandler(this.chbIncludeHiddenFields_CheckedChanged);
+            // 
+            // erp
+            // 
+            this.erp.ContainerControl = this;
+            this.erp.Icon = ((System.Drawing.Icon)(resources.GetObject("erp.Icon")));
+            // 
             // SearchForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(382, 353);
+            this.Controls.Add(this.chbIncludeHiddenFields);
             this.Controls.Add(this.lsvEntries);
             this.Controls.Add(this.cmbSearch);
             this.Controls.Add(this.lblSearch);
@@ -95,6 +119,7 @@ namespace Bimil {
             this.Text = "Search";
             this.Shown += new System.EventHandler(this.Form_Shown);
             this.Resize += new System.EventHandler(this.Form_Resize);
+            ((System.ComponentModel.ISupportInitialize)(this.erp)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -106,5 +131,7 @@ namespace Bimil {
         private System.Windows.Forms.ComboBox cmbSearch;
         private System.Windows.Forms.ListView lsvEntries;
         private System.Windows.Forms.ColumnHeader lsvEntries_colTitle;
+        private System.Windows.Forms.CheckBox chbIncludeHiddenFields;
+        private System.Windows.Forms.ErrorProvider erp;
     }
 }

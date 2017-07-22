@@ -14,6 +14,9 @@ namespace Bimil {
             this.Document = document;
             this.Categories = categories;
             this.DefaultText = defaultText;
+
+            erp.SetIconAlignment(chbIncludeHiddenFields, ErrorIconAlignment.MiddleLeft);
+            erp.SetIconPadding(chbIncludeHiddenFields, chbIncludeHiddenFields.Height / 6);
         }
 
         private readonly Document Document;
@@ -72,7 +75,7 @@ namespace Bimil {
         }
 
         private void cmbText_TextChanged(object sender, System.EventArgs e) {
-            Helpers.PerformEntrySearch(this.Document, lsvEntries, cmbSearch.Text, extendedSearch: true, addMatchDescription: true);
+            Helpers.PerformEntrySearch(this.Document, lsvEntries, cmbSearch.Text, extendedSearch: true, addMatchDescription: true, includeHidden: chbIncludeHiddenFields.Checked);
             Form_Resize(null, null); //to support both ListView full row with and without scrollbar
         }
 
@@ -98,5 +101,13 @@ namespace Bimil {
             }
         }
 
+        private void chbIncludeHiddenFields_CheckedChanged(object sender, EventArgs e) {
+            if (chbIncludeHiddenFields.Checked) {
+                erp.SetError(chbIncludeHiddenFields, "Search will include password and key fields.");
+            } else {
+                erp.SetError(chbIncludeHiddenFields, null);
+            }
+            cmbText_TextChanged(null, null);
+        }
     }
 }

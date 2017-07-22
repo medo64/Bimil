@@ -116,7 +116,7 @@ namespace Bimil {
 
         #region Entry search
 
-        public static void PerformEntrySearch(Document document, ListView listView, String searchText, IEnumerable<Entry> entriesToSelect = null, bool extendedSearch = false, bool addMatchDescription = false) {
+        public static void PerformEntrySearch(Document document, ListView listView, String searchText, IEnumerable<Entry> entriesToSelect = null, bool extendedSearch = false, bool addMatchDescription = false, bool includeHidden = false) {
             var entriesToSelectList = new List<Entry>(entriesToSelect ?? new Entry[] { });
             var remainingEntriesToSelect = new List<Entry>(entriesToSelectList);
 
@@ -171,7 +171,7 @@ namespace Bimil {
                                     if (record.RecordType == RecordType.Group) { continue; }
                                     var recordCaption = Helpers.GetRecordCaption(record.RecordType);
                                     if (recordCaption != null) { //so we know it is supported
-                                        if (!Helpers.GetIsHideable(record.RecordType)) { //also check it is not hidden by default (e.g. password field)
+                                        if (includeHidden || !Helpers.GetIsHideable(record.RecordType)) { //also check it is not hidden by default (e.g. password field)
                                             var recordText = record.Text;
                                             if (recordText != null) { //we have something searchable
                                                 if (recordText.IndexOf(text, StringComparison.CurrentCultureIgnoreCase) >= 0) { //if text matches any part of content
