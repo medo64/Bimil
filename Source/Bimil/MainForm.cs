@@ -816,11 +816,15 @@ namespace Bimil {
                     switch (record.RecordType) {
                         case RecordType.UserName:
                         case RecordType.EmailAddress:
-                            mnxItem = new ToolStripMenuItem("Copy " + Helpers.ToTitleCase(Helpers.GetRecordCaption(record)) + " (" + record.Text + ")");
+                            if (record.Text.Length > 0) {
+                                mnxItem = new ToolStripMenuItem("Copy " + Helpers.ToTitleCase(Helpers.GetRecordCaption(record)) + " (" + record.Text + ")");
+                            }
                             break;
 
                         case RecordType.Password:
-                            mnxItem = new ToolStripMenuItem("Copy " + Helpers.ToTitleCase(Helpers.GetRecordCaption(record)) + " (" + new string('*', record.Text.Length) + ")");
+                            if (record.Text.Length > 0) {
+                                mnxItem = new ToolStripMenuItem("Copy " + Helpers.ToTitleCase(Helpers.GetRecordCaption(record)) + " (" + new string('*', record.Text.Length) + ")");
+                            }
                             break;
                     }
 
@@ -837,7 +841,7 @@ namespace Bimil {
                 { //add URL items
                     var hasSeparator = (mnxEntry.Items[mnxEntry.Items.Count - 1] is ToolStripSeparator);
                     foreach (var record in entry.Records) {
-                        if (record.RecordType == RecordType.Url) {
+                        if ((record.RecordType == RecordType.Url) && (record.Text.Length > 0)) {
                             if (!hasSeparator) {
                                 mnxEntry.Items.Insert(nextMenuIndex++, new ToolStripSeparator());
                                 hasSeparator = true;
@@ -855,7 +859,7 @@ namespace Bimil {
                 { //add RunCommand items
                     var hasSeparator = (mnxEntry.Items[mnxEntry.Items.Count - 1] is ToolStripSeparator);
                     foreach (var record in entry.Records) {
-                        if (record.RecordType == RecordType.RunCommand) {
+                        if ((record.RecordType == RecordType.RunCommand) && (record.Text.Length > 0)) {
                             if (!hasSeparator) {
                                 mnxEntry.Items.Insert(nextMenuIndex++, new ToolStripSeparator());
                                 hasSeparator = true;
