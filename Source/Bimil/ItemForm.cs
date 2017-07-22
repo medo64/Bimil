@@ -35,6 +35,11 @@ namespace Bimil {
             btnEdit.Visible = !this.Document.IsReadOnly;
             btnAutotype.Visible = !Helpers.IsRunningOnMono && !hideAutotype; //filling form includes operations not supported under Linux - Mono under Windows might have some troubles too but it is disabled there because it enables easy testing :)
 
+            if (!btnAutotype.Visible) {
+                btnEdit.Location = btnAutotype.Location;
+                btnFields.Location = btnAutotype.Location;
+            } //move Edit button if Autotype is hidden
+
             this.Text = this.Document.IsReadOnly ? "View" : "Edit";
         }
 
