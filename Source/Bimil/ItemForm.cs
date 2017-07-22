@@ -601,7 +601,7 @@ namespace Bimil {
         private Button NewGeneratePasswordButton(TextBox parentTextBox) {
             parentTextBox.Width -= parentTextBox.Height;
             var button = new Button() {
-                Name = "mnuGeneratePassword",
+                Name = "btnGeneratePassword",
                 Location = new Point(parentTextBox.Right, parentTextBox.Top),
                 Size = new Size(parentTextBox.Height, parentTextBox.Height),
                 TabStop = false,

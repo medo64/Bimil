@@ -303,6 +303,46 @@ namespace Bimil.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap btnGeneratePassword_16 {
+            get {
+                object obj = ResourceManager.GetObject("btnGeneratePassword_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap btnGeneratePassword_24 {
+            get {
+                object obj = ResourceManager.GetObject("btnGeneratePassword_24", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap btnGeneratePassword_32 {
+            get {
+                object obj = ResourceManager.GetObject("btnGeneratePassword_32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap btnGeneratePassword_48 {
+            get {
+                object obj = ResourceManager.GetObject("btnGeneratePassword_48", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap btnGroupRename_16 {
             get {
                 object obj = ResourceManager.GetObject("btnGroupRename_16", resourceCulture);
