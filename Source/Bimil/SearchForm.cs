@@ -23,15 +23,6 @@ namespace Bimil {
         private readonly IList<string> Categories;
         private readonly string DefaultText;
 
-        protected override bool ProcessDialogKey(Keys keyData) {
-            switch (keyData) {
-                case Keys.Escape:
-                    this.Close();
-                    return true;
-            }
-
-            return base.ProcessDialogKey(keyData);
-        }
 
         #region Disable minimize
 
@@ -52,6 +43,12 @@ namespace Bimil {
 
         #endregion
 
+
+        private void Form_KeyDown(object sender, KeyEventArgs e) {
+            if (e.KeyData == Keys.Escape) {
+                this.Close();
+            }
+        }
 
         private void Form_Shown(object sender, EventArgs e) {
             cmbSearch.Text = this.DefaultText;

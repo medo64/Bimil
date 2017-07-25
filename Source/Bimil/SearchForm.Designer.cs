@@ -109,6 +109,7 @@ namespace Bimil {
             this.Controls.Add(this.lsvEntries);
             this.Controls.Add(this.cmbSearch);
             this.Controls.Add(this.lblSearch);
+            this.KeyPreview = true;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(300, 300);
@@ -118,6 +119,7 @@ namespace Bimil {
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Search";
             this.Shown += new System.EventHandler(this.Form_Shown);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form_KeyDown);
             this.Resize += new System.EventHandler(this.Form_Resize);
             ((System.ComponentModel.ISupportInitialize)(this.erp)).EndInit();
             this.ResumeLayout(false);
