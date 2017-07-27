@@ -628,7 +628,7 @@ namespace Bimil {
                 }
 
                 if (generateNew) {
-                    using (var frm = new PasswordGeneratorForm(useCopyAsSave: true)) {
+                    using (var frm = new PasswordGeneratorForm(noSave: false)) {
                         if (frm.ShowDialog(this) == DialogResult.OK) {
                             textBox.Text = frm.Password;
                         }

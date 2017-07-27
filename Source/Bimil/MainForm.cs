@@ -750,7 +750,7 @@ namespace Bimil {
         }
 
         private void mnuGeneratePassword_Click(object sender, EventArgs e) {
-            using (var frm = new PasswordGeneratorForm()) {
+            using (var frm = new PasswordGeneratorForm(noSave: true)) {
                 frm.ShowDialog(this);
             }
         }

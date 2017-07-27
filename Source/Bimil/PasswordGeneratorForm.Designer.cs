@@ -48,6 +48,8 @@ namespace Bimil {
             this.chbWordRestrictTitleCase = new System.Windows.Forms.CheckBox();
             this.chbWordRestrictSuffixOnly = new System.Windows.Forms.CheckBox();
             this.txtWordPasswordLength = new System.Windows.Forms.TextBox();
+            this.btnSave = new System.Windows.Forms.Button();
+            this.btnSaveAndCopy = new System.Windows.Forms.Button();
             this.tabStyle = new System.Windows.Forms.TabControl();
             this.tabStyle_Words = new System.Windows.Forms.TabPage();
             this.lblWordPasswordLength = new System.Windows.Forms.Label();
@@ -96,12 +98,12 @@ namespace Bimil {
             // btnGenerate
             // 
             this.btnGenerate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnGenerate.Location = new System.Drawing.Point(261, 291);
+            this.btnGenerate.Location = new System.Drawing.Point(125, 291);
             this.btnGenerate.Margin = new System.Windows.Forms.Padding(3, 15, 3, 3);
             this.btnGenerate.Name = "btnGenerate";
-            this.btnGenerate.Size = new System.Drawing.Size(90, 28);
+            this.btnGenerate.Size = new System.Drawing.Size(110, 28);
             this.btnGenerate.TabIndex = 4;
-            this.btnGenerate.Text = "Generate";
+            this.btnGenerate.Text = "&Regenerate";
             this.tip.SetToolTip(this.btnGenerate, "Generate new password.");
             this.btnGenerate.UseVisualStyleBackColor = true;
             this.btnGenerate.Click += new System.EventHandler(this.btnGenerate_Click);
@@ -115,8 +117,8 @@ namespace Bimil {
             this.btnCopy.Margin = new System.Windows.Forms.Padding(3, 15, 3, 3);
             this.btnCopy.Name = "btnCopy";
             this.btnCopy.Size = new System.Drawing.Size(90, 28);
-            this.btnCopy.TabIndex = 0;
-            this.btnCopy.Text = "Copy";
+            this.btnCopy.TabIndex = 6;
+            this.btnCopy.Text = "&Copy";
             this.tip.SetToolTip(this.btnCopy, "Copy password to clipboard.");
             this.btnCopy.UseVisualStyleBackColor = true;
             this.btnCopy.Click += new System.EventHandler(this.btnCopy_Click);
@@ -375,6 +377,36 @@ namespace Bimil {
             this.txtWordPasswordLength.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.tip.SetToolTip(this.txtWordPasswordLength, "Length of password (1-99).");
             // 
+            // btnSave
+            // 
+            this.btnSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnSave.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.btnSave.Enabled = false;
+            this.btnSave.Location = new System.Drawing.Point(357, 291);
+            this.btnSave.Margin = new System.Windows.Forms.Padding(3, 15, 3, 3);
+            this.btnSave.Name = "btnSave";
+            this.btnSave.Size = new System.Drawing.Size(90, 28);
+            this.btnSave.TabIndex = 0;
+            this.btnSave.Text = "&Save";
+            this.tip.SetToolTip(this.btnSave, "Save password");
+            this.btnSave.UseVisualStyleBackColor = true;
+            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
+            // 
+            // btnSaveAndCopy
+            // 
+            this.btnSaveAndCopy.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnSaveAndCopy.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.btnSaveAndCopy.Enabled = false;
+            this.btnSaveAndCopy.Location = new System.Drawing.Point(241, 291);
+            this.btnSaveAndCopy.Margin = new System.Windows.Forms.Padding(3, 15, 3, 3);
+            this.btnSaveAndCopy.Name = "btnSaveAndCopy";
+            this.btnSaveAndCopy.Size = new System.Drawing.Size(110, 28);
+            this.btnSaveAndCopy.TabIndex = 5;
+            this.btnSaveAndCopy.Text = "&Save && Copy";
+            this.tip.SetToolTip(this.btnSaveAndCopy, "Save password and copy to clipboard.");
+            this.btnSaveAndCopy.UseVisualStyleBackColor = true;
+            this.btnSaveAndCopy.Click += new System.EventHandler(this.btnSaveAndCopy_Click);
+            // 
             // tabStyle
             // 
             this.tabStyle.Controls.Add(this.tabStyle_Words);
@@ -522,6 +554,8 @@ namespace Bimil {
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(459, 331);
+            this.Controls.Add(this.btnSaveAndCopy);
+            this.Controls.Add(this.btnSave);
             this.Controls.Add(this.picSecurityRating);
             this.Controls.Add(this.tabStyle);
             this.Controls.Add(this.btnCopy);
@@ -593,5 +627,7 @@ namespace Bimil {
         private System.Windows.Forms.PictureBox picSecurityRating;
         private System.Windows.Forms.Label lblWordPasswordLength;
         private System.Windows.Forms.TextBox txtWordPasswordLength;
+        private System.Windows.Forms.Button btnSave;
+        private System.Windows.Forms.Button btnSaveAndCopy;
     }
 }

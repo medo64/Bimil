@@ -12,17 +12,23 @@ using System.Windows.Forms;
 
 namespace Bimil {
     internal partial class PasswordGeneratorForm : Form {
-        public PasswordGeneratorForm(bool useCopyAsSave = false) {
+        public PasswordGeneratorForm(bool noSave = true) {
             InitializeComponent();
             this.Font = SystemFonts.MessageBoxFont;
 
-            this.UseCopyAsSave = useCopyAsSave;
-
-            btnCopy.Text = useCopyAsSave ? "Save" : "Copy";
-            tip.SetToolTip(btnCopy, useCopyAsSave ? "Save password" : "Copy to clipboard");
+            if (noSave) {
+                btnGenerate.Location = btnSaveAndCopy.Location;
+                btnGenerate.Visible = true;
+                btnCopy.Visible = true;
+                btnSaveAndCopy.Visible = false;
+                btnSave.Visible = false;
+            } else {
+                btnGenerate.Visible = true;
+                btnCopy.Visible = false;
+                btnSaveAndCopy.Visible = true;
+                btnSave.Visible = true;
+            }
         }
-
-        private readonly bool UseCopyAsSave;
 
         protected override bool ProcessDialogKey(Keys keyData) {
             if (keyData == Keys.Escape) {
@@ -201,12 +207,18 @@ namespace Bimil {
 
         public string Password { get; private set; }
 
+
+        private void btnSave_Click(object sender, EventArgs e) {
+            this.Password = txtPassword.Text;
+        }
+
+        private void btnSaveAndCopy_Click(object sender, EventArgs e) {
+            this.Password = txtPassword.Text;
+            Execute.ClipboardCopyText(txtPassword.Text);
+        }
+
         private void btnCopy_Click(object sender, EventArgs e) {
-            if (this.UseCopyAsSave) {
-                this.Password = txtPassword.Text;
-            } else {
-                Execute.ClipboardCopyText(txtPassword.Text);
-            }
+            Execute.ClipboardCopyText(txtPassword.Text);
         }
 
 
@@ -280,6 +292,8 @@ namespace Bimil {
             txtPassword.Text = password;
 
             btnCopy.Enabled = (txtPassword.TextLength > 0);
+            btnSaveAndCopy.Enabled = (txtPassword.TextLength > 0);
+            btnSave.Enabled = (txtPassword.TextLength > 0);
         }
 
 
