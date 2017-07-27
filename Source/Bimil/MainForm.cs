@@ -89,20 +89,25 @@ namespace Bimil {
                     mnxEntryAutotype_Click(null, null);
                     return true;
 
-                case Keys.Control | Keys.X:
                 case Keys.Shift | Keys.Delete:
                     mnxEntryCut_Click(null, null);
                     return true;
 
-                case Keys.Control | Keys.C:
                 case Keys.Control | Keys.Insert:
                     mnxEntryCopy_Click(null, null);
                     return true;
 
-                case Keys.Control | Keys.V:
                 case Keys.Shift | Keys.Insert:
                     mnxEntryPaste_Click(null, null);
                     return true;
+
+                case Keys.Control | Keys.V:
+                    if (ClipboardHelper.HasDataOnClipboard) {
+                        mnxEntryPaste_Click(null, null);
+                        return true;
+                    } else {
+                        return base.ProcessDialogKey(keyData);
+                    }
 
                 case Keys.F5:
                     RefreshCategories();
@@ -299,6 +304,15 @@ namespace Bimil {
                         }
                         break;
 
+                    case Keys.Control | Keys.X:
+                        if (cmbSearch.SelectedText.Length > 0) {
+                            Clipboard.Clear();
+                            Clipboard.SetText(cmbSearch.SelectedText);
+                            cmbSearch.SelectedText = "";
+                        }
+                        e.Handled = true;
+                        break;
+
                     default:
                         lsvEntries_KeyDown(null, e);
                         break;
@@ -363,6 +377,17 @@ namespace Bimil {
                     }
                     break;
 
+                case Keys.Control | Keys.X:
+                    mnxEntryCut_Click(null, null);
+                    break;
+
+                case Keys.Control | Keys.C:
+                    mnxEntryCopy_Click(null, null);
+                    break;
+
+                case Keys.Control | Keys.V:
+                    mnxEntryPaste_Click(null, null);
+                    break;
             }
         }
 
