@@ -528,6 +528,7 @@ namespace Bimil {
             this.Controls.Add(this.btnGenerate);
             this.Controls.Add(this.txtPassword);
             this.Controls.Add(this.lblCombinations);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "PasswordGeneratorForm";
