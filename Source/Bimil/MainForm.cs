@@ -960,10 +960,19 @@ namespace Bimil {
 
         private void mnxEntryPaste_Click(object sender, EventArgs e) {
             string category = null;
-            foreach (String item in cmbSearch.Items) { //you must run over all items to determine current category (case-insensitive)
-                if (string.Equals(cmbSearch.Text, item, StringComparison.CurrentCultureIgnoreCase)) {
-                    category = item;
-                    break;
+
+            var isAnyEntrySelected = (lsvEntries.SelectedItems.Count >= 1) && ((lsvEntries.SelectedItems[0].Tag as Entry) != null);
+            if (isAnyEntrySelected) { //put pasted item in the same category as selected
+                var selectedEntry = (Entry)(lsvEntries.SelectedItems[0].Tag);
+                category = selectedEntry.Group;
+            }
+
+            if (category == null) {
+                foreach (String item in cmbSearch.Items) { //you must run over all items to determine current category (case-insensitive)
+                    if (string.Equals(cmbSearch.Text, item, StringComparison.CurrentCultureIgnoreCase)) {
+                        category = item;
+                        break;
+                    }
                 }
             }
 
