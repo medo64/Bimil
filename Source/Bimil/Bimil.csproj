@@ -110,10 +110,57 @@
     <Compile Include="%28Medo%29\State [015].cs" />
     <Compile Include="%28Medo%29\UnhandledCatch [008].cs" />
     <Compile Include="%28Medo%29\Upgrade.cs" />
-    <Compile Include="%28PasswordSafe%29\AutoTypeToken.cs" />
-    <Compile Include="%28PasswordSafe%29\AutoTypeTokenKind.cs" />
-    <Compile Include="%28PasswordSafe%29\PasswordHistoryCollection.cs" />
-    <Compile Include="%28PasswordSafe%29\PasswordHistoryItem.cs" />
+    <Compile Include="..\..\Libraries\PasswordSafe\Source\PasswordSafe\%28Medo%29\Twofish.cs">
+      <Link>%28PasswordSafe%29\Twofish.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Libraries\PasswordSafe\Source\PasswordSafe\AutoTypeToken.cs">
+      <Link>%28PasswordSafe%29\AutoTypeToken.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Libraries\PasswordSafe\Source\PasswordSafe\AutoTypeTokenKind.cs">
+      <Link>%28PasswordSafe%29\AutoTypeTokenKind.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Libraries\PasswordSafe\Source\PasswordSafe\Document.cs">
+      <Link>%28PasswordSafe%29\Document.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Libraries\PasswordSafe\Source\PasswordSafe\Entry.cs">
+      <Link>%28PasswordSafe%29\Entry.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Libraries\PasswordSafe\Source\PasswordSafe\EntryCollection.cs">
+      <Link>%28PasswordSafe%29\EntryCollection.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Libraries\PasswordSafe\Source\PasswordSafe\Field.cs">
+      <Link>%28PasswordSafe%29\Field.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Libraries\PasswordSafe\Source\PasswordSafe\GroupPath.cs">
+      <Link>%28PasswordSafe%29\GroupPath.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Libraries\PasswordSafe\Source\PasswordSafe\Header.cs">
+      <Link>%28PasswordSafe%29\Header.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Libraries\PasswordSafe\Source\PasswordSafe\HeaderCollection.cs">
+      <Link>%28PasswordSafe%29\HeaderCollection.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Libraries\PasswordSafe\Source\PasswordSafe\HeaderType.cs">
+      <Link>%28PasswordSafe%29\HeaderType.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Libraries\PasswordSafe\Source\PasswordSafe\Helpers.cs">
+      <Link>%28PasswordSafe%29\Helpers.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Libraries\PasswordSafe\Source\PasswordSafe\PasswordHistoryCollection.cs">
+      <Link>%28PasswordSafe%29\PasswordHistoryCollection.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Libraries\PasswordSafe\Source\PasswordSafe\PasswordHistoryItem.cs">
+      <Link>%28PasswordSafe%29\PasswordHistoryItem.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Libraries\PasswordSafe\Source\PasswordSafe\Record.cs">
+      <Link>%28PasswordSafe%29\Record.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Libraries\PasswordSafe\Source\PasswordSafe\RecordCollection.cs">
+      <Link>%28PasswordSafe%29\RecordCollection.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Libraries\PasswordSafe\Source\PasswordSafe\RecordType.cs">
+      <Link>%28PasswordSafe%29\RecordType.cs</Link>
+    </Compile>
     <Compile Include="AutotypeHelpForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -172,18 +219,6 @@
     <Compile Include="NewRecordForm.Designer.cs">
       <DependentUpon>NewRecordForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="%28PasswordSafe%29\Document.cs" />
-    <Compile Include="%28PasswordSafe%29\Entry.cs" />
-    <Compile Include="%28PasswordSafe%29\EntryCollection.cs" />
-    <Compile Include="%28PasswordSafe%29\Field.cs" />
-    <Compile Include="%28PasswordSafe%29\GroupPath.cs" />
-    <Compile Include="%28PasswordSafe%29\Header.cs" />
-    <Compile Include="%28PasswordSafe%29\HeaderCollection.cs" />
-    <Compile Include="%28PasswordSafe%29\HeaderType.cs" />
-    <Compile Include="%28PasswordSafe%29\Record.cs" />
-    <Compile Include="%28PasswordSafe%29\RecordCollection.cs" />
-    <Compile Include="%28PasswordSafe%29\RecordType.cs" />
-    <Compile Include="%28PasswordSafe%29\Twofish.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

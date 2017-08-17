@@ -574,10 +574,10 @@ namespace Bimil {
 
                     if (document.LastSaveApplication.StartsWith("Bimil ")) { //convert temporary password safe fields to permanent ones
                         foreach (var entry in document.Entries) {
-                            if (entry.Records.Contains(RecordType.TemporaryBimilTwoFactorKey)) {
+                            if (entry.Records.Contains((RecordType)TemporaryRecordType.TwoFactorKey)) {
                                 var buffer = new byte[1024];
                                 try {
-                                    OneTimePassword.FromBase32(entry[RecordType.TemporaryBimilTwoFactorKey].Text, buffer, out var bytesLength);
+                                    OneTimePassword.FromBase32(entry[(RecordType)TemporaryRecordType.TwoFactorKey].Text, buffer, out var bytesLength);
                                     var bytes = new byte[bytesLength];
                                     try {
                                         Buffer.BlockCopy(buffer, 0, bytes, 0, bytes.Length);
@@ -586,29 +586,29 @@ namespace Bimil {
                                         Array.Clear(bytes, 0, bytes.Length);
                                     }
                                 } catch (FormatException) {
-                                    Medo.MessageBox.ShowWarning(this, string.Format("Cannot convert 2-factor key {0} in entry {1}", entry[RecordType.TemporaryBimilTwoFactorKey].Text, entry.Title));
+                                    Medo.MessageBox.ShowWarning(this, string.Format("Cannot convert 2-factor key {0} in entry {1}", entry[(RecordType)TemporaryRecordType.TwoFactorKey].Text, entry.Title));
                                     if (entry.Notes.Length > 0) { entry.Notes += "\n"; }
-                                    entry.Notes += "Two factor key: " + entry[RecordType.TemporaryBimilTwoFactorKey].Text;
+                                    entry.Notes += "Two factor key: " + entry[(RecordType)TemporaryRecordType.TwoFactorKey].Text;
                                 } finally {
                                     Array.Clear(buffer, 0, buffer.Length);
                                 }
-                                entry[RecordType.TemporaryBimilTwoFactorKey] = null;
+                                entry[(RecordType)TemporaryRecordType.TwoFactorKey] = null;
                             }
-                            if (entry.Records.Contains(RecordType.TemporaryBimilCreditCardNumber)) {
-                                entry.CreditCardNumber = entry[RecordType.TemporaryBimilCreditCardNumber].Text;
-                                entry[RecordType.TemporaryBimilCreditCardNumber] = null;
+                            if (entry.Records.Contains((RecordType)TemporaryRecordType.CreditCardNumber)) {
+                                entry.CreditCardNumber = entry[(RecordType)TemporaryRecordType.CreditCardNumber].Text;
+                                entry[(RecordType)TemporaryRecordType.CreditCardNumber] = null;
                             }
-                            if (entry.Records.Contains(RecordType.TemporaryBimilCreditCardExpiration)) {
-                                entry.CreditCardExpiration = entry[RecordType.TemporaryBimilCreditCardExpiration].Text;
-                                entry[RecordType.TemporaryBimilCreditCardExpiration] = null;
+                            if (entry.Records.Contains((RecordType)TemporaryRecordType.CreditCardExpiration)) {
+                                entry.CreditCardExpiration = entry[(RecordType)TemporaryRecordType.CreditCardExpiration].Text;
+                                entry[(RecordType)TemporaryRecordType.CreditCardExpiration] = null;
                             }
-                            if (entry.Records.Contains(RecordType.TemporaryBimilCreditCardSecurityCode)) {
-                                entry.CreditCardVerificationValue = entry[RecordType.TemporaryBimilCreditCardSecurityCode].Text;
-                                entry[RecordType.TemporaryBimilCreditCardSecurityCode] = null;
+                            if (entry.Records.Contains((RecordType)TemporaryRecordType.CreditCardSecurityCode)) {
+                                entry.CreditCardVerificationValue = entry[(RecordType)TemporaryRecordType.CreditCardSecurityCode].Text;
+                                entry[(RecordType)TemporaryRecordType.CreditCardSecurityCode] = null;
                             }
-                            if (entry.Records.Contains(RecordType.TemporaryBimilCreditCardPin)) {
-                                entry.CreditCardPin = entry[RecordType.TemporaryBimilCreditCardPin].Text;
-                                entry[RecordType.TemporaryBimilCreditCardPin] = null;
+                            if (entry.Records.Contains((RecordType)TemporaryRecordType.CreditCardPin)) {
+                                entry.CreditCardPin = entry[(RecordType)TemporaryRecordType.CreditCardPin].Text;
+                                entry[(RecordType)TemporaryRecordType.CreditCardPin] = null;
                             }
                         }
                     }
@@ -1164,6 +1164,40 @@ namespace Bimil {
             public Document Document { get; }
             public String FileName { get; }
 
+        }
+
+
+        public enum TemporaryRecordType {
+            /// <summary>
+            /// Not to be used.
+            /// Two-factor authentication key.
+            /// Encoded in base 32.
+            /// </summary>
+            TwoFactorKey = 0xf0,
+            /// <summary>
+            /// Not to be used.
+            /// Credit card number.
+            /// Number should consist of digits and spaces.
+            /// </summary>
+            CreditCardNumber = 0xf1,
+            /// <summary>
+            /// Not to be used.
+            /// Credit card expiration.
+            /// Expiration should be MM/YY, where MM is 01-12, and YY 00-99.
+            /// </summary>
+            CreditCardExpiration = 0xf2,
+            /// <summary>
+            /// Not to be used.
+            /// Credit card verification value.
+            /// CVV (CVV2) is three or four digits.
+            /// </summary>
+            CreditCardSecurityCode = 0xf3,
+            /// <summary>
+            /// Not to be used.
+            /// Credit card PIN.
+            /// PIN is four to twelve digits long (ISO-9564).
+            /// </summary>
+            CreditCardPin = 0xf4,
         }
     }
 }

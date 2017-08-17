@@ -16,9 +16,14 @@ namespace Bimil {
             try {
                 foreach (var entry in entries) {
                     foreach (var record in entry.Records) {
-                        bytes.AddRange(BitConverter.GetBytes((int)record.RecordType));
-                        bytes.AddRange(BitConverter.GetBytes(record.RawDataDirect.Length));
-                        bytes.AddRange(record.RawDataDirect);
+                        var dataBytes = record.GetBytesSilently(); //to avoid modifications to access time
+                        try {
+                            bytes.AddRange(BitConverter.GetBytes((int)record.RecordType));
+                            bytes.AddRange(BitConverter.GetBytes(dataBytes.Length));
+                            bytes.AddRange(dataBytes);
+                        } finally {
+                            Array.Clear(dataBytes, 0, dataBytes.Length);
+                        }
                     }
 
                     //add entry separator
