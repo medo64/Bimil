@@ -23,13 +23,16 @@ namespace Bimil {
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(NewPasswordForm));
             this.lblPassword = new System.Windows.Forms.Label();
             this.txtPassword = new System.Windows.Forms.TextBox();
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnOK = new System.Windows.Forms.Button();
             this.txtPassword2 = new System.Windows.Forms.TextBox();
             this.lblPassword2 = new System.Windows.Forms.Label();
-            this.lblNoMatch = new System.Windows.Forms.Label();
+            this.erp = new System.Windows.Forms.ErrorProvider(this.components);
+            ((System.ComponentModel.ISupportInitialize)(this.erp)).BeginInit();
             this.SuspendLayout();
             // 
             // lblPassword
@@ -99,16 +102,11 @@ namespace Bimil {
             this.lblPassword2.TabIndex = 2;
             this.lblPassword2.Text = "Repeat:";
             // 
-            // lblNoMatch
+            // erp
             // 
-            this.lblNoMatch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.lblNoMatch.AutoSize = true;
-            this.lblNoMatch.Location = new System.Drawing.Point(12, 86);
-            this.lblNoMatch.Name = "lblNoMatch";
-            this.lblNoMatch.Size = new System.Drawing.Size(71, 17);
-            this.lblNoMatch.TabIndex = 6;
-            this.lblNoMatch.Text = "No match!";
-            this.lblNoMatch.Visible = false;
+            this.erp.BlinkStyle = System.Windows.Forms.ErrorBlinkStyle.NeverBlink;
+            this.erp.ContainerControl = this;
+            this.erp.Icon = ((System.Drawing.Icon)(resources.GetObject("erp.Icon")));
             // 
             // NewPasswordForm
             // 
@@ -117,7 +115,6 @@ namespace Bimil {
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(314, 120);
-            this.Controls.Add(this.lblNoMatch);
             this.Controls.Add(this.txtPassword2);
             this.Controls.Add(this.lblPassword2);
             this.Controls.Add(this.btnCancel);
@@ -132,6 +129,7 @@ namespace Bimil {
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Enter new password";
+            ((System.ComponentModel.ISupportInitialize)(this.erp)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -145,6 +143,6 @@ namespace Bimil {
         private System.Windows.Forms.Button btnOK;
         private System.Windows.Forms.TextBox txtPassword2;
         private System.Windows.Forms.Label lblPassword2;
-        private System.Windows.Forms.Label lblNoMatch;
+        private System.Windows.Forms.ErrorProvider erp;
     }
 }

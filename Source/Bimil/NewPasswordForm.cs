@@ -8,6 +8,9 @@ namespace Bimil {
         public NewPasswordForm() {
             InitializeComponent();
             this.Font = SystemFonts.MessageBoxFont;
+
+            erp.SetIconAlignment(txtPassword2, ErrorIconAlignment.MiddleLeft);
+            erp.SetIconPadding(txtPassword2, SystemInformation.Border3DSize.Width);
         }
 
 
@@ -49,9 +52,9 @@ namespace Bimil {
         private void txtPassword_TextChanged(object sender, EventArgs e) {
             if (string.Equals(txtPassword.Text, txtPassword2.Text, StringComparison.Ordinal)) {
                 btnOK.Enabled = true;
-                lblNoMatch.Visible = false;
+                erp.SetError(txtPassword2, null);
             } else {
-                lblNoMatch.Visible = (txtPassword2.Text.Length > 0);
+                erp.SetError(txtPassword2, "Passwords don't match.");
                 btnOK.Enabled = false;
             }
             this.AcceptButton = btnOK.Enabled ? btnOK : null;
