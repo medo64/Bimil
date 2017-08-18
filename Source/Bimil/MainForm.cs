@@ -334,6 +334,13 @@ namespace Bimil {
                     }
                     break;
 
+                case Keys.Alt | Keys.Insert: {
+                        if (mnuAdd.Enabled && (lsvEntries.SelectedItems.Count == 1)) { mnxEntryAddSimilar_Click(null, null); }
+                        e.Handled = true;
+                        e.SuppressKeyPress = true;
+                    }
+                    break;
+
                 case Keys.F2: {
                         if ((lsvEntries.SelectedItems.Count == 1) && !this.Document.IsReadOnly) {
                             lsvEntries.SelectedItems[0].BeginEdit();
