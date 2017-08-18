@@ -850,12 +850,36 @@ namespace Bimil {
                         case RecordType.EmailAddress:
                             if (record.Text.Length > 0) {
                                 mnxItem = new ToolStripMenuItem("Copy " + Helpers.ToTitleCase(Helpers.GetRecordCaption(record)) + " (" + record.Text + ")");
+                                mnxItem.Click += delegate { Execute.ClipboardCopyText(record.Text); };
                             }
                             break;
 
                         case RecordType.Password:
                             if (record.Text.Length > 0) {
                                 mnxItem = new ToolStripMenuItem("Copy " + Helpers.ToTitleCase(Helpers.GetRecordCaption(record)) + " (" + new string('*', record.Text.Length) + ")");
+                                mnxItem.Click += delegate { Execute.ClipboardCopyText(record.Text); };
+                            }
+                            break;
+
+                        case RecordType.TwoFactorKey:
+                            var keyBytes = record.GetBytes();
+                            if (keyBytes.Length > 0) {
+                                try {
+                                    var code = Helpers.GetTwoFactorCode(OneTimePassword.ToBase32(keyBytes, keyBytes.Length, SecretFormatFlags.None), space: true);
+                                    mnxItem = new ToolStripMenuItem("Copy Two-factor Code (" + code + ")");
+                                } finally {
+                                    Array.Clear(keyBytes, 0, keyBytes.Length);
+                                }
+                                mnxItem.Click += delegate {
+                                    var keyBytes2 = record.GetBytes();
+                                    try {
+                                        //recalculate code - just in case menu was open too long and displayed code expired
+                                        var code = Helpers.GetTwoFactorCode(OneTimePassword.ToBase32(keyBytes2, keyBytes2.Length, SecretFormatFlags.None));
+                                        Execute.ClipboardCopyText(code);
+                                    } finally {
+                                        Array.Clear(keyBytes2, 0, keyBytes2.Length);
+                                    }
+                                };
                             }
                             break;
                     }
@@ -865,7 +889,6 @@ namespace Bimil {
                         mnxItem.Tag = "btnCopy";
                         if (!hasCopyEntries) { mnxEntry.Items.Insert(nextMenuIndex++, new ToolStripSeparator()); }
                         hasCopyEntries = true;
-                        mnxItem.Click += delegate { Execute.ClipboardCopyText(record.Text); };
                         mnxEntry.Items.Insert(nextMenuIndex++, mnxItem);
                     }
                 }
