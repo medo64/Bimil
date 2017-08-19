@@ -32,10 +32,12 @@ namespace Bimil {
             this.Categories = categories;
             this.DefaultCategory = categories.Contains(defaultCategory) ? defaultCategory : null;
 
-            btnEdit.Visible = !this.Document.IsReadOnly;
-            btnAutotype.Visible = !Helpers.IsRunningOnMono && !hideAutotype; //filling form includes operations not supported under Linux - Mono under Windows might have some troubles too but it is disabled there because it enables easy testing :)
+            var autoTypeShown = !Helpers.IsRunningOnMono && !hideAutotype; //filling form includes operations not supported under Linux - Mono under Windows might have some troubles too but it is disabled there because it enables easy testing :)
 
-            if (!btnAutotype.Visible) {
+            btnEdit.Visible = !this.Document.IsReadOnly;
+            btnAutotype.Visible = autoTypeShown;
+
+            if (!autoTypeShown) {
                 btnEdit.Location = btnAutotype.Location;
                 btnFields.Location = btnAutotype.Location;
             } //move Edit button if Autotype is hidden
