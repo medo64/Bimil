@@ -88,6 +88,7 @@ namespace Bimil {
             // 
             // lsvItems
             // 
+            this.lsvItems.AllowDrop = true;
             this.lsvItems.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
@@ -111,7 +112,10 @@ namespace Bimil {
             this.lsvItems.View = System.Windows.Forms.View.Details;
             this.lsvItems.AfterLabelEdit += new System.Windows.Forms.LabelEditEventHandler(this.lsvItems_AfterLabelEdit);
             this.lsvItems.ItemActivate += new System.EventHandler(this.lsvItems_ItemActivate);
+            this.lsvItems.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.lsvItems_ItemDrag);
             this.lsvItems.SelectedIndexChanged += new System.EventHandler(this.lsvItems_SelectedIndexChanged);
+            this.lsvItems.DragDrop += new System.Windows.Forms.DragEventHandler(this.lsvItems_DragDrop);
+            this.lsvItems.DragEnter += new System.Windows.Forms.DragEventHandler(this.lsvItems_DragEnter);
             this.lsvItems.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lsvItems_KeyDown);
             // 
             // lsvItems_colSpecification

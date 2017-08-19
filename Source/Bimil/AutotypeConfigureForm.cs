@@ -24,6 +24,7 @@ namespace Bimil {
             }
 
             if (isReadOnly) {
+                lsvItems.AllowDrop = false;
                 lsvItems.BackColor = SystemColors.Control;
                 lsvItems.LabelEdit = false;
                 btnAdd.Enabled = false;
@@ -75,6 +76,54 @@ namespace Bimil {
                     break;
             }
         }
+
+        #region Drag&drop
+
+        private void lsvItems_ItemDrag(object sender, ItemDragEventArgs e) {
+            lsvItems.DoDragDrop(lsvItems.SelectedItems, DragDropEffects.Move);
+        }
+
+        private void lsvItems_DragEnter(object sender, DragEventArgs e) {
+            for (int i = 0; i < e.Data.GetFormats().Length; i++) {
+                if (e.Data.GetFormats()[i].Equals("System.Windows.Forms.ListView+SelectedListViewItemCollection")) {
+                    e.Effect = DragDropEffects.Move;
+                    break;
+                }
+            }
+        }
+
+        private void lsvItems_DragDrop(object sender, DragEventArgs e) {
+            if (lsvItems.SelectedItems.Count == 0) { return; }
+
+            var cp = lsvItems.PointToClient(new Point(e.X, e.Y));
+            var dragToItem = lsvItems.GetItemAt(cp.X, cp.Y);
+            if (dragToItem == null) { return; }
+
+            var dragIndex = dragToItem.Index;
+            var sel = new ListViewItem[lsvItems.SelectedItems.Count];
+            for (var i = 0; i < lsvItems.SelectedItems.Count; i++) {
+                sel[i] = lsvItems.SelectedItems[i];
+            }
+
+            ListViewItem insertItem = null;
+            for (var i = 0; i < sel.Length; i++) {
+                var dragItem = sel[i];
+                var itemIndex = dragIndex;
+                if (itemIndex == dragItem.Index) { return; }
+
+                if (dragItem.Index < itemIndex) {
+                    itemIndex++;
+                } else {
+                    itemIndex = dragIndex + i;
+                }
+
+                insertItem = (ListViewItem)dragItem.Clone();
+                lsvItems.Items.Insert(itemIndex, insertItem);
+                lsvItems.Items.Remove(dragItem);
+            }
+        }
+
+        #endregion Drag&drop
 
 
         private void btnAdd_Click(object sender, EventArgs e) {
