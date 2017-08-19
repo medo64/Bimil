@@ -55,14 +55,14 @@ namespace Bimil {
         [Description("If true, all fields will be editable by default.")]
         [DefaultValue(true)]
         public static bool EditableByDefault {
-            get { return Config.Read("EditableByDefault", Medo.Configuration.Settings.Read("EditableByDefault", false)); }
+            get { return Config.Read("EditableByDefault", Medo.Configuration.Settings.Read("EditableByDefault", true)); }
             set { Config.Write("EditableByDefault", value); }
         }
 
         [Category("Behavior")]
         [DisplayName("Show common password warnings")]
         [Description("If true, warning will be shown if a password similar to common is used.")]
-        [DefaultValue(false)]
+        [DefaultValue(true)]
         public static bool ShowCommonPasswordWarnings {
             get { return Config.Read("ShowCommonPasswordWarnings", Medo.Configuration.Settings.Read("ShowCommonPasswordWarnings", true)); }
             set { Config.Write("ShowCommonPasswordWarnings", value); }
@@ -82,7 +82,7 @@ namespace Bimil {
         [Category("Visual")]
         [DisplayName("Scale boost")]
         [Description("Additional value to determine toolbar scaling.")]
-        [DefaultValue(120)]
+        [DefaultValue(0)]
         public static double ScaleBoost {
             get { return Config.Read("ScaleBoost", Medo.Configuration.Settings.Read("ScaleBoost", 0.00)); }
             set {
