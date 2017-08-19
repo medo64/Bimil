@@ -53,7 +53,7 @@ namespace Bimil {
         [Category("Behavior")]
         [DisplayName("Editable by default")]
         [Description("If true, all fields will be editable by default.")]
-        [DefaultValue(false)]
+        [DefaultValue(true)]
         public static bool EditableByDefault {
             get { return Config.Read("EditableByDefault", Medo.Configuration.Settings.Read("EditableByDefault", false)); }
             set { Config.Write("EditableByDefault", value); }
