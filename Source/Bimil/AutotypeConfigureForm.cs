@@ -59,6 +59,10 @@ namespace Bimil {
 
         private void lsvItems_KeyDown(object sender, KeyEventArgs e) {
             switch (e.KeyData) {
+                case Keys.Insert:
+                    if (btnAdd.Enabled) { btnAdd.PerformClick(); }
+                    break;
+
                 case Keys.F2:
                     if (!this.IsReadOnly && (lsvItems.SelectedItems.Count == 1)) {
                         lsvItems.SelectedItems[0].BeginEdit();
