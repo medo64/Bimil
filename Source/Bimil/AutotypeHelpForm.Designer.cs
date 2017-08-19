@@ -31,6 +31,7 @@ namespace Bimil {
             this.btnOK = new System.Windows.Forms.Button();
             this.txtAutotype = new System.Windows.Forms.TextBox();
             this.tip = new System.Windows.Forms.ToolTip(this.components);
+            this.lblDescription = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // lsvHelp
@@ -47,7 +48,7 @@ namespace Bimil {
             this.lsvHelp.MultiSelect = false;
             this.lsvHelp.Name = "lsvHelp";
             this.lsvHelp.ShowItemToolTips = true;
-            this.lsvHelp.Size = new System.Drawing.Size(598, 363);
+            this.lsvHelp.Size = new System.Drawing.Size(598, 323);
             this.lsvHelp.TabIndex = 0;
             this.lsvHelp.UseCompatibleStateImageBehavior = false;
             this.lsvHelp.View = System.Windows.Forms.View.Details;
@@ -93,6 +94,18 @@ namespace Bimil {
             this.txtAutotype.Name = "txtAutotype";
             this.txtAutotype.Size = new System.Drawing.Size(394, 22);
             this.txtAutotype.TabIndex = 8;
+            this.txtAutotype.TextChanged += new System.EventHandler(this.txtAutotype_TextChanged);
+            // 
+            // lblDescription
+            // 
+            this.lblDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblDescription.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lblDescription.Location = new System.Drawing.Point(12, 338);
+            this.lblDescription.Name = "lblDescription";
+            this.lblDescription.Size = new System.Drawing.Size(598, 40);
+            this.lblDescription.TabIndex = 9;
             // 
             // AutotypeHelpForm
             // 
@@ -101,6 +114,7 @@ namespace Bimil {
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(622, 433);
+            this.Controls.Add(this.lblDescription);
             this.Controls.Add(this.txtAutotype);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnOK);
@@ -131,5 +145,6 @@ namespace Bimil {
         private System.Windows.Forms.ColumnHeader lsvHelp_colEscape;
         private System.Windows.Forms.ColumnHeader lsvHelp_colHelp;
         private System.Windows.Forms.ToolTip tip;
+        private System.Windows.Forms.Label lblDescription;
     }
 }

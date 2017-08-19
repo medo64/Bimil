@@ -558,6 +558,17 @@ namespace Bimil {
         }
 
 
+        public static string GetAutotypeDescription(string text) {
+            var tokens = AutotypeToken.GetUnexpandedAutotypeTokens(text);
+            var sb = new StringBuilder();
+            foreach (var token in tokens) {
+                if (sb.Length > 0) { sb.Append(" "); }
+                sb.Append(token.ToString());
+            }
+            return sb.ToString();
+        }
+
+
         public static bool IsRunningOnMono {
             get { return (Type.GetType("Mono.Runtime") != null); }
         }

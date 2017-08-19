@@ -53,7 +53,7 @@ namespace Bimil {
             if (string.IsNullOrEmpty(e.Label)) {
                 e.CancelEdit = true;
             } else {
-                lsvItems.Items[e.Item].SubItems[1].Text = UpdateItemDescription(e.Label);
+                lsvItems.Items[e.Item].SubItems[1].Text = Helpers.GetAutotypeDescription(e.Label);
             }
         }
 
@@ -123,20 +123,10 @@ namespace Bimil {
 
         private void UpdateItemDescription(ListViewItem item) {
             if (item.SubItems.Count < 2) {
-                item.SubItems.Add(UpdateItemDescription(item.Text));
+                item.SubItems.Add(Helpers.GetAutotypeDescription(item.Text));
             } else {
-                item.SubItems[1].Text = UpdateItemDescription(item.Text);
+                item.SubItems[1].Text = Helpers.GetAutotypeDescription(item.Text);
             }
-        }
-
-        private string UpdateItemDescription(string text) {
-            var tokens = AutotypeToken.GetUnexpandedAutotypeTokens(text);
-            var sb = new StringBuilder();
-            foreach (var token in tokens) {
-                if (sb.Length > 0) { sb.Append(" "); }
-                sb.Append(token.ToString());
-            }
-            return sb.ToString();
         }
     }
 }

@@ -95,6 +95,12 @@ namespace Bimil {
             }
         }
 
+        private void txtAutotype_TextChanged(object sender, EventArgs e) {
+            var caption = Helpers.GetAutotypeDescription(txtAutotype.Text);
+            lblDescription.Text = caption;
+            tip.SetToolTip(lblDescription, caption);
+        }
+
 
         private Dictionary<string, ListViewGroup> Groups = new Dictionary<string, ListViewGroup>();
 
