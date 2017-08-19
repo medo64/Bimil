@@ -161,6 +161,12 @@
     <Compile Include="..\..\Libraries\PasswordSafe\Source\PasswordSafe\RecordType.cs">
       <Link>%28PasswordSafe%29\RecordType.cs</Link>
     </Compile>
+    <Compile Include="AutotypeConfigureForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AutotypeConfigureForm.Designer.cs">
+      <DependentUpon>AutotypeConfigureForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="AutotypeHelpForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -275,6 +281,9 @@
     <Compile Include="TextBoxEx.cs">
       <SubType>Component</SubType>
     </Compile>
+    <EmbeddedResource Include="AutotypeConfigureForm.resx">
+      <DependentUpon>AutotypeConfigureForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="AutotypeForm.resx">
       <DependentUpon>AutotypeForm.cs</DependentUpon>
     </EmbeddedResource>

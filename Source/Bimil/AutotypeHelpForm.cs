@@ -20,6 +20,7 @@ namespace Bimil {
             if (isReadOnly) {
                 lsvHelp.BackColor = SystemColors.Control;
                 txtAutotype.ReadOnly = isReadOnly;
+                txtAutotype.Width += btnOK.Width + (btnCancel.Left - btnOK.Right);
                 btnOK.Visible = false;
             }
         }

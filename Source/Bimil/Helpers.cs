@@ -418,6 +418,9 @@ namespace Bimil {
 
             var resources = Bimil.Properties.Resources.ResourceManager;
             var bitmap = resources.GetObject(item.Name + set) as Bitmap;
+            if ((bitmap == null) && !string.IsNullOrEmpty(item.Tag as string)) {
+                bitmap = resources.GetObject(item.Tag + set) as Bitmap;
+            }
 #if DEBUG
             item.Image = (bitmap != null) ? new Bitmap(bitmap, size, size) : new Bitmap(size, size, PixelFormat.Format8bppIndexed);
 #else

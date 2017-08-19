@@ -24,6 +24,7 @@ namespace Bimil {
         public ItemForm(Document document, Entry item, IList<string> categories, bool startsAsEditable, bool isNew = false, string defaultCategory = null, bool hideAutotype = false) {
             InitializeComponent();
             this.Font = SystemFonts.MessageBoxFont;
+            Helpers.ScaleButton(btnAutotypeConfigure);
 
             this.Document = document;
             this.Item = item;
@@ -36,6 +37,7 @@ namespace Bimil {
 
             btnEdit.Visible = !this.Document.IsReadOnly;
             btnAutotype.Visible = autoTypeShown;
+            btnAutotypeConfigure.Visible = autoTypeShown;
 
             if (!autoTypeShown) {
                 btnEdit.Location = btnAutotype.Location;
@@ -43,6 +45,7 @@ namespace Bimil {
             } //move Edit button if Autotype is hidden
 
             this.Text = this.Document.IsReadOnly ? "View" : "Edit";
+
         }
 
 
@@ -109,6 +112,12 @@ namespace Bimil {
 
                 case Keys.Control | Keys.T: //fill
                     if (btnAutotype.Visible) { btnAutotype.PerformClick(); }
+                    e.Handled = true;
+                    e.SuppressKeyPress = true;
+                    break;
+
+                case Keys.Control | Keys.Shift | Keys.T: //configure auto-type
+                    if (btnAutotypeConfigure.Visible) { btnAutotypeConfigure.PerformClick(); }
                     e.Handled = true;
                     e.SuppressKeyPress = true;
                     break;
@@ -219,6 +228,7 @@ namespace Bimil {
                     case RecordType.PasswordExpiryTime:
                     case RecordType.PasswordModificationTime:
                     case RecordType.PasswordHistory:
+                    case RecordType.Autotype:
                         continue;
 
                     case RecordType.UserName:
@@ -259,8 +269,7 @@ namespace Bimil {
                             pnl.Controls.Add(NewShowPasswordButton(textBox));
                             pnl.Controls.Add(NewGeneratePasswordButton(textBox));
 
-                            void showPasswordWarnings()
-                            {
+                            void showPasswordWarnings() {
                                 if (BadPasswords.IsCommon(textBox.Text, out var matchedPassword)) {
                                     erp.SetIconAlignment(textBox, ErrorIconAlignment.MiddleLeft);
                                     erp.SetIconPadding(textBox, SystemInformation.BorderSize.Width);
@@ -345,24 +354,6 @@ namespace Bimil {
                         }
                         break;
 
-                    case RecordType.Autotype: {
-                            var textBox = NewTextBox(labelWidth, y, record);
-                            pnl.Controls.Add(textBox);
-
-                            pnl.Controls.Add(NewConfigureButton(textBox, delegate {
-                                using (var frm = new AutotypeHelpForm(textBox.Text, textBox.ReadOnly)) {
-                                    if (frm.ShowDialog(this) == DialogResult.OK) {
-                                        if (!textBox.ReadOnly) {
-                                            textBox.Text = frm.AutotypeText;
-                                        }
-                                    }
-                                }
-                            }, "Auto-type configuration."));
-
-                            yH = textBox.Height;
-                        }
-                        break;
-
                     case RecordType.RunCommand: {
                             var textBox = NewTextBox(labelWidth, y, record);
                             pnl.Controls.Add(textBox);
@@ -434,6 +425,12 @@ namespace Bimil {
                 ownerForm.Select();
             };
             frm.Show();
+        }
+
+        private void btnAutotypeConfigure_Click(object sender, EventArgs e) {
+            using (var frm = new AutotypeConfigureForm(this.Item, !this.Editable)) {
+                frm.ShowDialog(this);
+            }
         }
 
         private void btnOK_Click(object sender, EventArgs e) {

@@ -86,7 +86,8 @@ namespace Bimil {
             // 
             // txtAutotype
             // 
-            this.txtAutotype.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.txtAutotype.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.txtAutotype.HideSelection = false;
             this.txtAutotype.Location = new System.Drawing.Point(12, 396);
             this.txtAutotype.Name = "txtAutotype";
