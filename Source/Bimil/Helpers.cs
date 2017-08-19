@@ -559,11 +559,22 @@ namespace Bimil {
 
 
         public static string GetAutotypeDescription(string text) {
-            var tokens = AutotypeToken.GetUnexpandedAutotypeTokens(text);
+            return GetAutotypeDescription(AutotypeToken.GetUnexpandedAutotypeTokens(text));
+        }
+
+        public static string GetAutotypeDescription(IEnumerable<AutotypeToken> tokens) {
             var sb = new StringBuilder();
+            var wasKey = true;
             foreach (var token in tokens) {
-                if (sb.Length > 0) { sb.Append(" "); }
-                sb.Append(token.ToString());
+                var isKey = (token.Kind == AutotypeTokenKind.Key);
+                if (sb.Length > 0 && (!wasKey || !isKey)) { sb.Append(" "); }
+                wasKey = isKey;
+
+                if ((token.Kind == AutotypeTokenKind.Key) && (token.Content == " ")) {
+                    sb.Append("{Space}");
+                } else {
+                    sb.Append(token.ToString());
+                }
             }
             return sb.ToString();
         }

@@ -207,14 +207,7 @@ namespace Bimil {
                 btn.Text += "******";
             } else {
                 if (tokens != null) {
-                    var sb = new StringBuilder();
-                    foreach (var token in tokens) {
-                        if ((token.Kind != AutotypeTokenKind.Key) || (token.Content.StartsWith("{", StringComparison.Ordinal) && token.Content.EndsWith("}", StringComparison.Ordinal))) {
-                            sb.Append(" ");
-                        }
-                        sb.Append(token.Content);
-                    }
-                    btn.Text += sb.ToString();
+                    btn.Text += " " + Helpers.GetAutotypeDescription(tokens);
                 }
             };
 
