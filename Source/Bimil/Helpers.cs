@@ -72,7 +72,6 @@ namespace Bimil {
 
             yield return RecordType.Notes;
 
-            yield return RecordType.Autotype;
             yield return RecordType.RunCommand;
         }
 
