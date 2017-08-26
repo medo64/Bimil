@@ -68,6 +68,24 @@ namespace Bimil {
             set { Config.Write("ShowCommonPasswordWarnings", value); }
         }
 
+        [Category("Behavior")]
+        [DisplayName("Save password history by default")]
+        [Description("If true, password history storage will automatically be added to all new entries.")]
+        [DefaultValue(false)]
+        public static bool SavePasswordHistoryByDefault {
+            get { return Config.Read("SavePasswordHistory", Medo.Configuration.Settings.Read("SavePasswordHistory", false)); }
+            set { Config.Write("SavePasswordHistory", value); }
+        }
+
+        [Category("Behavior")]
+        [DisplayName("Default password history count")]
+        [Description("Default number of password history entries.")]
+        [DefaultValue(5)]
+        public static int SavePasswordHistoryDefaultCount {
+            get { return Config.Read("SavePasswordHistoryDefaultCount", Medo.Configuration.Settings.Read("SavePasswordHistoryDefaultCount", 5)); }
+            set { Config.Write("SavePasswordHistoryDefaultCount", value); }
+        }
+
 
         [Category("Compatibility")]
         [DisplayName("Show PasswordSafe warnings")]

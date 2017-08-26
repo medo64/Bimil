@@ -16,6 +16,7 @@ namespace Bimil {
             chbEditableByDefault.Checked = Settings.EditableByDefault;
             chbShowCommonPasswordWarnings.Checked = Settings.ShowCommonPasswordWarnings;
             chbPasswordSafeWarnings.Checked = Settings.ShowPasswordSafeWarnings;
+            chbSavePasswordHistoryByDefault.Checked = Settings.SavePasswordHistoryByDefault;
 
             chbItemTimeout.Checked = (Settings.AutoCloseItemTimeout > 0);
             txtItemTimeout.Text = (Settings.AutoCloseItemTimeout > 0) ? Settings.AutoCloseItemTimeout.ToString(CultureInfo.CurrentCulture) : "120";
@@ -32,6 +33,7 @@ namespace Bimil {
             Settings.EditableByDefault = chbEditableByDefault.Checked;
             Settings.ShowCommonPasswordWarnings = chbShowCommonPasswordWarnings.Checked;
             Settings.ShowPasswordSafeWarnings = chbPasswordSafeWarnings.Checked;
+            Settings.SavePasswordHistoryByDefault = chbSavePasswordHistoryByDefault.Checked;
 
             if (chbItemTimeout.Checked) {
                 if (int.TryParse(txtItemTimeout.Text, NumberStyles.Integer, CultureInfo.CurrentCulture, out var seconds)) {

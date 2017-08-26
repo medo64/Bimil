@@ -1050,6 +1050,11 @@ namespace Bimil {
                 entry.Records.Add(new Record(recordType));
             }
 
+            if (Settings.SavePasswordHistoryByDefault) {
+                entry.PasswordHistory.MaximumCount = Settings.SavePasswordHistoryDefaultCount;
+                entry.PasswordHistory.Enabled = true;
+            }
+
             using (var frm2 = new ItemForm(this.Document, entry, this.Categories, startsAsEditable: true, isNew: true, defaultCategory: categoryText)) {
                 if (frm2.ShowDialog(this) == DialogResult.OK) {
                     RefreshItems(new Entry[] { entry });

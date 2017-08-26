@@ -12,6 +12,8 @@ namespace Bimil {
             this.IsReadonly = isReadonly;
             this.IsEnabled = entry.Records.Contains(RecordType.PasswordHistory);
 
+            nudHistoryCount.Value = Settings.SavePasswordHistoryDefaultCount;
+
             if (this.IsEnabled) {
                 nudHistoryCount.Value = entry.PasswordHistory.MaximumCount;
                 var listItems = new Stack<ListViewItem>(); //to get in the reverse
