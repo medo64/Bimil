@@ -2,6 +2,7 @@ using Medo.Security.Cryptography.PasswordSafe;
 using System;
 using System.Windows.Forms;
 using System.Collections.Generic;
+using System.Drawing;
 
 namespace Bimil {
     internal partial class PasswordDetailsForm : Form {
@@ -14,34 +15,43 @@ namespace Bimil {
 
             nudHistoryCount.Value = Settings.SavePasswordHistoryDefaultCount;
 
+            var listItems = new Stack<ListViewItem>(); //to get in the reverse
+
             if (this.IsEnabled) {
                 nudHistoryCount.Value = entry.PasswordHistory.MaximumCount;
-                var listItems = new Stack<ListViewItem>(); //to get in the reverse
                 foreach (var password in entry.PasswordHistory) {
-                    var lvi = new ListViewItem(password.TimeFirstUsed.ToShortDateString()) { Tag = password };
-                    lvi.SubItems.Add("***");
-                    var setTime = password.TimeFirstUsed.ToLocalTime();
-                    lvi.ToolTipText = $"{setTime:d}  {setTime:t}\n{password.HistoricalPassword}";
-                    listItems.Push(lvi);
+                    listItems.Push(NewHistoricalPasswordListViewItem(password.HistoricalPassword, password.TimeFirstUsed));
                 }
-                foreach (var item in listItems) {
-                    lsvHistoryPasswords.Items.Add(item);
-                }
-
                 chbHistoryEnabled.Checked = entry.PasswordHistory.Enabled;
             }
-            SetupHistoryStates();
 
-            if (entry.PasswordModificationTime != null) {
-                var setTime = entry.PasswordModificationTime.ToLocalTime();
-                lblCurrentPasswordTime.Text += $" {setTime:d}.";
-                tip.SetToolTip(lblCurrentPasswordTime, $"{setTime:d}  {setTime:t}");
-                lblCurrentPasswordTime.Visible = true;
+            foreach (var record in entry.Records) {
+                if (record.RecordType == RecordType.Password) {
+                    listItems.Push(NewHistoricalPasswordListViewItem(record.Text, entry.PasswordModificationTime, isCurrent: true)); //use the same modification time for all passwords :( - only one PasswordModificationTime record is here
+                }
             }
+
+            lsvHistoryPasswords.BeginUpdate();
+            foreach (var item in listItems) {
+                lsvHistoryPasswords.Items.Add(item);
+            }
+            lsvHistoryPasswords.EndUpdate();
+
+            SetupHistoryStates();
 
             btnOK.Visible = !this.IsReadonly;
             lblEditInfo.Visible = this.IsReadonly;
         }
+
+        private ListViewItem NewHistoricalPasswordListViewItem(string password, DateTime utcTime, bool isCurrent = false) {
+            var localTime = utcTime.ToLocalTime();
+            var lvi = new ListViewItem(localTime.ToShortDateString()) { Tag = password };
+            lvi.SubItems.Add("***");
+            lvi.ToolTipText = $"{localTime:d} {localTime:t}" + (isCurrent ? " (current)" : "") + $"\n{password}";
+            if (isCurrent) { lvi.Font = new Font(lvi.Font, FontStyle.Bold); }
+            return lvi;
+        }
+
 
         private readonly Entry Entry;
         private readonly bool IsReadonly;
@@ -84,7 +94,7 @@ namespace Bimil {
 
         private void btnHistoryShow_Click(object sender, System.EventArgs e) {
             foreach (ListViewItem item in lsvHistoryPasswords.Items) {
-                item.SubItems[1].Text = ((PasswordHistoryItem)(item.Tag)).HistoricalPassword;
+                item.SubItems[1].Text = (string)(item.Tag);
             }
             btnHistoryShow.Enabled = false;
             this.IsHidden = true;
@@ -102,8 +112,8 @@ namespace Bimil {
         private void mnxHistoricalPasswordCopy_Click(object sender, System.EventArgs e) {
             if (lsvHistoryPasswords.SelectedItems.Count != 1) { return; }
 
-            var item = (PasswordHistoryItem)(lsvHistoryPasswords.SelectedItems[0].Tag);
-            Execute.ClipboardCopyText(item.HistoricalPassword);
+            var password = (string)(lsvHistoryPasswords.SelectedItems[0].Tag);
+            Execute.ClipboardCopyText(password);
         }
 
 
