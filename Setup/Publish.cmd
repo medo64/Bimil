@@ -6,11 +6,11 @@ SET                  FILES="..\Binaries\Bimil.exe" "..\LICENSE.md" "..\README.md
 SET        SOURCE_SOLUTION="..\Source\Bimil.sln"
 SET       SOURCE_INNOSETUP=".\Bimil.iss"
 
-SET              TOOLS_GIT="%PROGRAMFILES%\Git\mingw64\bin\git.exe"
+SET              TOOLS_GIT="%PROGRAMFILES(X86)%\Git\mingw64\bin\git.exe" "%PROGRAMFILES%\Git\mingw64\bin\git.exe" "C:\Program Files\Git\mingw64\bin\git.exe"
 SET     TOOLS_VISUALSTUDIO="%PROGRAMFILES(X86)%\Microsoft Visual Studio\2017\Community\Common7\IDE\devenv.exe"
 SET         TOOLS_SIGNTOOL="%PROGRAMFILES(X86)%\Microsoft SDKs\ClickOnce\SignTool\signtool.exe" "%PROGRAMFILES(X86)%\Windows Kits\10\App Certification Kit\signtool.exe" "%PROGRAMFILES(X86)%\Windows Kits\10\bin\x86\signtool.exe"
-SET        TOOLS_INNOSETUP="%PROGRAMFILES(x86)%\Inno Setup 5\iscc.exe"
-SET           TOOLS_WINRAR="%PROGRAMFILES%\WinRAR\WinRAR.exe"
+SET        TOOLS_INNOSETUP="%PROGRAMFILES(X86)%\Inno Setup 5\iscc.exe"
+SET           TOOLS_WINRAR="%PROGRAMFILES(X86)%\WinRAR\WinRAR.exe" "%PROGRAMFILES%\WinRAR\WinRAR.exe" "C:\Program Files\WinRAR\WinRAR.exe"
 
 SET CERTIFICATE_THUMBPRINT="df26e797ffaee47a40c1fab756e995d3763da968"
 SET      SIGN_TIMESTAMPURL="http://timestamp.comodoca.com/rfc3161"
@@ -21,14 +21,14 @@ ECHO --- DISCOVER TOOLS
 ECHO:
 
 WHERE /Q git
-IF ERRORLEVEL 0 (
-    SET TOOL_GIT="git"
-) ELSE (
+IF ERRORLEVEL 1 (
     FOR %%I IN (%TOOLS_GIT%) DO (
         IF EXIST %%I IF NOT DEFINED TOOL_GIT SET TOOL_GIT=%%I
     )
+) ELSE (
+    SET TOOL_GIT="git"
 )
-IF [%TOOLS_GIT%]==[] SET WARNING=1
+IF [%TOOL_GIT%]==[] SET WARNING=1
 ECHO Git .........: %TOOL_GIT%
 
 FOR %%I IN (%TOOLS_VISUALSTUDIO%) DO (
@@ -126,6 +126,9 @@ MKDIR ".\Temp"
 IF NOT [%TOOL_INNOSETUP%]==[] (
     ECHO --- BUILD SETUP
     ECHO:
+
+    SET TOOL_INNOSETUP_ISPP=%TOOL_INNOSETUP:iscc.exe=ispp.dll%
+    IF NOT EXIST !!TOOL_INNOSETUP_ISPP!! ECHO InnoSetup pre-processor not installed^^! & GOTO Error
 
     RMDIR /Q /S ".\Temp" 2> NUL
     CALL %TOOL_INNOSETUP% /DVersionHash=%VERSION_HASH% /O".\Temp" %SOURCE_INNOSETUP%
