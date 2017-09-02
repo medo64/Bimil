@@ -90,8 +90,13 @@ ECHO --- BUILD SOLUTION
 ECHO:
 
 RMDIR /Q /S "..\Binaries" 2> NUL
-%TOOL_VISUALSTUDIO% /Build "Release" %SOURCE_SOLUTION%
-IF NOT ERRORLEVEL 0 ECHO Build failed^^! & GOTO Error
+IF [%1]==[] (
+    %TOOL_VISUALSTUDIO% /Build "Release" %SOURCE_SOLUTION%
+    IF NOT ERRORLEVEL 0 ECHO Build failed^^! & GOTO Error
+) ELSE (
+    %TOOL_VISUALSTUDIO% /Build %1 %SOURCE_SOLUTION%
+    IF NOT ERRORLEVEL 0 ECHO Build failed Windows Store^^! & GOTO Error
+)
 
 ECHO Build successful.
 
