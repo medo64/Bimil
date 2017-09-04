@@ -58,7 +58,7 @@ ECHO Git .................: %TOOL_GIT%
 FOR %%I IN (%TOOLS_VISUALSTUDIO%) DO (
     IF EXIST %%I IF NOT DEFINED TOOL_VISUALSTUDIO SET TOOL_VISUALSTUDIO=%%I
 )
-IF [%TOOL_VISUALSTUDIO%]==[] ECHO Not found^^! & GOTO Error
+IF [%TOOL_VISUALSTUDIO%]==[] ECHO Visual Studio not found^^! & GOTO Error
 ECHO Visual Studio .......: %TOOL_VISUALSTUDIO%
 
 FOR %%I IN (%TOOLS_APPCONVERTER%) DO (
@@ -76,7 +76,7 @@ ECHO SignTool ............: %TOOL_SIGNTOOL%
 FOR %%I IN (%TOOLS_INNOSETUP%) DO (
     IF EXIST %%I IF NOT DEFINED TOOL_INNOSETUP SET TOOL_INNOSETUP=%%I
 )
-IF [%TOOL_INNOSETUP%]==[] SET WARNING=1
+IF [%TOOL_INNOSETUP%]==[] ECHO InnoSetup not found^^! & GOTO Error
 ECHO InnoSetup ...........: %TOOL_INNOSETUP%
 
 FOR %%I IN (%TOOLS_WINRAR%) DO (
@@ -166,7 +166,6 @@ IF [!STORE_BUILD!]==[] (
         SET TOOL_INNOSETUP_ISPP=%TOOL_INNOSETUP:iscc.exe=ispp.dll%
         IF NOT EXIST !!TOOL_INNOSETUP_ISPP!! ECHO InnoSetup pre-processor not installed^^! & GOTO Error
 
-        RMDIR /Q /S ".\Temp" 2> NUL
         CALL %TOOL_INNOSETUP% /DVersionHash=%VERSION_HASH% /O".\Temp" %SOURCE_INNOSETUP%
         IF NOT ERRORLEVEL 0 GOTO Error
 
@@ -257,8 +256,6 @@ IF [!STORE_BUILD!]==[WindowsStore] (
 
 ECHO --- DONE
 
-RMDIR /Q /S ".\Temp" 2> NUL
-
 IF NOT [%WARNING%]==[] (    
     ECHO:
     IF [%TOOL_GIT%]==[] ECHO Git executable not found.
@@ -278,6 +275,7 @@ IF [!STORE_BUILD!]==[] (
 )
 
 ENDLOCAL
+RMDIR /Q /S ".\Temp" 2> NUL
 EXIT /B 0
 
 
