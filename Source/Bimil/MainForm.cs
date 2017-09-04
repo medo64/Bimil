@@ -1008,7 +1008,7 @@ namespace Bimil {
 
             var entries = new List<Entry>(ClipboardHelper.GetClipboardData());
             foreach (var entry in entries) {
-                if (category != null) { entry.Group = category; } //switch category of pasted item to currently selected category
+                if (!string.IsNullOrEmpty(category)) { entry.Group = category; } //switch category of pasted item to currently selected category
                 this.Document.Entries.Add(entry);
             }
             RefreshCategories();
