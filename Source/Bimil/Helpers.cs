@@ -259,9 +259,8 @@ namespace Bimil {
                 if (listView.SelectedItems.Count == 0) {
                     listView.Items[0].Selected = true;
                     listView.Items[0].Focused = true;
+                    listView.EnsureVisible(listView.SelectedItems[0].Index);
                 }
-
-                listView.EnsureVisible(listView.SelectedItems[0].Index);
             } else {
                 listView.Enabled = true;
                 listView.ForeColor = SystemColors.GrayText;
@@ -287,8 +286,8 @@ namespace Bimil {
                             foreach (ListViewItem item in lsvEntries.Items) { item.Selected = false; }
                             lsvEntries.Items[index].Selected = true;
                             lsvEntries.Items[index].Focused = true;
+                            lsvEntries.EnsureVisible(lsvEntries.SelectedItems[0].Index);
                         }
-                        lsvEntries.EnsureVisible(lsvEntries.SelectedItems[0].Index);
                     }
                     e.Handled = true;
                     e.SuppressKeyPress = true;
@@ -303,8 +302,8 @@ namespace Bimil {
                             foreach (ListViewItem item in lsvEntries.Items) { item.Selected = false; }
                             lsvEntries.Items[index].Selected = true;
                             lsvEntries.Items[index].Focused = true;
+                            lsvEntries.EnsureVisible(lsvEntries.SelectedItems[0].Index);
                         }
-                        lsvEntries.EnsureVisible(lsvEntries.SelectedItems[0].Index);
                     }
                     e.Handled = true;
                     e.SuppressKeyPress = true;
@@ -321,8 +320,8 @@ namespace Bimil {
                             foreach (ListViewItem item in lsvEntries.Items) { item.Selected = false; }
                             lsvEntries.Items[index].Selected = true;
                             lsvEntries.Items[index].Focused = true;
+                            lsvEntries.EnsureVisible(lsvEntries.SelectedItems[0].Index);
                         }
-                        lsvEntries.EnsureVisible(lsvEntries.SelectedItems[0].Index);
                     }
                     e.Handled = true;
                     e.SuppressKeyPress = true;
@@ -339,8 +338,8 @@ namespace Bimil {
                             foreach (ListViewItem item in lsvEntries.Items) { item.Selected = false; }
                             lsvEntries.Items[index].Selected = true;
                             lsvEntries.Items[index].Focused = true;
+                            lsvEntries.EnsureVisible(lsvEntries.SelectedItems[0].Index);
                         }
-                        lsvEntries.EnsureVisible(lsvEntries.SelectedItems[0].Index);
                     }
                     e.Handled = true;
                     e.SuppressKeyPress = true;
