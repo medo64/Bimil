@@ -682,7 +682,7 @@ namespace Bimil {
         }
 
 
-        private void mnuProperties_DropDownOpening(object sender, EventArgs e) {
+        private void mnuPropertiesMenu_DropDownOpening(object sender, EventArgs e) {
             mnuChangePassword.Enabled = !this.Document.IsReadOnly;
             mnuReadOnly.Checked = this.Document.IsReadOnly;
         }
@@ -729,6 +729,11 @@ namespace Bimil {
             UpdateMenu();
         }
 
+        private void mnuProperties_Click(object sender, EventArgs e) {
+            using (var frm = new DocumentInfoForm(this.Document)) {
+                frm.ShowDialog(this);
+            }
+        }
 
         private void mnuAdd_Click(object sender, EventArgs e) {
             if (this.Document == null) { return; }
@@ -1106,7 +1111,7 @@ namespace Bimil {
             mnuSave.Visible = mnuSave.Enabled;
             mnuSaveAlone.Visible = !mnuSave.Visible;
 
-            mnuProperties.Enabled = (this.Document != null);
+            mnuPropertiesMenu.Enabled = (this.Document != null);
             mnuAdd.Enabled = (this.Document != null) && (!this.Document.IsReadOnly);
             mnuView.Enabled = (this.Document != null) && isSingleEntrySelected;
             mnuEdit.Enabled = (this.Document != null) && isSingleEntrySelected;

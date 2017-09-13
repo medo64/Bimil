@@ -192,6 +192,12 @@
     <Compile Include="BimilDocument\BimilValue.cs" />
     <Compile Include="BimilDocument\DocumentConversion.cs" />
     <Compile Include="ClipboardHelper.cs" />
+    <Compile Include="DocumentInfoForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DocumentInfoForm.Designer.cs">
+      <DependentUpon>DocumentInfoForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="EntryCache.cs" />
     <Compile Include="AutotypeForm.cs">
       <SubType>Form</SubType>
@@ -301,6 +307,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="AutotypeHelpForm.resx">
       <DependentUpon>AutotypeHelpForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DocumentInfoForm.resx">
+      <DependentUpon>DocumentInfoForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ItemForm.resx">
       <DependentUpon>ItemForm.cs</DependentUpon>
