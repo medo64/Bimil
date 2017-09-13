@@ -33,7 +33,13 @@ namespace Bimil {
 
             //all textual fields
             foreach (var record in entry.Records) {
-                if (string.IsNullOrEmpty(record.Text)) { continue; } //omit empty entries
+                var recordBytes = record.GetBytesSilently();
+                try {
+                    if (recordBytes.Length == 0) { continue; } //omit empty entries
+                } finally {
+                    Array.Clear(recordBytes, 0, recordBytes.Length);
+                }
+
                 switch (record.RecordType) {
                     case RecordType.UserName:
                     case RecordType.EmailAddress:
