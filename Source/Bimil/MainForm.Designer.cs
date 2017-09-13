@@ -28,10 +28,13 @@ namespace Bimil {
             this.mnu = new System.Windows.Forms.ToolStrip();
             this.mnuNew = new System.Windows.Forms.ToolStripButton();
             this.mnuOpenAlone = new System.Windows.Forms.ToolStripButton();
-            this.mnuOpen = new System.Windows.Forms.ToolStripSplitButton();
-            this.mnuSaveAlone = new System.Windows.Forms.ToolStripButton();
-            this.mnuSave = new System.Windows.Forms.ToolStripSplitButton();
+            this.mnuSaveMenu = new System.Windows.Forms.ToolStripSplitButton();
+            this.mnuSave = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuSaveAs = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuOpenMenu = new System.Windows.Forms.ToolStripSplitButton();
+            this.mnuOpen = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
+            this.mnuSaveAlone = new System.Windows.Forms.ToolStripButton();
             this.mnuPropertiesMenu = new System.Windows.Forms.ToolStripSplitButton();
             this.mnuChangePassword = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuReadOnly = new System.Windows.Forms.ToolStripMenuItem();
@@ -82,9 +85,9 @@ namespace Bimil {
             this.mnu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnuNew,
             this.mnuOpenAlone,
-            this.mnuOpen,
+            this.mnuOpenMenu,
             this.mnuSaveAlone,
-            this.mnuSave,
+            this.mnuSaveMenu,
             this.mnuPropertiesMenu,
             this.mnu0,
             this.mnuAdd,
@@ -123,19 +126,69 @@ namespace Bimil {
             this.mnuOpenAlone.Text = "Open";
             this.mnuOpenAlone.ToolTipText = "Open (Ctrl+O)";
             this.mnuOpenAlone.Visible = false;
-            this.mnuOpenAlone.Click += new System.EventHandler(this.mnuOpen_ButtonClick);
+            this.mnuOpenAlone.Click += new System.EventHandler(this.mnuOpen_Click);
+            // 
+            // mnuSaveMenu
+            // 
+            this.mnuSaveMenu.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.mnuSaveMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mnuSave,
+            this.mnuSaveAs});
+            this.mnuSaveMenu.Image = global::Bimil.Properties.Resources.mnuSave_16;
+            this.mnuSaveMenu.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.mnuSaveMenu.Name = "mnuSaveMenu";
+            this.mnuSaveMenu.Size = new System.Drawing.Size(39, 24);
+            this.mnuSaveMenu.Tag = "mnuSave";
+            this.mnuSaveMenu.Text = "Save";
+            this.mnuSaveMenu.ToolTipText = "Save (Ctrl+S)";
+            this.mnuSaveMenu.ButtonClick += new System.EventHandler(this.mnuSave_Click);
+            // 
+            // mnuSave
+            // 
+            this.mnuSave.Image = global::Bimil.Properties.Resources.mnuSave_16;
+            this.mnuSave.Name = "mnuSave";
+            this.mnuSave.ShortcutKeyDisplayString = "Ctrl+S";
+            this.mnuSave.Size = new System.Drawing.Size(181, 26);
+            this.mnuSave.Text = "Save";
+            this.mnuSave.Click += new System.EventHandler(this.mnuSave_Click);
+            // 
+            // mnuSaveAs
+            // 
+            this.mnuSaveAs.Name = "mnuSaveAs";
+            this.mnuSaveAs.Size = new System.Drawing.Size(181, 26);
+            this.mnuSaveAs.Tag = "";
+            this.mnuSaveAs.Text = "Save as";
+            this.mnuSaveAs.Click += new System.EventHandler(this.mnuSaveAs_Click);
+            // 
+            // mnuOpenMenu
+            // 
+            this.mnuOpenMenu.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.mnuOpenMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mnuOpen,
+            this.toolStripMenuItem2});
+            this.mnuOpenMenu.Image = global::Bimil.Properties.Resources.mnuOpen_16;
+            this.mnuOpenMenu.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.mnuOpenMenu.Name = "mnuOpenMenu";
+            this.mnuOpenMenu.Size = new System.Drawing.Size(39, 24);
+            this.mnuOpenMenu.Tag = "mnuOpen";
+            this.mnuOpenMenu.Text = "Open";
+            this.mnuOpenMenu.ToolTipText = "Open (Ctrl+O)";
+            this.mnuOpenMenu.ButtonClick += new System.EventHandler(this.mnuOpen_Click);
+            this.mnuOpenMenu.DropDownOpening += new System.EventHandler(this.mnuOpenMenu_DropDownOpening);
             // 
             // mnuOpen
             // 
-            this.mnuOpen.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.mnuOpen.Image = global::Bimil.Properties.Resources.mnuOpen_16;
-            this.mnuOpen.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.mnuOpen.Name = "mnuOpen";
-            this.mnuOpen.Size = new System.Drawing.Size(39, 24);
+            this.mnuOpen.ShortcutKeyDisplayString = "Ctrl+O";
+            this.mnuOpen.Size = new System.Drawing.Size(173, 26);
             this.mnuOpen.Text = "Open";
-            this.mnuOpen.ToolTipText = "Open (Ctrl+O)";
-            this.mnuOpen.ButtonClick += new System.EventHandler(this.mnuOpen_ButtonClick);
-            this.mnuOpen.DropDownOpening += new System.EventHandler(this.mnuOpen_DropDownOpening);
+            this.mnuOpen.Click += new System.EventHandler(this.mnuOpen_Click);
+            // 
+            // toolStripMenuItem2
+            // 
+            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(170, 6);
             // 
             // mnuSaveAlone
             // 
@@ -149,28 +202,6 @@ namespace Bimil {
             this.mnuSaveAlone.Text = "Save";
             this.mnuSaveAlone.ToolTipText = "Save (Ctrl+S)";
             this.mnuSaveAlone.Visible = false;
-            // 
-            // mnuSave
-            // 
-            this.mnuSave.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.mnuSave.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.mnuSaveAs});
-            this.mnuSave.Image = global::Bimil.Properties.Resources.mnuSave_16;
-            this.mnuSave.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.mnuSave.Name = "mnuSave";
-            this.mnuSave.Size = new System.Drawing.Size(39, 24);
-            this.mnuSave.Text = "Save";
-            this.mnuSave.ToolTipText = "Save (Ctrl+S)";
-            this.mnuSave.ButtonClick += new System.EventHandler(this.mnuSave_ButtonClick);
-            // 
-            // mnuSaveAs
-            // 
-            this.mnuSaveAs.Image = global::Bimil.Properties.Resources.mnuSave_16;
-            this.mnuSaveAs.Name = "mnuSaveAs";
-            this.mnuSaveAs.Size = new System.Drawing.Size(133, 26);
-            this.mnuSaveAs.Tag = "mnuSave";
-            this.mnuSaveAs.Text = "Save as";
-            this.mnuSaveAs.Click += new System.EventHandler(this.mnuSaveAs_Click);
             // 
             // mnuPropertiesMenu
             // 
@@ -543,8 +574,8 @@ namespace Bimil {
 
         private System.Windows.Forms.ToolStrip mnu;
         private System.Windows.Forms.ToolStripButton mnuNew;
-        private System.Windows.Forms.ToolStripSplitButton mnuOpen;
-        private System.Windows.Forms.ToolStripSplitButton mnuSave;
+        private System.Windows.Forms.ToolStripSplitButton mnuOpenMenu;
+        private System.Windows.Forms.ToolStripSplitButton mnuSaveMenu;
         private System.Windows.Forms.ToolStripMenuItem mnuSaveAs;
         private System.Windows.Forms.ToolStripSeparator mnu0;
         private System.Windows.Forms.ToolStripButton mnuEdit;
@@ -586,6 +617,9 @@ namespace Bimil {
         private System.Windows.Forms.ToolStripMenuItem mnuReadOnly;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem mnuProperties;
+        private System.Windows.Forms.ToolStripMenuItem mnuSave;
+        private System.Windows.Forms.ToolStripMenuItem mnuOpen;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem2;
     }
 }
 

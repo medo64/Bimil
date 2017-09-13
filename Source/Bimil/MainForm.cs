@@ -58,27 +58,27 @@ namespace Bimil {
                     return true;
 
                 case Keys.Control | Keys.O:
-                    if (mnuOpen.Visible) {
-                        mnuOpen.PerformButtonClick();
+                    if (mnuOpenMenu.Visible) {
+                        mnuOpenMenu.PerformButtonClick();
                     } else {
                         mnuOpenAlone.PerformClick();
                     }
                     return true;
 
                 case Keys.Alt | Keys.O:
-                    if (mnuOpen.Visible) {
-                        mnuOpen.ShowDropDown();
+                    if (mnuOpenMenu.Visible) {
+                        mnuOpenMenu.ShowDropDown();
                     } else {
                         mnuOpenAlone.PerformClick();
                     }
                     return true;
 
                 case Keys.Control | Keys.S:
-                    mnuSave.PerformButtonClick();
+                    mnuSaveMenu.PerformButtonClick();
                     return true;
 
                 case Keys.Alt | Keys.S:
-                    mnuSave.ShowDropDown();
+                    mnuSaveMenu.ShowDropDown();
                     return true;
 
                 case Keys.Control | Keys.F:
@@ -213,7 +213,7 @@ namespace Bimil {
                 if (this.Document != null) {
                     if (Settings.AutoCloseSave && this.Document.HasChanged) {
                         if (this.DocumentFileName != null) {
-                            mnuSave_ButtonClick(null, null);
+                            mnuSave_Click(null, null);
                         } else { //if it cannot be saved, cancel close
                             tmrClose.Enabled = true;
                             return;
@@ -249,9 +249,9 @@ namespace Bimil {
 
 
         private void RefreshFiles() {
-            for (int i = mnuOpen.DropDownItems.Count - 1; i >= 0; i--) {
-                if ((mnuOpen.DropDownItems[i] is ToolStripMenuItem) && (mnuOpen.DropDownItems[i].Tag is RecentlyUsedFile)) {
-                    mnuOpen.DropDownItems.RemoveAt(i);
+            for (int i = mnuOpenMenu.DropDownItems.Count - 1; i >= 0; i--) {
+                if ((mnuOpenMenu.DropDownItems[i] is ToolStripMenuItem) && (mnuOpenMenu.DropDownItems[i].Tag is RecentlyUsedFile)) {
+                    mnuOpenMenu.DropDownItems.RemoveAt(i);
                 } else {
                     break;
                 }
@@ -263,11 +263,11 @@ namespace Bimil {
                     var fileName = ((RecentlyUsedFile)item.Tag).FileName;
                     LoadFile(fileName);
                 };
-                mnuOpen.DropDownItems.Add(item);
+                mnuOpenMenu.DropDownItems.Add(item);
             }
 
-            mnuOpen.Visible = (mnuOpen.DropDownItems.Count > 0);
-            mnuOpenAlone.Visible = !mnuOpen.Visible;
+            mnuOpenMenu.Visible = (App.Recent.Count > 0);
+            mnuOpenAlone.Visible = !mnuOpenMenu.Visible;
         }
 
         private void lsvEntries_ItemActivate(object sender, EventArgs e) {
@@ -422,7 +422,7 @@ namespace Bimil {
                 }
                 switch (Medo.MessageBox.ShowQuestion(this, question, MessageBoxButtons.YesNoCancel)) {
                     case DialogResult.Yes:
-                        mnuSave_ButtonClick(null, null);
+                        mnuSave_Click(null, null);
                         return (this.Document.HasChanged == false) ? DialogResult.OK : DialogResult.Cancel;
                     case DialogResult.No: return DialogResult.OK;
                     case DialogResult.Cancel: return DialogResult.Cancel;
@@ -458,7 +458,26 @@ namespace Bimil {
             cmbSearch.Select();
         }
 
-        private void mnuOpen_ButtonClick(object sender, EventArgs e) {
+
+        private void mnuOpenMenu_DropDownOpening(object sender, EventArgs e) {
+            foreach (ToolStripItem menuItem in mnuOpenMenu.DropDownItems) {
+                if (menuItem.Tag is RecentlyUsedFile recentFile) {
+                    var fileName = recentFile.FileName;
+                    if (fileName != null) {
+                        var isReadOnly = Helpers.GetReadOnly(fileName);
+                        if (isReadOnly == null) {
+                            Helpers.ScaleToolstripItem(menuItem, "picNonexistent");
+                        } else if (isReadOnly == true) {
+                            Helpers.ScaleToolstripItem(menuItem, "mnuReadOnly");
+                        } else {
+                            menuItem.Image = null;
+                        }
+                    }
+                }
+            }
+        }
+
+        private void mnuOpen_Click(object sender, EventArgs e) {
             if (SaveIfNeeded() != DialogResult.OK) { return; }
             using (var frm = new OpenFileDialog() { AddExtension = true, AutoUpgradeEnabled = true, Filter = "Bimil and PasswordSafe files|*.bimil;*.psafe3|Bimil files|*.bimil|Password Safe files|*.psafe3|All files|*.*", RestoreDirectory = true, ShowReadOnly = true }) {
                 if (frm.ShowDialog(this) == DialogResult.OK) {
@@ -467,24 +486,6 @@ namespace Bimil {
                         if ((this.Document.LastSaveApplication == null) || !this.Document.LastSaveApplication.StartsWith("Bimil ")) {
                             var application = string.IsNullOrEmpty(this.Document.LastSaveApplication) ? "unknown" : this.Document.LastSaveApplication;
                             Medo.MessageBox.ShowWarning(this, "Be careful when saving files not created by Bimil.\n\nWhile such files can be used, not necessarily all the features of the original software will be supported. Likewise, files edited by Bimil won't be necessarily fully readable by other software; e.g. two-factor keys are only supported in Bimil.\n\nLast edited by:\n" + application);
-                        }
-                    }
-                }
-            }
-        }
-
-        private void mnuOpen_DropDownOpening(object sender, EventArgs e) {
-            foreach (ToolStripDropDownItem item in mnuOpen.DropDownItems) {
-                if (item.Tag is RecentlyUsedFile recentFile) {
-                    var fileName = recentFile.FileName;
-                    if (fileName != null) {
-                        var isReadOnly = Helpers.GetReadOnly(fileName);
-                        if (isReadOnly == null) {
-                            Helpers.ScaleToolstripItem(item, "picNonexistent");
-                        } else if (isReadOnly == true) {
-                            Helpers.ScaleToolstripItem(item, "mnuReadOnly");
-                        } else {
-                            item.Image = null;
                         }
                     }
                 }
@@ -639,7 +640,7 @@ namespace Bimil {
             }
         }
 
-        private void mnuSave_ButtonClick(object sender, EventArgs e) {
+        private void mnuSave_Click(object sender, EventArgs e) {
             if (this.Document == null) { return; }
 
             if (this.DocumentFileName != null) {
@@ -1107,9 +1108,9 @@ namespace Bimil {
             mnuView.Visible = !Settings.EditableByDefault || ((this.Document != null) && this.Document.IsReadOnly);
             mnuEdit.Visible = !mnuView.Visible;
 
-            mnuSave.Enabled = (this.Document != null);
-            mnuSave.Visible = mnuSave.Enabled;
-            mnuSaveAlone.Visible = !mnuSave.Visible;
+            mnuSaveMenu.Enabled = (this.Document != null);
+            mnuSaveMenu.Visible = mnuSaveMenu.Enabled;
+            mnuSaveAlone.Visible = !mnuSaveMenu.Visible;
 
             mnuPropertiesMenu.Enabled = (this.Document != null);
             mnuAdd.Enabled = (this.Document != null) && (!this.Document.IsReadOnly);
