@@ -12,6 +12,7 @@ namespace Bimil {
 
         private static readonly Mutex SetupMutex = new Mutex(false, @"Global\JosipMedved_Bimil");
         internal static RecentlyUsed Recent;
+        internal static TimeSpan? LastNtpDrift;
 
         [STAThread]
         internal static void Main() {

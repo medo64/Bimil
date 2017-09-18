@@ -34,6 +34,8 @@ namespace Bimil {
             this.btnAutotypeConfigure = new System.Windows.Forms.Button();
             this.tmrClose = new System.Windows.Forms.Timer(this.components);
             this.erp = new System.Windows.Forms.ErrorProvider(this.components);
+            this.bwCheckTime = new System.ComponentModel.BackgroundWorker();
+            this.lblNtpWarning = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.erp)).BeginInit();
             this.SuspendLayout();
             // 
@@ -138,6 +140,23 @@ namespace Bimil {
             this.erp.BlinkStyle = System.Windows.Forms.ErrorBlinkStyle.NeverBlink;
             this.erp.ContainerControl = this;
             // 
+            // bwCheckTime
+            // 
+            this.bwCheckTime.DoWork += new System.ComponentModel.DoWorkEventHandler(this.bwCheckTime_DoWork);
+            this.bwCheckTime.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.bwCheckTime_RunWorkerCompleted);
+            // 
+            // lblNtpWarning
+            // 
+            this.lblNtpWarning.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.lblNtpWarning.AutoSize = true;
+            this.lblNtpWarning.ForeColor = System.Drawing.Color.Red;
+            this.lblNtpWarning.Location = new System.Drawing.Point(12, 335);
+            this.lblNtpWarning.Name = "lblNtpWarning";
+            this.lblNtpWarning.Size = new System.Drawing.Size(189, 17);
+            this.lblNtpWarning.TabIndex = 7;
+            this.lblNtpWarning.Text = "Computer time is not correct.";
+            this.lblNtpWarning.Visible = false;
+            // 
             // ItemForm
             // 
             this.AcceptButton = this.btnOK;
@@ -145,6 +164,7 @@ namespace Bimil {
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(582, 395);
+            this.Controls.Add(this.lblNtpWarning);
             this.Controls.Add(this.btnFields);
             this.Controls.Add(this.btnAutotypeConfigure);
             this.Controls.Add(this.btnAutotype);
@@ -168,6 +188,7 @@ namespace Bimil {
             this.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.Form_PreviewKeyDown);
             ((System.ComponentModel.ISupportInitialize)(this.erp)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -183,5 +204,7 @@ namespace Bimil {
         private System.Windows.Forms.Button btnAutotype;
         private System.Windows.Forms.ErrorProvider erp;
         private System.Windows.Forms.Button btnAutotypeConfigure;
+        private System.ComponentModel.BackgroundWorker bwCheckTime;
+        private System.Windows.Forms.Label lblNtpWarning;
     }
 }

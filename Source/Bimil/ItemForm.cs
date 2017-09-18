@@ -331,6 +331,7 @@ namespace Bimil {
 
                             yH = textBox.Height;
                         }
+                        if (Settings.ShowNtpDriftWarning && !bwCheckTime.IsBusy) { bwCheckTime.RunWorkerAsync(); }
                         break;
 
                     case RecordType.CreditCardNumber: {
@@ -873,6 +874,29 @@ namespace Bimil {
         }
 
         private delegate string GetText();
+
+        #endregion
+
+
+        #region NtpCheck
+
+        private void bwCheckTime_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e) {
+            if (Settings.ShowNtpDriftWarning && (App.LastNtpDrift == null)) {
+                var hostName = Settings.NtpServer;
+                if (Medo.Net.TrivialNtpClient.TryRetrieveTime(Settings.NtpServer, out var time)) {
+                    App.LastNtpDrift = DateTime.UtcNow - time;
+                }
+            }
+        }
+
+        private void bwCheckTime_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e) {
+            if (App.LastNtpDrift != null) {
+                var ntpDiff = (int)Math.Floor(Math.Abs(App.LastNtpDrift.Value.TotalSeconds));
+                if (ntpDiff > Settings.NtpDriftWarningSeconds) {
+                    lblNtpWarning.Visible = true;
+                }
+            }
+        }
 
         #endregion
 

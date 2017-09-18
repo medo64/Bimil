@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel;
+using System.Globalization;
 using Medo.Configuration;
 
 namespace Bimil {
@@ -94,6 +95,33 @@ namespace Bimil {
         public static bool ShowPasswordSafeWarnings {
             get { return Config.Read("ShowPasswordSafeWarnings", Medo.Configuration.Settings.Read("ShowPasswordSafeWarnings", false)); }
             set { Config.Write("ShowPasswordSafeWarnings", value); }
+        }
+
+
+        [Category("Behavior")]
+        [DisplayName("Show NTP drift warning")]
+        [Description("If true, warning will be shown if system time drifts from NTP server time.")]
+        [DefaultValue(true)]
+        public static bool ShowNtpDriftWarning {
+            get { return Config.Read("ShowNtpDriftWarning", true); }
+            set { Config.Write("ShowNtpDriftWarning", value); }
+        }
+
+        [Category("Behavior")]
+        [DisplayName("NTP drift warning seconds")]
+        [Description("Amount of drift allowed between system and NTP server.")]
+        [DefaultValue(10)]
+        public static int NtpDriftWarningSeconds {
+            get { return Config.Read("NtpDriftWarningSeconds", LimitBetween(10, 1, 30, allowZero: false)); }
+            set { Config.Write("NtpDriftWarningSeconds", LimitBetween(value, 1, 30, allowZero: false)); }
+        }
+
+        [Category("Behavior")]
+        [DisplayName("NTP server")]
+        [Description("NTP server to use.")]
+        public static string NtpServer {
+            get { return Config.Read("NtpServer", DefaultNtpServer); }
+            set { Config.Write("NtpServer", value); }
         }
 
 
@@ -230,6 +258,7 @@ namespace Bimil {
 
         #endregion
 
+        #region Autotype
 
         [Browsable(false)]
         public static bool AutoTypeUseSendWait {
@@ -249,6 +278,14 @@ namespace Bimil {
             set { Config.Write("AutoTypeWindowOpacity", LimitBetween(value, minValue: 25, maxValue: 100, allowZero: false)); }
         }
 
+        #endregion Autotype
+
+
+        #region Helper
+
+        private static Random Random = new Random();
+
+        private static string DefaultNtpServer = Random.Next(0, 4).ToString(CultureInfo.InvariantCulture) + ".medo64.pool.ntp.org";
 
         private static int LimitBetween(int value, int minValue, int maxValue, bool allowZero) {
             if (allowZero && (value == 0)) { return 0; }
@@ -257,5 +294,6 @@ namespace Bimil {
             return value;
         }
 
+        #endregion Helper
     }
 }
