@@ -529,7 +529,8 @@ namespace Bimil {
             if (key.Length > 0) {
                 try {
                     var otp = new OneTimePassword(key);
-                    var code = otp.GetCode().ToString(new string('0', otp.Digits), CultureInfo.InvariantCulture);
+                    var time = (App.LastNtpDrift == null) ? DateTime.UtcNow : DateTime.UtcNow + App.LastNtpDrift.Value; //adjust for NTP drift
+                    var code = otp.GetCode(time).ToString(new string('0', otp.Digits), CultureInfo.InvariantCulture);
                     if (space) {
                         var mid = code.Length / 2;
                         return code.Substring(0, mid) + " " + code.Substring(mid);
