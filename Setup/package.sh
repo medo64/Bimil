@@ -55,6 +55,14 @@ then
 fi
 
 
+DIRECTORY_ROOT=`mktemp -d`
+
+terminate() {
+    rm -R $DIRECTORY_ROOT 2> /dev/null
+}
+trap terminate INT EXIT
+
+
 DIRECTORY_RELEASE="../Releases"
 FILE_RELEASE="$1"
 PATH_RELEASE="$DIRECTORY_RELEASE/$FILE_RELEASE"
@@ -84,7 +92,6 @@ RELEASE_VERSION_MAJOR=`echo -n $RELEASE_VERSION | head -c 1`
 RELEASE_VERSION_MINOR=`echo -n $RELEASE_VERSION | tail -c 2`
 RELEASE_ARCHITECTURE=`grep "Architecture:" ./DEBIAN/control | sed "s/Architecture://" | sed "s/[^a-z]//g"`
 
-DIRECTORY_ROOT=`mktemp -d`
 PACKAGE_NAME="bimil_${RELEASE_VERSION_MAJOR}.${RELEASE_VERSION_MINOR}_${RELEASE_ARCHITECTURE}"
 DIRECTORY_PACKAGE="$DIRECTORY_ROOT/$PACKAGE_NAME"
 
@@ -112,8 +119,36 @@ if [ $? -eq 0 ]
 then
     echo "Package $DIRECTORY_RELEASE/$PACKAGE_NAME.deb successfully created." >&2
 else
-    echo "Didn't copy output package!" >&2
+    echo "Didn't find output Debian package!" >&2
     exit 1
 fi
 
-rm -R $DIRECTORY_ROOT
+
+which alien &> /dev/null
+if [ ! $? -eq 0 ]
+then
+    echo "Package alien not installed!" >&2
+    exit 1
+fi
+
+if [ "$EUID" -ne 0 ]
+then
+    echo "Must run as root (try sudo)!" >&2
+    exit 1
+fi
+
+
+pushd "$DIRECTORY_ROOT" > /dev/null
+alien --to-rpm --scripts "$PACKAGE_NAME.deb" > /dev/null
+FILE_RELEASE_RPM=`ls *.rpm`
+FILE_RELEASE_RPM_LL=`echo $FILE_RELEASE_RPM | tr "[:upper:]" "[:lower:]"`
+popd > /dev/null
+cp "$DIRECTORY_ROOT/$FILE_RELEASE_RPM" "$DIRECTORY_RELEASE/$FILE_RELEASE_RPM_LL"
+if [ $? -eq 0 ]
+then
+    #mv $DIRECTORY_RELEASE/$FILE_RELEASE_RPM $DIRECTORY_RELEASE/$FILE_RELEASE_RPM_LL
+    echo "Package $DIRECTORY_RELEASE/$FILE_RELEASE_RPM_LL successfully created." >&2
+else
+    echo "Didn't find output RedHat package!" >&2
+    exit 1
+fi
