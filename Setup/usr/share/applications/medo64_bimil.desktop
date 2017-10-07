@@ -1,0 +1,6 @@
+[Desktop Entry]
+Name=Bimil
+Exec=/opt/bimil/bimil.exe
+Icon=medo64_bimil
+Type=Application
+Categories=GTK;GNOME;Utility;
