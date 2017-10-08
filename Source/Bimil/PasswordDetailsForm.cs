@@ -45,7 +45,8 @@ namespace Bimil {
 
         private ListViewItem NewHistoricalPasswordListViewItem(string password, DateTime utcTime, bool isCurrent = false) {
             var localTime = utcTime.ToLocalTime();
-            var lvi = new ListViewItem(localTime.ToShortDateString()) { Tag = password };
+            var lvi = new ListViewItem() { Tag = password };
+            lvi.Text = (utcTime > DateTime.MinValue) ? localTime.ToShortDateString() : "unknown";
             lvi.SubItems.Add("***");
             lvi.ToolTipText = $"{localTime:d} {localTime:t}" + (isCurrent ? " (current)" : "") + $"\n{password}";
             if (isCurrent) { lvi.Font = new Font(lvi.Font, FontStyle.Bold); }
