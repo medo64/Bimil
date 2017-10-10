@@ -63,6 +63,13 @@ terminate() {
 trap terminate INT EXIT
 
 
+if [ "$EUID" -ne 0 ]
+then
+    echo "Must run as root (try sudo)!" >&2
+    exit 1
+fi
+
+
 DIRECTORY_RELEASE="../Releases"
 FILE_RELEASE="$1"
 PATH_RELEASE="$DIRECTORY_RELEASE/$FILE_RELEASE"
@@ -110,7 +117,8 @@ then
     echo "Cannot extract archive!" >&2
     exit 1
 fi
-chmod +x "$DIRECTORY_PACKAGE/opt/bimil/bimil.exe"
+find "$DIRECTORY_PACKAGE/opt" -type f -exec chmod 644 -- {} +
+chmod 755 "$DIRECTORY_PACKAGE/opt/bimil/bimil.exe"
 
 dpkg-deb --build $DIRECTORY_PACKAGE > /dev/null
 
@@ -131,12 +139,6 @@ then
     exit 1
 fi
 
-if [ "$EUID" -ne 0 ]
-then
-    echo "Must run as root (try sudo)!" >&2
-    exit 1
-fi
-
 
 pushd "$DIRECTORY_ROOT" > /dev/null
 alien --to-rpm --scripts "$PACKAGE_NAME.deb" > /dev/null
@@ -146,7 +148,6 @@ popd > /dev/null
 cp "$DIRECTORY_ROOT/$FILE_RELEASE_RPM" "$DIRECTORY_RELEASE/$FILE_RELEASE_RPM_LL"
 if [ $? -eq 0 ]
 then
-    #mv $DIRECTORY_RELEASE/$FILE_RELEASE_RPM $DIRECTORY_RELEASE/$FILE_RELEASE_RPM_LL
     echo "Package $DIRECTORY_RELEASE/$FILE_RELEASE_RPM_LL successfully created." >&2
 else
     echo "Didn't find output RedHat package!" >&2
