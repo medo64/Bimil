@@ -51,12 +51,12 @@ namespace Bimil {
             this.lsvRecent.ContextMenuStrip = this.mnxList;
             this.lsvRecent.FullRowSelect = true;
             this.lsvRecent.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
-            this.lsvRecent.Location = new System.Drawing.Point(0, 0);
+            this.lsvRecent.Location = new System.Drawing.Point(12, 12);
             this.lsvRecent.MultiSelect = false;
             this.lsvRecent.Name = "lsvRecent";
             this.lsvRecent.ShowGroups = false;
             this.lsvRecent.ShowItemToolTips = true;
-            this.lsvRecent.Size = new System.Drawing.Size(481, 296);
+            this.lsvRecent.Size = new System.Drawing.Size(458, 284);
             this.lsvRecent.TabIndex = 0;
             this.lsvRecent.UseCompatibleStateImageBehavior = false;
             this.lsvRecent.View = System.Windows.Forms.View.Details;
@@ -78,39 +78,39 @@ namespace Bimil {
             this.mnxListRemove,
             this.mnxListReadOnly});
             this.mnxList.Name = "mnxList";
-            this.mnxList.Size = new System.Drawing.Size(207, 114);
+            this.mnxList.Size = new System.Drawing.Size(201, 106);
             this.mnxList.Opening += new System.ComponentModel.CancelEventHandler(this.mnxList_Opening);
             // 
             // mnxListOpen
             // 
             this.mnxListOpen.Name = "mnxListOpen";
-            this.mnxListOpen.Size = new System.Drawing.Size(206, 26);
+            this.mnxListOpen.Size = new System.Drawing.Size(200, 24);
             this.mnxListOpen.Text = "&Open";
             this.mnxListOpen.Click += new System.EventHandler(this.mnxListOpen_Click);
             // 
             // mnxListOpenReadOnly
             // 
             this.mnxListOpenReadOnly.Name = "mnxListOpenReadOnly";
-            this.mnxListOpenReadOnly.Size = new System.Drawing.Size(206, 26);
+            this.mnxListOpenReadOnly.Size = new System.Drawing.Size(200, 24);
             this.mnxListOpenReadOnly.Text = "Open as &read-only";
             this.mnxListOpenReadOnly.Click += new System.EventHandler(this.mnxListOpenReadOnly_Click);
             // 
             // mnxList0
             // 
             this.mnxList0.Name = "mnxList0";
-            this.mnxList0.Size = new System.Drawing.Size(203, 6);
+            this.mnxList0.Size = new System.Drawing.Size(197, 6);
             // 
             // mnxListRemove
             // 
             this.mnxListRemove.Name = "mnxListRemove";
-            this.mnxListRemove.Size = new System.Drawing.Size(206, 26);
+            this.mnxListRemove.Size = new System.Drawing.Size(200, 24);
             this.mnxListRemove.Text = "Remove";
             this.mnxListRemove.Click += new System.EventHandler(this.mnxListRemove_Click);
             // 
             // mnxListReadOnly
             // 
             this.mnxListReadOnly.Name = "mnxListReadOnly";
-            this.mnxListReadOnly.Size = new System.Drawing.Size(206, 26);
+            this.mnxListReadOnly.Size = new System.Drawing.Size(200, 24);
             this.mnxListReadOnly.Text = "Read-only";
             this.mnxListReadOnly.Click += new System.EventHandler(this.mnxListReadOnly_Click);
             // 
@@ -176,6 +176,7 @@ namespace Bimil {
             this.AcceptButton = this.btnOpen;
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.SystemColors.Window;
             this.CancelButton = this.btnClose;
             this.ClientSize = new System.Drawing.Size(482, 353);
             this.Controls.Add(this.btnOpenReadOnly);

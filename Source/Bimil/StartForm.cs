@@ -8,6 +8,7 @@ namespace Bimil {
         public StartForm() {
             InitializeComponent();
             this.Font = SystemFonts.MessageBoxFont;
+            lsvRecent.Font = SystemFonts.MessageBoxFont;
             Medo.Windows.Forms.State.SetupOnLoadAndClose(this);
 
             lsvRecent.SmallImageList = Helpers.GetImageList(this, "picNonexistent", "mnuReadOnly");
