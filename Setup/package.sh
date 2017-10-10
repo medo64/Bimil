@@ -130,26 +130,3 @@ else
     echo "Didn't find output Debian package!" >&2
     exit 1
 fi
-
-
-which alien &> /dev/null
-if [ ! $? -eq 0 ]
-then
-    echo "Package alien not installed!" >&2
-    exit 1
-fi
-
-
-pushd "$DIRECTORY_ROOT" > /dev/null
-alien --to-rpm --scripts "$PACKAGE_NAME.deb" > /dev/null
-FILE_RELEASE_RPM=`ls *.rpm`
-FILE_RELEASE_RPM_LL=`echo $FILE_RELEASE_RPM | tr "[:upper:]" "[:lower:]"`
-popd > /dev/null
-cp "$DIRECTORY_ROOT/$FILE_RELEASE_RPM" "$DIRECTORY_RELEASE/$FILE_RELEASE_RPM_LL"
-if [ $? -eq 0 ]
-then
-    echo "Package $DIRECTORY_RELEASE/$FILE_RELEASE_RPM_LL successfully created." >&2
-else
-    echo "Didn't find output RedHat package!" >&2
-    exit 1
-fi
