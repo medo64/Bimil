@@ -1,5 +1,6 @@
 //Copyright 2017 by Josip Medved <jmedved@jmedved.com> (www.medo64.com) MIT License
 
+//2017-10-09: Support for /opt installation on Linux.
 //2017-04-29: Added IsAssumedInstalled property.
 //            Added Reset and DeleteAll methods.
 //2017-04-26: Renamed from Properties.
@@ -259,7 +260,7 @@ namespace Medo.Configuration {
         private static bool IsAssumedInstalledBacking;
         /// <summary>
         /// Gets if application is assumed to be installed.
-        /// Application is considered installed if it is located in Program Files directory (or bin) or if file is already present in Application Data folder.
+        /// Application is considered installed if it is located in Program Files directory (or opt) or if file is already present in Application Data folder.
         /// </summary>
         public static bool IsAssumedInstalled {
             get {
@@ -429,7 +430,9 @@ namespace Medo.Configuration {
             var application = productValue ?? titleValue ?? assembly.GetName().Name;
             var executablePath = assembly.Location;
 
-            var baseFileName = IsOSWindows ? application + ".cfg" : "." + application.ToLowerInvariant();
+            var baseFileName = IsOSWindows
+                ? application + ".cfg"
+                : "." + application.ToLowerInvariant();
 
             var userFileLocation = IsOSWindows
                 ? Path.Combine(Environment.GetEnvironmentVariable("AppData"), company, application, baseFileName)
@@ -437,9 +440,20 @@ namespace Medo.Configuration {
 
             var priorityFileLocation = Path.Combine(Path.GetDirectoryName(executablePath), baseFileName);
 
-            var isInProgramFiles = IsOSWindows
-                ? executablePath.StartsWith(Environment.GetEnvironmentVariable("ProgramFiles") + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase) || executablePath.StartsWith(Environment.GetEnvironmentVariable("ProgramFiles(x86)") + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase)
-                : executablePath.StartsWith(Path.DirectorySeparatorChar + "bin" + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase) || executablePath.StartsWith(Path.DirectorySeparatorChar + "usr" + Path.DirectorySeparatorChar + "bin" + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase);
+            bool isInProgramFiles;
+            if (IsOSWindows) {
+                var isPF = executablePath.StartsWith(Environment.GetEnvironmentVariable("ProgramFiles") + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase);
+                var isPF32 = executablePath.StartsWith(Environment.GetEnvironmentVariable("ProgramFiles(x86)") + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase);
+                isInProgramFiles = isPF || isPF32;
+            } else {
+                var isOpt = executablePath.StartsWith(Path.DirectorySeparatorChar + "opt" + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase);
+                var isBin = executablePath.StartsWith(Path.DirectorySeparatorChar + "bin" + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase);
+                var isUsrBin = executablePath.StartsWith(Path.DirectorySeparatorChar + "usr" + Path.DirectorySeparatorChar + "bin" + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase);
+                isInProgramFiles = isOpt || isBin || isUsrBin;
+                if (isOpt) { //change priority file location to /etc/opt/<app>/<app>.cfg
+                    priorityFileLocation = Path.DirectorySeparatorChar + "etc" + Path.Combine(Path.GetDirectoryName(executablePath), application.ToLowerInvariant() + ".conf");
+                }
+            }
 
             IsAssumedInstalledBacking = File.Exists(userFileLocation) || isInProgramFiles;
             FileNameBacking = IsAssumedInstalledBacking ? userFileLocation : priorityFileLocation;
@@ -448,7 +462,7 @@ namespace Medo.Configuration {
             IsInitialized = true;
         }
 
-#if NETSTANDARD1_6
+#if NETSTANDARD2_0 || NETSTANDARD1_6
         private static bool IsOSWindows => RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
 #else
         private static bool IsOSWindows => (Type.GetType("Mono.Runtime") == null);
@@ -510,8 +524,7 @@ namespace Medo.Configuration {
                 }
                 this.LineEnding = lineEnding ?? Environment.NewLine;
 
-                void processLine(StringBuilder line)
-                {
+                void processLine(StringBuilder line) {
                     var lineText = line.ToString();
                     line.Clear();
 
