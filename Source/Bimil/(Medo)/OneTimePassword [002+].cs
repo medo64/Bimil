@@ -71,7 +71,6 @@ namespace Medo.Security.Cryptography {
         private readonly byte[] SecretBuffer = new byte[1024]; //ProtectedMemory requires length of the data to be a multiple of 16 bytes.
         private readonly int SecretLength;
 
-#if NETSTANDARD1_6 || NETSTANDARD2_0
         private static readonly Lazy<byte[]> lazyRandomKey = new Lazy<byte[]>(() => {
             var buffer = new byte[16];
             RandomNumberGenerator.Create().GetBytes(buffer);
@@ -82,10 +81,8 @@ namespace Medo.Security.Cryptography {
             aes.Padding = PaddingMode.None;
             return aes;
         });
-#endif
 
         private void ProtectSecret() {
-#if NETSTANDARD1_6 || NETSTANDARD2_0
             using (var ms = new MemoryStream()) {
                 using (var encryptor = aes.Value.CreateEncryptor(lazyRandomKey.Value, new byte[16]))
                 using (var cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write)) {
@@ -93,13 +90,9 @@ namespace Medo.Security.Cryptography {
                 }
                 Buffer.BlockCopy(ms.ToArray(), 0, this.SecretBuffer, 0, this.SecretBuffer.Length);
             }
-#else
-            ProtectedMemory.Protect(this.SecretBuffer, MemoryProtectionScope.SameProcess);
-#endif
         }
 
         private void UnprotectSecret() {
-#if NETSTANDARD1_6 || NETSTANDARD2_0
             using (var ms = new MemoryStream(this.SecretBuffer)) {
                 using (var decryptor = aes.Value.CreateDecryptor(lazyRandomKey.Value, new byte[16]))
                 using (var cs = new CryptoStream(ms, decryptor, CryptoStreamMode.Read)) {
@@ -109,9 +102,6 @@ namespace Medo.Security.Cryptography {
                     Array.Clear(decryptedBuffer, 0, decryptedBuffer.Length);
                 }
             }
-#else
-            ProtectedMemory.Unprotect(this.SecretBuffer, MemoryProtectionScope.SameProcess);
-#endif
         }
 
 
