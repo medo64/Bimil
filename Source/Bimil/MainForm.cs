@@ -168,8 +168,14 @@ namespace Bimil {
 #if WINDOWS_STORE
             mnuAppUpgrade.Visible = false;
 #else
-            var version = Assembly.GetExecutingAssembly().GetName().Version; //don't auto-check for development builds
-            if ((version.Major != 0) || (version.Minor != 0)) { bwUpgradeCheck.RunWorkerAsync(); }
+            if (Helpers.IsRunningOnMono) {
+                mnuAppUpgrade.Visible = false; //don't show update for Mono clients
+            } else if (!Config.IsAssumedInstalled) {
+                mnuAppUpgrade.Visible = false; //don't show update for portable executable
+            } else {
+                var version = Assembly.GetExecutingAssembly().GetName().Version; //don't auto-check for development builds
+                if ((version.Major != 0) || (version.Minor != 0)) { bwUpgradeCheck.RunWorkerAsync(); }
+            }
 #endif
         }
 
