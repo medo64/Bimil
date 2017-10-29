@@ -791,15 +791,17 @@ namespace Bimil {
             using (var frm = new SearchForm(this.Document, this.Categories, cmbSearch.Text)) {
                 frm.ShowDialog(this);
             }
+            RefreshCategories();
         }
 
 
         private void mnuSearchWeak_Click(object sender, EventArgs e) {
             if (this.Document == null) { return; }
 
-            using (var frm = new SearchWeakForm(this.Document)) {
+            using (var frm = new SearchWeakForm(this.Document, this.Categories)) {
                 frm.ShowDialog(this);
             }
+            RefreshCategories();
         }
 
 

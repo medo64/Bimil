@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
@@ -6,18 +7,20 @@ using Medo.Security.Cryptography.PasswordSafe;
 
 namespace Bimil {
     internal partial class SearchWeakForm : Form {
-        public SearchWeakForm(Document document) {
+        public SearchWeakForm(Document document, IList<string> categories) {
             InitializeComponent();
             this.Font = SystemFonts.MessageBoxFont;
             Medo.Windows.Forms.State.SetupOnLoadAndClose(this);
             lsvEntries.SmallImageList = Helpers.GetImageList(this, "picWarning");
 
             this.Document = document;
+            this.Categories = categories;
 
             bwSearchWeak.RunWorkerAsync();
         }
 
         private readonly Document Document;
+        private readonly IList<string> Categories;
 
 
         private void Form_FormClosing(object sender, FormClosingEventArgs e) {
@@ -32,6 +35,16 @@ namespace Bimil {
 
         private void Form_Resize(object sender, System.EventArgs e) {
             lsvEntries.Columns[0].Width = lsvEntries.ClientSize.Width;
+        }
+
+
+        private void lsvEntries_ItemActivate(object sender, System.EventArgs e) {
+            if ((this.Document == null) || (lsvEntries.SelectedItems.Count != 1)) { return; }
+
+            var entry = (Entry)(lsvEntries.SelectedItems[0].Tag);
+            using (var frm = new ItemForm(this.Document, entry, this.Categories, startsAsEditable: Settings.EditableByDefault, hideAutotype: true)) {
+                frm.ShowDialog(this);
+            }
         }
 
 

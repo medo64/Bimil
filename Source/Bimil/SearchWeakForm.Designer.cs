@@ -47,6 +47,7 @@ namespace Bimil {
             this.lsvEntries.TabIndex = 0;
             this.lsvEntries.UseCompatibleStateImageBehavior = false;
             this.lsvEntries.View = System.Windows.Forms.View.Details;
+            this.lsvEntries.ItemActivate += new System.EventHandler(this.lsvEntries_ItemActivate);
             // 
             // lsvEntries_colTitle
             // 
