@@ -31,6 +31,7 @@ namespace Bimil {
             this.lsvEntries_colTitle = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.chbIncludeHiddenFields = new System.Windows.Forms.CheckBox();
             this.erp = new System.Windows.Forms.ErrorProvider(this.components);
+            this.btnCancel = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.erp)).BeginInit();
             this.SuspendLayout();
             // 
@@ -71,7 +72,7 @@ namespace Bimil {
             this.lsvEntries.MultiSelect = false;
             this.lsvEntries.Name = "lsvEntries";
             this.lsvEntries.ShowItemToolTips = true;
-            this.lsvEntries.Size = new System.Drawing.Size(358, 266);
+            this.lsvEntries.Size = new System.Drawing.Size(358, 287);
             this.lsvEntries.TabIndex = 2;
             this.lsvEntries.UseCompatibleStateImageBehavior = false;
             this.lsvEntries.View = System.Windows.Forms.View.Details;
@@ -84,9 +85,9 @@ namespace Bimil {
             // 
             // chbIncludeHiddenFields
             // 
-            this.chbIncludeHiddenFields.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.chbIncludeHiddenFields.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.chbIncludeHiddenFields.AutoSize = true;
-            this.chbIncludeHiddenFields.Location = new System.Drawing.Point(211, 320);
+            this.chbIncludeHiddenFields.Location = new System.Drawing.Point(12, 353);
             this.chbIncludeHiddenFields.Name = "chbIncludeHiddenFields";
             this.chbIncludeHiddenFields.Size = new System.Drawing.Size(159, 21);
             this.chbIncludeHiddenFields.TabIndex = 3;
@@ -100,11 +101,25 @@ namespace Bimil {
             this.erp.ContainerControl = this;
             this.erp.Icon = ((System.Drawing.Icon)(resources.GetObject("erp.Icon")));
             // 
+            // btnCancel
+            // 
+            this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.btnCancel.Location = new System.Drawing.Point(280, 353);
+            this.btnCancel.Margin = new System.Windows.Forms.Padding(3, 15, 3, 3);
+            this.btnCancel.Name = "btnCancel";
+            this.btnCancel.Size = new System.Drawing.Size(90, 28);
+            this.btnCancel.TabIndex = 4;
+            this.btnCancel.Text = "Close";
+            this.btnCancel.UseVisualStyleBackColor = true;
+            // 
             // SearchForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(382, 353);
+            this.CancelButton = this.btnCancel;
+            this.ClientSize = new System.Drawing.Size(382, 393);
+            this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.chbIncludeHiddenFields);
             this.Controls.Add(this.lsvEntries);
             this.Controls.Add(this.cmbSearch);
@@ -112,7 +127,7 @@ namespace Bimil {
             this.KeyPreview = true;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(300, 300);
+            this.MinimumSize = new System.Drawing.Size(400, 400);
             this.Name = "SearchForm";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
@@ -135,5 +150,6 @@ namespace Bimil {
         private System.Windows.Forms.ColumnHeader lsvEntries_colTitle;
         private System.Windows.Forms.CheckBox chbIncludeHiddenFields;
         private System.Windows.Forms.ErrorProvider erp;
+        private System.Windows.Forms.Button btnCancel;
     }
 }

@@ -15,7 +15,7 @@ namespace Bimil {
             this.Categories = categories;
             this.DefaultText = defaultText;
 
-            erp.SetIconAlignment(chbIncludeHiddenFields, ErrorIconAlignment.MiddleLeft);
+            erp.SetIconAlignment(chbIncludeHiddenFields, ErrorIconAlignment.MiddleRight);
             erp.SetIconPadding(chbIncludeHiddenFields, chbIncludeHiddenFields.Height / 6);
         }
 

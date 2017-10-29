@@ -26,6 +26,7 @@ namespace Bimil {
             this.lsvEntries = new System.Windows.Forms.ListView();
             this.lsvEntries_colTitle = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.bwSearchWeak = new System.ComponentModel.BackgroundWorker();
+            this.btnCancel = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // lsvEntries
@@ -42,8 +43,8 @@ namespace Bimil {
             this.lsvEntries.MultiSelect = false;
             this.lsvEntries.Name = "lsvEntries";
             this.lsvEntries.ShowItemToolTips = true;
-            this.lsvEntries.Size = new System.Drawing.Size(358, 329);
-            this.lsvEntries.TabIndex = 4;
+            this.lsvEntries.Size = new System.Drawing.Size(358, 323);
+            this.lsvEntries.TabIndex = 0;
             this.lsvEntries.UseCompatibleStateImageBehavior = false;
             this.lsvEntries.View = System.Windows.Forms.View.Details;
             // 
@@ -59,16 +60,29 @@ namespace Bimil {
             this.bwSearchWeak.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.bwSearchWeak_ProgressChanged);
             this.bwSearchWeak.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.bwSearchWeak_RunWorkerCompleted);
             // 
+            // btnCancel
+            // 
+            this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.btnCancel.Location = new System.Drawing.Point(280, 353);
+            this.btnCancel.Margin = new System.Windows.Forms.Padding(3, 15, 3, 3);
+            this.btnCancel.Name = "btnCancel";
+            this.btnCancel.Size = new System.Drawing.Size(90, 28);
+            this.btnCancel.TabIndex = 1;
+            this.btnCancel.Text = "Close";
+            this.btnCancel.UseVisualStyleBackColor = true;
+            // 
             // SearchWeakForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(382, 353);
+            this.ClientSize = new System.Drawing.Size(382, 393);
+            this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.lsvEntries);
             this.KeyPreview = true;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(300, 300);
+            this.MinimumSize = new System.Drawing.Size(400, 400);
             this.Name = "SearchWeakForm";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
@@ -85,5 +99,6 @@ namespace Bimil {
         private System.Windows.Forms.ListView lsvEntries;
         private System.Windows.Forms.ColumnHeader lsvEntries_colTitle;
         private System.ComponentModel.BackgroundWorker bwSearchWeak;
+        private System.Windows.Forms.Button btnCancel;
     }
 }
