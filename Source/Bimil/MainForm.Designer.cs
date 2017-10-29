@@ -28,13 +28,13 @@ namespace Bimil {
             this.mnu = new System.Windows.Forms.ToolStrip();
             this.mnuNew = new System.Windows.Forms.ToolStripButton();
             this.mnuOpenAlone = new System.Windows.Forms.ToolStripButton();
-            this.mnuSaveMenu = new System.Windows.Forms.ToolStripSplitButton();
-            this.mnuSave = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuSaveAs = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuOpenMenu = new System.Windows.Forms.ToolStripSplitButton();
             this.mnuOpen = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuSaveAlone = new System.Windows.Forms.ToolStripButton();
+            this.mnuSaveMenu = new System.Windows.Forms.ToolStripSplitButton();
+            this.mnuSave = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuSaveAs = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuPropertiesMenu = new System.Windows.Forms.ToolStripSplitButton();
             this.mnuChangePassword = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuReadOnly = new System.Windows.Forms.ToolStripMenuItem();
@@ -53,7 +53,8 @@ namespace Bimil {
             this.mnuApp1 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuAppAbout = new System.Windows.Forms.ToolStripMenuItem();
             this.mnu1 = new System.Windows.Forms.ToolStripSeparator();
-            this.mnuSearch = new System.Windows.Forms.ToolStripButton();
+            this.mnuSearchRoot = new System.Windows.Forms.ToolStripSplitButton();
+            this.mnuSearch = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuGeneratePassword = new System.Windows.Forms.ToolStripButton();
             this.pnlDocument = new System.Windows.Forms.Panel();
             this.lsvEntries = new System.Windows.Forms.ListView();
@@ -73,6 +74,7 @@ namespace Bimil {
             this.cmbSearch = new System.Windows.Forms.ComboBox();
             this.bwUpgradeCheck = new System.ComponentModel.BackgroundWorker();
             this.tmrClose = new System.Windows.Forms.Timer(this.components);
+            this.mnuSearchWeak = new System.Windows.Forms.ToolStripMenuItem();
             this.mnu.SuspendLayout();
             this.pnlDocument.SuspendLayout();
             this.mnxEntry.SuspendLayout();
@@ -96,12 +98,12 @@ namespace Bimil {
             this.mnuRemove,
             this.mnuApp,
             this.mnu1,
-            this.mnuSearch,
+            this.mnuSearchRoot,
             this.mnuGeneratePassword});
             this.mnu.Location = new System.Drawing.Point(0, 0);
             this.mnu.Name = "mnu";
             this.mnu.Padding = new System.Windows.Forms.Padding(1, 0, 1, 0);
-            this.mnu.Size = new System.Drawing.Size(542, 27);
+            this.mnu.Size = new System.Drawing.Size(582, 27);
             this.mnu.TabIndex = 1;
             // 
             // mnuNew
@@ -127,38 +129,6 @@ namespace Bimil {
             this.mnuOpenAlone.ToolTipText = "Open (Ctrl+O)";
             this.mnuOpenAlone.Visible = false;
             this.mnuOpenAlone.Click += new System.EventHandler(this.mnuOpen_Click);
-            // 
-            // mnuSaveMenu
-            // 
-            this.mnuSaveMenu.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.mnuSaveMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.mnuSave,
-            this.mnuSaveAs});
-            this.mnuSaveMenu.Image = global::Bimil.Properties.Resources.mnuSave_16;
-            this.mnuSaveMenu.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.mnuSaveMenu.Name = "mnuSaveMenu";
-            this.mnuSaveMenu.Size = new System.Drawing.Size(39, 24);
-            this.mnuSaveMenu.Tag = "mnuSave";
-            this.mnuSaveMenu.Text = "Save";
-            this.mnuSaveMenu.ToolTipText = "Save (Ctrl+S)";
-            this.mnuSaveMenu.ButtonClick += new System.EventHandler(this.mnuSave_Click);
-            // 
-            // mnuSave
-            // 
-            this.mnuSave.Image = global::Bimil.Properties.Resources.mnuSave_16;
-            this.mnuSave.Name = "mnuSave";
-            this.mnuSave.ShortcutKeyDisplayString = "Ctrl+S";
-            this.mnuSave.Size = new System.Drawing.Size(181, 26);
-            this.mnuSave.Text = "Save";
-            this.mnuSave.Click += new System.EventHandler(this.mnuSave_Click);
-            // 
-            // mnuSaveAs
-            // 
-            this.mnuSaveAs.Name = "mnuSaveAs";
-            this.mnuSaveAs.Size = new System.Drawing.Size(181, 26);
-            this.mnuSaveAs.Tag = "";
-            this.mnuSaveAs.Text = "Save as";
-            this.mnuSaveAs.Click += new System.EventHandler(this.mnuSaveAs_Click);
             // 
             // mnuOpenMenu
             // 
@@ -202,6 +172,38 @@ namespace Bimil {
             this.mnuSaveAlone.Text = "Save";
             this.mnuSaveAlone.ToolTipText = "Save (Ctrl+S)";
             this.mnuSaveAlone.Visible = false;
+            // 
+            // mnuSaveMenu
+            // 
+            this.mnuSaveMenu.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.mnuSaveMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mnuSave,
+            this.mnuSaveAs});
+            this.mnuSaveMenu.Image = global::Bimil.Properties.Resources.mnuSave_16;
+            this.mnuSaveMenu.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.mnuSaveMenu.Name = "mnuSaveMenu";
+            this.mnuSaveMenu.Size = new System.Drawing.Size(39, 24);
+            this.mnuSaveMenu.Tag = "mnuSave";
+            this.mnuSaveMenu.Text = "Save";
+            this.mnuSaveMenu.ToolTipText = "Save (Ctrl+S)";
+            this.mnuSaveMenu.ButtonClick += new System.EventHandler(this.mnuSave_Click);
+            // 
+            // mnuSave
+            // 
+            this.mnuSave.Image = global::Bimil.Properties.Resources.mnuSave_16;
+            this.mnuSave.Name = "mnuSave";
+            this.mnuSave.ShortcutKeyDisplayString = "Ctrl+S";
+            this.mnuSave.Size = new System.Drawing.Size(165, 26);
+            this.mnuSave.Text = "Save";
+            this.mnuSave.Click += new System.EventHandler(this.mnuSave_Click);
+            // 
+            // mnuSaveAs
+            // 
+            this.mnuSaveAs.Name = "mnuSaveAs";
+            this.mnuSaveAs.Size = new System.Drawing.Size(165, 26);
+            this.mnuSaveAs.Tag = "";
+            this.mnuSaveAs.Text = "Save as";
+            this.mnuSaveAs.Click += new System.EventHandler(this.mnuSaveAs_Click);
             // 
             // mnuPropertiesMenu
             // 
@@ -358,15 +360,27 @@ namespace Bimil {
             this.mnu1.Name = "mnu1";
             this.mnu1.Size = new System.Drawing.Size(6, 27);
             // 
+            // mnuSearchRoot
+            // 
+            this.mnuSearchRoot.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.mnuSearchRoot.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mnuSearch,
+            this.mnuSearchWeak});
+            this.mnuSearchRoot.Image = global::Bimil.Properties.Resources.mnuSearch_16;
+            this.mnuSearchRoot.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.mnuSearchRoot.Name = "mnuSearchRoot";
+            this.mnuSearchRoot.Size = new System.Drawing.Size(39, 24);
+            this.mnuSearchRoot.Tag = "mnuSearch";
+            this.mnuSearchRoot.Text = "Search";
+            this.mnuSearchRoot.ToolTipText = "Search (Ctrl+F)";
+            this.mnuSearchRoot.ButtonClick += new System.EventHandler(this.mnuSearch_Click);
+            // 
             // mnuSearch
             // 
-            this.mnuSearch.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.mnuSearch.Image = global::Bimil.Properties.Resources.mnuSearch_16;
-            this.mnuSearch.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.mnuSearch.Name = "mnuSearch";
-            this.mnuSearch.Size = new System.Drawing.Size(24, 24);
-            this.mnuSearch.Text = "Search";
-            this.mnuSearch.ToolTipText = "Search (Ctrl+F)";
+            this.mnuSearch.Size = new System.Drawing.Size(239, 26);
+            this.mnuSearch.Text = "&Search";
             this.mnuSearch.Click += new System.EventHandler(this.mnuSearch_Click);
             // 
             // mnuGeneratePassword
@@ -387,7 +401,7 @@ namespace Bimil {
             this.pnlDocument.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlDocument.Location = new System.Drawing.Point(0, 27);
             this.pnlDocument.Name = "pnlDocument";
-            this.pnlDocument.Size = new System.Drawing.Size(542, 366);
+            this.pnlDocument.Size = new System.Drawing.Size(582, 366);
             this.pnlDocument.TabIndex = 0;
             // 
             // lsvEntries
@@ -404,7 +418,7 @@ namespace Bimil {
             this.lsvEntries.LabelWrap = false;
             this.lsvEntries.Location = new System.Drawing.Point(0, 24);
             this.lsvEntries.Name = "lsvEntries";
-            this.lsvEntries.Size = new System.Drawing.Size(542, 342);
+            this.lsvEntries.Size = new System.Drawing.Size(582, 342);
             this.lsvEntries.TabIndex = 1;
             this.lsvEntries.UseCompatibleStateImageBehavior = false;
             this.lsvEntries.View = System.Windows.Forms.View.Details;
@@ -526,7 +540,7 @@ namespace Bimil {
             this.cmbSearch.FormattingEnabled = true;
             this.cmbSearch.Location = new System.Drawing.Point(0, 0);
             this.cmbSearch.Name = "cmbSearch";
-            this.cmbSearch.Size = new System.Drawing.Size(542, 24);
+            this.cmbSearch.Size = new System.Drawing.Size(582, 24);
             this.cmbSearch.Sorted = true;
             this.cmbSearch.TabIndex = 0;
             this.cmbSearch.SelectedIndexChanged += new System.EventHandler(this.cmbSearch_SelectedIndexChanged);
@@ -543,11 +557,18 @@ namespace Bimil {
             // 
             this.tmrClose.Tick += new System.EventHandler(this.tmrClose_Tick);
             // 
+            // mnuSearchWeak
+            // 
+            this.mnuSearchWeak.Name = "mnuSearchWeak";
+            this.mnuSearchWeak.Size = new System.Drawing.Size(239, 26);
+            this.mnuSearchWeak.Text = "Search weak passwords";
+            this.mnuSearchWeak.Click += new System.EventHandler(this.mnuSearchWeak_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(542, 393);
+            this.ClientSize = new System.Drawing.Size(582, 393);
             this.Controls.Add(this.pnlDocument);
             this.Controls.Add(this.mnu);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -595,7 +616,6 @@ namespace Bimil {
         private System.Windows.Forms.ToolStripMenuItem mnuAppUpgrade;
         private System.Windows.Forms.Timer tmrClose;
         private System.Windows.Forms.ToolStripSeparator mnu1;
-        private System.Windows.Forms.ToolStripButton mnuSearch;
         private System.Windows.Forms.ToolStripButton mnuGeneratePassword;
         private System.Windows.Forms.ContextMenuStrip mnxEntry;
         private System.Windows.Forms.ToolStripMenuItem mnxEntryView;
@@ -620,6 +640,9 @@ namespace Bimil {
         private System.Windows.Forms.ToolStripMenuItem mnuSave;
         private System.Windows.Forms.ToolStripMenuItem mnuOpen;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem2;
+        private System.Windows.Forms.ToolStripSplitButton mnuSearchRoot;
+        private System.Windows.Forms.ToolStripMenuItem mnuSearch;
+        private System.Windows.Forms.ToolStripMenuItem mnuSearchWeak;
     }
 }
 

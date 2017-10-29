@@ -82,7 +82,7 @@ namespace Bimil {
                     return true;
 
                 case Keys.Control | Keys.F:
-                    mnuSearch.PerformClick();
+                    mnuSearchRoot.PerformButtonClick();
                     return true;
 
                 case Keys.Control | Keys.T:
@@ -793,6 +793,16 @@ namespace Bimil {
             }
         }
 
+
+        private void mnuSearchWeak_Click(object sender, EventArgs e) {
+            if (this.Document == null) { return; }
+
+            using (var frm = new SearchWeakForm(this.Document)) {
+                frm.ShowDialog(this);
+            }
+        }
+
+
         private void mnuGeneratePassword_Click(object sender, EventArgs e) {
             using (var frm = new PasswordGeneratorForm(noSave: true)) {
                 frm.ShowDialog(this);
@@ -1123,7 +1133,7 @@ namespace Bimil {
             mnuView.Enabled = (this.Document != null) && isSingleEntrySelected;
             mnuEdit.Enabled = (this.Document != null) && isSingleEntrySelected;
             mnuRemove.Enabled = (this.Document != null) && isAnyEntrySelected && (!this.Document.IsReadOnly);
-            mnuSearch.Enabled = (this.Document != null);
+            mnuSearchRoot.Enabled = (this.Document != null);
 
             pnlDocument.Visible = (this.Document != null);
 
