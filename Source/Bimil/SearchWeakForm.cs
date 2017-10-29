@@ -50,7 +50,9 @@ namespace Bimil {
 
         private void bwSearchWeak_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e) {
             var sw = Stopwatch.StartNew();
-            foreach (var entry in this.Document.Entries) {
+            var count = this.Document.Entries.Count;
+            for (var i = 0; i < count; i++) {
+                var entry = this.Document.Entries[i];
                 foreach (var record in entry.Records) {
                     if (record.RecordType == RecordType.Password) {
                         if (BadPasswords.IsCommon(record.Text, out var matchedPassword)) {
@@ -59,10 +61,14 @@ namespace Bimil {
                                 ImageIndex = 0,
                                 ToolTipText = $"Password is similar to a common password ({matchedPassword})."
                             };
-                            bwSearchWeak.ReportProgress(0, lvi);
+                            bwSearchWeak.ReportProgress(i * 100 / count, lvi);
                             break;
                         }
                     }
+                }
+                if (bwSearchWeak.CancellationPending) {
+                    e.Cancel = true;
+                    break;
                 }
             }
             Debug.WriteLine(string.Format(CultureInfo.InvariantCulture, "Items searched at {0:0.0} ms", sw.ElapsedMilliseconds));
