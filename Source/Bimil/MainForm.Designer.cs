@@ -55,6 +55,7 @@ namespace Bimil {
             this.mnu1 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuSearchRoot = new System.Windows.Forms.ToolStripSplitButton();
             this.mnuSearch = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuSearchWeak = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuGeneratePassword = new System.Windows.Forms.ToolStripButton();
             this.pnlDocument = new System.Windows.Forms.Panel();
             this.lsvEntries = new System.Windows.Forms.ListView();
@@ -74,7 +75,6 @@ namespace Bimil {
             this.cmbSearch = new System.Windows.Forms.ComboBox();
             this.bwUpgradeCheck = new System.ComponentModel.BackgroundWorker();
             this.tmrClose = new System.Windows.Forms.Timer(this.components);
-            this.mnuSearchWeak = new System.Windows.Forms.ToolStripMenuItem();
             this.mnu.SuspendLayout();
             this.pnlDocument.SuspendLayout();
             this.mnxEntry.SuspendLayout();
@@ -383,6 +383,14 @@ namespace Bimil {
             this.mnuSearch.Text = "&Search";
             this.mnuSearch.Click += new System.EventHandler(this.mnuSearch_Click);
             // 
+            // mnuSearchWeak
+            // 
+            this.mnuSearchWeak.Image = global::Bimil.Properties.Resources.mnuSearchWeak_16;
+            this.mnuSearchWeak.Name = "mnuSearchWeak";
+            this.mnuSearchWeak.Size = new System.Drawing.Size(239, 26);
+            this.mnuSearchWeak.Text = "Search weak passwords";
+            this.mnuSearchWeak.Click += new System.EventHandler(this.mnuSearchWeak_Click);
+            // 
             // mnuGeneratePassword
             // 
             this.mnuGeneratePassword.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -556,13 +564,6 @@ namespace Bimil {
             // tmrClose
             // 
             this.tmrClose.Tick += new System.EventHandler(this.tmrClose_Tick);
-            // 
-            // mnuSearchWeak
-            // 
-            this.mnuSearchWeak.Name = "mnuSearchWeak";
-            this.mnuSearchWeak.Size = new System.Drawing.Size(239, 26);
-            this.mnuSearchWeak.Text = "Search weak passwords";
-            this.mnuSearchWeak.Click += new System.EventHandler(this.mnuSearchWeak_Click);
             // 
             // MainForm
             // 

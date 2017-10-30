@@ -81,6 +81,10 @@ namespace Bimil {
                     mnuSaveMenu.ShowDropDown();
                     return true;
 
+                case Keys.Alt | Keys.F:
+                    mnuSearchRoot.ShowDropDown();
+                    return true;
+
                 case Keys.Control | Keys.F:
                     mnuSearchRoot.PerformButtonClick();
                     return true;
