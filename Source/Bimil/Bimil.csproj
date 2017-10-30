@@ -102,6 +102,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
     <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
@@ -199,6 +200,7 @@
     <Compile Include="DocumentInfoForm.Designer.cs">
       <DependentUpon>DocumentInfoForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="%28Medo%29\EntryAssembly [003].cs" />
     <Compile Include="EntryCache.cs" />
     <Compile Include="AutotypeForm.cs">
       <SubType>Form</SubType>
@@ -207,6 +209,7 @@
       <DependentUpon>AutotypeForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Execute.cs" />
+    <Compile Include="Hibp.cs" />
     <Compile Include="ItemForm.cs">
       <SubType>Form</SubType>
     </Compile>
