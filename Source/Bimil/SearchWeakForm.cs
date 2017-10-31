@@ -163,7 +163,7 @@ namespace Bimil {
 
             Debug.WriteLine(string.Format(CultureInfo.InvariantCulture, "User names sorted at {0:0.0} ms", sw.ElapsedMilliseconds));
 
-            //TODO: Search all accounts for breaches
+            //Search all accounts for breaches
             for (var i = 0; i < userEntryList.Count; i++) {
                 var userEntry = userEntryList[i];
                 var percentage = i * 30 / userEntryList.Count;
@@ -176,7 +176,7 @@ namespace Bimil {
                             if (record.RecordType == RecordType.Url) {
                                 var url = record.Text;
                                 foreach (var breach in breaches) {
-                                    if (breach.IsApplicable(url, modified)) { //check only if we know the domain
+                                    if (breach.IsApplicable(url, modified, entry.Title)) { //check only if we know the domain
                                         var lvi = new ListViewItem(entry.Title) {
                                             Tag = entry,
                                             ImageIndex = 1,
