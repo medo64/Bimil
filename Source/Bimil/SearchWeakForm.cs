@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.Net;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
@@ -127,6 +128,8 @@ namespace Bimil {
 
             if (SearchHibpForBreaches() == false) {
                 e.Cancel = true;
+            } else if (Settings.CheckWeakPasswordAtHibp && (SearchHibpForPasswords() == false)) {
+                e.Cancel = true;
             }
         }
 
@@ -173,7 +176,7 @@ namespace Bimil {
                 var percentage = i * 100 / userEntryList.Count;
                 try {
                     var breaches = Hibp.GetAllBreaches(userEntry.Account);
-                    bwSearchHibp.ReportProgress(percentage, new ProgressState($"{userEntry.Account}: pwned!"));
+                    ReportWebStatus(percentage, HttpStatusCode.OK, null, userEntry.Account);
                     foreach (var entry in userEntry.Entries) {
                         var modified = entry.PasswordModificationTime;
                         foreach (var record in entry.Records) {
@@ -195,25 +198,9 @@ namespace Bimil {
                     }
                 } catch (WebException ex) {
                     if (ex.Response is HttpWebResponse response) {
-                        switch (response.StatusCode) {
-                            case HttpStatusCode.NotFound:
-                                bwSearchHibp.ReportProgress(percentage, new ProgressState($"OK ({userEntry.Account})."));
-                                break;
-
-                            case HttpStatusCode.ServiceUnavailable:
-                                bwSearchHibp.ReportProgress(percentage, new ProgressState($"Temporarily unavailable ({userEntry.Account})!"));
-                                break;
-
-                            case (HttpStatusCode)429:
-                                bwSearchHibp.ReportProgress(percentage, new ProgressState($"Throttled ({userEntry.Account})!"));
-                                break;
-
-                            default:
-                                bwSearchHibp.ReportProgress(percentage, new ProgressState($"{response.StatusCode} {response.StatusDescription}! ({userEntry.Account})"));
-                                break;
-                        }
+                        ReportWebStatus(percentage, response.StatusCode, response.StatusDescription, userEntry.Account);
                     } else {
-                        bwSearchHibp.ReportProgress(percentage, new ProgressState($"Error ({userEntry.Account})! " + ex.Message));
+                        ReportWebStatus(percentage, null, ex.Message, userEntry.Account);
                     }
                 }
 
@@ -223,6 +210,93 @@ namespace Bimil {
 
             Debug.WriteLine(string.Format(CultureInfo.InvariantCulture, "{1} accounts searched in {0:0.0} ms (albeit with {2} ms throttling)", sw.ElapsedMilliseconds, userEntryList.Count, ThrottleInterval));
             return true;
+        }
+
+        private bool SearchHibpForPasswords() {
+            var sw = Stopwatch.StartNew();
+
+            //collect all passwords
+            var userPasswords = new List<PasswordAndEntryStorage>();
+            foreach (var entry in this.Document.Entries) {
+                foreach (var record in entry.Records) {
+                    if (record.RecordType == RecordType.Password) {
+                        userPasswords.Add(new PasswordAndEntryStorage(record.Text, entry));
+                    }
+                }
+                if (bwSearchHibp.CancellationPending) { return false; }
+            }
+
+            Debug.WriteLine(string.Format(CultureInfo.InvariantCulture, "Passwords scanned at {0:0.0} ms", sw.ElapsedMilliseconds));
+
+            //sort based on random value
+            if (Settings.RandomizeWeakPasswordAtHibp) {
+                userPasswords.Sort((item1, item2) => {
+                    return (item1.RandomValue > item2.RandomValue) ? -1
+                         : (item1.RandomValue < item2.RandomValue) ? +1
+                                                                   : 0;
+                });
+            }
+
+            Debug.WriteLine(string.Format(CultureInfo.InvariantCulture, "Passwords sorted at {0:0.0} ms", sw.ElapsedMilliseconds));
+
+            for (var i = 0; i < userPasswords.Count; i++) {
+                var percentage = i * 100 / userPasswords.Count;
+                var item = userPasswords[i];
+
+                try {
+                    if (Hibp.IsPassworPwned(item.PasswordHash)) {
+                        ReportWebStatus(percentage, HttpStatusCode.OK, null, item.Entry.Title);
+                        var lvi = new ListViewItem(item.Entry.Title) {
+                            Tag = item.Entry,
+                            ImageIndex = 1,
+                            ToolTipText = $"Password is present in breached password collection at Have I been pwned? site."
+                        };
+                        bwSearchHibp.ReportProgress(percentage, new ProgressState(lvi));
+                    } else {
+                        ReportWebStatus(percentage, HttpStatusCode.NotFound, null, item.Entry.Title);
+                    }
+                } catch (WebException ex) {
+                    if (ex.Response is HttpWebResponse response) {
+                        ReportWebStatus(percentage, response.StatusCode, response.StatusDescription, item.Entry.Title);
+                    } else {
+                        ReportWebStatus(percentage, null, ex.Message, item.Entry.Title);
+                    }
+                }
+
+                Debug.WriteLine(string.Format(CultureInfo.InvariantCulture, "Password for entry {1} searched at {0:0.0} ms (followed by {2} ms throttling)", sw.ElapsedMilliseconds, item.Entry.Title, ThrottleInterval));
+                Thread.Sleep(ThrottleInterval);
+            }
+
+            Debug.WriteLine(string.Format(CultureInfo.InvariantCulture, "{1} accounts searched in {0:0.0} ms (albeit with {2} ms throttling)", sw.ElapsedMilliseconds, userPasswords.Count, ThrottleInterval));
+            return true;
+        }
+
+        private void ReportWebStatus(int percentage, HttpStatusCode? statusCode, string statusDescription, string itemTitle) {
+            switch (statusCode) {
+                case null:
+                    bwSearchHibp.ReportProgress(percentage, new ProgressState($"Error ({itemTitle})! " + statusDescription));
+                    break;
+
+                case HttpStatusCode.OK:
+                    bwSearchHibp.ReportProgress(percentage, new ProgressState($"Pwned ({itemTitle})."));
+                    break;
+
+                case HttpStatusCode.NotFound:
+                    bwSearchHibp.ReportProgress(percentage, new ProgressState($"OK ({itemTitle})."));
+                    break;
+
+                case HttpStatusCode.ServiceUnavailable:
+                    bwSearchHibp.ReportProgress(percentage, new ProgressState($"Temporarily unavailable ({itemTitle})!"));
+                    break;
+
+                case (HttpStatusCode)429:
+                    bwSearchHibp.ReportProgress(percentage, new ProgressState($"Throttled ({itemTitle})!"));
+                    break;
+
+                default:
+                    bwSearchHibp.ReportProgress(percentage, new ProgressState($"{statusCode} {statusDescription}! ({itemTitle})"));
+                    break;
+            }
         }
 
         private void bwSearchHibp_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e) {
@@ -254,6 +328,20 @@ namespace Bimil {
             }
             public string Account { get; }
             public IList<Entry> Entries { get; }
+        }
+
+        private class PasswordAndEntryStorage {
+            private static Random Random = new Random();
+            private static SHA1Managed SHA1 = new SHA1Managed();
+            public PasswordAndEntryStorage(string password, Entry entry) {
+                var sha1Bytes = SHA1.ComputeHash(Encoding.UTF8.GetBytes(password));
+                this.PasswordHash = BitConverter.ToString(sha1Bytes).Replace("-", ""); //dirty conversion to hex
+                this.Entry = entry;
+                this.RandomValue = Random.Next();
+            }
+            public string PasswordHash { get; }
+            public Entry Entry { get; }
+            public int RandomValue { get; } //used for sorting so password check is done in different order every time
         }
 
 

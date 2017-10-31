@@ -99,6 +99,25 @@ namespace Bimil {
 
 
         [Category("Behavior")]
+        [DisplayName("Check password at Have I been pwned?")]
+        [Description("If true, hashed password will be sent over TLS 1.2 to Have I been pwned? (haveibeenpwned.com) servers to verify if it is among breached passwords. This will only be done during explicit weak password search and not during the normal password entry or use.")]
+        [DefaultValue(false)]
+        public static bool CheckWeakPasswordAtHibp {
+            get { return Config.Read("CheckWeakPasswordAtHibp", false); }
+            set { Config.Write("CheckWeakPasswordAtHibp", value); }
+        }
+
+        [Category("Behavior")]
+        [DisplayName("Randomize password query order at Have I been pwned?")]
+        [Description("If true, hashed password will be queried in random order.")]
+        [DefaultValue(true)]
+        public static bool RandomizeWeakPasswordAtHibp {
+            get { return Config.Read("RandomizeWeakPasswordAtHibp", true); }
+            set { Config.Write("RandomizeWeakPasswordAtHibp", value); }
+        }
+
+
+        [Category("Behavior")]
         [DisplayName("Show NTP drift warning")]
         [Description("If true, warning will be shown if system time drifts from NTP server time.")]
         [DefaultValue(true)]

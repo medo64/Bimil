@@ -30,7 +30,27 @@ namespace Bimil {
                 throw;
             }
         }
+
+        public static bool IsPassworPwned(string passwordHash) {
+            var url = "https://haveibeenpwned.com/api/v2/pwnedpassword/" + System.Web.HttpUtility.UrlEncode(passwordHash);
+            try {
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | (SecurityProtocolType)3072; //works onlyl if .NET framework 4.5 is installed
+                using (var client = new WebClient()) {
+                    client.Headers["User-Agent"] = Medo.Reflection.EntryAssembly.Product + "/" + Medo.Reflection.EntryAssembly.Version.ToString();
+                    client.DownloadString(url);
+                    return true;
+                }
+            } catch (WebException ex) {
+                if ((ex.Response is HttpWebResponse response) && (response.StatusCode == HttpStatusCode.NotFound)) {
+                    return false;
+                } else {
+                    throw;
+                }
+            }
+        }
+
     }
+
 
     [DebuggerDisplay("Title")]
     [DataContract]
