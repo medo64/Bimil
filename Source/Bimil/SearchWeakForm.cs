@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
@@ -124,6 +125,12 @@ namespace Bimil {
         private void bwSearchHibp_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e) {
             bwSearchHibp.ReportProgress(0, new ProgressState("';--have i been pwned?"));
 
+            if (SearchHibpForBreaches() == false) {
+                e.Cancel = true;
+            }
+        }
+
+        private bool SearchHibpForBreaches() {
             //collect all user-names
             var sw = Stopwatch.StartNew();
             var userEntryDictionary = new Dictionary<string, List<Entry>>();
@@ -142,10 +149,7 @@ namespace Bimil {
                         }
                     }
                 }
-                if (bwSearchHibp.CancellationPending) {
-                    e.Cancel = true;
-                    return;
-                }
+                if (bwSearchHibp.CancellationPending) { return false; }
             }
 
             Debug.WriteLine(string.Format(CultureInfo.InvariantCulture, "User names cached at {0:0.0} ms", sw.ElapsedMilliseconds));
@@ -166,7 +170,7 @@ namespace Bimil {
             //Search all accounts for breaches
             for (var i = 0; i < userEntryList.Count; i++) {
                 var userEntry = userEntryList[i];
-                var percentage = i * 30 / userEntryList.Count;
+                var percentage = i * 100 / userEntryList.Count;
                 try {
                     var breaches = Hibp.GetAllBreaches(userEntry.Account);
                     bwSearchHibp.ReportProgress(percentage, new ProgressState($"{userEntry.Account}: pwned!"));
@@ -193,21 +197,32 @@ namespace Bimil {
                     if (ex.Response is HttpWebResponse response) {
                         switch (response.StatusCode) {
                             case HttpStatusCode.NotFound:
-                                bwSearchHibp.ReportProgress(percentage, new ProgressState($"{userEntry.Account}: OK."));
+                                bwSearchHibp.ReportProgress(percentage, new ProgressState($"OK ({userEntry.Account})."));
                                 break;
+
+                            case HttpStatusCode.ServiceUnavailable:
+                                bwSearchHibp.ReportProgress(percentage, new ProgressState($"Temporarily unavailable ({userEntry.Account})!"));
+                                break;
+
                             case (HttpStatusCode)429:
-                                bwSearchHibp.ReportProgress(percentage, new ProgressState($"{userEntry.Account}: throttled!"));
+                                bwSearchHibp.ReportProgress(percentage, new ProgressState($"Throttled ({userEntry.Account})!"));
                                 break;
+
                             default:
-                                bwSearchHibp.ReportProgress(percentage, new ProgressState($"{userEntry.Account}: {response.StatusCode}! {response.StatusDescription}"));
+                                bwSearchHibp.ReportProgress(percentage, new ProgressState($"{response.StatusCode} {response.StatusDescription}! ({userEntry.Account})"));
                                 break;
                         }
                     } else {
-                        bwSearchHibp.ReportProgress(percentage, new ProgressState($"{userEntry.Account} Error! " + ex.Message));
+                        bwSearchHibp.ReportProgress(percentage, new ProgressState($"Error ({userEntry.Account})! " + ex.Message));
                     }
                 }
+
+                Debug.WriteLine(string.Format(CultureInfo.InvariantCulture, "Account {1} searched at {0:0.0} ms (followed by {2} ms throttling)", sw.ElapsedMilliseconds, userEntry.Account, ThrottleInterval));
                 Thread.Sleep(ThrottleInterval);
             }
+
+            Debug.WriteLine(string.Format(CultureInfo.InvariantCulture, "{1} accounts searched in {0:0.0} ms (albeit with {2} ms throttling)", sw.ElapsedMilliseconds, userEntryList.Count, ThrottleInterval));
+            return true;
         }
 
         private void bwSearchHibp_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e) {
