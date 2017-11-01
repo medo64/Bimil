@@ -14,7 +14,7 @@ namespace Bimil {
         public static IList<HibpBreach> GetAllBreaches(string account) {
             var url = "https://haveibeenpwned.com/api/v2/breachedaccount/" + System.Web.HttpUtility.UrlEncode(account);
             try {
-                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | (SecurityProtocolType)3072; //works onlyl if .NET framework 4.5 is installed
+                ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072; //TLS 1.2 - works only if .NET framework 4.5 is installed
                 using (var client = new WebClient()) {
                     client.Headers["User-Agent"] = Medo.Reflection.EntryAssembly.Product + "/" + Medo.Reflection.EntryAssembly.Version.ToString();
                     var text = client.DownloadString(url);
@@ -34,7 +34,7 @@ namespace Bimil {
         public static bool IsPassworPwned(string passwordHash) {
             var url = "https://haveibeenpwned.com/api/v2/pwnedpassword/" + System.Web.HttpUtility.UrlEncode(passwordHash);
             try {
-                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | (SecurityProtocolType)3072; //works onlyl if .NET framework 4.5 is installed
+                ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072; //TLS 1.2 - works only if .NET framework 4.5 is installed
                 using (var client = new WebClient()) {
                     client.Headers["User-Agent"] = Medo.Reflection.EntryAssembly.Product + "/" + Medo.Reflection.EntryAssembly.Version.ToString();
                     client.DownloadString(url);
