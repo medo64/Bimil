@@ -12,11 +12,11 @@ namespace Bimil {
 
         public static void SetClipboardText(IWin32Window owner, string text) {
             try {
+                var data = new DataObject();
                 if (text.Length > 0) {
-                    Clipboard.SetText(text, TextDataFormat.UnicodeText);
-                } else {
-                    Clipboard.Clear();
+                    data.SetText(text, TextDataFormat.UnicodeText);
                 }
+                Clipboard.SetDataObject(data, false, 5, 100);
             } catch (ExternalException ex) {
                 Medo.MessageBox.ShowError(owner, "Cannot copy to clipboard!\n\n" + ex.Message);
             }
@@ -53,7 +53,9 @@ namespace Bimil {
                 var protectedBuffer = ProtectedData.Protect(buffer, null, DataProtectionScope.CurrentUser);
 
                 try {
-                    Clipboard.SetData(FormatName, protectedBuffer);
+                    var data = new DataObject();
+                    data.SetData(FormatName, protectedBuffer);
+                    Clipboard.SetDataObject(data, false, 5, 100);
                 } catch (ExternalException ex) {
                     Medo.MessageBox.ShowError(owner, "Cannot copy to clipboard!\n\n" + ex.Message);
                 }
