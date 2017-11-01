@@ -1,16 +1,34 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
-using System.Text;
 using System.Windows.Forms;
 using Medo.Security.Cryptography.PasswordSafe;
 
 namespace Bimil {
     internal static class ClipboardHelper {
 
+        #region Text
+
+        public static void SetClipboardText(IWin32Window owner, string text) {
+            try {
+                if (text.Length > 0) {
+                    Clipboard.SetText(text, TextDataFormat.UnicodeText);
+                } else {
+                    Clipboard.Clear();
+                }
+            } catch (ExternalException ex) {
+                Medo.MessageBox.ShowError(owner, "Cannot copy to clipboard!\n\n" + ex.Message);
+            }
+        }
+
+        #endregion Text
+
+        #region Custom
+
         private static readonly string FormatName = "Bimil";
 
-        public static void SetClipboardData(IEnumerable<Entry> entries) {
+        public static void SetClipboardData(IWin32Window owner, IEnumerable<Entry> entries) {
             var bytes = new List<byte>();
             var buffer = new byte[0];
             try {
@@ -34,8 +52,11 @@ namespace Bimil {
 
                 var protectedBuffer = ProtectedData.Protect(buffer, null, DataProtectionScope.CurrentUser);
 
-                Clipboard.Clear();
-                Clipboard.SetData(FormatName, protectedBuffer);
+                try {
+                    Clipboard.SetData(FormatName, protectedBuffer);
+                } catch (ExternalException ex) {
+                    Medo.MessageBox.ShowError(owner, "Cannot copy to clipboard!\n\n" + ex.Message);
+                }
             } finally {
                 for (int i = 0; i < bytes.Count; i++) { bytes[i] = 0; }
                 Array.Clear(buffer, 0, buffer.Length);
@@ -80,5 +101,6 @@ namespace Bimil {
             }
         }
 
+        #endregion Custom
     }
 }

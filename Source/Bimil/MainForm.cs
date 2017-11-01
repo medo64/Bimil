@@ -878,14 +878,14 @@ namespace Bimil {
                         case RecordType.EmailAddress:
                             if (record.Text.Length > 0) {
                                 mnxItem = new ToolStripMenuItem("Copy " + Helpers.ToTitleCase(Helpers.GetRecordCaption(record)) + " (" + record.Text + ")");
-                                mnxItem.Click += delegate { Execute.ClipboardCopyText(record.Text); };
+                                mnxItem.Click += delegate { ClipboardHelper.SetClipboardText(this, record.Text); };
                             }
                             break;
 
                         case RecordType.Password:
                             if (record.Text.Length > 0) {
                                 mnxItem = new ToolStripMenuItem("Copy " + Helpers.ToTitleCase(Helpers.GetRecordCaption(record)) + " (" + new string('*', record.Text.Length) + ")");
-                                mnxItem.Click += delegate { Execute.ClipboardCopyText(record.Text); };
+                                mnxItem.Click += delegate { ClipboardHelper.SetClipboardText(this, record.Text); };
                             }
                             break;
 
@@ -903,7 +903,7 @@ namespace Bimil {
                                     try {
                                         //recalculate code - just in case menu was open too long and displayed code expired
                                         var code = Helpers.GetTwoFactorCode(OneTimePassword.ToBase32(keyBytes2, keyBytes2.Length, SecretFormatFlags.None));
-                                        Execute.ClipboardCopyText(code);
+                                        ClipboardHelper.SetClipboardText(this, code);
                                     } finally {
                                         Array.Clear(keyBytes2, 0, keyBytes2.Length);
                                     }
@@ -994,7 +994,7 @@ namespace Bimil {
             foreach (ListViewItem selectedItem in lsvEntries.SelectedItems) {
                 entries.Add((Entry)(selectedItem.Tag));
             }
-            ClipboardHelper.SetClipboardData(entries.AsReadOnly());
+            ClipboardHelper.SetClipboardData(this, entries.AsReadOnly());
 
             for (int i = lsvEntries.Items.Count - 1; i >= 0; i--) {
                 if (lsvEntries.Items[i].Selected) {
@@ -1013,7 +1013,7 @@ namespace Bimil {
             foreach (ListViewItem selectedItem in lsvEntries.SelectedItems) {
                 entries.Add((Entry)(selectedItem.Tag));
             }
-            ClipboardHelper.SetClipboardData(entries.AsReadOnly());
+            ClipboardHelper.SetClipboardData(this, entries.AsReadOnly());
         }
 
         private void mnxEntryPaste_Click(object sender, EventArgs e) {

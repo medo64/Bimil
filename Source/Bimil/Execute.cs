@@ -134,14 +134,5 @@ namespace Bimil {
                 return "";
             }
         }
-
-
-        public static void ClipboardCopyText(string text) {
-            Clipboard.Clear();
-            if (text.Length > 0) {
-                Clipboard.SetText(text, TextDataFormat.UnicodeText);
-            }
-        }
-
     }
 }

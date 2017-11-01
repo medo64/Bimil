@@ -567,7 +567,7 @@ namespace Bimil {
                 }
                 text = Helpers.FilterText(text, allowedCopyCharacters);
 
-                Execute.ClipboardCopyText(text);
+                ClipboardHelper.SetClipboardText(this, text);
             };
 
             return button;
