@@ -145,7 +145,7 @@ namespace Bimil {
                             if (!string.IsNullOrWhiteSpace(text)) {
                                 if (!userEntryDictionary.TryGetValue(text, out var entries)) {
                                     entries = new List<Entry>();
-                                    userEntryDictionary.Add(record.Text, entries);
+                                    userEntryDictionary.Add(text, entries);
                                 }
                                 if (!entries.Contains(entry)) { entries.Add(entry); }
                             }
@@ -215,25 +215,53 @@ namespace Bimil {
         private bool SearchHibpForPasswords() {
             var sw = Stopwatch.StartNew();
 
-            //collect all passwords
-            var userPasswords = new List<PasswordAndEntryStorage>();
+            var sha1 = new SHA1Managed();
+
+            var userEntryDictionary = new Dictionary<string, List<Entry>>();
             foreach (var entry in this.Document.Entries) {
-                foreach (var record in entry.Records) {
-                    if (record.RecordType == RecordType.Password) {
-                        userPasswords.Add(new PasswordAndEntryStorage(record.Text, entry));
+                if (entry.Records.Contains(RecordType.Password)) {
+                    foreach (var record in entry.Records) {
+                        if (record.RecordType == RecordType.Password) {
+                            var sha1Bytes = sha1.ComputeHash(Encoding.UTF8.GetBytes(record.Text));
+                            var passwordHash = BitConverter.ToString(sha1Bytes).Replace("-", ""); //dirty conversion to hex
+                            if (!string.IsNullOrWhiteSpace(passwordHash)) {
+                                if (!userEntryDictionary.TryGetValue(passwordHash, out var entries)) {
+                                    entries = new List<Entry>();
+                                    userEntryDictionary.Add(passwordHash, entries);
+                                }
+                                if (!entries.Contains(entry)) { entries.Add(entry); }
+                            }
+                        }
                     }
                 }
                 if (bwSearchHibp.CancellationPending) { return false; }
             }
 
-            Debug.WriteLine(string.Format(CultureInfo.InvariantCulture, "Passwords scanned at {0:0.0} ms", sw.ElapsedMilliseconds));
+            Debug.WriteLine(string.Format(CultureInfo.InvariantCulture, "Passwords hashed at {0:0.0} ms", sw.ElapsedMilliseconds));
+
+            //sort all passwords
+            var userPasswords = new List<PasswordAndEntryStorage>();
+            foreach (var kvp in userEntryDictionary) {
+                userPasswords.Add(new PasswordAndEntryStorage(kvp.Key, kvp.Value));
+                if (bwSearchHibp.CancellationPending) { return false; }
+            }
+
+            Debug.WriteLine(string.Format(CultureInfo.InvariantCulture, "Passwords filled at {0:0.0} ms", sw.ElapsedMilliseconds));
 
             //sort based on random value
             if (Settings.RandomizeWeakPasswordAtHibp) {
                 userPasswords.Sort((item1, item2) => {
-                    return (item1.RandomValue > item2.RandomValue) ? -1
-                         : (item1.RandomValue < item2.RandomValue) ? +1
-                                                                   : 0;
+                    var count1 = item1.Entries.Count;
+                    var count2 = item2.Entries.Count;
+                    if (count1 > count2) { //sort based on number of entries with the same password
+                        return -1;
+                    } else if (count1 < count2) {
+                        return +1;
+                    } else { //just randomize
+                        return (item1.RandomValue < item2.RandomValue) ? -1
+                             : (item1.RandomValue > item2.RandomValue) ? +1
+                                                                       : 0;
+                    }
                 });
             }
 
@@ -245,25 +273,27 @@ namespace Bimil {
 
                 try {
                     if (Hibp.IsPassworPwned(item.PasswordHash)) {
-                        ReportWebStatus(percentage, HttpStatusCode.OK, null, item.Entry.Title);
-                        var lvi = new ListViewItem(item.Entry.Title) {
-                            Tag = item.Entry,
-                            ImageIndex = 1,
-                            ToolTipText = $"Password is present in breached password collection at Have I been pwned? site."
-                        };
-                        bwSearchHibp.ReportProgress(percentage, new ProgressState(lvi));
+                        ReportWebStatus(percentage, HttpStatusCode.OK, null, item.Entries[0].Title);
+                        foreach (var entry in item.Entries) {
+                            var lvi = new ListViewItem(entry.Title) {
+                                Tag = entry,
+                                ImageIndex = 1,
+                                ToolTipText = $"Password is present in breached password collection at Have I been pwned? site."
+                            };
+                            bwSearchHibp.ReportProgress(percentage, new ProgressState(lvi));
+                        }
                     } else {
-                        ReportWebStatus(percentage, HttpStatusCode.NotFound, null, item.Entry.Title);
+                        ReportWebStatus(percentage, HttpStatusCode.NotFound, null, item.Entries[0].Title);
                     }
                 } catch (WebException ex) {
                     if (ex.Response is HttpWebResponse response) {
-                        ReportWebStatus(percentage, response.StatusCode, response.StatusDescription, item.Entry.Title);
+                        ReportWebStatus(percentage, response.StatusCode, response.StatusDescription, item.Entries[0].Title);
                     } else {
-                        ReportWebStatus(percentage, null, ex.Message, item.Entry.Title);
+                        ReportWebStatus(percentage, null, ex.Message, item.Entries[0].Title);
                     }
                 }
 
-                Debug.WriteLine(string.Format(CultureInfo.InvariantCulture, "Password for entry {1} searched at {0:0.0} ms (followed by {2} ms throttling)", sw.ElapsedMilliseconds, item.Entry.Title, ThrottleInterval));
+                Debug.WriteLine(string.Format(CultureInfo.InvariantCulture, "Password for {1} entries searched at {0:0.0} ms (followed by {2} ms throttling)", sw.ElapsedMilliseconds, item.Entries.Count, ThrottleInterval));
                 Thread.Sleep(ThrottleInterval);
             }
 
@@ -332,15 +362,13 @@ namespace Bimil {
 
         private class PasswordAndEntryStorage {
             private static Random Random = new Random();
-            private static SHA1Managed SHA1 = new SHA1Managed();
-            public PasswordAndEntryStorage(string password, Entry entry) {
-                var sha1Bytes = SHA1.ComputeHash(Encoding.UTF8.GetBytes(password));
-                this.PasswordHash = BitConverter.ToString(sha1Bytes).Replace("-", ""); //dirty conversion to hex
-                this.Entry = entry;
+            public PasswordAndEntryStorage(string passwordHash, List<Entry> entries) {
+                this.PasswordHash = passwordHash;
+                this.Entries = entries.AsReadOnly();
                 this.RandomValue = Random.Next();
             }
             public string PasswordHash { get; }
-            public Entry Entry { get; }
+            public IList<Entry> Entries { get; }
             public int RandomValue { get; } //used for sorting so password check is done in different order every time
         }
 
