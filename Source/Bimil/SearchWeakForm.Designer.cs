@@ -116,9 +116,9 @@ namespace Bimil {
             // 
             // staStatusText
             // 
-            this.staStatusText.Margin = new System.Windows.Forms.Padding(3, 3, 0, 2);
+            this.staStatusText.Margin = new System.Windows.Forms.Padding(2, 3, 2, 2);
             this.staStatusText.Name = "staStatusText";
-            this.staStatusText.Size = new System.Drawing.Size(223, 19);
+            this.staStatusText.Size = new System.Drawing.Size(261, 19);
             this.staStatusText.Spring = true;
             this.staStatusText.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 

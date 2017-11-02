@@ -316,27 +316,27 @@ namespace Bimil {
         private void ReportWebStatus(int percentage, HttpStatusCode? statusCode, string statusDescription, string itemTitle) {
             switch (statusCode) {
                 case null:
-                    bwSearchHibp.ReportProgress(percentage, new ProgressState($"Error ({itemTitle})! " + statusDescription));
+                    bwSearchHibp.ReportProgress(percentage, new ProgressState($"Error - {itemTitle}! " + statusDescription));
                     break;
 
                 case HttpStatusCode.OK:
-                    bwSearchHibp.ReportProgress(percentage, new ProgressState($"Pwned ({itemTitle})."));
+                    bwSearchHibp.ReportProgress(percentage, new ProgressState($"Pwned - {itemTitle}."));
                     break;
 
                 case HttpStatusCode.NotFound:
-                    bwSearchHibp.ReportProgress(percentage, new ProgressState($"OK ({itemTitle})."));
+                    bwSearchHibp.ReportProgress(percentage, new ProgressState($"OK - {itemTitle}."));
                     break;
 
                 case HttpStatusCode.ServiceUnavailable:
-                    bwSearchHibp.ReportProgress(percentage, new ProgressState($"Temporarily unavailable ({itemTitle})!"));
+                    bwSearchHibp.ReportProgress(percentage, new ProgressState($"Temporarily unavailable - {itemTitle}!"));
                     break;
 
                 case (HttpStatusCode)429:
-                    bwSearchHibp.ReportProgress(percentage, new ProgressState($"Throttled ({itemTitle})!"));
+                    bwSearchHibp.ReportProgress(percentage, new ProgressState($"Throttled - {itemTitle}!"));
                     break;
 
                 default:
-                    bwSearchHibp.ReportProgress(percentage, new ProgressState($"{statusCode} {statusDescription}! ({itemTitle})"));
+                    bwSearchHibp.ReportProgress(percentage, new ProgressState($"{statusCode} {statusDescription} - {itemTitle}!"));
                     break;
             }
         }
