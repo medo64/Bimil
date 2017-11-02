@@ -110,9 +110,9 @@ namespace Bimil {
         [Category("Behavior")]
         [DisplayName("Randomize password query order at Have I been pwned?")]
         [Description("If true, hashed password will be queried in random order.")]
-        [DefaultValue(true)]
+        [DefaultValue(false)]
         public static bool RandomizeWeakPasswordAtHibp {
-            get { return Config.Read("RandomizeWeakPasswordAtHibp", true); }
+            get { return Config.Read("RandomizeWeakPasswordAtHibp", false); }
             set { Config.Write("RandomizeWeakPasswordAtHibp", value); }
         }
 

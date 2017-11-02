@@ -263,6 +263,18 @@ namespace Bimil {
                                                                        : 0;
                     }
                 });
+            } else {
+                userPasswords.Sort((item1, item2) => {
+                    var count1 = item1.Entries.Count;
+                    var count2 = item2.Entries.Count;
+                    if (count1 > count2) { //sort based on number of entries with the same password
+                        return -1;
+                    } else if (count1 < count2) {
+                        return +1;
+                    } else { //order by password hash
+                        return string.CompareOrdinal(item1.PasswordHash, item2.PasswordHash);
+                    }
+                });
             }
 
             Debug.WriteLine(string.Format(CultureInfo.InvariantCulture, "Passwords sorted at {0:0.0} ms", sw.ElapsedMilliseconds));
