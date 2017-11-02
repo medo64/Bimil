@@ -162,10 +162,12 @@ namespace Bimil {
             foreach (var kvp in userEntryDictionary) {
                 userEntryList.Add(new AccountAndEntryStorage(kvp.Key, kvp.Value));
             }
-            userEntryList.Sort((kvp1, kvp2) => {
-                var count1 = kvp1.Entries.Count;
-                var count2 = kvp2.Entries.Count;
-                return (count1 > count2) ? -1 : (count1 < count2) ? +1 : 0;
+            userEntryList.Sort((item1, item2) => {
+                var count1 = item1.Entries.Count;
+                var count2 = item2.Entries.Count;
+                return (count1 > count2) ? -1
+                     : (count1 < count2) ? +1
+                     : string.CompareOrdinal(item1.Account, item2.Account);
             });
 
             Debug.WriteLine(string.Format(CultureInfo.InvariantCulture, "User names sorted at {0:0.0} ms", sw.ElapsedMilliseconds));
@@ -363,6 +365,7 @@ namespace Bimil {
             public string StatusText { get; }
         }
 
+        [DebuggerDisplay("{Entries.Count} entries for {Account,nq}")]
         private class AccountAndEntryStorage {
             public AccountAndEntryStorage(string account, List<Entry> entries) {
                 this.Account = account;
@@ -372,6 +375,7 @@ namespace Bimil {
             public IList<Entry> Entries { get; }
         }
 
+        [DebuggerDisplay("{Entries.Count} entries for {PasswordHash,nq}")]
         private class PasswordAndEntryStorage {
             private static Random Random = new Random();
             public PasswordAndEntryStorage(string passwordHash, List<Entry> entries) {
