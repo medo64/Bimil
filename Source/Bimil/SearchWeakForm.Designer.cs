@@ -110,6 +110,7 @@ namespace Bimil {
             this.staProgress});
             this.sta.Location = new System.Drawing.Point(0, 369);
             this.sta.Name = "sta";
+            this.sta.ShowItemToolTips = true;
             this.sta.Size = new System.Drawing.Size(382, 24);
             this.sta.TabIndex = 5;
             this.sta.Text = "statusStrip1";

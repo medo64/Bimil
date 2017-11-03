@@ -107,6 +107,25 @@ namespace Bimil {
             if (!sta.IsDisposed) {
                 if (!staProgress.Visible) { staProgress.Visible = true; }
                 staProgress.Value = e.ProgressPercentage;
+
+                if (state.EstimatedSecondsRemaining.HasValue) {
+                    var secondsLeft = state.EstimatedSecondsRemaining.Value;
+                    int value;
+                    string valueText;
+                    if (secondsLeft > 7200) { //more than two hours; show hours
+                        value = secondsLeft / 3600;
+                        valueText = (value == 1) ? "hour" : "hours";
+                    } else if (secondsLeft > 60) { //more than minute but less than two hours; show minutes
+                        value = secondsLeft / 60;
+                        valueText = (value == 1) ? "minute" : "minutes";
+                    } else { //less then minute; show seconds
+                        value = (secondsLeft / 5 + 1) * 5; //round to 5 seconds
+                        valueText = (value == 1) ? "second" : "seconds";
+                    }
+                    staProgress.ToolTipText = $"About {value} {valueText} remaining...";
+                } else {
+                    staProgress.ToolTipText = "";
+                }
             }
         }
 
@@ -173,12 +192,13 @@ namespace Bimil {
             Debug.WriteLine(string.Format(CultureInfo.InvariantCulture, "User names sorted at {0:0.0} ms", sw.ElapsedMilliseconds));
 
             //Search all accounts for breaches
-            for (var i = 0; i < userEntryList.Count; i++) {
+            var userEntryCount = userEntryList.Count;
+            for (var i = 0; i < userEntryCount; i++) {
                 var userEntry = userEntryList[i];
-                var percentage = i * 100 / userEntryList.Count;
+                var percentage = i * 100 / userEntryCount;
                 try {
                     var breaches = Hibp.GetAllBreaches(userEntry.Account);
-                    ReportWebStatus(percentage, HttpStatusCode.OK, null, userEntry.Account);
+                    ReportWebStatus(percentage, HttpStatusCode.OK, null, userEntry.Account, (userEntryCount - i) * ThrottleInterval);
                     foreach (var entry in userEntry.Entries) {
                         var modified = entry.PasswordModificationTime;
                         foreach (var record in entry.Records) {
@@ -200,9 +220,9 @@ namespace Bimil {
                     }
                 } catch (WebException ex) {
                     if (ex.Response is HttpWebResponse response) {
-                        ReportWebStatus(percentage, response.StatusCode, response.StatusDescription, userEntry.Account);
+                        ReportWebStatus(percentage, response.StatusCode, response.StatusDescription, userEntry.Account, (userEntryCount - i) * ThrottleInterval);
                     } else {
-                        ReportWebStatus(percentage, null, ex.Message, userEntry.Account);
+                        ReportWebStatus(percentage, null, ex.Message, userEntry.Account, (userEntryCount - i) * ThrottleInterval);
                     }
                 }
 
@@ -281,13 +301,15 @@ namespace Bimil {
 
             Debug.WriteLine(string.Format(CultureInfo.InvariantCulture, "Passwords sorted at {0:0.0} ms", sw.ElapsedMilliseconds));
 
-            for (var i = 0; i < userPasswords.Count; i++) {
-                var percentage = i * 100 / userPasswords.Count;
+            //check all hashes
+            var userPasswordCount = userPasswords.Count;
+            for (var i = 0; i < userPasswordCount; i++) {
+                var percentage = i * 100 / userPasswordCount;
                 var item = userPasswords[i];
 
                 try {
                     if (Hibp.IsPassworPwned(item.PasswordHash)) {
-                        ReportWebStatus(percentage, HttpStatusCode.OK, null, item.Entries[0].Title);
+                        ReportWebStatus(percentage, HttpStatusCode.OK, null, item.Entries[0].Title, (userPasswordCount - i) * ThrottleInterval);
                         foreach (var entry in item.Entries) {
                             var lvi = new ListViewItem(entry.Title) {
                                 Tag = entry,
@@ -297,13 +319,13 @@ namespace Bimil {
                             bwSearchHibp.ReportProgress(percentage, new ProgressState(lvi));
                         }
                     } else {
-                        ReportWebStatus(percentage, HttpStatusCode.NotFound, null, item.Entries[0].Title);
+                        ReportWebStatus(percentage, HttpStatusCode.NotFound, null, item.Entries[0].Title, (userPasswordCount - i) * ThrottleInterval);
                     }
                 } catch (WebException ex) {
                     if (ex.Response is HttpWebResponse response) {
-                        ReportWebStatus(percentage, response.StatusCode, response.StatusDescription, item.Entries[0].Title);
+                        ReportWebStatus(percentage, response.StatusCode, response.StatusDescription, item.Entries[0].Title, (userPasswordCount - i) * ThrottleInterval);
                     } else {
-                        ReportWebStatus(percentage, null, ex.Message, item.Entries[0].Title);
+                        ReportWebStatus(percentage, null, ex.Message, item.Entries[0].Title, (userPasswordCount - i) * ThrottleInterval);
                     }
                 }
 
@@ -315,30 +337,30 @@ namespace Bimil {
             return true;
         }
 
-        private void ReportWebStatus(int percentage, HttpStatusCode? statusCode, string statusDescription, string itemTitle) {
+        private void ReportWebStatus(int percentage, HttpStatusCode? statusCode, string statusDescription, string itemTitle, int estimatedMillisecondsRemaining) {
             switch (statusCode) {
                 case null:
-                    bwSearchHibp.ReportProgress(percentage, new ProgressState($"Error - {itemTitle}! " + statusDescription));
+                    bwSearchHibp.ReportProgress(percentage, new ProgressState($"Error - {itemTitle}! " + statusDescription, estimatedMillisecondsRemaining));
                     break;
 
                 case HttpStatusCode.OK:
-                    bwSearchHibp.ReportProgress(percentage, new ProgressState($"Pwned - {itemTitle}."));
+                    bwSearchHibp.ReportProgress(percentage, new ProgressState($"Pwned - {itemTitle}.", estimatedMillisecondsRemaining));
                     break;
 
                 case HttpStatusCode.NotFound:
-                    bwSearchHibp.ReportProgress(percentage, new ProgressState($"OK - {itemTitle}."));
+                    bwSearchHibp.ReportProgress(percentage, new ProgressState($"OK - {itemTitle}.", estimatedMillisecondsRemaining));
                     break;
 
                 case HttpStatusCode.ServiceUnavailable:
-                    bwSearchHibp.ReportProgress(percentage, new ProgressState($"Temporarily unavailable - {itemTitle}!"));
+                    bwSearchHibp.ReportProgress(percentage, new ProgressState($"Temporarily unavailable - {itemTitle}!", estimatedMillisecondsRemaining));
                     break;
 
                 case (HttpStatusCode)429:
-                    bwSearchHibp.ReportProgress(percentage, new ProgressState($"Throttled - {itemTitle}!"));
+                    bwSearchHibp.ReportProgress(percentage, new ProgressState($"Throttled - {itemTitle}!", estimatedMillisecondsRemaining));
                     break;
 
                 default:
-                    bwSearchHibp.ReportProgress(percentage, new ProgressState($"{statusCode} {statusDescription} - {itemTitle}!"));
+                    bwSearchHibp.ReportProgress(percentage, new ProgressState($"{statusCode} {statusDescription} - {itemTitle}!", estimatedMillisecondsRemaining));
                     break;
             }
         }
@@ -354,15 +376,18 @@ namespace Bimil {
         #region Helper
 
         private class ProgressState {
-            public ProgressState(ListViewItem item, string statusText) {
+            public ProgressState(ListViewItem item, string statusText, int? estimatedMillisecondsRemaining) {
                 this.Item = item;
                 this.StatusText = statusText;
+                this.EstimatedSecondsRemaining = (estimatedMillisecondsRemaining != null) ? estimatedMillisecondsRemaining / 1000 : null;
             }
-            public ProgressState(ListViewItem item) : this(item, null) { }
-            public ProgressState(string statusText) : this(null, statusText) { }
+            public ProgressState(ListViewItem item) : this(item, null, null) { }
+            public ProgressState(string statusText) : this(null, statusText, null) { }
+            public ProgressState(string statusText, int? estimatedMillisecondsRemaining) : this(null, statusText, estimatedMillisecondsRemaining) { }
 
             public ListViewItem Item { get; }
             public string StatusText { get; }
+            public int? EstimatedSecondsRemaining { get; }
         }
 
         [DebuggerDisplay("{Entries.Count} entries for {Account,nq}")]
