@@ -147,6 +147,7 @@ namespace Bimil {
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Search weak passwords";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form_FormClosing);
+            this.Load += new System.EventHandler(this.Form_Load);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form_KeyDown);
             this.Resize += new System.EventHandler(this.Form_Resize);
             this.sta.ResumeLayout(false);

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
@@ -28,6 +27,12 @@ namespace Bimil {
         private readonly Document Document;
         private readonly IList<string> Categories;
 
+
+        private void Form_Load(object sender, EventArgs e) {
+            if (Helpers.IsRunningOnMono) {
+                chbIncludeHibp.Visible = false; //don't show HIPB when running on mono (TLS 1.2 not working)
+            }
+        }
 
         private void Form_FormClosing(object sender, FormClosingEventArgs e) {
             if (bwSearchWeak.IsBusy) { bwSearchWeak.CancelAsync(); }
@@ -434,5 +439,6 @@ namespace Bimil {
         }
 
         #endregion
+
     }
 }
