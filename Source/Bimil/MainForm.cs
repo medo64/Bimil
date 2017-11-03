@@ -160,10 +160,27 @@ namespace Bimil {
             } else if (Settings.ShowStart) {
                 using (var frm = new StartForm()) {
                     if (frm.ShowDialog(this) == DialogResult.OK) {
-                        if (frm.FileName != null) {
-                            LoadFile(frm.FileName, isReadOnly: frm.IsReadOnly);
-                        } else {
-                            mnuNew_Click(null, null);
+                        switch (frm.Action) {
+                            case Helpers.StartAction.New:
+                                mnuNew_Click(null, null);
+                                break;
+
+                            case Helpers.StartAction.Open:
+                                if (frm.FileName != null) {
+                                    LoadFile(frm.FileName, isReadOnly: false);
+                                } else {
+                                    mnuOpen.PerformClick() ;
+                                }
+                                break;
+
+                            case Helpers.StartAction.OpenReadonly:
+                                if (frm.FileName != null) {
+                                    LoadFile(frm.FileName, isReadOnly: true);
+                                } else {
+                                    this.ShowNextOpenFileDialogWithReadOnly = true;
+                                    mnuOpen.PerformClick();
+                                }
+                                break;
                         }
                     }
                 }
@@ -489,7 +506,8 @@ namespace Bimil {
 
         private void mnuOpen_Click(object sender, EventArgs e) {
             if (SaveIfNeeded() != DialogResult.OK) { return; }
-            using (var frm = new OpenFileDialog() { AddExtension = true, AutoUpgradeEnabled = true, Filter = "Bimil and PasswordSafe files|*.bimil;*.psafe3|Bimil files|*.bimil|Password Safe files|*.psafe3|All files|*.*", RestoreDirectory = true, ShowReadOnly = true }) {
+            using (var frm = new OpenFileDialog() { AddExtension = true, AutoUpgradeEnabled = true, Filter = "Bimil and PasswordSafe files|*.bimil;*.psafe3|Bimil files|*.bimil|Password Safe files|*.psafe3|All files|*.*", RestoreDirectory = true, ShowReadOnly = true, ReadOnlyChecked = this.ShowNextOpenFileDialogWithReadOnly }) {
+                this.ShowNextOpenFileDialogWithReadOnly = false;
                 if (frm.ShowDialog(this) == DialogResult.OK) {
                     var isReadOnly = frm.ReadOnlyChecked || (Helpers.GetReadOnly(frm.FileName) == true);
                     if (LoadFile(frm.FileName, isReadOnly: isReadOnly)) {
@@ -501,6 +519,8 @@ namespace Bimil {
                 }
             }
         }
+
+        private bool ShowNextOpenFileDialogWithReadOnly;
 
 
         private bool LoadFile(string fileName, bool isReadOnly = false) { //return false if file cannot be open
@@ -677,7 +697,7 @@ namespace Bimil {
             using (var frm = new SaveFileDialog() { AddExtension = true, AutoUpgradeEnabled = true, Filter = "Bimil files|*.bimil|Password Safe files|*.psafe3|All files|*.*", RestoreDirectory = true }) {
                 if (this.DocumentFileName != null) { frm.FileName = this.DocumentFileName; }
                 if (frm.ShowDialog(this) == DialogResult.OK) {
-                    if (Helpers.GetReadOnly(this.DocumentFileName) == true) { Helpers.SetReadOnly(frm.FileName, false); } //remove read-only before saving
+                    if (Helpers.GetReadOnly(frm.FileName) == true) { Helpers.SetReadOnly(frm.FileName, false); } //remove read-only before saving
                     using (var fileStream = new FileStream(frm.FileName, FileMode.Create, FileAccess.Write)) {
                         this.Document.Save(fileStream);
                     }
@@ -689,6 +709,7 @@ namespace Bimil {
                     UpdateMenu();
                 }
             }
+
             cmbSearch.Select();
         }
 

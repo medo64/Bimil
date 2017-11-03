@@ -582,5 +582,11 @@ namespace Bimil {
             get { return (Type.GetType("Mono.Runtime") != null); }
         }
 
+
+        internal enum StartAction {
+            New,
+            Open,
+            OpenReadonly
+        }
     }
 }

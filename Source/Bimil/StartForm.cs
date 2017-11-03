@@ -66,8 +66,8 @@ namespace Bimil {
             var fileName = (lsvRecent.SelectedItems.Count == 1) ? ((RecentlyUsedFile)lsvRecent.SelectedItems[0].Tag).FileName : null;
             var isReadOnly = Helpers.GetReadOnly(fileName);
 
-            btnOpen.Enabled = (isReadOnly == false);
-            btnOpenReadOnly.Enabled = (isReadOnly != null);
+            btnOpen.Enabled = (fileName == null) || (isReadOnly == false);
+            btnOpenReadOnly.Enabled = (fileName == null) || (isReadOnly != null);
 
             this.AcceptButton = (!btnOpen.Enabled && btnOpenReadOnly.Enabled) ? btnOpenReadOnly : btnOpen;
         }
@@ -77,25 +77,35 @@ namespace Bimil {
             var readOnly = Helpers.GetReadOnly(fileName);
             var isReadOnly = (readOnly == true); //treats non-existing files as false (to allow opening them)
 
-            SelectFileName(((RecentlyUsedFile)lsvRecent.SelectedItems[0].Tag).FileName, isReadOnly);
+            SelectResult(isReadOnly ? Helpers.StartAction.OpenReadonly : Helpers.StartAction.Open,
+                                      ((RecentlyUsedFile)lsvRecent.SelectedItems[0].Tag).FileName);
             this.DialogResult = DialogResult.OK;
         }
 
 
+        public Helpers.StartAction Action { get; private set; }
         public string FileName { get; private set; }
         public bool IsReadOnly { get; private set; }
 
 
         private void btnOpen_Click(object sender, EventArgs e) {
-            SelectFileName(((RecentlyUsedFile)lsvRecent.SelectedItems[0].Tag).FileName);
+            if (lsvRecent.SelectedItems.Count > 0) {
+                SelectResult(Helpers.StartAction.Open, ((RecentlyUsedFile)lsvRecent.SelectedItems[0].Tag).FileName);
+            } else {
+                SelectResult(Helpers.StartAction.Open, null);
+            }
         }
 
         private void btnOpenReadOnly_Click(object sender, EventArgs e) {
-            SelectFileName(((RecentlyUsedFile)lsvRecent.SelectedItems[0].Tag).FileName, readOnly: true);
+            if (lsvRecent.SelectedItems.Count > 0) {
+                SelectResult(Helpers.StartAction.OpenReadonly, ((RecentlyUsedFile)lsvRecent.SelectedItems[0].Tag).FileName);
+            } else {
+                SelectResult(Helpers.StartAction.OpenReadonly, null);
+            }
         }
 
         private void btnNew_Click(object sender, EventArgs e) {
-            this.FileName = null;
+            SelectResult(Helpers.StartAction.New, null);
         }
 
 
@@ -142,9 +152,9 @@ namespace Bimil {
         }
 
 
-        private void SelectFileName(string fileName, bool readOnly = false) {
+        private void SelectResult(Helpers.StartAction action, string fileName) {
+            this.Action = action;
             this.FileName = fileName;
-            this.IsReadOnly = readOnly;
         }
     }
 }

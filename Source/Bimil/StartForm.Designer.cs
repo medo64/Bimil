@@ -51,6 +51,7 @@ namespace Bimil {
             this.lsvRecent.ContextMenuStrip = this.mnxList;
             this.lsvRecent.FullRowSelect = true;
             this.lsvRecent.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+            this.lsvRecent.HideSelection = false;
             this.lsvRecent.Location = new System.Drawing.Point(12, 12);
             this.lsvRecent.MultiSelect = false;
             this.lsvRecent.Name = "lsvRecent";
