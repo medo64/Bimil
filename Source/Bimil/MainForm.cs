@@ -169,7 +169,7 @@ namespace Bimil {
                                 if (frm.FileName != null) {
                                     LoadFile(frm.FileName, isReadOnly: false);
                                 } else {
-                                    mnuOpen.PerformClick() ;
+                                    mnuOpen.PerformClick();
                                 }
                                 break;
 
@@ -507,6 +507,11 @@ namespace Bimil {
         private void mnuOpen_Click(object sender, EventArgs e) {
             if (SaveIfNeeded() != DialogResult.OK) { return; }
             using (var frm = new OpenFileDialog() { AddExtension = true, AutoUpgradeEnabled = true, Filter = "Bimil and PasswordSafe files|*.bimil;*.psafe3|Bimil files|*.bimil|Password Safe files|*.psafe3|All files|*.*", RestoreDirectory = true, ShowReadOnly = true, ReadOnlyChecked = this.ShowNextOpenFileDialogWithReadOnly }) {
+                if (this.DocumentFileName != null) { //use the same directory as the currently opened file
+                    frm.InitialDirectory = Path.GetDirectoryName(this.DocumentFileName);
+                } else if (App.Recent.Count > 0) { //default to the most recently used directory
+                    frm.InitialDirectory = Path.GetDirectoryName(App.Recent[0].FileName);
+                }
                 this.ShowNextOpenFileDialogWithReadOnly = false;
                 if (frm.ShowDialog(this) == DialogResult.OK) {
                     var isReadOnly = frm.ReadOnlyChecked || (Helpers.GetReadOnly(frm.FileName) == true);
@@ -695,7 +700,12 @@ namespace Bimil {
             if (this.Document == null) { return; }
 
             using (var frm = new SaveFileDialog() { AddExtension = true, AutoUpgradeEnabled = true, Filter = "Bimil files|*.bimil|Password Safe files|*.psafe3|All files|*.*", RestoreDirectory = true }) {
-                if (this.DocumentFileName != null) { frm.FileName = this.DocumentFileName; }
+                if (this.DocumentFileName != null) {
+                    frm.InitialDirectory = Path.GetDirectoryName(this.DocumentFileName);
+                    frm.FileName = Path.GetFileName(this.DocumentFileName);
+                } else if (App.Recent.Count > 0) { //default to the most recently used directory
+                    frm.InitialDirectory = Path.GetDirectoryName(App.Recent[0].FileName);
+                }
                 if (frm.ShowDialog(this) == DialogResult.OK) {
                     if (Helpers.GetReadOnly(frm.FileName) == true) { Helpers.SetReadOnly(frm.FileName, false); } //remove read-only before saving
                     using (var fileStream = new FileStream(frm.FileName, FileMode.Create, FileAccess.Write)) {
