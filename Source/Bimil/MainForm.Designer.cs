@@ -77,6 +77,7 @@ namespace Bimil {
             this.cmbSearch = new System.Windows.Forms.ComboBox();
             this.bwUpgradeCheck = new System.ComponentModel.BackgroundWorker();
             this.tmrClose = new System.Windows.Forms.Timer(this.components);
+            this.tip = new System.Windows.Forms.ToolTip(this.components);
             this.mnu.SuspendLayout();
             this.pnlDocument.SuspendLayout();
             this.mnxEntry.SuspendLayout();
@@ -664,6 +665,7 @@ namespace Bimil {
         private System.Windows.Forms.ToolStripMenuItem mnuSearchWeak;
         private System.Windows.Forms.ToolStripSeparator mnuAppDebug;
         private System.Windows.Forms.ToolStripMenuItem mnuAppDebugRandomizeAllPasswords;
+        private System.Windows.Forms.ToolTip tip;
     }
 }
 

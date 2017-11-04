@@ -1181,6 +1181,13 @@ namespace Bimil {
 
         private void RefreshItems(IEnumerable<Entry> entriesToSelect = null) {
             Helpers.PerformEntrySearch(this.Document, lsvEntries, cmbSearch.Text, entriesToSelect);
+            var shownCount = lsvEntries.Items.Count;
+            var totalCount = (this.Document != null) ? this.Document.Entries.Count : 0;
+            if (shownCount > 0) {
+                tip.SetToolTip(cmbSearch, $"{shownCount} " + ((shownCount == 1) ? "entry" : "entries") + $" shown (out of {totalCount}).");
+            } else {
+                tip.SetToolTip(cmbSearch, null);
+            }
             Form_Resize(null, null); //to support both ListView full row with and without scrollbar
         }
 
