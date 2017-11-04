@@ -152,7 +152,7 @@ namespace Bimil {
 
             if (SearchHibpForBreaches() == false) {
                 e.Cancel = true;
-            } else if (Settings.CheckWeakPasswordAtHibp && (SearchHibpForPasswords() == false)) {
+            } else if (Settings.HibpCheckWeakPassword && (SearchHibpForPasswords() == false)) {
                 e.Cancel = true;
             }
         }
@@ -276,7 +276,7 @@ namespace Bimil {
             Debug.WriteLine(string.Format(CultureInfo.InvariantCulture, "Passwords filled at {0:0.0} ms", sw.ElapsedMilliseconds));
 
             //sort based on random value
-            if (Settings.RandomizeWeakPasswordAtHibp) {
+            if (Settings.HibpCheckWeakPasswordInRandomOrder) {
                 userPasswords.Sort((item1, item2) => {
                     var count1 = item1.Entries.Count;
                     var count2 = item2.Entries.Count;
