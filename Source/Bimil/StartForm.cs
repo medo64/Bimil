@@ -73,6 +73,7 @@ namespace Bimil {
         }
 
         private void lsvRecent_ItemActivate(object sender, EventArgs e) {
+            if (lsvRecent.SelectedItems.Count == 0) { return; } //needed for mono
             var fileName = ((RecentlyUsedFile)lsvRecent.SelectedItems[0].Tag).FileName;
             var readOnly = Helpers.GetReadOnly(fileName);
             var isReadOnly = (readOnly == true); //treats non-existing files as false (to allow opening them)
