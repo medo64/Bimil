@@ -116,6 +116,15 @@ namespace Bimil {
             set { Config.Write("RandomizeWeakPasswordAtHibp", value); }
         }
 
+        [Category("Behavior")]
+        [DisplayName("Throttle interval for Have I been pwned?")]
+        [Description("Milliseconds between queries toward Have I been pwned? site.")]
+        [DefaultValue(1600)]
+        public static int HibpThrottleInterval {
+            get { return Math.Max(0, Math.Min(Config.Read("HibpThrottleInterval", 1600), 10000)); }
+            set { Config.Write("HibpThrottleInterval", value); }
+        }
+
 
         [Category("Behavior")]
         [DisplayName("Show NTP drift warning")]

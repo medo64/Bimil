@@ -203,7 +203,7 @@ namespace Bimil {
                 var percentage = i * 100 / userEntryCount;
                 try {
                     var breaches = Hibp.GetAllBreaches(userEntry.Account);
-                    ReportWebStatus(percentage, HttpStatusCode.OK, null, userEntry.Account, (userEntryCount - i) * ThrottleInterval);
+                    ReportWebStatus(percentage, HttpStatusCode.OK, null, userEntry.Account, (userEntryCount - i) * Settings.HibpThrottleInterval);
                     foreach (var entry in userEntry.Entries) {
                         var modified = entry.PasswordModificationTime;
                         foreach (var record in entry.Records) {
@@ -225,17 +225,17 @@ namespace Bimil {
                     }
                 } catch (WebException ex) {
                     if (ex.Response is HttpWebResponse response) {
-                        ReportWebStatus(percentage, response.StatusCode, response.StatusDescription, userEntry.Account, (userEntryCount - i) * ThrottleInterval);
+                        ReportWebStatus(percentage, response.StatusCode, response.StatusDescription, userEntry.Account, (userEntryCount - i) * Settings.HibpThrottleInterval);
                     } else {
-                        ReportWebStatus(percentage, null, ex.Message, userEntry.Account, (userEntryCount - i) * ThrottleInterval);
+                        ReportWebStatus(percentage, null, ex.Message, userEntry.Account, (userEntryCount - i) * Settings.HibpThrottleInterval);
                     }
                 }
 
-                Debug.WriteLine(string.Format(CultureInfo.InvariantCulture, "Account {1} searched at {0:0.0} ms (followed by {2} ms throttling)", sw.ElapsedMilliseconds, userEntry.Account, ThrottleInterval));
-                Thread.Sleep(ThrottleInterval);
+                Debug.WriteLine(string.Format(CultureInfo.InvariantCulture, "Account {1} searched at {0:0.0} ms (followed by {2} ms throttling)", sw.ElapsedMilliseconds, userEntry.Account, Settings.HibpThrottleInterval));
+                Thread.Sleep(Settings.HibpThrottleInterval);
             }
 
-            Debug.WriteLine(string.Format(CultureInfo.InvariantCulture, "{1} accounts searched in {0:0.0} ms (albeit with {2} ms throttling)", sw.ElapsedMilliseconds, userEntryList.Count, ThrottleInterval));
+            Debug.WriteLine(string.Format(CultureInfo.InvariantCulture, "{1} accounts searched in {0:0.0} ms (albeit with {2} ms throttling)", sw.ElapsedMilliseconds, userEntryList.Count, Settings.HibpThrottleInterval));
             return true;
         }
 
@@ -314,7 +314,7 @@ namespace Bimil {
 
                 try {
                     if (Hibp.IsPassworPwned(item.PasswordHash)) {
-                        ReportWebStatus(percentage, HttpStatusCode.OK, null, item.Entries[0].Title, (userPasswordCount - i) * ThrottleInterval);
+                        ReportWebStatus(percentage, HttpStatusCode.OK, null, item.Entries[0].Title, (userPasswordCount - i) * Settings.HibpThrottleInterval);
                         foreach (var entry in item.Entries) {
                             var lvi = new ListViewItem(entry.Title) {
                                 Tag = entry,
@@ -324,21 +324,21 @@ namespace Bimil {
                             bwSearchHibp.ReportProgress(percentage, new ProgressState(lvi));
                         }
                     } else {
-                        ReportWebStatus(percentage, HttpStatusCode.NotFound, null, item.Entries[0].Title, (userPasswordCount - i) * ThrottleInterval);
+                        ReportWebStatus(percentage, HttpStatusCode.NotFound, null, item.Entries[0].Title, (userPasswordCount - i) * Settings.HibpThrottleInterval);
                     }
                 } catch (WebException ex) {
                     if (ex.Response is HttpWebResponse response) {
-                        ReportWebStatus(percentage, response.StatusCode, response.StatusDescription, item.Entries[0].Title, (userPasswordCount - i) * ThrottleInterval);
+                        ReportWebStatus(percentage, response.StatusCode, response.StatusDescription, item.Entries[0].Title, (userPasswordCount - i) * Settings.HibpThrottleInterval);
                     } else {
-                        ReportWebStatus(percentage, null, ex.Message, item.Entries[0].Title, (userPasswordCount - i) * ThrottleInterval);
+                        ReportWebStatus(percentage, null, ex.Message, item.Entries[0].Title, (userPasswordCount - i) * Settings.HibpThrottleInterval);
                     }
                 }
 
-                Debug.WriteLine(string.Format(CultureInfo.InvariantCulture, "Password for {1} entries searched at {0:0.0} ms (followed by {2} ms throttling)", sw.ElapsedMilliseconds, item.Entries.Count, ThrottleInterval));
-                Thread.Sleep(ThrottleInterval);
+                Debug.WriteLine(string.Format(CultureInfo.InvariantCulture, "Password for {1} entries searched at {0:0.0} ms (followed by {2} ms throttling)", sw.ElapsedMilliseconds, item.Entries.Count, Settings.HibpThrottleInterval));
+                Thread.Sleep(Settings.HibpThrottleInterval);
             }
 
-            Debug.WriteLine(string.Format(CultureInfo.InvariantCulture, "{1} accounts searched in {0:0.0} ms (albeit with {2} ms throttling)", sw.ElapsedMilliseconds, userPasswords.Count, ThrottleInterval));
+            Debug.WriteLine(string.Format(CultureInfo.InvariantCulture, "{1} accounts searched in {0:0.0} ms (albeit with {2} ms throttling)", sw.ElapsedMilliseconds, userPasswords.Count, Settings.HibpThrottleInterval));
             return true;
         }
 
@@ -418,8 +418,6 @@ namespace Bimil {
             public int RandomValue { get; } //used for sorting so password check is done in different order every time
         }
 
-
-        private readonly int ThrottleInterval = 1600;
 
         private static string FilterHtml(string html) {
             var sb = new StringBuilder();
