@@ -119,7 +119,6 @@ namespace Bimil {
             // 
             this.btnOpen.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnOpen.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOpen.Enabled = false;
             this.btnOpen.Location = new System.Drawing.Point(12, 311);
             this.btnOpen.Margin = new System.Windows.Forms.Padding(3, 12, 3, 3);
             this.btnOpen.Name = "btnOpen";
@@ -161,7 +160,6 @@ namespace Bimil {
             // 
             this.btnOpenReadOnly.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnOpenReadOnly.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOpenReadOnly.Enabled = false;
             this.btnOpenReadOnly.Location = new System.Drawing.Point(118, 311);
             this.btnOpenReadOnly.Margin = new System.Windows.Forms.Padding(3, 12, 3, 3);
             this.btnOpenReadOnly.Name = "btnOpenReadOnly";
