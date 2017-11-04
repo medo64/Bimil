@@ -11,6 +11,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Reflection;
 using System.Security;
+using System.Security.Cryptography;
 
 namespace Bimil {
     internal partial class MainForm : Form {
@@ -30,6 +31,11 @@ namespace Bimil {
             Helpers.ScaleToolstrip(mnu);
 
             Medo.Windows.Forms.State.SetupOnLoadAndClose(this);
+
+#if DEBUG
+            mnuAppDebug.Visible = true;
+            mnuAppDebugRandomizeAllPasswords.Visible = true;
+#endif
         }
 
 
@@ -867,6 +873,31 @@ namespace Bimil {
         private void mnuAppAbout_Click(object sender, EventArgs e) {
             Medo.Windows.Forms.AboutBox.ShowDialog(this, new Uri("https://www.medo64.com/bimil/"));
             cmbSearch.Select();
+        }
+
+
+        private void mnuAppDebugRandomizeAllPasswords_Click(object sender, EventArgs e) {
+            var rnd = RandomNumberGenerator.Create();
+            if (this.Document != null) {
+                foreach (var entry in this.Document.Entries) {
+                    entry.PasswordHistory.Clear();
+                    while (entry.Records.Contains(RecordType.TwoFactorKey)) {
+                        entry.Records.Remove(entry.Records[RecordType.TwoFactorKey]);
+                    }
+                    foreach (var record in entry.Records) {
+                        if (record.RecordType == RecordType.Password) {
+                            var bytes = new byte[10];
+                            rnd.GetBytes(bytes);
+                            var password = Convert.ToBase64String(bytes);
+                            var shortenLength = bytes[0] % 4;
+                            record.Text = password.Substring(0, password.Length - shortenLength);
+                        }
+                    }
+                }
+                Medo.MessageBox.ShowInformation(this, "Passwords randomized.");
+            } else {
+                Medo.MessageBox.ShowWarning(this, "No document!");
+            }
         }
 
 

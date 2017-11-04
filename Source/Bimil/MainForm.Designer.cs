@@ -52,6 +52,8 @@ namespace Bimil {
             this.mnuAppUpgrade = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuApp1 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuAppAbout = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuAppDebug = new System.Windows.Forms.ToolStripSeparator();
+            this.mnuAppDebugRandomizeAllPasswords = new System.Windows.Forms.ToolStripMenuItem();
             this.mnu1 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuSearchRoot = new System.Windows.Forms.ToolStripSplitButton();
             this.mnuSearch = new System.Windows.Forms.ToolStripMenuItem();
@@ -310,7 +312,9 @@ namespace Bimil {
             this.mnuSendFeedback,
             this.mnuAppUpgrade,
             this.mnuApp1,
-            this.mnuAppAbout});
+            this.mnuAppAbout,
+            this.mnuAppDebug,
+            this.mnuAppDebugRandomizeAllPasswords});
             this.mnuApp.Image = global::Bimil.Properties.Resources.mnuApp_16;
             this.mnuApp.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.mnuApp.Name = "mnuApp";
@@ -320,40 +324,54 @@ namespace Bimil {
             // mnuAppOptions
             // 
             this.mnuAppOptions.Name = "mnuAppOptions";
-            this.mnuAppOptions.Size = new System.Drawing.Size(206, 26);
+            this.mnuAppOptions.Size = new System.Drawing.Size(227, 26);
             this.mnuAppOptions.Text = "&Options";
             this.mnuAppOptions.Click += new System.EventHandler(this.mnuAppOptions_Click);
             // 
             // mnuApp0
             // 
             this.mnuApp0.Name = "mnuApp0";
-            this.mnuApp0.Size = new System.Drawing.Size(203, 6);
+            this.mnuApp0.Size = new System.Drawing.Size(224, 6);
             // 
             // mnuSendFeedback
             // 
             this.mnuSendFeedback.Name = "mnuSendFeedback";
-            this.mnuSendFeedback.Size = new System.Drawing.Size(206, 26);
+            this.mnuSendFeedback.Size = new System.Drawing.Size(227, 26);
             this.mnuSendFeedback.Text = "Send &feedback";
             this.mnuSendFeedback.Click += new System.EventHandler(this.mnuAppFeedback_Click);
             // 
             // mnuAppUpgrade
             // 
             this.mnuAppUpgrade.Name = "mnuAppUpgrade";
-            this.mnuAppUpgrade.Size = new System.Drawing.Size(206, 26);
+            this.mnuAppUpgrade.Size = new System.Drawing.Size(227, 26);
             this.mnuAppUpgrade.Text = "Check for &upgrade";
             this.mnuAppUpgrade.Click += new System.EventHandler(this.mnuAppUpgrade_Click);
             // 
             // mnuApp1
             // 
             this.mnuApp1.Name = "mnuApp1";
-            this.mnuApp1.Size = new System.Drawing.Size(203, 6);
+            this.mnuApp1.Size = new System.Drawing.Size(224, 6);
             // 
             // mnuAppAbout
             // 
             this.mnuAppAbout.Name = "mnuAppAbout";
-            this.mnuAppAbout.Size = new System.Drawing.Size(206, 26);
+            this.mnuAppAbout.Size = new System.Drawing.Size(227, 26);
             this.mnuAppAbout.Text = "&About";
             this.mnuAppAbout.Click += new System.EventHandler(this.mnuAppAbout_Click);
+            // 
+            // mnuAppDebug
+            // 
+            this.mnuAppDebug.Name = "mnuAppDebug";
+            this.mnuAppDebug.Size = new System.Drawing.Size(224, 6);
+            this.mnuAppDebug.Visible = false;
+            // 
+            // mnuAppDebugRandomizeAllPasswords
+            // 
+            this.mnuAppDebugRandomizeAllPasswords.Name = "mnuAppDebugRandomizeAllPasswords";
+            this.mnuAppDebugRandomizeAllPasswords.Size = new System.Drawing.Size(227, 26);
+            this.mnuAppDebugRandomizeAllPasswords.Text = "Randomize all entries";
+            this.mnuAppDebugRandomizeAllPasswords.Visible = false;
+            this.mnuAppDebugRandomizeAllPasswords.Click += new System.EventHandler(this.mnuAppDebugRandomizeAllPasswords_Click);
             // 
             // mnu1
             // 
@@ -644,6 +662,8 @@ namespace Bimil {
         private System.Windows.Forms.ToolStripSplitButton mnuSearchRoot;
         private System.Windows.Forms.ToolStripMenuItem mnuSearch;
         private System.Windows.Forms.ToolStripMenuItem mnuSearchWeak;
+        private System.Windows.Forms.ToolStripSeparator mnuAppDebug;
+        private System.Windows.Forms.ToolStripMenuItem mnuAppDebugRandomizeAllPasswords;
     }
 }
 
