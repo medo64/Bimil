@@ -275,72 +275,30 @@ namespace Bimil {
             Debug.WriteLine(string.Format(CultureInfo.InvariantCulture, "Items refreshed at {0:0.0} ms", sw.ElapsedMilliseconds));
         }
 
-        public static bool HandleSearchKeyDown(KeyEventArgs e, ListView lsvEntries, bool processPageUpDown = false) {
+        public static bool HandleSearchKeyDown(KeyEventArgs e, ListView lsvEntries, ComboBox categoriesCombo = null, bool processPageUpDown = false) {
             switch (e.KeyData) {
                 case Keys.Down:
-                    if (lsvEntries.Items.Count > 0) {
-                        if (lsvEntries.SelectedIndices.Count == 0) {
-                            lsvEntries.Items[0].Selected = true;
-                        } else {
-                            int index = Math.Min(lsvEntries.SelectedIndices[lsvEntries.SelectedIndices.Count - 1] + 1, lsvEntries.Items.Count - 1);
-                            foreach (ListViewItem item in lsvEntries.Items) { item.Selected = false; }
-                            lsvEntries.Items[index].Selected = true;
-                            lsvEntries.Items[index].Focused = true;
-                            lsvEntries.EnsureVisible(lsvEntries.SelectedItems[0].Index);
-                        }
-                    }
+                    HandleListViewArrowDown(lsvEntries, categoriesCombo);
                     e.Handled = true;
                     e.SuppressKeyPress = true;
                     return true;
 
                 case Keys.Up:
-                    if (lsvEntries.Items.Count > 0) {
-                        if (lsvEntries.SelectedIndices.Count == 0) {
-                            lsvEntries.Items[lsvEntries.Items.Count - 1].Selected = true;
-                        } else {
-                            int index = Math.Max(lsvEntries.SelectedIndices[0] - 1, 0);
-                            foreach (ListViewItem item in lsvEntries.Items) { item.Selected = false; }
-                            lsvEntries.Items[index].Selected = true;
-                            lsvEntries.Items[index].Focused = true;
-                            lsvEntries.EnsureVisible(lsvEntries.SelectedItems[0].Index);
-                        }
-                    }
+                    HandleListViewArrowUp(lsvEntries, categoriesCombo);
                     e.Handled = true;
                     e.SuppressKeyPress = true;
                     return true;
 
                 case Keys.PageDown:
                     if (!processPageUpDown) { return false; }
-                    if (lsvEntries.Items.Count > 0) {
-                        var delta = lsvEntries.ClientSize.Height / (lsvEntries.Items[0].Bounds.Height * 2);
-                        if (lsvEntries.SelectedIndices.Count == 0) {
-                            lsvEntries.Items[0].Selected = true;
-                        } else {
-                            int index = Math.Min(lsvEntries.SelectedIndices[lsvEntries.SelectedIndices.Count - 1] + delta, lsvEntries.Items.Count - 1);
-                            foreach (ListViewItem item in lsvEntries.Items) { item.Selected = false; }
-                            lsvEntries.Items[index].Selected = true;
-                            lsvEntries.Items[index].Focused = true;
-                            lsvEntries.EnsureVisible(lsvEntries.SelectedItems[0].Index);
-                        }
-                    }
+                    HandleListViewPageDown(lsvEntries);
                     e.Handled = true;
                     e.SuppressKeyPress = true;
                     return true;
 
                 case Keys.PageUp:
                     if (!processPageUpDown) { return false; }
-                    if (lsvEntries.Items.Count > 0) {
-                        var delta = lsvEntries.ClientSize.Height / (lsvEntries.Items[0].Bounds.Height * 2);
-                        if (lsvEntries.SelectedIndices.Count == 0) {
-                            lsvEntries.Items[lsvEntries.Items.Count - 1].Selected = true;
-                        } else {
-                            int index = Math.Max(lsvEntries.SelectedIndices[0] - delta, 0);
-                            foreach (ListViewItem item in lsvEntries.Items) { item.Selected = false; }
-                            lsvEntries.Items[index].Selected = true;
-                            lsvEntries.Items[index].Focused = true;
-                            lsvEntries.EnsureVisible(lsvEntries.SelectedItems[0].Index);
-                        }
-                    }
+                    HandleListViewPageUp(lsvEntries);
                     e.Handled = true;
                     e.SuppressKeyPress = true;
                     return true;
@@ -354,6 +312,95 @@ namespace Bimil {
             }
 
             return false;
+        }
+
+
+        internal static void HandleSearchPageUp(ComboBox cmbSearch) {
+            if (cmbSearch == null) { return; }
+            if (cmbSearch.Items.Count > 0) {
+                int newIndex = (cmbSearch.SelectedIndex > -1) ? cmbSearch.SelectedIndex - 1 : Helpers.GetNearestComboIndex(cmbSearch.Text, cmbSearch.Items, 0);
+                cmbSearch.SelectedIndex = Math.Max(newIndex, 0);
+                cmbSearch.SelectAll();
+            }
+        }
+
+        internal static void HandleSearchPageDown(ComboBox cmbSearch) {
+            if (cmbSearch == null) { return; }
+            if (cmbSearch.Items.Count > 0) {
+                int newIndex = (cmbSearch.SelectedIndex > -1) ? cmbSearch.SelectedIndex + 1 : Helpers.GetNearestComboIndex(cmbSearch.Text, cmbSearch.Items, 1);
+                cmbSearch.SelectedIndex = Math.Min(newIndex, cmbSearch.Items.Count - 1);
+                cmbSearch.SelectAll();
+            }
+        }
+
+        private static void HandleListViewArrowDown(ListView lsvEntries, ComboBox categoriesCombo) {
+            if (lsvEntries.Items.Count > 0) {
+                if (lsvEntries.SelectedIndices.Count == 0) {
+                    lsvEntries.Items[0].Selected = true;
+                } else {
+                    int index = lsvEntries.SelectedIndices[lsvEntries.SelectedIndices.Count - 1] + 1;
+                    if (index < lsvEntries.Items.Count) {
+                        foreach (ListViewItem item in lsvEntries.Items) { item.Selected = false; }
+                        lsvEntries.Items[index].Selected = true;
+                        lsvEntries.Items[index].Focused = true;
+                        lsvEntries.EnsureVisible(lsvEntries.SelectedItems[0].Index);
+                    } else {
+                        HandleSearchPageDown(categoriesCombo);
+                    }
+                }
+            } else {
+                HandleSearchPageDown(categoriesCombo);
+            }
+        }
+
+        private static void HandleListViewArrowUp(ListView lsvEntries, ComboBox categoriesCombo) {
+            if (lsvEntries.Items.Count > 0) {
+                if (lsvEntries.SelectedIndices.Count == 0) {
+                    lsvEntries.Items[lsvEntries.Items.Count - 1].Selected = true;
+                } else {
+                    int index = lsvEntries.SelectedIndices[0] - 1;
+                    if (index >= 0) {
+                        foreach (ListViewItem item in lsvEntries.Items) { item.Selected = false; }
+                        lsvEntries.Items[index].Selected = true;
+                        lsvEntries.Items[index].Focused = true;
+                        lsvEntries.EnsureVisible(lsvEntries.SelectedItems[0].Index);
+                    } else {
+                        HandleSearchPageUp(categoriesCombo);
+                    }
+                }
+            } else {
+                HandleSearchPageUp(categoriesCombo);
+            }
+        }
+
+        private static void HandleListViewPageDown(ListView lsvEntries) {
+            if (lsvEntries.Items.Count > 0) {
+                var delta = lsvEntries.ClientSize.Height / (lsvEntries.Items[0].Bounds.Height * 2);
+                if (lsvEntries.SelectedIndices.Count == 0) {
+                    lsvEntries.Items[0].Selected = true;
+                } else {
+                    int index = Math.Min(lsvEntries.SelectedIndices[lsvEntries.SelectedIndices.Count - 1] + delta, lsvEntries.Items.Count - 1);
+                    foreach (ListViewItem item in lsvEntries.Items) { item.Selected = false; }
+                    lsvEntries.Items[index].Selected = true;
+                    lsvEntries.Items[index].Focused = true;
+                    lsvEntries.EnsureVisible(lsvEntries.SelectedItems[0].Index);
+                }
+            }
+        }
+
+        private static void HandleListViewPageUp(ListView lsvEntries) {
+            if (lsvEntries.Items.Count > 0) {
+                var delta = lsvEntries.ClientSize.Height / (lsvEntries.Items[0].Bounds.Height * 2);
+                if (lsvEntries.SelectedIndices.Count == 0) {
+                    lsvEntries.Items[lsvEntries.Items.Count - 1].Selected = true;
+                } else {
+                    int index = Math.Max(lsvEntries.SelectedIndices[0] - delta, 0);
+                    foreach (ListViewItem item in lsvEntries.Items) { item.Selected = false; }
+                    lsvEntries.Items[index].Selected = true;
+                    lsvEntries.Items[index].Focused = true;
+                    lsvEntries.EnsureVisible(lsvEntries.SelectedItems[0].Index);
+                }
+            }
         }
 
         #endregion

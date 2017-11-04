@@ -313,25 +313,17 @@ namespace Bimil {
 
 
         private void cmbSearch_KeyDown(object sender, KeyEventArgs e) {
-            if (!Helpers.HandleSearchKeyDown(e, lsvEntries)) {
+            if (!Helpers.HandleSearchKeyDown(e, lsvEntries, cmbSearch)) {
                 switch (e.KeyData) {
                     case Keys.PageDown: {
-                            if (cmbSearch.Items.Count > 0) {
-                                int newIndex = (cmbSearch.SelectedIndex > -1) ? cmbSearch.SelectedIndex + 1 : Helpers.GetNearestComboIndex(cmbSearch.Text, cmbSearch.Items, 1);
-                                cmbSearch.SelectedIndex = Math.Min(newIndex, cmbSearch.Items.Count - 1);
-                                cmbSearch.SelectAll();
-                            }
+                            Helpers.HandleSearchPageDown(cmbSearch);
                             e.Handled = true;
                             e.SuppressKeyPress = true;
                         }
                         break;
 
                     case Keys.PageUp: {
-                            if (cmbSearch.Items.Count > 0) {
-                                int newIndex = (cmbSearch.SelectedIndex > -1) ? cmbSearch.SelectedIndex - 1 : Helpers.GetNearestComboIndex(cmbSearch.Text, cmbSearch.Items, 0);
-                                cmbSearch.SelectedIndex = Math.Max(newIndex, 0);
-                                cmbSearch.SelectAll();
-                            }
+                            Helpers.HandleSearchPageUp(cmbSearch);
                             e.Handled = true;
                             e.SuppressKeyPress = true;
                         }
@@ -352,7 +344,6 @@ namespace Bimil {
                 }
             }
         }
-
 
         private void lsvEntries_BeforeLabelEdit(object sender, LabelEditEventArgs e) {
             if (!Settings.EditableByDefault) { e.CancelEdit = true; }
