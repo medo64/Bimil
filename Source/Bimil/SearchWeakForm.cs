@@ -29,9 +29,11 @@ namespace Bimil {
 
 
         private void Form_Load(object sender, EventArgs e) {
+#if !DEBUG
             if (Helpers.IsRunningOnMono) {
                 chbIncludeHibp.Visible = false; //don't show HIPB when running on mono (TLS 1.2 not working)
             }
+#endif
         }
 
         private void Form_FormClosing(object sender, FormClosingEventArgs e) {
@@ -378,7 +380,7 @@ namespace Bimil {
         }
 
 
-        #region Helper
+#region Helper
 
         private class ProgressState {
             public ProgressState(ListViewItem item, string statusText, int? estimatedMillisecondsRemaining) {
@@ -436,7 +438,7 @@ namespace Bimil {
             return sb.ToString();
         }
 
-        #endregion
+#endregion
 
     }
 }
