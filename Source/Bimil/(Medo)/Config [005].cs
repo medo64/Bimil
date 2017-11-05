@@ -1,5 +1,6 @@
 //Copyright 2017 by Josip Medved <jmedved@jmedved.com> (www.medo64.com) MIT License
 
+//2017-11-05: Suppress exception on UnauthorizedAccessException.
 //2017-10-09: Support for /opt installation on Linux.
 //2017-04-29: Added IsAssumedInstalled property.
 //            Added Reset and DeleteAll methods.
@@ -486,7 +487,8 @@ namespace Medo.Configuration {
                 string fileContent = null;
                 try {
                     fileContent = File.ReadAllText(fileName, Utf8);
-                } catch (IOException) { }
+                } catch (IOException) {
+                } catch (UnauthorizedAccessException) { }
 
                 string lineEnding = null;
                 if (fileContent != null) {
@@ -724,6 +726,8 @@ namespace Medo.Configuration {
                                 Directory.CreateDirectory(directoryStack.Pop());
                             } catch (IOException) {
                                 break;
+                            } catch (UnauthorizedAccessException) {
+                                break;
                             }
                         }
                     }
@@ -731,6 +735,8 @@ namespace Medo.Configuration {
                     File.WriteAllText(this.FileName, fileContent, Utf8);
                     return true;
                 } catch (IOException) {
+                    return false;
+                } catch (UnauthorizedAccessException) {
                     return false;
                 }
             }
