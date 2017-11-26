@@ -1,12 +1,12 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
-using System.Windows.Forms;
-using Medo.Security.Cryptography.PasswordSafe;
-using System.Collections.Generic;
 using System.Web;
+using System.Windows.Forms;
 using Medo.Security.Cryptography;
+using Medo.Security.Cryptography.PasswordSafe;
 using Medo.Windows.Forms;
 
 namespace Bimil {
@@ -95,7 +95,7 @@ namespace Bimil {
                     break;
 
                 case Keys.F7: //show all
-                    bool alreadyHidden = false;
+                    var alreadyHidden = false;
                     foreach (var control in this.pnl.Controls) {
                         if (control is TextBox textBox) {
                             if ((textBox.Tag is Record record) && Helpers.GetIsHideable(record.RecordType) && (textBox.UseSystemPasswordChar)) { alreadyHidden = true; break; }
@@ -159,7 +159,7 @@ namespace Bimil {
             var labelWidth = pnl.ClientSize.Width / 4;
             var labelBuffer = SystemInformation.VerticalScrollBarWidth + 1;
 
-            int y = 0;
+            var y = 0;
             TextBox titleTextBox;
             {
                 var record = this.Item[RecordType.Title];
@@ -622,7 +622,7 @@ namespace Bimil {
                 var textBox = (TextBox)(((Control)sender).Tag);
                 textBox.Select();
 
-                bool generateNew = true;
+                var generateNew = true;
                 if (textBox.Text.Length > 0) {
                     generateNew = Medo.MessageBox.ShowQuestion(this, "Do you wish to overwrite current password?", MessageBoxButtons.YesNo) == DialogResult.Yes;
                 }

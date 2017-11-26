@@ -318,7 +318,7 @@ namespace Bimil {
         internal static void HandleSearchPageUp(ComboBox cmbSearch) {
             if (cmbSearch == null) { return; }
             if (cmbSearch.Items.Count > 0) {
-                int newIndex = (cmbSearch.SelectedIndex > -1) ? cmbSearch.SelectedIndex - 1 : Helpers.GetNearestComboIndex(cmbSearch.Text, cmbSearch.Items, 0);
+                var newIndex = (cmbSearch.SelectedIndex > -1) ? cmbSearch.SelectedIndex - 1 : Helpers.GetNearestComboIndex(cmbSearch.Text, cmbSearch.Items, 0);
                 cmbSearch.SelectedIndex = Math.Max(newIndex, 0);
                 cmbSearch.SelectAll();
             }
@@ -327,7 +327,7 @@ namespace Bimil {
         internal static void HandleSearchPageDown(ComboBox cmbSearch) {
             if (cmbSearch == null) { return; }
             if (cmbSearch.Items.Count > 0) {
-                int newIndex = (cmbSearch.SelectedIndex > -1) ? cmbSearch.SelectedIndex + 1 : Helpers.GetNearestComboIndex(cmbSearch.Text, cmbSearch.Items, 1);
+                var newIndex = (cmbSearch.SelectedIndex > -1) ? cmbSearch.SelectedIndex + 1 : Helpers.GetNearestComboIndex(cmbSearch.Text, cmbSearch.Items, 1);
                 cmbSearch.SelectedIndex = Math.Min(newIndex, cmbSearch.Items.Count - 1);
                 cmbSearch.SelectAll();
             }
@@ -338,7 +338,7 @@ namespace Bimil {
                 if (lsvEntries.SelectedIndices.Count == 0) {
                     lsvEntries.Items[0].Selected = true;
                 } else {
-                    int index = lsvEntries.SelectedIndices[lsvEntries.SelectedIndices.Count - 1] + 1;
+                    var index = lsvEntries.SelectedIndices[lsvEntries.SelectedIndices.Count - 1] + 1;
                     if (index < lsvEntries.Items.Count) {
                         foreach (ListViewItem item in lsvEntries.Items) { item.Selected = false; }
                         lsvEntries.Items[index].Selected = true;
@@ -358,7 +358,7 @@ namespace Bimil {
                 if (lsvEntries.SelectedIndices.Count == 0) {
                     lsvEntries.Items[lsvEntries.Items.Count - 1].Selected = true;
                 } else {
-                    int index = lsvEntries.SelectedIndices[0] - 1;
+                    var index = lsvEntries.SelectedIndices[0] - 1;
                     if (index >= 0) {
                         foreach (ListViewItem item in lsvEntries.Items) { item.Selected = false; }
                         lsvEntries.Items[index].Selected = true;
@@ -379,7 +379,7 @@ namespace Bimil {
                 if (lsvEntries.SelectedIndices.Count == 0) {
                     lsvEntries.Items[0].Selected = true;
                 } else {
-                    int index = Math.Min(lsvEntries.SelectedIndices[lsvEntries.SelectedIndices.Count - 1] + delta, lsvEntries.Items.Count - 1);
+                    var index = Math.Min(lsvEntries.SelectedIndices[lsvEntries.SelectedIndices.Count - 1] + delta, lsvEntries.Items.Count - 1);
                     foreach (ListViewItem item in lsvEntries.Items) { item.Selected = false; }
                     lsvEntries.Items[index].Selected = true;
                     lsvEntries.Items[index].Focused = true;
@@ -394,7 +394,7 @@ namespace Bimil {
                 if (lsvEntries.SelectedIndices.Count == 0) {
                     lsvEntries.Items[lsvEntries.Items.Count - 1].Selected = true;
                 } else {
-                    int index = Math.Max(lsvEntries.SelectedIndices[0] - delta, 0);
+                    var index = Math.Max(lsvEntries.SelectedIndices[0] - delta, 0);
                     foreach (ListViewItem item in lsvEntries.Items) { item.Selected = false; }
                     lsvEntries.Items[index].Selected = true;
                     lsvEntries.Items[index].Focused = true;
@@ -446,7 +446,7 @@ namespace Bimil {
             var set = sizeAndSet.Value;
 
             var resources = Bimil.Properties.Resources.ResourceManager;
-            Bitmap bitmap = resources.GetObject(name + set) as Bitmap;
+            var bitmap = resources.GetObject(name + set) as Bitmap;
             item.ImageScaling = ToolStripItemImageScaling.None;
 #if DEBUG
             item.Image = (bitmap != null) ? new Bitmap(bitmap, size, size) : new Bitmap(size, size, PixelFormat.Format8bppIndexed);
@@ -594,7 +594,7 @@ namespace Bimil {
 
         public static string ToTitleCase(string text) {
             var parts = text.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-            for (int i = 0; i < parts.Length; i++) {
+            for (var i = 0; i < parts.Length; i++) {
                 if (parts[i].Length > 0) {
                     parts[i] = parts[i].Substring(0, 1).ToUpper(CultureInfo.InvariantCulture) + parts[i].Substring(1).ToLower(CultureInfo.InvariantCulture);
                 }

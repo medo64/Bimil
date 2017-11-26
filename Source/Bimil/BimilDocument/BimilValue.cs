@@ -2,7 +2,7 @@ using System;
 using System.Text;
 
 namespace Medo.Security.Cryptography.Bimil {
-    
+
     /// <summary>
     /// Encrypted value.
     /// </summary>
@@ -31,10 +31,10 @@ namespace Medo.Security.Cryptography.Bimil {
             set {
                 if (value == null) { throw new ArgumentNullException("value", "Value cannot be null."); }
 
-                byte[] bufferSalt = new byte[16];
+                var bufferSalt = new byte[16];
                 this.Document.Rng.GetBytes(bufferSalt);
-                byte[] bufferText = UTF8Encoding.UTF8.GetBytes(value);
-                byte[] buffer = new byte[16 + bufferText.Length];
+                var bufferText = UTF8Encoding.UTF8.GetBytes(value);
+                var buffer = new byte[16 + bufferText.Length];
 
                 Buffer.BlockCopy(bufferSalt, 0, buffer, 0, 16);
                 Buffer.BlockCopy(bufferText, 0, buffer, 16, bufferText.Length);

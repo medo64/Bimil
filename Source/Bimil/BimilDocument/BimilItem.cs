@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Medo.Security.Cryptography.Bimil {
 
@@ -66,7 +65,7 @@ namespace Medo.Security.Cryptography.Bimil {
         public IList<BimilRecord> Records { get; private set; }
 
         public void ClearNonSystemRecords() {
-            for (int i = this.Records.Count - 1; i >= 0; i--) {
+            for (var i = this.Records.Count - 1; i >= 0; i--) {
                 if (this.Records[i].Format != BimilRecordFormat.System) {
                     this.Records.RemoveAt(i);
                 }
@@ -148,11 +147,11 @@ namespace Medo.Security.Cryptography.Bimil {
 
             var res = new BimilItem(document);
 
-            int currOffset = offset;
+            var currOffset = offset;
             while (currOffset < (offset + count)) {
-                int keyLength = GetInt32(buffer, currOffset);
-                int valueLength = GetInt32(buffer, currOffset + 4);
-                BimilRecordFormat type = (BimilRecordFormat)GetInt32(buffer, currOffset + 8);
+                var keyLength = GetInt32(buffer, currOffset);
+                var valueLength = GetInt32(buffer, currOffset + 4);
+                var type = (BimilRecordFormat)GetInt32(buffer, currOffset + 8);
                 var key = BimilValue.Parse(document, buffer, currOffset + 12, keyLength);
                 var value = BimilValue.Parse(document, buffer, currOffset + 12 + keyLength, valueLength);
                 res.Records.Add(new BimilRecord(document, key.Text, value.Text, type));

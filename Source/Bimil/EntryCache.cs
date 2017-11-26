@@ -1,6 +1,6 @@
-using Medo.Security.Cryptography.PasswordSafe;
 using System.Collections.Generic;
 using System.Text;
+using Medo.Security.Cryptography.PasswordSafe;
 
 namespace Bimil {
     internal class EntryCache {

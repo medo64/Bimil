@@ -1,17 +1,17 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using System.Windows.Forms;
-using Medo.Configuration;
-using Medo.Security.Cryptography.PasswordSafe;
-using LegacyFile = Medo.Security.Cryptography.Bimil;
-using Medo.Security.Cryptography;
-using System.Diagnostics;
-using System.Threading;
 using System.Reflection;
 using System.Security;
 using System.Security.Cryptography;
+using System.Threading;
+using System.Windows.Forms;
+using Medo.Configuration;
+using Medo.Security.Cryptography;
+using Medo.Security.Cryptography.PasswordSafe;
+using LegacyFile = Medo.Security.Cryptography.Bimil;
 
 namespace Bimil {
     internal partial class MainForm : Form {
@@ -282,7 +282,7 @@ namespace Bimil {
 
 
         private void RefreshFiles() {
-            for (int i = mnuOpenMenu.DropDownItems.Count - 1; i >= 0; i--) {
+            for (var i = mnuOpenMenu.DropDownItems.Count - 1; i >= 0; i--) {
                 if ((mnuOpenMenu.DropDownItems[i] is ToolStripMenuItem) && (mnuOpenMenu.DropDownItems[i].Tag is RecentlyUsedFile)) {
                     mnuOpenMenu.DropDownItems.RemoveAt(i);
                 } else {
@@ -391,7 +391,7 @@ namespace Bimil {
                     break;
 
                 case Keys.PageDown: {
-                        int index = (cmbSearch.SelectedIndex == -1) ? 0 : cmbSearch.SelectedIndex;
+                        var index = (cmbSearch.SelectedIndex == -1) ? 0 : cmbSearch.SelectedIndex;
                         cmbSearch.SelectedIndex = Math.Min(index + 1, cmbSearch.Items.Count - 1);
                         cmbSearch.SelectAll();
                         e.Handled = true;
@@ -400,7 +400,7 @@ namespace Bimil {
                     break;
 
                 case Keys.PageUp: {
-                        int index = (cmbSearch.SelectedIndex == -1) ? cmbSearch.Items.Count - 1 : cmbSearch.SelectedIndex;
+                        var index = (cmbSearch.SelectedIndex == -1) ? cmbSearch.Items.Count - 1 : cmbSearch.SelectedIndex;
                         cmbSearch.SelectedIndex = Math.Max(index - 1, 0);
                         cmbSearch.SelectAll();
                         e.Handled = true;
@@ -778,7 +778,7 @@ namespace Bimil {
             if (this.Document == null) { return; }
 
             //determine current category
-            string categoryText = cmbSearch.Text.Trim();
+            var categoryText = cmbSearch.Text.Trim();
             foreach (var category in this.Categories) {
                 if (category.Equals(categoryText, StringComparison.CurrentCultureIgnoreCase)) {
                     categoryText = category;
@@ -806,7 +806,7 @@ namespace Bimil {
             var isAnyEntrySelected = (lsvEntries.SelectedItems.Count >= 1) && ((lsvEntries.SelectedItems[0].Tag as Entry) != null);
             if ((this.Document == null) || !isAnyEntrySelected) { return; }
 
-            for (int i = lsvEntries.SelectedItems.Count - 1; i >= 0; i--) {
+            for (var i = lsvEntries.SelectedItems.Count - 1; i >= 0; i--) {
                 if (lsvEntries.SelectedItems[i].Tag is Entry item) {
                     this.Document.Entries.Remove(item);
                     lsvEntries.Items.Remove(lsvEntries.SelectedItems[i]);
@@ -916,7 +916,7 @@ namespace Bimil {
             mnxEntryPaste.Enabled = ClipboardHelper.HasDataOnClipboard;
             mnxEntryAutotype.Enabled = isSingleEntrySelected;
 
-            for (int i = mnxEntry.Items.IndexOf(mnxEntrySeparatorBeforeCut) - 1; i > mnxEntry.Items.IndexOf(mnxEntryAutotype); i--) {
+            for (var i = mnxEntry.Items.IndexOf(mnxEntrySeparatorBeforeCut) - 1; i > mnxEntry.Items.IndexOf(mnxEntryAutotype); i--) {
                 mnxEntry.Items.RemoveAt(i);
             }
 
@@ -1049,7 +1049,7 @@ namespace Bimil {
             }
             ClipboardHelper.SetClipboardData(this, entries.AsReadOnly());
 
-            for (int i = lsvEntries.Items.Count - 1; i >= 0; i--) {
+            for (var i = lsvEntries.Items.Count - 1; i >= 0; i--) {
                 if (lsvEntries.Items[i].Selected) {
                     var entry = (Entry)(lsvEntries.Items[i].Tag);
                     this.Document.Entries.Remove(entry);

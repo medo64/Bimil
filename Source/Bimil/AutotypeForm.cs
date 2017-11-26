@@ -1,12 +1,11 @@
-using Medo.Security.Cryptography.PasswordSafe;
-using System.Windows.Forms;
 using System;
-using System.Drawing;
-using Medo.Security.Cryptography;
-using System.Threading;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Globalization;
-using System.Text;
+using System.Threading;
+using System.Windows.Forms;
+using Medo.Security.Cryptography;
+using Medo.Security.Cryptography.PasswordSafe;
 
 namespace Bimil {
     internal partial class AutotypeForm : Form {
@@ -160,7 +159,7 @@ namespace Bimil {
         }
 
         private void bwType_ProgressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e) {
-            string content = (string)e.UserState;
+            var content = (string)e.UserState;
 
             if (this.UseSendWait) {
                 SendKeys.SendWait((Control.IsKeyLocked(Keys.CapsLock) ? "{CAPSLOCK}" : "") + content);

@@ -1,6 +1,5 @@
 using System;
 using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
 using Medo.Security.Cryptography.PasswordSafe;
 
@@ -84,7 +83,7 @@ namespace Bimil {
         }
 
         private void lsvItems_DragEnter(object sender, DragEventArgs e) {
-            for (int i = 0; i < e.Data.GetFormats().Length; i++) {
+            for (var i = 0; i < e.Data.GetFormats().Length; i++) {
                 if (e.Data.GetFormats()[i].Equals("System.Windows.Forms.ListView+SelectedListViewItemCollection")) {
                     e.Effect = DragDropEffects.Move;
                     break;

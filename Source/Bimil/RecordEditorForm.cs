@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 using Medo.Security.Cryptography.PasswordSafe;
@@ -74,7 +73,7 @@ namespace Bimil {
         }
 
         private void lsvFields_DragEnter(object sender, DragEventArgs e) {
-            for (int i = 0; i < e.Data.GetFormats().Length; i++) {
+            for (var i = 0; i < e.Data.GetFormats().Length; i++) {
                 if (e.Data.GetFormats()[i].Equals("System.Windows.Forms.ListView+SelectedListViewItemCollection")) {
                     e.Effect = DragDropEffects.Move;
                     break;
@@ -85,20 +84,20 @@ namespace Bimil {
         private void lsvFields_DragDrop(object sender, DragEventArgs e) {
             if (lsvFields.SelectedItems.Count == 0) { return; }
 
-            Point cp = lsvFields.PointToClient(new Point(e.X, e.Y));
-            ListViewItem dragToItem = lsvFields.GetItemAt(cp.X, cp.Y);
+            var cp = lsvFields.PointToClient(new Point(e.X, e.Y));
+            var dragToItem = lsvFields.GetItemAt(cp.X, cp.Y);
             if (dragToItem == null) { return; }
 
-            int dragIndex = dragToItem.Index;
+            var dragIndex = dragToItem.Index;
             var sel = new ListViewItem[lsvFields.SelectedItems.Count];
-            for (int i = 0; i < lsvFields.SelectedItems.Count; i++) {
+            for (var i = 0; i < lsvFields.SelectedItems.Count; i++) {
                 sel[i] = lsvFields.SelectedItems[i];
             }
 
             ListViewItem insertItem = null;
-            for (int i = 0; i < sel.Length; i++) {
+            for (var i = 0; i < sel.Length; i++) {
                 var dragItem = sel[i];
-                int itemIndex = dragIndex;
+                var itemIndex = dragIndex;
                 if (itemIndex == dragItem.Index) { return; }
 
                 if (dragItem.Index < itemIndex) {

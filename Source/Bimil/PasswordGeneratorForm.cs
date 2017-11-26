@@ -142,7 +142,7 @@ namespace Bimil {
 
 
         private void txtNumber_KeyDown(object sender, KeyEventArgs e) {
-            TextBox textBox = (TextBox)sender;
+            var textBox = (TextBox)sender;
 
             switch (e.KeyData) {
                 case Keys.D0:
@@ -237,8 +237,8 @@ namespace Bimil {
         private static readonly RandomNumberGenerator Rnd = RandomNumberGenerator.Create();
 
         private void btnGenerate_Click(object sender, EventArgs e) {
-            string password = null;
-            double combinations = double.NaN;
+            var password = default(string);
+            var combinations = double.NaN;
 
             if (tabStyle.SelectedTab.Equals(tabStyle_Classic)) {
                 if (int.TryParse(txtLength.Text, NumberStyles.Integer, CultureInfo.InvariantCulture, out var length) && (length >= 4) && (length <= 99)) {
@@ -503,7 +503,7 @@ namespace Bimil {
                 while (sb.Length < length) {
                     var sixteenth = GetRandomNumber(16);
 
-                    List<char> characters = new List<char>();
+                    var characters = new List<char>();
                     if (includeUpperCase && (sixteenth >= 0) && (sixteenth <= 5)) { //Uppercase: 6/16th ~ 37.5%
                         if (restrictPronounceable) {
                             IncludeCharacters(characters, useVowelNext ? UpperCaseVowels : UpperCaseConsonants);
@@ -579,7 +579,7 @@ namespace Bimil {
             var rndBuffer = new byte[4];
             Rnd.GetBytes(rndBuffer);
 
-            uint maxRandomCount = uint.MaxValue - (uint.MaxValue % (uint)upperLimit);
+            var maxRandomCount = uint.MaxValue - (uint.MaxValue % (uint)upperLimit);
             uint randomNumber;
             do {
                 Rnd.GetBytes(rndBuffer);

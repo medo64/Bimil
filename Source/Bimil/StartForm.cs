@@ -1,7 +1,7 @@
-using Medo.Configuration;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using Medo.Configuration;
 
 namespace Bimil {
     internal partial class StartForm : Form {

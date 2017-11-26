@@ -168,8 +168,9 @@ namespace QRCoder {
             public QRCodeData(int version) {
                 var size = 21 + (version - 1) * 4;
                 this.ModuleMatrix = new List<BitArray>();
-                for (var i = 0; i < size; i++)
+                for (var i = 0; i < size; i++) {
                     this.ModuleMatrix.Add(new BitArray(size));
+                }
             }
 
             public List<BitArray> ModuleMatrix { get; set; }

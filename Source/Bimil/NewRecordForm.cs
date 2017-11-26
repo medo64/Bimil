@@ -1,8 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using Medo.Security.Cryptography.PasswordSafe;
-using System.Collections.Generic;
 
 namespace Bimil {
     internal partial class NewRecordForm : Form {
@@ -22,7 +22,7 @@ namespace Bimil {
 
 
         private void Form_Load(object sender, EventArgs e) {
-            foreach (RecordType recordType in Helpers.GetUsableRecordTypes()) {
+            foreach (var recordType in Helpers.GetUsableRecordTypes()) {
                 cmbRecordType.Items.Add(new BimilFormatWrapper(Helpers.GetRecordCaption(recordType), recordType));
             }
 

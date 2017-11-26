@@ -1,7 +1,7 @@
 using System;
+using System.Diagnostics;
 using Medo.Security.Cryptography.PasswordSafe;
 using BimilDocument = Medo.Security.Cryptography.Bimil;
-using System.Diagnostics;
 
 namespace Bimil {
     internal static class DocumentConversion {
@@ -10,9 +10,10 @@ namespace Bimil {
             var doc = new Document(password);
 
             foreach (var item in legacyDoc.Items) {
-                var entry = new Entry();
-                entry.Title = item.Name;
-                entry.Group = item.CategoryRecord.Value.Text;
+                var entry = new Entry {
+                    Title = item.Name,
+                    Group = item.CategoryRecord.Value.Text
+                };
                 entry[RecordType.Password] = null;
 
                 foreach (var record in item.Records) {

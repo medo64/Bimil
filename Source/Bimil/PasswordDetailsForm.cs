@@ -1,8 +1,8 @@
-using Medo.Security.Cryptography.PasswordSafe;
 using System;
-using System.Windows.Forms;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Windows.Forms;
+using Medo.Security.Cryptography.PasswordSafe;
 
 namespace Bimil {
     internal partial class PasswordDetailsForm : Form {

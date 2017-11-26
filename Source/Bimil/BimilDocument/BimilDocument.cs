@@ -20,11 +20,12 @@ namespace Medo.Security.Cryptography.Bimil {
         private BimilDocument() {
             this.Rng = RandomNumberGenerator.Create();
 
-            this.Crypto = new RijndaelManaged();
-            this.Crypto.BlockSize = 128;
-            this.Crypto.KeySize = 128;
-            this.Crypto.Mode = CipherMode.CBC;
-            this.Crypto.Padding = PaddingMode.PKCS7;
+            this.Crypto = new RijndaelManaged {
+                BlockSize = 128,
+                KeySize = 128,
+                Mode = CipherMode.CBC,
+                Padding = PaddingMode.PKCS7
+            };
 
             this.Items = new List<BimilItem>();
         }
@@ -120,7 +121,7 @@ namespace Medo.Security.Cryptography.Bimil {
                 using (var timer = new Medo.Diagnostics.LifetimeWatch("Open")) {
                     var doc = new BimilDocument();
 
-                    byte[] salt = new byte[16];
+                    var salt = new byte[16];
                     stream.Read(salt, 0, 16);
 
                     doc.PasswordSalt = salt;
@@ -143,7 +144,7 @@ namespace Medo.Security.Cryptography.Bimil {
                         throw new FormatException("Invalid primary identifier."); 
                     }
 
-                    int currOffset = 4;
+                    var currOffset = 4;
                     while (currOffset < (decBuffer.Length - 4)) {
                         var itemLen = GetInt32(decBuffer, currOffset);
                         var item = BimilItem.Parse(doc, decBuffer, currOffset + 4, itemLen);

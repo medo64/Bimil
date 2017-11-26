@@ -60,7 +60,7 @@ namespace Bimil {
                     Medo.MessageBox.ShowError(owner, "Cannot copy to clipboard!\n\n" + ex.Message);
                 }
             } finally {
-                for (int i = 0; i < bytes.Count; i++) { bytes[i] = 0; }
+                for (var i = 0; i < bytes.Count; i++) { bytes[i] = 0; }
                 Array.Clear(buffer, 0, buffer.Length);
             }
         }

@@ -67,7 +67,7 @@ namespace Bimil {
         }
 
         private void txtTimeout_KeyDown(object sender, KeyEventArgs e) {
-            TextBox textBox = (TextBox)sender;
+            var textBox = (TextBox)sender;
 
             switch (e.KeyData) {
                 case Keys.D0:
