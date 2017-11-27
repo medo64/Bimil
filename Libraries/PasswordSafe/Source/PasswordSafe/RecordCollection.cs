@@ -92,9 +92,9 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// Adds an item.
         /// </summary>
         /// <param name="item">Item.</param>
-        /// <exception cref="System.ArgumentNullException">Item cannot be null.</exception>
-        /// <exception cref="System.ArgumentOutOfRangeException">Item cannot be in other collection.</exception>
-        /// <exception cref="System.NotSupportedException">Collection is read-only.</exception>
+        /// <exception cref="ArgumentNullException">Item cannot be null.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">Item cannot be in other collection.</exception>
+        /// <exception cref="NotSupportedException">Collection is read-only.</exception>
         public void Add(Record item) {
             if (item == null) { throw new ArgumentNullException(nameof(item), "Item cannot be null."); }
             if (item.Owner != null) { throw new ArgumentOutOfRangeException(nameof(item), "Item cannot be in other collection."); }
@@ -109,9 +109,9 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// Adds multiple items.
         /// </summary>
         /// <param name="items">Item.</param>
-        /// <exception cref="System.ArgumentNullException">Items cannot be null.</exception>
-        /// <exception cref="System.ArgumentOutOfRangeException">Item cannot be in other collection.</exception>
-        /// <exception cref="System.NotSupportedException">Collection is read-only.</exception>
+        /// <exception cref="ArgumentNullException">Items cannot be null.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">Item cannot be in other collection.</exception>
+        /// <exception cref="NotSupportedException">Collection is read-only.</exception>
         public void AddRange(IEnumerable<Record> items) {
             if (items == null) { throw new ArgumentNullException(nameof(items), "Item cannot be null."); }
             foreach (var item in items) {
@@ -129,7 +129,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// <summary>
         /// Removes all items.
         /// </summary>
-        /// <exception cref="System.NotSupportedException">Collection is read-only.</exception>
+        /// <exception cref="NotSupportedException">Collection is read-only.</exception>
         public void Clear() {
             if (this.IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
 
@@ -178,9 +178,9 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// </summary>
         /// <param name="index">The zero-based index at which item should be inserted.</param>
         /// <param name="item">The item to insert.</param>
-        /// <exception cref="System.ArgumentNullException">Item cannot be null.</exception>
-        /// <exception cref="System.ArgumentOutOfRangeException">Index is less than 0. -or- Index is greater than collection count.</exception>
-        /// <exception cref="System.NotSupportedException">Collection is read-only.</exception>
+        /// <exception cref="ArgumentNullException">Item cannot be null.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">Index is less than 0. -or- Index is greater than collection count.</exception>
+        /// <exception cref="NotSupportedException">Collection is read-only.</exception>
         public void Insert(int index, Record item) {
             if (item == null) { throw new ArgumentNullException(nameof(item), "Item cannot be null."); }
             if (item.Owner != null) { throw new ArgumentOutOfRangeException(nameof(item), "Item cannot be in other collection."); }
@@ -202,8 +202,8 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// Removes the item from the collection.
         /// </summary>
         /// <param name="item">The item to remove.</param>
-        /// <exception cref="System.ArgumentNullException">Item cannot be null.</exception>
-        /// <exception cref="System.NotSupportedException">Collection is read-only.</exception>
+        /// <exception cref="ArgumentNullException">Item cannot be null.</exception>
+        /// <exception cref="NotSupportedException">Collection is read-only.</exception>
         public bool Remove(Record item) {
             if (item == null) { throw new ArgumentNullException(nameof(item), "Item cannot be null."); }
             if (this.IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
@@ -221,8 +221,8 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// Removes the element at the specified index of the collection.
         /// </summary>
         /// <param name="index">The zero-based index of the item to remove.</param>
-        /// <exception cref="System.ArgumentOutOfRangeException">Index is less than 0. -or- Index is equal to or greater than collection count.</exception>
-        /// <exception cref="System.NotSupportedException">Collection is read-only.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">Index is less than 0. -or- Index is equal to or greater than collection count.</exception>
+        /// <exception cref="NotSupportedException">Collection is read-only.</exception>
         public void RemoveAt(int index) {
             if (this.IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
 
@@ -253,9 +253,9 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// Gets or sets the element at the specified index.
         /// </summary>
         /// <param name="index">The zero-based index of the element to get or set.</param>
-        /// <exception cref="System.ArgumentNullException">Value cannot be null.</exception>
-        /// <exception cref="System.ArgumentOutOfRangeException">Index is less than 0. -or- Index is equal to or greater than collection count. -or- Duplicate name in collection.</exception>
-        /// <exception cref="System.NotSupportedException">Collection is read-only.</exception>
+        /// <exception cref="ArgumentNullException">Value cannot be null.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">Index is less than 0. -or- Index is equal to or greater than collection count. -or- Duplicate name in collection.</exception>
+        /// <exception cref="NotSupportedException">Collection is read-only.</exception>
         public Record this[int index] {
             get { return this.BaseCollection[index]; }
             set {
@@ -311,7 +311,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
 
                 var newField = new Record(this, type); //create a new field if one cannot be found
 
-                int i = this.BaseCollection.Count;
+                var i = this.BaseCollection.Count;
                 for (i = 0; i < this.BaseCollection.Count; i++) {
                     if (this.BaseCollection[i].RecordType > type) { break; }
                 }

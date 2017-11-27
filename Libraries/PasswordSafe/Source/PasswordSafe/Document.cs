@@ -207,7 +207,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
             if (stream == null) { throw new ArgumentNullException(nameof(stream), "Stream cannot be null."); }
             if (passphraseBuffer == null) { throw new ArgumentNullException(nameof(passphraseBuffer), "Passphrase cannot be null."); }
 
-            byte[] buffer = new byte[16384];
+            var buffer = new byte[16384];
             using (var ms = new MemoryStream()) {
                 int read;
                 while ((read = stream.Read(buffer, 0, buffer.Length)) > 0) {
@@ -246,7 +246,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
                 data = DecryptData(keyK, iv, buffer, 152, buffer.Length - 200);
 
                 using (var dataHash = new HMACSHA256(keyL)) {
-                    int dataOffset = 0;
+                    var dataOffset = 0;
 
                     var headerFields = new List<Header>();
                     while (dataOffset < data.Length) {
@@ -545,7 +545,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
             try {
                 if (currPassphraseBuffer != null) {
                     if (currPassphraseBuffer.Length != oldPassphraseBuffer.Length) { return false; }
-                    for (int i = 0; i < currPassphraseBuffer.Length; i++) {
+                    for (var i = 0; i < currPassphraseBuffer.Length; i++) {
                         if (currPassphraseBuffer[i] != oldPassphraseBuffer[i]) { return false; }
                     }
                 }
@@ -605,7 +605,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
                 return (this._passphrase != null) ? UnprotectData(this._passphrase, this.PassphraseEntropy) : null;
             }
             set {
-                Rnd.GetBytes(PassphraseEntropy);
+                Rnd.GetBytes(this.PassphraseEntropy);
                 this._passphrase = ProtectData(value, this.PassphraseEntropy);
                 Array.Clear(value, 0, value.Length);
             }
@@ -705,7 +705,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         private static bool AreBytesTheSame(byte[] buffer1, byte[] buffer2, int buffer2Offset) {
             if (buffer1.Length == 0) { return false; }
             if (buffer2Offset + buffer1.Length > buffer2.Length) { return false; }
-            for (int i = 0; i < buffer1.Length; i++) {
+            for (var i = 0; i < buffer1.Length; i++) {
                 if (buffer1[i] != buffer2[buffer2Offset + i]) { return false; }
             }
             return true;
