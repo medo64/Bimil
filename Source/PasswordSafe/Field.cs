@@ -163,7 +163,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// Sets byte data.
         /// </summary>
         /// <param name="value">Bytes.</param>
-        /// <exception cref="System.ArgumentNullException">Value cannot be null.</exception>
+        /// <exception cref="ArgumentNullException">Value cannot be null.</exception>
         public void SetBytes(byte[] value) {
             if (value == null) { throw new ArgumentNullException(nameof(value), "Value cannot be null."); }
             var valueCopy = new byte[value.Length];

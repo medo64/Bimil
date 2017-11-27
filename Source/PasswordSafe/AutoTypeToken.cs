@@ -200,7 +200,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// </summary>
         /// <param name="tokens">Auto-type tokens.</param>
         /// <param name="entry">Entry to base fill-in on.</param>
-        /// <exception cref="System.ArgumentNullException">Tokens cannot be null. -or- Entry cannot be null.</exception>
+        /// <exception cref="ArgumentNullException">Tokens cannot be null. -or- Entry cannot be null.</exception>
         internal static IEnumerable<AutotypeToken> GetAutotypeTokens(IEnumerable<AutotypeToken> tokens, Entry entry) {
             if (tokens == null) { throw new ArgumentNullException("tokens", "Tokens cannot be null."); }
             if (entry == null) { throw new ArgumentNullException("entry", "Entry cannot be null."); }
@@ -266,7 +266,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// </summary>
         /// <param name="autotypeText">Auto-type text.</param>
         /// <param name="entry">Entry to base fill-in on.</param>
-        /// <exception cref="System.ArgumentNullException">Entry cannot be null.</exception>
+        /// <exception cref="ArgumentNullException">Entry cannot be null.</exception>
         internal static IEnumerable<AutotypeToken> GetAutotypeTokens(string autotypeText, Entry entry) {
             if (entry == null) { throw new ArgumentNullException("entry", "Entry cannot be null."); }
 

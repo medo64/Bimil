@@ -100,7 +100,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// <summary>
         /// Gets/sets how many passwords are to be remembered.
         /// </summary>
-        /// <exception cref="System.ArgumentOutOfRangeException">Value must be between 1 and 255.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">Value must be between 1 and 255.</exception>
         public int MaximumCount {
             get {
                 return this._maximumCount;
@@ -149,7 +149,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// Gets the element at the specified index.
         /// </summary>
         /// <param name="index">The zero-based index of the element to get or set.</param>
-        /// <exception cref="System.ArgumentOutOfRangeException">Index is less than 0. -or- Index is equal to or greater than collection count. -or- Duplicate name in collection.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">Index is less than 0. -or- Index is equal to or greater than collection count. -or- Duplicate name in collection.</exception>
         public PasswordHistoryItem this[int index] {
             get { return this.BaseCollection[index]; }
         }
