@@ -36,5 +36,21 @@ namespace PasswordSafe.Test {
             });
         }
 
+
+        [Fact(DisplayName = "PasswordSafe: Record: SetBytes")]
+        public void Record_SetBytes() {
+            var field = new PwSafe.Record(PwSafe.RecordType.Title);
+            field.SetBytes(new byte[] { 0x00, 0xFF });
+            Assert.Equal("00-FF", BitConverter.ToString(field.GetBytes()));
+        }
+
+        [Fact(DisplayName = "PasswordSafe: Record: SetBytes (null)")]
+        public void Record_SetBytes_Null() {
+            Assert.Throws<ArgumentNullException>(() => {
+                var field = new PwSafe.Record(PwSafe.RecordType.Title);
+                field.SetBytes(null);
+            });
+        }
+
     }
 }

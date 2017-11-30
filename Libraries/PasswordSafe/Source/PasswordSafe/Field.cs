@@ -40,7 +40,6 @@ namespace Medo.Security.Cryptography.PasswordSafe {
                 if ((this.DataType != PasswordSafeFieldDataType.Version) && (this.DataType != PasswordSafeFieldDataType.Unknown)) { throw new FormatException("Field type mismatch."); }
                 if ((value < 0) || (value > ushort.MaxValue)) { throw new ArgumentOutOfRangeException(nameof(value), "Value outside of range."); }
                 this.RawData = BitConverter.GetBytes((ushort)value);
-                this.MarkAsChanged();
             }
         }
 
@@ -66,7 +65,6 @@ namespace Medo.Security.Cryptography.PasswordSafe {
             set {
                 if ((this.DataType != PasswordSafeFieldDataType.Uuid) && (this.DataType != PasswordSafeFieldDataType.Unknown)) { throw new FormatException("Field type mismatch."); }
                 this.RawData = value.ToByteArray();
-                this.MarkAsChanged();
             }
         }
 
@@ -94,7 +92,6 @@ namespace Medo.Security.Cryptography.PasswordSafe {
                 if ((this.DataType != PasswordSafeFieldDataType.Text) && (this.DataType != PasswordSafeFieldDataType.Unknown)) { throw new FormatException("Field type mismatch."); }
                 if (value == null) { throw new ArgumentNullException(nameof(value), "Value cannot be null."); }
                 this.RawData = Utf8Encoding.GetBytes(value);
-                this.MarkAsChanged();
             }
         }
 
@@ -133,7 +130,6 @@ namespace Medo.Security.Cryptography.PasswordSafe {
                 if ((value < TimeMin) || (value > TimeMax)) { throw new ArgumentNullException(nameof(value), "Time outside of allowable range."); }
                 var seconds = (uint)((value.ToUniversalTime() - TimeMin).TotalSeconds);
                 this.RawData = BitConverter.GetBytes(seconds);
-                this.MarkAsChanged();
             }
         }
 
@@ -173,7 +169,6 @@ namespace Medo.Security.Cryptography.PasswordSafe {
             } finally {
                 Array.Clear(valueCopy, 0, valueCopy.Length);
             }
-            this.MarkAsChanged();
         }
 
 
@@ -193,9 +188,28 @@ namespace Medo.Security.Cryptography.PasswordSafe {
             }
             set {
                 if (this.IsReadOnly) { throw new NotSupportedException("Object is read-only."); }
+
+                var oldValue = this.RawDataDirect;
+                try {
+                    if (oldValue.Length == value.Length) { //skip writing the same value (to avoid marking document changed without reason)
+                        var areSame = true;
+                        for (var i = 0; i < value.Length; i++) {
+                            if (oldValue[i] != value[i]) {
+                                areSame = false;
+                                break;
+                            }
+                        }
+                        if (areSame) { return; }
+                    }
+                } finally {
+                    Array.Clear(oldValue, 0, oldValue.Length);
+                }
+
                 Rnd.GetBytes(this.RawDataEntropy); //new entropy every save
                 this._rawData = ProtectData(value, this.RawDataEntropy);
                 Array.Clear(value, 0, value.Length);
+
+                this.MarkAsChanged();
             }
         }
         /// <summary>
