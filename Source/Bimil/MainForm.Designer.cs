@@ -449,6 +449,7 @@ namespace Bimil {
             this.lsvEntries.TabIndex = 1;
             this.lsvEntries.UseCompatibleStateImageBehavior = false;
             this.lsvEntries.View = System.Windows.Forms.View.Details;
+            this.lsvEntries.AfterLabelEdit += new System.Windows.Forms.LabelEditEventHandler(this.lsvEntries_AfterLabelEdit);
             this.lsvEntries.BeforeLabelEdit += new System.Windows.Forms.LabelEditEventHandler(this.lsvEntries_BeforeLabelEdit);
             this.lsvEntries.ItemActivate += new System.EventHandler(this.lsvEntries_ItemActivate);
             this.lsvEntries.SelectedIndexChanged += new System.EventHandler(this.lsvEntries_SelectedIndexChanged);

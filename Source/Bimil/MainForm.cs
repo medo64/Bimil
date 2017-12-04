@@ -349,6 +349,16 @@ namespace Bimil {
             if (!Settings.EditableByDefault) { e.CancelEdit = true; }
         }
 
+        private void lsvEntries_AfterLabelEdit(object sender, LabelEditEventArgs e) {
+            if (lsvEntries.Items[e.Item].Tag is Entry entry) {
+                if (!string.IsNullOrWhiteSpace(e.Label)) {
+                    entry.Title = e.Label;
+                } else {
+                    e.CancelEdit = true;
+                }
+            }
+        }
+
         private void lsvEntries_KeyDown(object sender, KeyEventArgs e) {
             switch (e.KeyData) {
                 case Keys.Insert: {
