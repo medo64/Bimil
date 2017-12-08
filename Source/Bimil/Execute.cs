@@ -129,7 +129,7 @@ namespace Bimil {
         public static string NormalizeUrl(string urlText) {
             var url = urlText.Trim();
             if (url.Length > 0) {
-                return (url.IndexOf("://", StringComparison.OrdinalIgnoreCase) > 0) ? url : ("http:" + url);
+                return (url.IndexOf("://", StringComparison.OrdinalIgnoreCase) > 0) ? url : ("http://" + url);
             } else {
                 return "";
             }
