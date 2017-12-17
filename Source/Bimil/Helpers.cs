@@ -63,10 +63,12 @@ namespace Bimil {
             yield return RecordType.EmailAddress;
             yield return RecordType.TwoFactorKey;
 
+#if !WINDOWS_STORE
             yield return RecordType.CreditCardNumber;
             yield return RecordType.CreditCardExpiration;
             yield return RecordType.CreditCardVerificationValue;
             yield return RecordType.CreditCardPin;
+#endif
 
             yield return RecordType.QRCode;
 
