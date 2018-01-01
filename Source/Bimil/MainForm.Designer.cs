@@ -404,7 +404,6 @@ namespace Bimil {
             // 
             // mnuSearchWeak
             // 
-            this.mnuSearchWeak.Image = global::Bimil.Properties.Resources.mnuSearchWeak_16;
             this.mnuSearchWeak.Name = "mnuSearchWeak";
             this.mnuSearchWeak.Size = new System.Drawing.Size(239, 26);
             this.mnuSearchWeak.Text = "Search weak passwords";
