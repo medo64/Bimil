@@ -1,37 +1,47 @@
+using Medo.Security.Cryptography.PasswordSafe;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
-using System.Windows.Forms;
-using Medo.Security.Cryptography.PasswordSafe;
-using System.Diagnostics;
 using System.Threading;
+using System.Windows.Forms;
 
 namespace Bimil {
     internal static class ClipboardHelper {
 
-        #region Text
+        #region Clipboard: Text
 
-        public static void SetClipboardText(IWin32Window owner, string text) {
+        public static void SetClipboardText(IWin32Window owner, string text, bool expireClipboard = true) {
+            var data = new DataObject();
+            if (text.Length > 0) {
+                data.SetText(text, TextDataFormat.UnicodeText);
+            }
+
+            PauseMonitor();
+
             try {
-                var data = new DataObject();
-                if (text.Length > 0) {
-                    data.SetText(text, TextDataFormat.UnicodeText);
-                }
+                Debug.WriteLine("Clipboard: SetData (text)");
                 Clipboard.SetDataObject(data, false, 5, 100);
-                ClipboardClearThread.ScheduleClear();
             } catch (ExternalException ex) {
                 Medo.MessageBox.ShowError(owner, "Cannot copy to clipboard!\n\n" + ex.Message);
+                return;
+            }
+
+            if (expireClipboard) {
+                StartMonitor();
+                ClipboardClearThread.ScheduleClear();
             }
         }
 
-        #endregion Text
+        #endregion Clipboard: Text
 
-        #region Custom
+
+        #region Clipboard: Object
 
         private static readonly string FormatName = "Bimil";
 
-        public static void SetClipboardData(IWin32Window owner, IEnumerable<Entry> entries) {
+        public static void SetClipboardData(IWin32Window owner, IEnumerable<Entry> entries, bool expireClipboard = true) {
             var bytes = new List<byte>();
             var buffer = new byte[0];
             try {
@@ -55,12 +65,21 @@ namespace Bimil {
 
                 var protectedBuffer = ProtectedData.Protect(buffer, null, DataProtectionScope.CurrentUser);
 
+                var data = new DataObject();
+                data.SetData(FormatName, protectedBuffer);
+
+                PauseMonitor();
+
                 try {
-                    var data = new DataObject();
-                    data.SetData(FormatName, protectedBuffer);
+                    Debug.WriteLine("Clipboard: SetData (object)");
                     Clipboard.SetDataObject(data, false, 5, 100);
                 } catch (ExternalException ex) {
                     Medo.MessageBox.ShowError(owner, "Cannot copy to clipboard!\n\n" + ex.Message);
+                }
+
+                if (expireClipboard) {
+                    StartMonitor();
+                    ClipboardClearThread.ScheduleClear();
                 }
             } finally {
                 for (var i = 0; i < bytes.Count; i++) { bytes[i] = 0; }
@@ -106,12 +125,47 @@ namespace Bimil {
             }
         }
 
-        #endregion Custom
+        #endregion Clipboard: Object
+
+
+        #region ClipboardMonitor
+
+        private static ClipboardMonitor ClipboardMonitor;
+
+
+        private static void StartMonitor() {
+            if (ClipboardMonitor == null) { ClipboardMonitor = new ClipboardMonitor(); }
+            Debug.WriteLine("Clipboard: Monitor Start");
+            ClipboardMonitor.ClipboardChanged += ClipboardMonitor_ClipboardChanged;
+        }
+
+        private static void PauseMonitor() {
+            if (ClipboardMonitor != null) {
+                Debug.WriteLine("Clipboard: Monitor Pause");
+                ClipboardMonitor.ClipboardChanged -= ClipboardMonitor_ClipboardChanged;
+            }
+        }
+
+
+        private static void ClipboardMonitor_ClipboardChanged(object sender, ClipboardChangedEventArgs e) {
+            Debug.WriteLine("Clipboard: Monitor Changed");
+            ClipboardClearThread.UnscheduleClear();
+
+            if (ClipboardMonitor != null) {
+                Debug.WriteLine("Clipboard: Monitor Pause (change)");
+                ClipboardMonitor.ClipboardChanged -= ClipboardMonitor_ClipboardChanged;
+            }
+        }
+
+        #endregion ClipboardMonitor
 
 
         #region Thread
 
         public static void Cancel() {
+            PauseMonitor();
+
+            Debug.WriteLine("Clipboard: Clear (cancel)");
             Clipboard.Clear();
             ClipboardClearThread.Terminate();
         }
@@ -128,6 +182,12 @@ namespace Bimil {
                 Initialize();
                 lock (SyncRoot) {
                     ClearingStopatch.Restart();
+                }
+            }
+
+            public static void UnscheduleClear() {
+                lock (SyncRoot) {
+                    ClearingStopatch.Reset();
                 }
             }
 
@@ -169,6 +229,9 @@ namespace Bimil {
                             }
                             if (!App.MainForm.IsDisposed) {
                                 App.MainForm.Invoke((MethodInvoker)delegate () {
+                                    PauseMonitor();
+
+                                    Debug.WriteLine("Clipboard: Clear (timeout)");
                                     Clipboard.Clear();
                                 });
                             }
@@ -179,5 +242,6 @@ namespace Bimil {
         }
 
         #endregion Thread
+
     }
 }

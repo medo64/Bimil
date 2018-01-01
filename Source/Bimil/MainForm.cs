@@ -333,8 +333,7 @@ namespace Bimil {
 
                     case Keys.Control | Keys.X:
                         if (cmbSearch.SelectedText.Length > 0) {
-                            Clipboard.Clear();
-                            Clipboard.SetText(cmbSearch.SelectedText);
+                            ClipboardHelper.SetClipboardText(this, cmbSearch.SelectedText, expireClipboard: false);
                             cmbSearch.SelectedText = "";
                         }
                         e.Handled = true;

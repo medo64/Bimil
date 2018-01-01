@@ -193,6 +193,9 @@
     <Compile Include="BimilDocument\BimilValue.cs" />
     <Compile Include="BimilDocument\DocumentConversion.cs" />
     <Compile Include="ClipboardHelper.cs" />
+    <Compile Include="ClipboardMonitor.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="DocumentInfoForm.cs">
       <SubType>Form</SubType>
     </Compile>
