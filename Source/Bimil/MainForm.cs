@@ -214,6 +214,7 @@ namespace Bimil {
             }
 
             bwUpgradeCheck.CancelAsync();
+            ClipboardHelper.Cancel();
 
             this.Document = null;
             this.DocumentFileName = null;

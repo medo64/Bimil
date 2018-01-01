@@ -52,6 +52,15 @@ namespace Bimil {
         }
 
         [Category("Behavior")]
+        [DisplayName("Auto-clear clipboard")]
+        [Description("Time in seconds for clipboard to clear.")]
+        [DefaultValue(30)]
+        public static int AutoClearClipboardTimeout {
+            get { return LimitBetween(Config.Read("AutoClearClipboardTimeout", Medo.Configuration.Settings.Read("AutoClearClipboardTimeout", 30)), minValue: 10, maxValue: 3600, allowZero: true); }
+            set { Config.Write("AutoClearClipboardTimeout", LimitBetween(value, minValue: 10, maxValue: 3600, allowZero: true)); }
+        }
+
+        [Category("Behavior")]
         [DisplayName("Editable by default")]
         [Description("If true, all fields will be editable by default.")]
         [DefaultValue(true)]

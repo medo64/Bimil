@@ -4,6 +4,8 @@ using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Windows.Forms;
 using Medo.Security.Cryptography.PasswordSafe;
+using System.Diagnostics;
+using System.Threading;
 
 namespace Bimil {
     internal static class ClipboardHelper {
@@ -17,6 +19,7 @@ namespace Bimil {
                     data.SetText(text, TextDataFormat.UnicodeText);
                 }
                 Clipboard.SetDataObject(data, false, 5, 100);
+                ClipboardClearThread.ScheduleClear();
             } catch (ExternalException ex) {
                 Medo.MessageBox.ShowError(owner, "Cannot copy to clipboard!\n\n" + ex.Message);
             }
@@ -104,5 +107,77 @@ namespace Bimil {
         }
 
         #endregion Custom
+
+
+        #region Thread
+
+        public static void Cancel() {
+            Clipboard.Clear();
+            ClipboardClearThread.Terminate();
+        }
+
+
+        private static class ClipboardClearThread {
+
+            private static readonly Object SyncRoot = new object();
+            private static Stopwatch ClearingStopatch = new Stopwatch();
+
+            public static void ScheduleClear() {
+                if (Settings.AutoClearClipboardTimeout == 0) { return; }
+
+                Initialize();
+                lock (SyncRoot) {
+                    ClearingStopatch.Restart();
+                }
+            }
+
+
+            private static Thread WaitingThread = null;
+
+            public static void Initialize() {
+                if (WaitingThread != null) { return; }
+
+                WaitingThread = new Thread(new ThreadStart(Run)) {
+                    Name = "Clipboard clearing thread",
+                    IsBackground = true,
+                };
+                WaitingThread.Start();
+            }
+
+            public static void Terminate() {
+                if (WaitingThread != null) {
+                    WaitingThread.Abort();
+                    WaitingThread = null;
+                }
+            }
+
+
+            public static void Run() {
+                try {
+                    while (true) {
+                        Thread.Sleep(1000);
+                        if (Settings.AutoClearClipboardTimeout == 0) { continue; }
+
+                        long elapsed;
+                        lock (SyncRoot) {
+                            elapsed = ClearingStopatch.ElapsedMilliseconds;
+                        }
+
+                        if (elapsed > Settings.AutoClearClipboardTimeout * 1000) {
+                            lock (SyncRoot) {
+                                ClearingStopatch.Reset();
+                            }
+                            if (!App.MainForm.IsDisposed) {
+                                App.MainForm.Invoke((MethodInvoker)delegate () {
+                                    Clipboard.Clear();
+                                });
+                            }
+                        }
+                    }
+                } catch (ThreadAbortException) { };
+            }
+        }
+
+        #endregion Thread
     }
 }

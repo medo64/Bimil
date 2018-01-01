@@ -19,6 +19,9 @@ namespace Bimil {
             chbCheckWeakPasswordAtHibp.Checked = Settings.HibpCheckWeakPassword;
             chbSavePasswordHistoryByDefault.Checked = Settings.SavePasswordHistoryByDefault;
 
+            chbClearClipboardTimeout.Checked = (Settings.AutoClearClipboardTimeout > 0);
+            txtClearClipboardTimeout.Text = (Settings.AutoClearClipboardTimeout > 0) ? Settings.AutoClearClipboardTimeout.ToString(CultureInfo.CurrentCulture) : "30";
+
             chbItemTimeout.Checked = (Settings.AutoCloseItemTimeout > 0);
             txtItemTimeout.Text = (Settings.AutoCloseItemTimeout > 0) ? Settings.AutoCloseItemTimeout.ToString(CultureInfo.CurrentCulture) : "120";
 
@@ -37,6 +40,14 @@ namespace Bimil {
             Settings.HibpCheckWeakPassword = chbCheckWeakPasswordAtHibp.Checked;
             Settings.SavePasswordHistoryByDefault = chbSavePasswordHistoryByDefault.Checked;
 
+            if (chbClearClipboardTimeout.Checked) {
+                if (int.TryParse(txtClearClipboardTimeout.Text, NumberStyles.Integer, CultureInfo.CurrentCulture, out var seconds)) {
+                    Settings.AutoClearClipboardTimeout = seconds;
+                }
+            } else {
+                Settings.AutoClearClipboardTimeout = 0;
+            }
+
             if (chbItemTimeout.Checked) {
                 if (int.TryParse(txtItemTimeout.Text, NumberStyles.Integer, CultureInfo.CurrentCulture, out var seconds)) {
                     Settings.AutoCloseItemTimeout = seconds;
@@ -54,6 +65,10 @@ namespace Bimil {
             }
 
             Settings.AutoCloseSave = chbAutoCloseSave.Checked;
+        }
+
+        private void chbClearClipboardTimeout_CheckedChanged(object sender, EventArgs e) {
+            txtClearClipboardTimeout.Enabled = chbClearClipboardTimeout.Checked;
         }
 
         private void chbItemTimeout_CheckedChanged(object sender, EventArgs e) {
@@ -113,6 +128,13 @@ namespace Bimil {
                 textBox.Text = newSeconds.ToString(CultureInfo.CurrentCulture);
                 textBox.SelectAll();
             }
+        }
+
+        private void txtClearClipboardTimeout_Leave(object sender, EventArgs e) {
+            if (!int.TryParse(txtClearClipboardTimeout.Text, NumberStyles.Integer, CultureInfo.CurrentCulture, out var seconds)) {
+                seconds = (Settings.AutoClearClipboardTimeout > 0) ? Settings.AutoClearClipboardTimeout : 30;
+            }
+            txtClearClipboardTimeout.Text = Math.Min(Math.Max(seconds, 10), 3600).ToString(CultureInfo.CurrentCulture);
         }
 
         private void txtItemTimeout_Leave(object sender, EventArgs e) {
