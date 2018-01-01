@@ -1,6 +1,9 @@
 [Desktop Entry]
 Name=Bimil
-Exec=/opt/bimil/bimil.exe
+Comment=A small password manager.
+TryExec=/opt/bimil/bimil.exe
+Exec=/opt/bimil/bimil.exe %f
 Icon=medo64_bimil
 Type=Application
 Categories=GTK;GNOME;Utility;
+MimeType=application/x-bimil

@@ -160,7 +160,8 @@ namespace Bimil {
         }
 
         private void Form_Shown(object sender, EventArgs e) {
-            var fileName = Medo.Application.Args.Current.GetValue("");
+            var args = Environment.GetCommandLineArgs();
+            var fileName = (args.Length) > 1 ? args[1] : null;
             if (fileName != null) {
                 LoadFile(fileName);
             } else if (Settings.ShowStart) {
