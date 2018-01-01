@@ -105,7 +105,11 @@ DIRECTORY_PACKAGE="$DIRECTORY_ROOT/$PACKAGE_NAME"
 mkdir $DIRECTORY_PACKAGE
 cp -R ./DEBIAN $DIRECTORY_PACKAGE/
 cp -R ./usr $DIRECTORY_PACKAGE/
-chmod -R 755 $DIRECTORY_PACKAGE
+
+find $DIRECTORY_PACKAGE -type d -exec chmod 755 {} +
+find $DIRECTORY_PACKAGE -type f -exec chmod 644 {} +
+chmod 755 $DIRECTORY_PACKAGE/DEBIAN/*inst
+chmod 755 $DIRECTORY_PACKAGE/DEBIAN/*rm
 
 sed -i "s/MAJOR/$RELEASE_VERSION_MAJOR/" $DIRECTORY_PACKAGE/DEBIAN/control
 sed -i "s/MINOR/$RELEASE_VERSION_MINOR/" $DIRECTORY_PACKAGE/DEBIAN/control
@@ -117,7 +121,6 @@ then
     echo "Cannot extract archive!" >&2
     exit 1
 fi
-find "$DIRECTORY_PACKAGE/opt" -type f -exec chmod 644 -- {} +
 chmod 755 "$DIRECTORY_PACKAGE/opt/bimil/bimil.exe"
 
 dpkg-deb --build $DIRECTORY_PACKAGE > /dev/null
