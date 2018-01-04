@@ -1,4 +1,4 @@
 #!/bin/bash
 
-chmox +x /opt/bimil/bimil.exe
+chmod +x /opt/bimil/bimil.exe
 exit 0
