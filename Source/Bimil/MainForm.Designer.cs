@@ -68,7 +68,7 @@ namespace Bimil {
             this.mnxEntry0 = new System.Windows.Forms.ToolStripSeparator();
             this.mnxEntryAdd = new System.Windows.Forms.ToolStripMenuItem();
             this.mnxEntryAddSimilar = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnxEntry1 = new System.Windows.Forms.ToolStripSeparator();
+            this.mnxEntryAutotypeSeparator = new System.Windows.Forms.ToolStripSeparator();
             this.mnxEntryAutotype = new System.Windows.Forms.ToolStripMenuItem();
             this.mnxEntrySeparatorBeforeCut = new System.Windows.Forms.ToolStripSeparator();
             this.mnxEntryCut = new System.Windows.Forms.ToolStripMenuItem();
@@ -463,14 +463,14 @@ namespace Bimil {
             this.mnxEntry0,
             this.mnxEntryAdd,
             this.mnxEntryAddSimilar,
-            this.mnxEntry1,
+            this.mnxEntryAutotypeSeparator,
             this.mnxEntryAutotype,
             this.mnxEntrySeparatorBeforeCut,
             this.mnxEntryCut,
             this.mnxEntryCopy,
             this.mnxEntryPaste});
             this.mnxEntry.Name = "mnxEntry";
-            this.mnxEntry.Size = new System.Drawing.Size(217, 230);
+            this.mnxEntry.Size = new System.Drawing.Size(217, 258);
             this.mnxEntry.Opening += new System.ComponentModel.CancelEventHandler(this.mnxEntry_Opening);
             // 
             // mnxEntryView
@@ -514,10 +514,10 @@ namespace Bimil {
             this.mnxEntryAddSimilar.Text = "Add &Similar";
             this.mnxEntryAddSimilar.Click += new System.EventHandler(this.mnxEntryAddSimilar_Click);
             // 
-            // mnxEntry1
+            // mnxEntryAutotypeSeparator
             // 
-            this.mnxEntry1.Name = "mnxEntry1";
-            this.mnxEntry1.Size = new System.Drawing.Size(213, 6);
+            this.mnxEntryAutotypeSeparator.Name = "mnxEntryAutotypeSeparator";
+            this.mnxEntryAutotypeSeparator.Size = new System.Drawing.Size(213, 6);
             // 
             // mnxEntryAutotype
             // 
@@ -642,7 +642,7 @@ namespace Bimil {
         private System.Windows.Forms.ToolStripMenuItem mnxEntryEdit;
         private System.Windows.Forms.ToolStripSeparator mnxEntrySeparatorBeforeCut;
         private System.Windows.Forms.ToolStripMenuItem mnxEntryAutotype;
-        private System.Windows.Forms.ToolStripSeparator mnxEntry1;
+        private System.Windows.Forms.ToolStripSeparator mnxEntryAutotypeSeparator;
         private System.Windows.Forms.ToolStripMenuItem mnxEntryCut;
         private System.Windows.Forms.ToolStripMenuItem mnxEntryCopy;
         private System.Windows.Forms.ToolStripMenuItem mnxEntryPaste;
