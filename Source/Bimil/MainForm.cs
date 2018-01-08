@@ -333,7 +333,7 @@ namespace Bimil {
 
                     case Keys.Control | Keys.X:
                         if (cmbSearch.SelectedText.Length > 0) {
-                            ClipboardHelper.SetClipboardText(this, cmbSearch.SelectedText, expireClipboard: false);
+                            ClipboardHelper.SetClipboardText(this, cmbSearch.SelectedText, sensitiveData: false);
                             cmbSearch.SelectedText = "";
                         }
                         e.Handled = true;
@@ -947,14 +947,14 @@ namespace Bimil {
                         case RecordType.EmailAddress:
                             if (record.Text.Length > 0) {
                                 mnxItem = new ToolStripMenuItem("Copy " + Helpers.ToTitleCase(Helpers.GetRecordCaption(record)) + " (" + record.Text + ")");
-                                mnxItem.Click += delegate { ClipboardHelper.SetClipboardText(this, record.Text); };
+                                mnxItem.Click += delegate { ClipboardHelper.SetClipboardText(this, record.Text, record.RecordType); };
                             }
                             break;
 
                         case RecordType.Password:
                             if (record.Text.Length > 0) {
                                 mnxItem = new ToolStripMenuItem("Copy " + Helpers.ToTitleCase(Helpers.GetRecordCaption(record)) + " (" + new string('*', record.Text.Length) + ")");
-                                mnxItem.Click += delegate { ClipboardHelper.SetClipboardText(this, record.Text); };
+                                mnxItem.Click += delegate { ClipboardHelper.SetClipboardText(this, record.Text, record.RecordType); };
                             }
                             break;
 
@@ -972,7 +972,7 @@ namespace Bimil {
                                     try {
                                         //recalculate code - just in case menu was open too long and displayed code expired
                                         var code = Helpers.GetTwoFactorCode(OneTimePassword.ToBase32(keyBytes2, keyBytes2.Length, SecretFormatFlags.None));
-                                        ClipboardHelper.SetClipboardText(this, code);
+                                        ClipboardHelper.SetClipboardText(this, code, record.RecordType);
                                     } finally {
                                         Array.Clear(keyBytes2, 0, keyBytes2.Length);
                                     }
@@ -1063,7 +1063,7 @@ namespace Bimil {
             foreach (ListViewItem selectedItem in lsvEntries.SelectedItems) {
                 entries.Add((Entry)(selectedItem.Tag));
             }
-            ClipboardHelper.SetClipboardData(this, entries.AsReadOnly());
+            ClipboardHelper.SetClipboardData(this, entries.AsReadOnly(), sensitiveData: true);
 
             for (var i = lsvEntries.Items.Count - 1; i >= 0; i--) {
                 if (lsvEntries.Items[i].Selected) {
@@ -1082,7 +1082,7 @@ namespace Bimil {
             foreach (ListViewItem selectedItem in lsvEntries.SelectedItems) {
                 entries.Add((Entry)(selectedItem.Tag));
             }
-            ClipboardHelper.SetClipboardData(this, entries.AsReadOnly());
+            ClipboardHelper.SetClipboardData(this, entries.AsReadOnly(), sensitiveData: true);
         }
 
         private void mnxEntryPaste_Click(object sender, EventArgs e) {

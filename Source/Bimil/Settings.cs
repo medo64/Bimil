@@ -61,6 +61,24 @@ namespace Bimil {
         }
 
         [Category("Behavior")]
+        [DisplayName("Auto-clear after paste")]
+        [Description("If true, data will be removed from clipboard after paste. Valid only if also clipboard timeout is set.")]
+        [DefaultValue(true)]
+        public static bool AutoClearClipboardAfterPaste {
+            get { return Config.Read("AutoClearClipboardAfterPaste", true); }
+            set { Config.Write("AutoClearClipboardAfterPaste", value); }
+        }
+
+        [Category("Behavior")]
+        [DisplayName("Auto-clear only sensitive data")]
+        [Description("If true, only sensitive data (such as password or two factor keys) is to be auto-clear from clipboard.")]
+        [DefaultValue(false)]
+        public static bool AutoClearClipboardForSensitiveDataOnly {
+            get { return Config.Read("AutoClearClipboardForSensitiveDataOnly", false); }
+            set { Config.Write("AutoClearClipboardForSensitiveDataOnly", value); }
+        }
+
+        [Category("Behavior")]
         [DisplayName("Editable by default")]
         [Description("If true, all fields will be editable by default.")]
         [DefaultValue(true)]

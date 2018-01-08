@@ -12,7 +12,11 @@ namespace Bimil {
 
         #region Clipboard: Text
 
-        public static void SetClipboardText(IWin32Window owner, string text, bool expireClipboard = true) {
+        public static void SetClipboardText(IWin32Window owner, string text, RecordType recordType) {
+            SetClipboardText(owner, text, sensitiveData: Helpers.GetIsHideable(recordType));
+        }
+
+        public static void SetClipboardText(IWin32Window owner, string text, bool sensitiveData) {
             var data = new DataObject();
             if (text.Length > 0) {
                 data.SetText(text, TextDataFormat.UnicodeText);
@@ -28,7 +32,7 @@ namespace Bimil {
                 return;
             }
 
-            if (expireClipboard) {
+            if (sensitiveData || (Settings.AutoClearClipboardForSensitiveDataOnly == false)) {
                 StartMonitor();
                 ClipboardClearThread.ScheduleClear();
             }
@@ -41,7 +45,7 @@ namespace Bimil {
 
         private static readonly string FormatName = "Bimil";
 
-        public static void SetClipboardData(IWin32Window owner, IEnumerable<Entry> entries, bool expireClipboard = true) {
+        public static void SetClipboardData(IWin32Window owner, IEnumerable<Entry> entries, bool sensitiveData) {
             var bytes = new List<byte>();
             var buffer = new byte[0];
             try {
@@ -77,7 +81,7 @@ namespace Bimil {
                     Medo.MessageBox.ShowError(owner, "Cannot copy to clipboard!\n\n" + ex.Message);
                 }
 
-                if (expireClipboard) {
+                if (sensitiveData || (Settings.AutoClearClipboardForSensitiveDataOnly == false)) {
                     StartMonitor();
                     ClipboardClearThread.ScheduleClear();
                 }
@@ -134,6 +138,8 @@ namespace Bimil {
 
 
         private static void StartMonitor() {
+            if ((Settings.AutoClearClipboardTimeout == 0) || !Settings.AutoClearClipboardAfterPaste) { return; } //only clear if both clearing after paste and timeout are set.
+
             if (ClipboardMonitor == null) { ClipboardMonitor = new ClipboardMonitor(); }
             Debug.WriteLine("Clipboard: Monitor Start");
             ClipboardMonitor.ClipboardChanged += ClipboardMonitor_ClipboardChanged;

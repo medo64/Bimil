@@ -214,11 +214,11 @@ namespace Bimil {
 
         private void btnSaveAndCopy_Click(object sender, EventArgs e) {
             this.Password = txtPassword.Text;
-            ClipboardHelper.SetClipboardText(this, txtPassword.Text);
+            ClipboardHelper.SetClipboardText(this, txtPassword.Text, sensitiveData: true);
         }
 
         private void btnCopy_Click(object sender, EventArgs e) {
-            ClipboardHelper.SetClipboardText(this, txtPassword.Text);
+            ClipboardHelper.SetClipboardText(this, txtPassword.Text, sensitiveData: true);
         }
 
 

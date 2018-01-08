@@ -21,6 +21,8 @@ namespace Bimil {
 
             chbClearClipboardTimeout.Checked = (Settings.AutoClearClipboardTimeout > 0);
             txtClearClipboardTimeout.Text = (Settings.AutoClearClipboardTimeout > 0) ? Settings.AutoClearClipboardTimeout.ToString(CultureInfo.CurrentCulture) : "30";
+            chbClearOnlySensitveItems.Enabled = chbClearClipboardTimeout.Checked;
+            chbClearOnlySensitveItems.Checked = Settings.AutoClearClipboardForSensitiveDataOnly;
 
             chbItemTimeout.Checked = (Settings.AutoCloseItemTimeout > 0);
             txtItemTimeout.Text = (Settings.AutoCloseItemTimeout > 0) ? Settings.AutoCloseItemTimeout.ToString(CultureInfo.CurrentCulture) : "120";
@@ -47,6 +49,7 @@ namespace Bimil {
             } else {
                 Settings.AutoClearClipboardTimeout = 0;
             }
+            Settings.AutoClearClipboardForSensitiveDataOnly = chbClearOnlySensitveItems.Checked;
 
             if (chbItemTimeout.Checked) {
                 if (int.TryParse(txtItemTimeout.Text, NumberStyles.Integer, CultureInfo.CurrentCulture, out var seconds)) {
@@ -69,6 +72,7 @@ namespace Bimil {
 
         private void chbClearClipboardTimeout_CheckedChanged(object sender, EventArgs e) {
             txtClearClipboardTimeout.Enabled = chbClearClipboardTimeout.Checked;
+            chbClearOnlySensitveItems.Enabled = chbClearClipboardTimeout.Checked;
         }
 
         private void chbItemTimeout_CheckedChanged(object sender, EventArgs e) {

@@ -42,13 +42,14 @@ namespace Bimil {
             this.chbCheckWeakPasswordAtHibp = new System.Windows.Forms.CheckBox();
             this.txtClearClipboardTimeout = new System.Windows.Forms.TextBox();
             this.chbClearClipboardTimeout = new System.Windows.Forms.CheckBox();
+            this.chbClearOnlySensitveItems = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // btnCancel
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(220, 323);
+            this.btnCancel.Location = new System.Drawing.Point(220, 351);
             this.btnCancel.Margin = new System.Windows.Forms.Padding(3, 15, 3, 3);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(90, 28);
@@ -61,11 +62,11 @@ namespace Bimil {
             // 
             this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOK.Location = new System.Drawing.Point(124, 323);
+            this.btnOK.Location = new System.Drawing.Point(124, 351);
             this.btnOK.Margin = new System.Windows.Forms.Padding(3, 15, 3, 3);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(90, 28);
-            this.btnOK.TabIndex = 15;
+            this.btnOK.TabIndex = 16;
             this.btnOK.Text = "OK";
             this.tip.SetToolTip(this.btnOK, "Save changes.");
             this.btnOK.UseVisualStyleBackColor = true;
@@ -96,10 +97,10 @@ namespace Bimil {
             // chbItemTimeout
             // 
             this.chbItemTimeout.AutoSize = true;
-            this.chbItemTimeout.Location = new System.Drawing.Point(12, 229);
+            this.chbItemTimeout.Location = new System.Drawing.Point(12, 257);
             this.chbItemTimeout.Name = "chbItemTimeout";
             this.chbItemTimeout.Size = new System.Drawing.Size(183, 21);
-            this.chbItemTimeout.TabIndex = 10;
+            this.chbItemTimeout.TabIndex = 11;
             this.chbItemTimeout.Text = "Auto-close entry timeout";
             this.tip.SetToolTip(this.chbItemTimeout, "Time in seconds for item window to automatically close if it loses focus.");
             this.chbItemTimeout.UseVisualStyleBackColor = true;
@@ -108,10 +109,10 @@ namespace Bimil {
             // chbAppTimeout
             // 
             this.chbAppTimeout.AutoSize = true;
-            this.chbAppTimeout.Location = new System.Drawing.Point(12, 257);
+            this.chbAppTimeout.Location = new System.Drawing.Point(12, 285);
             this.chbAppTimeout.Name = "chbAppTimeout";
             this.chbAppTimeout.Size = new System.Drawing.Size(219, 21);
-            this.chbAppTimeout.TabIndex = 12;
+            this.chbAppTimeout.TabIndex = 13;
             this.chbAppTimeout.Text = "Auto-close application timeout";
             this.tip.SetToolTip(this.chbAppTimeout, "Time in seconds for main window to automatically close if it loses focus.");
             this.chbAppTimeout.UseVisualStyleBackColor = true;
@@ -133,12 +134,12 @@ namespace Bimil {
             // 
             this.txtItemTimeout.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.txtItemTimeout.Enabled = false;
-            this.txtItemTimeout.Location = new System.Drawing.Point(250, 227);
+            this.txtItemTimeout.Location = new System.Drawing.Point(250, 255);
             this.txtItemTimeout.MaxLength = 4;
             this.txtItemTimeout.Name = "txtItemTimeout";
             this.txtItemTimeout.ShortcutsEnabled = false;
             this.txtItemTimeout.Size = new System.Drawing.Size(60, 22);
-            this.txtItemTimeout.TabIndex = 11;
+            this.txtItemTimeout.TabIndex = 12;
             this.txtItemTimeout.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.tip.SetToolTip(this.txtItemTimeout, "Value between 10 and 3600 seconds.");
             this.txtItemTimeout.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtTimeout_KeyDown);
@@ -148,12 +149,12 @@ namespace Bimil {
             // 
             this.txtAppTimeout.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.txtAppTimeout.Enabled = false;
-            this.txtAppTimeout.Location = new System.Drawing.Point(250, 255);
+            this.txtAppTimeout.Location = new System.Drawing.Point(250, 283);
             this.txtAppTimeout.MaxLength = 4;
             this.txtAppTimeout.Name = "txtAppTimeout";
             this.txtAppTimeout.ShortcutsEnabled = false;
             this.txtAppTimeout.Size = new System.Drawing.Size(60, 22);
-            this.txtAppTimeout.TabIndex = 13;
+            this.txtAppTimeout.TabIndex = 14;
             this.txtAppTimeout.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.tip.SetToolTip(this.txtAppTimeout, "Value between 10 and 3600 seconds.");
             this.txtAppTimeout.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtTimeout_KeyDown);
@@ -173,10 +174,10 @@ namespace Bimil {
             // chbAutoCloseSave
             // 
             this.chbAutoCloseSave.AutoSize = true;
-            this.chbAutoCloseSave.Location = new System.Drawing.Point(12, 284);
+            this.chbAutoCloseSave.Location = new System.Drawing.Point(12, 312);
             this.chbAutoCloseSave.Name = "chbAutoCloseSave";
             this.chbAutoCloseSave.Size = new System.Drawing.Size(152, 21);
-            this.chbAutoCloseSave.TabIndex = 14;
+            this.chbAutoCloseSave.TabIndex = 15;
             this.chbAutoCloseSave.Text = "Save on auto-close";
             this.tip.SetToolTip(this.chbAutoCloseSave, "If checked, any pending changes will be saved on timeout.");
             this.chbAutoCloseSave.UseVisualStyleBackColor = true;
@@ -241,13 +242,26 @@ namespace Bimil {
             this.chbClearClipboardTimeout.UseVisualStyleBackColor = true;
             this.chbClearClipboardTimeout.CheckedChanged += new System.EventHandler(this.chbClearClipboardTimeout_CheckedChanged);
             // 
+            // chbClearOnlySensitveItems
+            // 
+            this.chbClearOnlySensitveItems.AutoSize = true;
+            this.chbClearOnlySensitveItems.Location = new System.Drawing.Point(32, 228);
+            this.chbClearOnlySensitveItems.Name = "chbClearOnlySensitveItems";
+            this.chbClearOnlySensitveItems.Size = new System.Drawing.Size(192, 21);
+            this.chbClearOnlySensitveItems.TabIndex = 10;
+            this.chbClearOnlySensitveItems.Text = "Clean only sensitive items";
+            this.tip.SetToolTip(this.chbClearOnlySensitveItems, "If checked, clipboard is only cleared from sensitive items like password and two-" +
+        "factor codes.");
+            this.chbClearOnlySensitveItems.UseVisualStyleBackColor = true;
+            // 
             // SettingsForm
             // 
             this.AcceptButton = this.btnOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(322, 363);
+            this.ClientSize = new System.Drawing.Size(322, 391);
+            this.Controls.Add(this.chbClearOnlySensitveItems);
             this.Controls.Add(this.txtClearClipboardTimeout);
             this.Controls.Add(this.chbClearClipboardTimeout);
             this.Controls.Add(this.chbCheckWeakPasswordAtHibp);
@@ -297,5 +311,6 @@ namespace Bimil {
         private System.Windows.Forms.CheckBox chbCheckWeakPasswordAtHibp;
         private System.Windows.Forms.TextBox txtClearClipboardTimeout;
         private System.Windows.Forms.CheckBox chbClearClipboardTimeout;
+        private System.Windows.Forms.CheckBox chbClearOnlySensitveItems;
     }
 }

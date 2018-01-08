@@ -236,7 +236,7 @@ namespace Bimil {
                             var textBox = NewTextBox(labelWidth, y, record);
                             pnl.Controls.Add(textBox);
 
-                            pnl.Controls.Add(NewCopyButton(textBox));
+                            pnl.Controls.Add(NewCopyButton(textBox, record.RecordType));
 
                             yH = textBox.Height;
                         }
@@ -248,7 +248,7 @@ namespace Bimil {
                             textBox.UseSystemPasswordChar = true;
                             pnl.Controls.Add(textBox);
 
-                            pnl.Controls.Add(NewCopyButton(textBox));
+                            pnl.Controls.Add(NewCopyButton(textBox, record.RecordType));
                             pnl.Controls.Add(NewShowPasswordButton(textBox));
 
                             yH = textBox.Height;
@@ -260,7 +260,7 @@ namespace Bimil {
                             textBox.UseSystemPasswordChar = true;
                             pnl.Controls.Add(textBox);
 
-                            pnl.Controls.Add(NewCopyButton(textBox));
+                            pnl.Controls.Add(NewCopyButton(textBox, record.RecordType));
                             pnl.Controls.Add(NewConfigureButton(textBox, delegate {
                                 using (var frm = new PasswordDetailsForm(this.Item, textBox.ReadOnly)) {
                                     frm.ShowDialog(this);
@@ -290,7 +290,7 @@ namespace Bimil {
                             var textBox = NewTextBox(labelWidth, y, record, urlLookAndFeel: true);
                             pnl.Controls.Add(textBox);
 
-                            pnl.Controls.Add(NewCopyButton(textBox, copyText: delegate { return Execute.NormalizeUrl(textBox.Text); }));
+                            pnl.Controls.Add(NewCopyButton(textBox, record.RecordType, copyText: delegate { return Execute.NormalizeUrl(textBox.Text); }));
                             pnl.Controls.Add(NewExecuteUrlButton(textBox));
                             pnl.Controls.Add(NewExecuteUrlQRButton(textBox));
 
@@ -302,7 +302,7 @@ namespace Bimil {
                             var textBox = NewTextBox(labelWidth, y, record, urlLookAndFeel: true);
                             pnl.Controls.Add(textBox);
 
-                            pnl.Controls.Add(NewCopyButton(textBox));
+                            pnl.Controls.Add(NewCopyButton(textBox, record.RecordType));
                             pnl.Controls.Add(NewExecuteEmailButton(textBox));
 
                             yH = textBox.Height;
@@ -324,7 +324,7 @@ namespace Bimil {
                             pnl.Controls.Add(textBox);
                             Array.Clear(bytes, 0, bytes.Length);
 
-                            pnl.Controls.Add(NewCopyButton(textBox, tipText: "Copy two-factor key to clipboard.", copyText: delegate { return Helpers.GetTwoFactorCode(textBox.Text); }));
+                            pnl.Controls.Add(NewCopyButton(textBox, record.RecordType, tipText: "Copy two-factor key to clipboard.", copyText: delegate { return Helpers.GetTwoFactorCode(textBox.Text); }));
                             pnl.Controls.Add(NewViewTwoFactorCode(textBox));
                             pnl.Controls.Add(NewExecuteOAuthQRButton(textBox));
                             pnl.Controls.Add(NewShowPasswordButton(textBox, tipText: "Show two-factor key."));
@@ -338,7 +338,7 @@ namespace Bimil {
                             var textBox = NewTextBox(labelWidth, y, record);
                             pnl.Controls.Add(textBox);
 
-                            pnl.Controls.Add(NewCopyButton(textBox, allowedCopyCharacters: Helpers.NumberCharacters));
+                            pnl.Controls.Add(NewCopyButton(textBox, record.RecordType, allowedCopyCharacters: Helpers.NumberCharacters));
 
                             yH = textBox.Height;
                         }
@@ -540,7 +540,7 @@ namespace Bimil {
             return control;
         }
 
-        private Button NewCopyButton(TextBox parentTextBox, string tipText = null, char[] allowedCopyCharacters = null, GetText copyText = null) {
+        private Button NewCopyButton(TextBox parentTextBox, RecordType recordType, string tipText = null, char[] allowedCopyCharacters = null, GetText copyText = null) {
             parentTextBox.Width -= parentTextBox.Height;
             var button = new Button() {
                 Name = "btnCopy",
@@ -567,7 +567,7 @@ namespace Bimil {
                 }
                 text = Helpers.FilterText(text, allowedCopyCharacters);
 
-                ClipboardHelper.SetClipboardText(this, text);
+                ClipboardHelper.SetClipboardText(this, text, recordType);
             };
 
             return button;

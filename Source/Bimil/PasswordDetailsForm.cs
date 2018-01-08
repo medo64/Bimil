@@ -114,7 +114,7 @@ namespace Bimil {
             if (lsvHistoryPasswords.SelectedItems.Count != 1) { return; }
 
             var password = (string)(lsvHistoryPasswords.SelectedItems[0].Tag);
-            ClipboardHelper.SetClipboardText(this, password);
+            ClipboardHelper.SetClipboardText(this, password, sensitiveData: true);
         }
 
 
