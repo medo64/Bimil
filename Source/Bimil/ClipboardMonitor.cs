@@ -2,6 +2,7 @@
 
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
@@ -41,11 +42,13 @@ namespace Bimil {
         protected override void WndProc(ref Message m) {
             switch (m.Msg) {
                 case NativeMethods.WM_DRAWCLIPBOARD:
+                    Debug.WriteLine("ClipboardMonitor WndProc: WM_DRAWCLIPBOARD");
                     NativeMethods.SendMessage(NextViewerPtr, m.Msg, m.WParam, m.LParam);
                     OnClipboardChanged();
                     break;
 
                 case NativeMethods.WM_CHANGECBCHAIN:
+                    Debug.WriteLine("ClipboardMonitor WndProc: WM_CHANGECBCHAIN");
                     if (m.WParam == this.NextViewerPtr) {
                         this.NextViewerPtr = m.LParam;
                     } else {
@@ -54,6 +57,7 @@ namespace Bimil {
                     break;
 
                 default:
+                    Debug.WriteLine("ClipboardMonitor WndProc: 0x" + m.Msg.ToString("X4"));
                     base.WndProc(ref m);
                     break;
             }
