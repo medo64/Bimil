@@ -1286,6 +1286,15 @@ namespace Bimil {
             if (!e.Cancelled) {
                 Helpers.ScaleToolstripItem(mnuApp, "mnuAppUpgrade");
                 mnuAppUpgrade.Text = "Upgrade is available";
+
+                var locationButton = this.PointToScreen(new Point(mnu.Left + mnuApp.Bounds.Left, mnu.Top + mnuApp.Bounds.Top));
+                var locationForm = this.Location;
+                var tipX = locationButton.X - locationForm.X + mnuApp.Bounds.Width / 2;
+                var tipY = locationButton.Y - locationForm.Y + mnuApp.Bounds.Height / 2;
+
+                tip.ToolTipIcon = ToolTipIcon.Info;
+                tip.ToolTipTitle = "Upgrade";
+                tip.Show("Upgrade is available.", this, tipX, tipY, 1729);
             }
         }
 
