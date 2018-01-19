@@ -2,7 +2,10 @@
 
 if [ "$1" == "remove" ]
 then
-    rm $HOME/.bimil
+    if [ -f "$HOME/.bimil" ]
+    then
+        rm "$HOME/.bimil"
+    fi
 fi
 
 exit 0
