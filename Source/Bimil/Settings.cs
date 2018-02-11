@@ -32,7 +32,7 @@ namespace Bimil {
         [Description("If true, the last used file will be loaded.")]
         [DefaultValue(false)]
         public static bool LoadLast {
-            get { return Config.Read("LoadLast", Medo.Configuration.Settings.Read("LoadLast", true)) && !ShowStart; }
+            get { return Config.Read("LoadLast", Medo.Configuration.Settings.Read("LoadLast", false)) && !ShowStart; }
             set {
                 Config.Write("LoadLast", value);
                 if ((value == true) && ShowStart) { ShowStart = false; }
