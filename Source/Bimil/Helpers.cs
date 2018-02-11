@@ -594,6 +594,12 @@ namespace Bimil {
         #endregion
 
 
+        public static string GetFileTitle(string fileName) {
+            var file = new FileInfo(fileName);
+            var title = file.Name.Substring(0, file.Name.Length - file.Extension.Length);
+            return title;
+        }
+
         public static string ToTitleCase(string text) {
             var parts = text.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
             for (var i = 0; i < parts.Length; i++) {

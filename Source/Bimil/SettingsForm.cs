@@ -12,6 +12,7 @@ namespace Bimil {
 
         private void Form_Load(object sender, EventArgs e) {
             chbShowStart.Checked = Settings.ShowStart;
+            chbLoadLast.Checked = Settings.LoadLast;
             chbCloseOnEscape.Checked = Settings.CloseOnEscape;
             chbEditableByDefault.Checked = Settings.EditableByDefault;
             chbShowCommonPasswordWarnings.Checked = Settings.ShowCommonPasswordWarnings;
@@ -35,6 +36,7 @@ namespace Bimil {
 
         private void btnOK_Click(object sender, EventArgs e) {
             Settings.ShowStart = chbShowStart.Checked;
+            Settings.LoadLast= chbLoadLast.Checked;
             Settings.CloseOnEscape = chbCloseOnEscape.Checked;
             Settings.EditableByDefault = chbEditableByDefault.Checked;
             Settings.ShowCommonPasswordWarnings = chbShowCommonPasswordWarnings.Checked;
@@ -68,6 +70,16 @@ namespace Bimil {
             }
 
             Settings.AutoCloseSave = chbAutoCloseSave.Checked;
+        }
+
+
+
+        private void chbShowStart_CheckedChanged(object sender, EventArgs e) {
+            if (chbShowStart.Checked) { chbLoadLast.Checked = false; }
+        }
+
+        private void chbLoadLast_CheckedChanged(object sender, EventArgs e) {
+            if (chbLoadLast.Checked) { chbShowStart.Checked = false; }
         }
 
         private void chbClearClipboardTimeout_CheckedChanged(object sender, EventArgs e) {
@@ -154,5 +166,6 @@ namespace Bimil {
             }
             txtAppTimeout.Text = Math.Min(Math.Max(seconds, 10), 3600).ToString(CultureInfo.CurrentCulture);
         }
+
     }
 }

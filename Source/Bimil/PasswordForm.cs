@@ -5,12 +5,14 @@ using System.Windows.Forms;
 namespace Bimil {
     internal partial class PasswordForm : Form {
 
-        public PasswordForm() {
+        public PasswordForm(string extraTitle = null) {
             InitializeComponent();
             this.Font = SystemFonts.MessageBoxFont;
 
             erp.SetIconAlignment(txtPassword, ErrorIconAlignment.MiddleLeft);
             erp.SetIconPadding(txtPassword, SystemInformation.Border3DSize.Width);
+
+            if (extraTitle != null) { this.Text += " (" + extraTitle + ")"; }
         }
 
 

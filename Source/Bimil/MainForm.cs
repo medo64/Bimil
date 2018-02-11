@@ -191,6 +191,12 @@ namespace Bimil {
                         }
                     }
                 }
+            } else if (Settings.LoadLast) {
+                var fileNames = new List<string>(App.Recent.FileNames);
+                var lastFile = (fileNames.Count > 0) ? fileNames[0] : null;
+                if (File.Exists(lastFile)) {
+                    LoadFile(lastFile);
+                }
             }
 
 #if WINDOWS_STORE
@@ -555,8 +561,10 @@ namespace Bimil {
                     return false;
                 }
 
+                var title = Helpers.GetFileTitle(fileName);
+
                 while (true) {
-                    using (var frm = new PasswordForm()) {
+                    using (var frm = new PasswordForm(title)) {
                         if (frm.ShowDialog(this) == DialogResult.OK) {
                             password = frm.Password;
                         } else {
@@ -1222,9 +1230,7 @@ namespace Bimil {
             if (this.DocumentFileName == null) {
                 this.Text = (this.Document?.HasChanged ?? false) ? "Bimil*" : "Bimil";
             } else {
-                var file = new FileInfo(this.DocumentFileName);
-                var title = file.Name.Substring(0, file.Name.Length - file.Extension.Length);
-
+                var title = Helpers.GetFileTitle(this.DocumentFileName);
                 this.Text = title + ((this.Document?.HasChanged ?? false) || this.DocumentReadOnlyChanged ? "*" : "") + " - Bimil";
             }
         }

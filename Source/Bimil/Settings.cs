@@ -21,7 +21,22 @@ namespace Bimil {
         [DefaultValue(true)]
         public static bool ShowStart {
             get { return Config.Read("ShowStart", Medo.Configuration.Settings.Read("ShowStart", true)); }
-            set { Config.Write("ShowStart", value); }
+            set {
+                Config.Write("ShowStart", value);
+                if ((value == true) && LoadLast) { LoadLast = false; }
+            }
+        }
+
+        [Category("Behavior")]
+        [DisplayName("Load last")]
+        [Description("If true, the last used file will be loaded.")]
+        [DefaultValue(false)]
+        public static bool LoadLast {
+            get { return Config.Read("LoadLast", Medo.Configuration.Settings.Read("LoadLast", true)) && !ShowStart; }
+            set {
+                Config.Write("LoadLast", value);
+                if ((value == true) && ShowStart) { ShowStart = false; }
+            }
         }
 
         [Category("Behavior")]
