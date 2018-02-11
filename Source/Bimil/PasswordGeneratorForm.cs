@@ -272,10 +272,11 @@ namespace Bimil {
             }
 
             if (!double.IsNaN(combinations)) {
+                var entropyBits = Math.Floor(Math.Log(combinations, 2));
                 var secondsToCrack = GetCrackDurationInSeconds(combinations);
                 var crackDurationText = GetCrackDurationText(secondsToCrack);
                 lblCombinations.Text = "About " + crackDurationText + " to crack";
-                tip.SetToolTip(lblCombinations, combinations.ToString("#,##0", CultureInfo.CurrentCulture) + " (" + GetEngineeringString(combinations) + ") combinations.\n\nGiven number was calculated assuming potential attacker knows exactly which method and dictionary were used to generate password.");
+                tip.SetToolTip(lblCombinations, $"{combinations:#,##0} ({GetEngineeringString(combinations)}) combinations.\n{entropyBits} bits of entropy.\n\nGiven cracking duration was calculated assuming the potential\nattacker knows exactly which method and dictionary were used\nto generate password (i.e. the worst case scenario) and assuming\nattacker can check {Math.Floor(GetCracksPerSecond() / 1000000000000)} trillions passwords per second.");
                 if (secondsToCrack > 365 * 24 * 60 * 60) {
                     Helpers.ScaleImage(picSecurityRating, "picSecurityHigh", 1);
                 } else if (secondsToCrack > 24 * 60 * 60) {
@@ -588,9 +589,14 @@ namespace Bimil {
             return (int)(randomNumber % (uint)upperLimit);
         }
 
-        private double GetCrackDurationInSeconds(double combinations) {
+        private double GetCracksPerSecond() {
             var cracksPerSecond = CracksPerSecond;
             for (var i = 2016; i <= DateTime.Now.Year - 1; i += 2) { cracksPerSecond *= 2; } //Moore's law
+            return cracksPerSecond;
+        }
+
+        private double GetCrackDurationInSeconds(double combinations) {
+            var cracksPerSecond = GetCracksPerSecond();
 
             var secondsToCrack = Math.Floor(combinations / cracksPerSecond);
             return secondsToCrack / 2;
