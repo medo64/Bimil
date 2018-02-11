@@ -276,7 +276,11 @@ namespace Bimil {
                 var secondsToCrack = GetCrackDurationInSeconds(combinations);
                 var crackDurationText = GetCrackDurationText(secondsToCrack);
                 lblCombinations.Text = "About " + crackDurationText + " to crack";
-                tip.SetToolTip(lblCombinations, $"{combinations:#,##0} ({GetEngineeringString(combinations)}) combinations.\n{entropyBits} bits of entropy.\n\nGiven cracking duration was calculated assuming the potential\nattacker knows exactly which method and dictionary were used\nto generate password (i.e. the worst case scenario) and assuming\nattacker can check {Math.Floor(GetCracksPerSecond() / 1000000000000)} trillions passwords per second.");
+                var tooltipText = $"{combinations:#,##0} ({GetEngineeringString(combinations)}) combinations.\n";
+                tooltipText += $"{entropyBits} bits of entropy.\n";
+                if (tabStyle.SelectedTab.Equals(tabStyle_Words)) { tooltipText += $"Based on dictionary with {this.Words.Count:#,##0} words.\n"; }
+                tooltipText += $"\nGiven cracking duration was calculated assuming the potential\nattacker knows exactly which method and dictionary were used\nto generate password (i.e. the worst case scenario) and assuming\n the attacker can check {Math.Floor(GetCracksPerSecond() / 1000000000000)} trillions passwords per second.";
+                tip.SetToolTip(lblCombinations, tooltipText);
                 if (secondsToCrack > 365 * 24 * 60 * 60) {
                     Helpers.ScaleImage(picSecurityRating, "picSecurityHigh", 1);
                 } else if (secondsToCrack > 24 * 60 * 60) {
@@ -616,19 +620,19 @@ namespace Bimil {
             } else if (millionYearsToCrack >= 1) {
                 return millenniumsToCrack.ToString("#,##0", CultureInfo.CurrentCulture) + " million years";
             } else if (millenniumsToCrack >= 1) {
-                return millenniumsToCrack.ToString("#,##0", CultureInfo.CurrentCulture) + " " + (((millenniumsToCrack % 10) == 1) ? "millennium" : "millenniums");
+                return millenniumsToCrack.ToString("#,##0", CultureInfo.CurrentCulture) + " " + ((millenniumsToCrack == 1) ? "millennium" : "millenniums");
             } else if (centuriesToCrack >= 1) {
-                return centuriesToCrack.ToString("#,##0", CultureInfo.CurrentCulture) + " " + (((centuriesToCrack % 10) == 1) ? "century" : "centuries");
+                return centuriesToCrack.ToString("#,##0", CultureInfo.CurrentCulture) + " " + ((centuriesToCrack == 1) ? "century" : "centuries");
             } else if (yearsToCrack >= 1) {
-                return yearsToCrack.ToString("#,##0", CultureInfo.CurrentCulture) + " " + (((yearsToCrack % 10) == 1) ? "year" : "years");
+                return yearsToCrack.ToString("#,##0", CultureInfo.CurrentCulture) + " " + ((yearsToCrack == 1) ? "year" : "years");
             } else if (daysToCrack >= 1) {
-                return daysToCrack.ToString("#,##0", CultureInfo.CurrentCulture) + " " + (((daysToCrack % 10) == 1) ? "day" : "days");
+                return daysToCrack.ToString("#,##0", CultureInfo.CurrentCulture) + " " + ((daysToCrack == 1) ? "day" : "days");
             } else if (hoursToCrack >= 1) {
-                return hoursToCrack.ToString("#,##0", CultureInfo.CurrentCulture) + " " + (((hoursToCrack % 10) == 1) ? "hour" : "hours");
+                return hoursToCrack.ToString("#,##0", CultureInfo.CurrentCulture) + " " + ((hoursToCrack == 1) ? "hour" : "hours");
             } else if (minutesToCrack >= 1) {
-                return minutesToCrack.ToString("#,##0", CultureInfo.CurrentCulture) + " " + (((minutesToCrack % 10) == 1) ? "minute" : "minutes");
+                return minutesToCrack.ToString("#,##0", CultureInfo.CurrentCulture) + " " + ((minutesToCrack == 1) ? "minute" : "minutes");
             } else {
-                return secondsToCrack.ToString("#,##0", CultureInfo.CurrentCulture) + " " + (((secondsToCrack % 10) == 1) ? "second" : "seconds");
+                return secondsToCrack.ToString("#,##0", CultureInfo.CurrentCulture) + " " + ((secondsToCrack == 1) ? "second" : "seconds");
             }
         }
 
