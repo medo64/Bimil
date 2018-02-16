@@ -326,7 +326,7 @@ namespace Bimil {
                             pnl.Controls.Add(textBox);
                             Array.Clear(bytes, 0, bytes.Length);
 
-                            pnl.Controls.Add(NewCopyFilteredButton(textBox, record.RecordType, tipText: "Copy two-factor key to clipboard.", copyText: delegate { return Helpers.GetTwoFactorCode(textBox.Text); }));
+                            pnl.Controls.Add(NewCopyFilteredButton(textBox, record.RecordType, tipText: "Copy two-factor number to clipboard.", copyText: delegate { return Helpers.GetTwoFactorCode(textBox.Text); }));
                             pnl.Controls.Add(NewViewTwoFactorCode(textBox));
                             pnl.Controls.Add(NewExecuteOAuthQRButton(textBox));
                             pnl.Controls.Add(NewShowPasswordButton(textBox, tipText: "Show two-factor key."));
