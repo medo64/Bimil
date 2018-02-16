@@ -340,7 +340,8 @@ namespace Bimil {
                             var textBox = NewTextBox(labelWidth, y, record);
                             pnl.Controls.Add(textBox);
 
-                            pnl.Controls.Add(NewCopyFilteredButton(textBox, record.RecordType, allowedCopyCharacters: Helpers.NumberCharacters));
+                            pnl.Controls.Add(NewCopyFilteredButton(textBox, record.RecordType, allowedCopyCharacters: Helpers.NumberCharacters, tipText: "Copy only numbers to clipboard."));
+                            pnl.Controls.Add(NewCopyButton(textBox, record.RecordType));
 
                             yH = textBox.Height;
                         }
