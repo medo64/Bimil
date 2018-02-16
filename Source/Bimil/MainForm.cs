@@ -950,6 +950,7 @@ namespace Bimil {
             if (entry != null) {
                 foreach (var record in entry.Records) {
                     ToolStripMenuItem mnxItem = null;
+                    var isFilteredCopy = false;
                     switch (record.RecordType) {
                         case RecordType.UserName:
                         case RecordType.EmailAddress:
@@ -972,6 +973,7 @@ namespace Bimil {
                                 try {
                                     var code = Helpers.GetTwoFactorCode(OneTimePassword.ToBase32(keyBytes, keyBytes.Length, SecretFormatFlags.None), space: true);
                                     mnxItem = new ToolStripMenuItem("Copy Two-factor Code (" + code + ")");
+                                    isFilteredCopy = true;
                                 } finally {
                                     Array.Clear(keyBytes, 0, keyBytes.Length);
                                 }
@@ -990,8 +992,13 @@ namespace Bimil {
                     }
 
                     if (mnxItem != null) {
-                        mnxItem.Image = Properties.Resources.btnCopy_16;
-                        mnxItem.Tag = "btnCopy";
+                        if (isFilteredCopy) {
+                            mnxItem.Image = Properties.Resources.btnCopyFiltered_16;
+                            mnxItem.Tag = "btnCopyFiltered";
+                        } else {
+                            mnxItem.Image = Properties.Resources.btnCopy_16;
+                            mnxItem.Tag = "btnCopy";
+                        }
                         if (!hasCopyEntries) { mnxEntry.Items.Insert(nextMenuIndex++, new ToolStripSeparator()); }
                         hasCopyEntries = true;
                         mnxEntry.Items.Insert(nextMenuIndex++, mnxItem);

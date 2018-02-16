@@ -143,6 +143,46 @@ namespace Bimil.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap btnCopyFiltered_16 {
+            get {
+                object obj = ResourceManager.GetObject("btnCopyFiltered_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap btnCopyFiltered_24 {
+            get {
+                object obj = ResourceManager.GetObject("btnCopyFiltered_24", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap btnCopyFiltered_32 {
+            get {
+                object obj = ResourceManager.GetObject("btnCopyFiltered_32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap btnCopyFiltered_48 {
+            get {
+                object obj = ResourceManager.GetObject("btnCopyFiltered_48", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap btnExecute_16 {
             get {
                 object obj = ResourceManager.GetObject("btnExecute_16", resourceCulture);

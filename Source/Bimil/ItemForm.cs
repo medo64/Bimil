@@ -78,7 +78,9 @@ namespace Bimil {
 
         private void Form_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e) {
             switch (e.KeyData) {
-                case Keys.F2: e.IsInputKey = true; break;
+                case Keys.F2:
+                    e.IsInputKey = true;
+                    break;
             }
         }
 
@@ -290,7 +292,7 @@ namespace Bimil {
                             var textBox = NewTextBox(labelWidth, y, record, urlLookAndFeel: true);
                             pnl.Controls.Add(textBox);
 
-                            pnl.Controls.Add(NewCopyButton(textBox, record.RecordType, copyText: delegate { return Execute.NormalizeUrl(textBox.Text); }));
+                            pnl.Controls.Add(NewCopyFilteredButton(textBox, record.RecordType, copyText: delegate { return Execute.NormalizeUrl(textBox.Text); }));
                             pnl.Controls.Add(NewExecuteUrlButton(textBox));
                             pnl.Controls.Add(NewExecuteUrlQRButton(textBox));
 
@@ -324,7 +326,7 @@ namespace Bimil {
                             pnl.Controls.Add(textBox);
                             Array.Clear(bytes, 0, bytes.Length);
 
-                            pnl.Controls.Add(NewCopyButton(textBox, record.RecordType, tipText: "Copy two-factor key to clipboard.", copyText: delegate { return Helpers.GetTwoFactorCode(textBox.Text); }));
+                            pnl.Controls.Add(NewCopyFilteredButton(textBox, record.RecordType, tipText: "Copy two-factor key to clipboard.", copyText: delegate { return Helpers.GetTwoFactorCode(textBox.Text); }));
                             pnl.Controls.Add(NewViewTwoFactorCode(textBox));
                             pnl.Controls.Add(NewExecuteOAuthQRButton(textBox));
                             pnl.Controls.Add(NewShowPasswordButton(textBox, tipText: "Show two-factor key."));
@@ -338,7 +340,7 @@ namespace Bimil {
                             var textBox = NewTextBox(labelWidth, y, record);
                             pnl.Controls.Add(textBox);
 
-                            pnl.Controls.Add(NewCopyButton(textBox, record.RecordType, allowedCopyCharacters: Helpers.NumberCharacters));
+                            pnl.Controls.Add(NewCopyFilteredButton(textBox, record.RecordType, allowedCopyCharacters: Helpers.NumberCharacters));
 
                             yH = textBox.Height;
                         }
@@ -498,7 +500,9 @@ namespace Bimil {
 
             textBox.KeyDown += (object sender, KeyEventArgs e) => {
                 switch (e.KeyData) {
-                    case Keys.Control | Keys.A: ((TextBox)sender).SelectAll(); break;
+                    case Keys.Control | Keys.A:
+                        ((TextBox)sender).SelectAll();
+                        break;
                 }
             };
 
@@ -533,17 +537,43 @@ namespace Bimil {
 
             control.KeyDown += (object sender, KeyEventArgs e) => {
                 switch (e.KeyData) {
-                    case Keys.Down: control.DroppedDown = true; break;
+                    case Keys.Down:
+                        control.DroppedDown = true;
+                        break;
                 }
             };
 
             return control;
         }
 
-        private Button NewCopyButton(TextBox parentTextBox, RecordType recordType, string tipText = null, char[] allowedCopyCharacters = null, GetText copyText = null) {
+        private Button NewCopyButton(TextBox parentTextBox, RecordType recordType, string tipText = null) {
             parentTextBox.Width -= parentTextBox.Height;
             var button = new Button() {
                 Name = "btnCopy",
+                Location = new Point(parentTextBox.Right, parentTextBox.Top),
+                Size = new Size(parentTextBox.Height, parentTextBox.Height),
+                TabStop = false,
+                Tag = parentTextBox,
+                Text = "",
+                Anchor = AnchorStyles.Top | AnchorStyles.Right
+            };
+            Helpers.ScaleButton(button);
+
+            tip.SetToolTip(button, tipText ?? "Copy to clipboard.");
+
+            button.Click += (object sender, EventArgs e) => {
+                var textBox = (TextBox)(((Control)sender).Tag);
+                textBox.Select();
+                ClipboardHelper.SetClipboardText(this, textBox.Text, recordType);
+            };
+
+            return button;
+        }
+
+        private Button NewCopyFilteredButton(TextBox parentTextBox, RecordType recordType, string tipText = null, char[] allowedCopyCharacters = null, GetText copyText = null) {
+            parentTextBox.Width -= parentTextBox.Height;
+            var button = new Button() {
+                Name = "btnCopyFiltered",
                 Location = new Point(parentTextBox.Right, parentTextBox.Top),
                 Size = new Size(parentTextBox.Height, parentTextBox.Height),
                 TabStop = false,
