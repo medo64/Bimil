@@ -1176,6 +1176,8 @@ namespace PasswordSafe.Test {
 
                 doc.Entries[0].Title = "A";
                 doc.Entries[1].Title = "B";
+                doc.Entries[0].Password = "A123";
+                doc.Entries[1].Password = "B123";
                 Assert.False(doc.HasChanged);
 
                 doc.Entries[0].Title = "a";
