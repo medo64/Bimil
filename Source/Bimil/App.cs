@@ -38,6 +38,14 @@ namespace Bimil {
                 Config.Write("RecentFile", Recent.FileNames);
             };
 
+            if (!Config.IsAssumedInstalled) {
+                Medo.Windows.Forms.State.ReadState += delegate (object sender, Medo.Windows.Forms.StateReadEventArgs e) {
+                    e.Value = Config.Read("State!" + e.Name.Replace("Bimil.", ""), e.DefaultValue);
+                };
+                Medo.Windows.Forms.State.WriteState += delegate (object sender, Medo.Windows.Forms.StateWriteEventArgs e) {
+                    Config.Write("State!" + e.Name.Replace("Bimil.", ""), e.Value);
+                };
+            }
 
             App.MainForm = new MainForm();
             Application.Run(App.MainForm);

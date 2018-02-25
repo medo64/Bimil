@@ -119,7 +119,7 @@
     <Compile Include="%28Medo%29\RecentFiles.cs" />
     <Compile Include="%28Medo%29\RecentlyUsed [001].cs" />
     <Compile Include="%28Medo%29\Settings [011].cs" />
-    <Compile Include="%28Medo%29\State [015].cs" />
+    <Compile Include="%28Medo%29\State [016].cs" />
     <Compile Include="%28Medo%29\TrivialNtpClient [001].cs" />
     <Compile Include="%28Medo%29\UnhandledCatch [008].cs" />
     <Compile Include="%28Medo%29\Upgrade.cs" />
