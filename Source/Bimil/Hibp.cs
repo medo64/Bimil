@@ -32,13 +32,19 @@ namespace Bimil {
         }
 
         public static bool IsPassworPwned(string passwordHash) {
-            var url = "https://haveibeenpwned.com/api/v2/pwnedpassword/" + System.Web.HttpUtility.UrlEncode(passwordHash);
+            var sha1Prefix = passwordHash.Substring(0, 5);
+            var sha1Suffix = passwordHash.Substring(5);
+            var url = "https://api.pwnedpasswords.com/range/" + System.Web.HttpUtility.UrlEncode(sha1Prefix);
             try {
                 ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072; //TLS 1.2 - works only if .NET framework 4.5 is installed
                 using (var client = new WebClient()) {
                     client.Headers["User-Agent"] = Medo.Reflection.EntryAssembly.Product + "/" + Medo.Reflection.EntryAssembly.Version.ToString();
-                    client.DownloadString(url);
-                    return true;
+                    var response = client.DownloadString(url);
+                    var isPwned = response.Contains(sha1Suffix);
+                    if (isPwned) {
+                        return true;
+                    }
+                    return false;
                 }
             } catch (WebException ex) {
                 if ((ex.Response is HttpWebResponse response) && (response.StatusCode == HttpStatusCode.NotFound)) {
