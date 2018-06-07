@@ -238,7 +238,14 @@ namespace Bimil {
                                     PauseMonitor();
 
                                     Debug.WriteLine("Clipboard: Clear (timeout)");
-                                    Clipboard.Clear();
+                                    for (var i = 0; i < 3; i++) {
+                                        try {
+                                            Clipboard.Clear();
+                                            break;
+                                        } catch (ExternalException) {
+                                            Thread.Sleep(500);
+                                        }
+                                    }
                                 });
                             }
                         }
