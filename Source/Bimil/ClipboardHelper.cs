@@ -99,8 +99,10 @@ namespace Bimil {
                     var records = new List<Record>();
                     try {
                         while (offset < buffer.Length) {
-                            var type = BitConverter.ToInt32(buffer, offset); offset += 4;
-                            var length = BitConverter.ToInt32(buffer, offset); offset += 4;
+                            var type = BitConverter.ToInt32(buffer, offset);
+                            offset += 4;
+                            var length = BitConverter.ToInt32(buffer, offset);
+                            offset += 4;
                             if ((type == 0) && (length == 0)) { //end of item
                                 yield return new Entry(records);
                                 records.Clear();
@@ -108,7 +110,8 @@ namespace Bimil {
                             }
 
                             var dataBytes = new byte[length];
-                            Buffer.BlockCopy(buffer, offset, dataBytes, 0, length); offset += length;
+                            Buffer.BlockCopy(buffer, offset, dataBytes, 0, length);
+                            offset += length;
                             var record = new Record((RecordType)type, dataBytes);
                             records.Add(record);
                         }
