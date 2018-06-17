@@ -159,11 +159,23 @@
     <Compile Include="..\..\Libraries\PasswordSafe\Source\PasswordSafe\Helpers.cs">
       <Link>%28PasswordSafe%29\Helpers.cs</Link>
     </Compile>
+    <Compile Include="..\..\Libraries\PasswordSafe\Source\PasswordSafe\NamedPasswordPolicy.cs">
+      <Link>%28PasswordSafe%29\NamedPasswordPolicy.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Libraries\PasswordSafe\Source\PasswordSafe\NamedPasswordPolicyCollection.cs">
+      <Link>%28PasswordSafe%29\NamedPasswordPolicyCollection.cs</Link>
+    </Compile>
     <Compile Include="..\..\Libraries\PasswordSafe\Source\PasswordSafe\PasswordHistoryCollection.cs">
       <Link>%28PasswordSafe%29\PasswordHistoryCollection.cs</Link>
     </Compile>
     <Compile Include="..\..\Libraries\PasswordSafe\Source\PasswordSafe\PasswordHistoryItem.cs">
       <Link>%28PasswordSafe%29\PasswordHistoryItem.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Libraries\PasswordSafe\Source\PasswordSafe\PasswordPolicy.cs">
+      <Link>%28PasswordSafe%29\PasswordPolicy.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Libraries\PasswordSafe\Source\PasswordSafe\PasswordPolicyStyle.cs">
+      <Link>%28PasswordSafe%29\PasswordPolicyStyle.cs</Link>
     </Compile>
     <Compile Include="..\..\Libraries\PasswordSafe\Source\PasswordSafe\Record.cs">
       <Link>%28PasswordSafe%29\Record.cs</Link>
