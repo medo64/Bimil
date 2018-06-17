@@ -219,7 +219,15 @@ namespace Bimil {
                     return +1; //item2 is before item1
                 } else {
                     var groupCompare = string.Compare(item1.Group, item2.Group, StringComparison.CurrentCultureIgnoreCase);
-                    return (groupCompare != 0) ? groupCompare : string.Compare(item1.Title, item2.Title, StringComparison.CurrentCultureIgnoreCase);
+                    if (groupCompare != 0) {
+                        return groupCompare;
+                    } else if (item1.Title.StartsWith(".", StringComparison.Ordinal) && !item2.Title.StartsWith(".", StringComparison.Ordinal)) {
+                        return +1; //title starting with dot should go at the end
+                    } else if (!item1.Title.StartsWith(".", StringComparison.Ordinal) && item2.Title.StartsWith(".", StringComparison.Ordinal)) {
+                        return -1; //title starting with dot should go at the end
+                    } else {
+                        return string.Compare(item1.Title, item2.Title, StringComparison.CurrentCultureIgnoreCase);
+                    }
                 }
             });
             Debug.WriteLine(string.Format(CultureInfo.InvariantCulture, "Items sorted at {0:0.0} ms", sw.ElapsedMilliseconds));
@@ -237,6 +245,7 @@ namespace Bimil {
                     groupDictionary.Add(item.Group, group);
                 }
                 var lvi = new ListViewItem(item.Title, group) { Tag = item.Entry };
+                lvi.ForeColor = item.Title.StartsWith(".", StringComparison.Ordinal) ? SystemColors.GrayText : SystemColors.WindowText;
                 if (addMatchDescription && !string.IsNullOrEmpty(item.MatchedText)) { lvi.ToolTipText = "Matched: " + item.MatchedText; }
                 listView.Items.Add(lvi);
             }

@@ -358,9 +358,11 @@ namespace Bimil {
 
         private void lsvEntries_AfterLabelEdit(object sender, LabelEditEventArgs e) {
             if (lsvEntries.Items[e.Item].Tag is Entry entry) {
+                var item = lsvEntries.Items[e.Item];
                 if (!string.IsNullOrWhiteSpace(e.Label)) {
                     entry.Title = e.Label;
-                } else {
+                    item.ForeColor = entry.Title.StartsWith(".", StringComparison.Ordinal) ? SystemColors.GrayText : SystemColors.WindowText;
+                    } else {
                     e.CancelEdit = true;
                 }
             }
