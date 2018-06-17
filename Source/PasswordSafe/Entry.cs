@@ -248,6 +248,22 @@ namespace Medo.Security.Cryptography.PasswordSafe {
 
 
         /// <summary>
+        /// Gets password policy.
+        /// </summary>
+        public PasswordPolicy PasswordPolicy {
+            get { return new PasswordPolicy(this.Records); }
+        }
+
+        /// <summary>
+        /// Gets password policy name.
+        /// </summary>
+        public string PasswordPolicyName {
+            get { return this.Records.Contains(RecordType.PasswordPolicyName) ? this.Records[RecordType.PasswordPolicyName].Text : ""; }
+            set { this.Records[RecordType.PasswordPolicyName].Text = value; }
+        }
+
+
+        /// <summary>
         /// Gets list of records.
         /// </summary>
         public RecordCollection Records { get; }
