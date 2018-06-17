@@ -338,8 +338,8 @@ namespace Bimil {
 
         [Browsable(false)]
         public static int AutoTypeDelay { //in milliseconds
-            get { return Config.Read("AutoTypeDelay", Medo.Configuration.Settings.Read("AutoTypeDelay", 15)); }
-            set { Config.Write("AutoTypeDelay", value); }
+            get { return Config.Read("AutoTypeDelay", LimitBetween(Medo.Configuration.Settings.Read("AutoTypeDelay", 15), 5, 100)); }
+            set { Config.Write("AutoTypeDelay", LimitBetween(value, 5, 100)); }
         }
 
         [Browsable(false)]
@@ -357,7 +357,7 @@ namespace Bimil {
 
         private static string DefaultNtpServer = Random.Next(0, 4).ToString(CultureInfo.InvariantCulture) + ".medo64.pool.ntp.org";
 
-        private static int LimitBetween(int value, int minValue, int maxValue, bool allowZero) {
+        private static int LimitBetween(int value, int minValue, int maxValue, bool allowZero = false) {
             if (allowZero && (value == 0)) { return 0; }
             if (value < minValue) { return minValue; }
             if (value > maxValue) { return maxValue; }
