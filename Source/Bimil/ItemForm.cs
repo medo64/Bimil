@@ -46,6 +46,7 @@ namespace Bimil {
 
             this.Text = this.Document.IsReadOnly ? "View" : "Edit";
 
+            State.SetupOnLoadAndClose(this);
         }
 
 
