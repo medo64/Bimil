@@ -338,7 +338,7 @@ namespace Bimil {
 
         [Browsable(false)]
         public static int AutoTypeDelay { //in milliseconds
-            get { return Config.Read("AutoTypeDelay", Medo.Configuration.Settings.Read("AutoTypeDelay", 10)); }
+            get { return Config.Read("AutoTypeDelay", Medo.Configuration.Settings.Read("AutoTypeDelay", 15)); }
             set { Config.Write("AutoTypeDelay", value); }
         }
 
