@@ -19,6 +19,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
                 new Header(HeaderType.Uuid,Guid.NewGuid().ToByteArray()),
             });
             this.Entries = new EntryCollection(this);
+            this.NamedPasswordPolicies = new NamedPasswordPolicyCollection(this);
 
             this.TrackAccess = true;
             this.TrackModify = true;
@@ -31,29 +32,26 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         public Document(byte[] passphraseBuffer)
             : this() {
             //no need for passphraseBuffer copy - will be done in property setter
-            this.Passphrase = passphraseBuffer ?? throw new ArgumentNullException(nameof(passphraseBuffer), "Passphrase cannot be null.");
+            this.SetPassphraseBuffer(passphraseBuffer ?? throw new ArgumentNullException(nameof(passphraseBuffer), "Passphrase cannot be null."));
         }
 
         /// <summary>
         /// Creates a new instance.
         /// </summary>
         /// <param name="passphrase">Password.</param>
+        /// <exception cref="ArgumentNullException">Passphrase cannot be null.</exception>
         public Document(string passphrase)
             : this() {
-            if (passphrase == null) { throw new ArgumentNullException(nameof(passphrase), "Passphrase cannot be null."); }
-
-            var passphraseBuffer = Utf8Encoding.GetBytes(passphrase);
-            try {
-                this.Passphrase = passphraseBuffer; //no need for copy - will be done in property setter
-            } finally {
-                Array.Clear(passphraseBuffer, 0, passphraseBuffer.Length); //remove passphrase bytes from memory - nothing to do about the string. :(
-            }
+            this.SetPassphrase(passphrase);
         }
 
 
-        internal Document(ICollection<Header> headers, params ICollection<Record>[] records) {
+        internal Document(byte[] passphraseBuffer, int iterations, ICollection<Header> headers, params ICollection<Record>[] records) {
             this.Headers = new HeaderCollection(this, headers);
+            this.NamedPasswordPolicies = new NamedPasswordPolicyCollection(this);
             this.Entries = new EntryCollection(this, records);
+            this._iterations = iterations; //set directly to avoid usual minimum of 2048 iterations
+            this.SetPassphrase(passphraseBuffer);
 
             this.TrackAccess = true;
             this.TrackModify = true;
@@ -150,6 +148,11 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// Gets list of entries.
         /// </summary>
         public EntryCollection Entries { get; }
+
+        /// <summary>
+        /// Gets list of named password policies.
+        /// </summary>
+        public NamedPasswordPolicyCollection NamedPasswordPolicies { get; }
 
 
         #region Load/Save
@@ -299,11 +302,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
                         throw new CryptographicException("Authentication mismatch.");
                     }
 
-                    var document = new Document(headerFields, recordFields.ToArray()) {
-                        _iterations = (int)iter, //to avoid rounding up if iteration count is less than 2048
-                        Passphrase = passphraseBuffer //to avoid keeping password in memory for save - at least we don't need to deal with string's immutability.
-                    };
-                    return document;
+                    return new Document(passphraseBuffer, (int)iter, headerFields, recordFields.ToArray());
                 }
             } catch (CryptographicException ex) {
                 throw new FormatException(ex.Message, ex);
@@ -339,7 +338,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         public void Save(Stream stream) {
             if (stream == null) { throw new ArgumentNullException(nameof(stream), "Stream cannot be null."); }
 
-            var passphraseBytes = this.Passphrase;
+            var passphraseBytes = this.GetPassphrase();
             if (passphraseBytes == null) { throw new NotSupportedException("Missing passphrase."); }
             try {
                 Save(stream, passphraseBytes);
@@ -472,20 +471,53 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         }
 
 
+        #region Passphrase
+
+        private static RandomNumberGenerator Rnd = RandomNumberGenerator.Create();
+        private byte[] PassphraseEntropy = new byte[16];
+
+        private byte[] _passphraseBuffer;
+
+        /// <summary>
+        /// Returns passphrase used to open a file.
+        /// Bytes are kept encrypted in memory until accessed.
+        /// It's caller responsibility to dispose of returned bytes.
+        /// </summary>
+        public byte[] GetPassphrase() {
+            return (this._passphraseBuffer != null) ? UnprotectData(this._passphraseBuffer, this.PassphraseEntropy) : null;
+        }
+
+        /// <summary>
+        /// Sets password.
+        /// </summary>
+        /// <param name="newPassphraseBuffer">New password bytes. Buffer is cleared upon execution.</param>
+        /// <exception cref="ArgumentNullException">Passphrase cannot be null.</exception>
+        private void SetPassphrase(byte[] newPassphraseBuffer) {
+            if (newPassphraseBuffer == null) { throw new ArgumentNullException(nameof(newPassphraseBuffer), "Passphrase cannot be null."); }
+
+            try {
+                Rnd.GetBytes(this.PassphraseEntropy);
+                this._passphraseBuffer = ProtectData(newPassphraseBuffer, this.PassphraseEntropy);
+            } finally {
+                Array.Clear(newPassphraseBuffer, 0, newPassphraseBuffer.Length);
+            }
+        }
+
+
         /// <summary>
         /// Change password.
         /// </summary>
-        /// <param name="newPassphraseBuffer">New password bytes. Caller has to avoid keeping bytes unencrypted in memory.</param>
+        /// <param name="newPassphraseBuffer">New password bytes. Buffer is cleared upon execution.</param>
+        /// <exception cref="ArgumentNullException">Passphrase cannot be null.</exception>
         public void ChangePassphrase(byte[] newPassphraseBuffer) {
-            //no need for passphraseBuffer copy - will be done in property setter
-            this.Passphrase = newPassphraseBuffer ?? throw new ArgumentNullException(nameof(newPassphraseBuffer), "Passphrase cannot be null.");
+            this.SetPassphrase(newPassphraseBuffer);
             this.MarkAsChanged();
         }
 
         /// <summary>
         /// Change password.
         /// </summary>
-        /// <param name="newPassphrase">New password.</param>
+        /// <param name="newPassphrase">New passphrase. Caller has to avoid keeping bytes unencrypted in memory.</param>
         public void ChangePassphrase(string newPassphrase) {
             if (newPassphrase == null) { throw new ArgumentNullException(nameof(newPassphrase), "Passphrase cannot be null."); }
 
@@ -541,7 +573,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         public bool ValidatePassphrase(byte[] oldPassphraseBuffer) {
             if (oldPassphraseBuffer == null) { throw new ArgumentNullException(nameof(oldPassphraseBuffer), "Passphrase cannot be null."); }
 
-            var currPassphraseBuffer = this.Passphrase;
+            var currPassphraseBuffer = this.GetPassphrase();
             try {
                 if (currPassphraseBuffer != null) {
                     if (currPassphraseBuffer.Length != oldPassphraseBuffer.Length) { return false; }
@@ -570,6 +602,8 @@ namespace Medo.Security.Cryptography.PasswordSafe {
             }
         }
 
+        #endregion Passphrase
+
 
         private static void WriteBlock(Stream stream, HashAlgorithm dataHash, ICryptoTransform dataEncryptor, byte type, byte[] fieldData) {
             dataHash.TransformBlock(fieldData, 0, fieldData.Length, null, 0);
@@ -592,26 +626,37 @@ namespace Medo.Security.Cryptography.PasswordSafe {
             }
         }
 
-        private static RandomNumberGenerator Rnd = RandomNumberGenerator.Create();
-        private byte[] PassphraseEntropy = new byte[16];
 
-        private byte[] _passphrase;
         /// <summary>
-        /// Gets/sets passphrase.
+        /// Sets passphrase to be used for the file.
         /// Bytes are kept encrypted in memory until accessed.
+        /// Buffer is cleared upon exit.
         /// </summary>
-        private byte[] Passphrase {
-            get {
-                return (this._passphrase != null) ? UnprotectData(this._passphrase, this.PassphraseEntropy) : null;
-            }
-            set {
+        /// <param name="passphraseBuffer">Passphrase bytes.</param>
+        /// <exception cref="ArgumentNullException">Passphrase cannot be null.</exception>
+        public void SetPassphraseBuffer(byte[] passphraseBuffer) {
+            if (passphraseBuffer == null) { throw new ArgumentNullException(nameof(passphraseBuffer), "Passphrase cannot be null."); }
+            try {
                 Rnd.GetBytes(this.PassphraseEntropy);
-                this._passphrase = ProtectData(value, this.PassphraseEntropy);
-                Array.Clear(value, 0, value.Length);
+                this._passphraseBuffer = ProtectData(passphraseBuffer, this.PassphraseEntropy);
+            } finally {
+                Array.Clear(passphraseBuffer, 0, passphraseBuffer.Length);
             }
         }
 
-        #endregion
+        /// <summary>
+        /// Sets passphrase to be used for the file.
+        /// </summary>
+        /// <param name="passphrase">Passphrase.</param>
+        /// <exception cref="ArgumentNullException">Passphrase cannot be null.</exception>
+        public void SetPassphrase(string passphrase) {
+            if (passphrase == null) { throw new ArgumentNullException(nameof(passphrase), "Passphrase cannot be null."); }
+
+            var passphraseBuffer = Utf8Encoding.GetBytes(passphrase);
+            this.SetPassphraseBuffer(passphraseBuffer);
+        }
+
+        #endregion Load/Save
 
 
         /// <summary>
@@ -722,7 +767,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// <param name="disposing">True if managed resources are to be disposed.</param>
         protected virtual void Dispose(bool disposing) {
             if (disposing) {
-                if (this._passphrase != null) { Array.Clear(this._passphrase, 0, this._passphrase.Length); }
+                if (this._passphraseBuffer != null) { Array.Clear(this._passphraseBuffer, 0, this._passphraseBuffer.Length); }
             }
         }
 
