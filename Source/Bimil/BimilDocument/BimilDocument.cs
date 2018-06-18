@@ -116,7 +116,7 @@ namespace Medo.Security.Cryptography.Bimil {
         /// <param name="stream">Stream.</param>
         /// <param name="password">Password.</param>
         /// <exception cref="FormatException">Cannot parse document.</exception>
-        public static BimilDocument Open(Stream stream, string password) {
+        public static BimilDocument Open(Stream stream, byte[] passphraseBytes) {
             try {
                 using (var timer = new Medo.Diagnostics.LifetimeWatch("Open")) {
                     var doc = new BimilDocument();
@@ -126,7 +126,7 @@ namespace Medo.Security.Cryptography.Bimil {
 
                     doc.PasswordSalt = salt;
 
-                    var deriveBytes = new Rfc2898DeriveBytes(UTF8Encoding.UTF8.GetBytes(password), doc.PasswordSalt, 4096);
+                    var deriveBytes = new Rfc2898DeriveBytes(passphraseBytes, doc.PasswordSalt, 4096);
                     doc.Crypto.Key = deriveBytes.GetBytes(16);
                     doc.Crypto.IV = deriveBytes.GetBytes(16);
 
@@ -170,9 +170,9 @@ namespace Medo.Security.Cryptography.Bimil {
         /// <param name="fileName">File name.</param>
         /// <param name="password">Password.</param>
         /// <exception cref="FormatException">Cannot parse document.</exception>
-        public static BimilDocument Open(string fileName, string password) {
+        public static BimilDocument Open(string fileName, byte[] passphraseBytes) {
             using (var stream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read)) {
-                return Open(stream, password);
+                return Open(stream, passphraseBytes);
             }
         }
 

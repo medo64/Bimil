@@ -6,8 +6,8 @@ using BimilDocument = Medo.Security.Cryptography.Bimil;
 namespace Bimil {
     internal static class DocumentConversion {
 
-        internal static Document ConvertFromBimil(BimilDocument.BimilDocument legacyDoc, string password) {
-            var doc = new Document(password);
+        internal static Document ConvertFromBimil(BimilDocument.BimilDocument legacyDoc, byte[] passphraseBytes) {
+            var doc = new Document(passphraseBytes);
 
             foreach (var item in legacyDoc.Items) {
                 var entry = new Entry {

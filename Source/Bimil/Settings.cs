@@ -194,6 +194,14 @@ namespace Bimil {
             set { Config.Write("NtpServer", value); }
         }
 
+        [Category("Behavior")]
+        [DisplayName("Try current password")]
+        [Description("Tries to open file using current document's password, if possible.")]
+        public static bool TryCurrentPassword {
+            get { return Config.Read("TryCurrentPassword", false); }
+            set { Config.Write("TryCurrentPassword", value); }
+        }
+
 
         [Category("Visual")]
         [DisplayName("Scale boost")]
@@ -327,6 +335,7 @@ namespace Bimil {
         }
 
         #endregion
+
 
         #region Autotype
 

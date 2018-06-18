@@ -6,6 +6,7 @@ using System.IO;
 using System.Reflection;
 using System.Security;
 using System.Security.Cryptography;
+using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using Medo.Configuration;
@@ -362,7 +363,7 @@ namespace Bimil {
                 if (!string.IsNullOrWhiteSpace(e.Label)) {
                     entry.Title = e.Label;
                     item.ForeColor = entry.Title.StartsWith(".", StringComparison.Ordinal) ? SystemColors.GrayText : SystemColors.WindowText;
-                    } else {
+                } else {
                     e.CancelEdit = true;
                 }
             }
@@ -467,9 +468,12 @@ namespace Bimil {
                     case DialogResult.Yes:
                         mnuSave_Click(null, null);
                         return (this.Document.HasChanged == false) ? DialogResult.OK : DialogResult.Cancel;
-                    case DialogResult.No: return DialogResult.OK;
-                    case DialogResult.Cancel: return DialogResult.Cancel;
-                    default: return DialogResult.Cancel;
+                    case DialogResult.No:
+                        return DialogResult.OK;
+                    case DialogResult.Cancel:
+                        return DialogResult.Cancel;
+                    default:
+                        return DialogResult.Cancel;
                 }
             } else {
                 return DialogResult.OK;
@@ -546,7 +550,7 @@ namespace Bimil {
 
         private bool LoadFile(string fileName, bool isReadOnly = false) { //return false if file cannot be open
             DocumentResult document = null;
-            string password;
+            var passphraseBytes = Settings.TryCurrentPassword ? this.Document?.GetPassphrase() : null;
 
             var isFileReadOnly = Helpers.GetReadOnly(fileName);
             try {
@@ -565,28 +569,34 @@ namespace Bimil {
 
                 var title = Helpers.GetFileTitle(fileName);
 
+                var firstTry = true;
                 while (true) {
+                    if (passphraseBytes != null) {
+                        if (fileName.EndsWith(".bimil", StringComparison.OrdinalIgnoreCase)) {
+                            if ((document = LoadPasswordSafeFile(fileName, passphraseBytes)) != null) {
+                                return true;
+                            } else if ((document = LoadBimilFile(fileName, passphraseBytes)) != null) { //legacy format
+                                return true;
+                            }
+                        } else { //Password Safe
+                            if ((document = LoadPasswordSafeFile(fileName, passphraseBytes)) != null) {
+                                return true;
+                            }
+                        }
+
+                        if (!firstTry) {
+                            Medo.MessageBox.ShowError(this, "Either password is wrong or file is damaged.");
+                        }
+                    }
+                    firstTry = false;
+
                     using (var frm = new PasswordForm(title)) {
                         if (frm.ShowDialog(this) == DialogResult.OK) {
-                            password = frm.Password;
+                            passphraseBytes = UTF8Encoding.UTF8.GetBytes(frm.Password);
                         } else {
                             return false;
                         }
                     }
-
-                    if (fileName.EndsWith(".bimil", StringComparison.OrdinalIgnoreCase)) {
-                        if ((document = LoadPasswordSafeFile(fileName, password)) != null) {
-                            return true;
-                        } else if ((document = LoadBimilFile(fileName, password)) != null) {
-                            return true;
-                        }
-                    } else { //Password Safe
-                        if ((document = LoadPasswordSafeFile(fileName, password)) != null) {
-                            return true;
-                        }
-                    }
-
-                    Medo.MessageBox.ShowError(this, "Either password is wrong or file is damaged.");
                 }
             } catch (IOException ex) {
                 Medo.MessageBox.ShowError(this, "Cannot open file.\n\n" + ex.Message);
@@ -595,7 +605,7 @@ namespace Bimil {
                 Medo.MessageBox.ShowError(this, "Cannot open file.\n\n" + ex.Message);
                 return false;
             } finally {
-                password = null;
+                if (passphraseBytes != null) { Array.Clear(passphraseBytes, 0, passphraseBytes.Length); }
                 GC.Collect(); //in attempt to kill password string
 
                 if (document != null) {
@@ -626,11 +636,11 @@ namespace Bimil {
         }
 
 
-        private DocumentResult LoadPasswordSafeFile(string fileName, string password = null) {
+        private DocumentResult LoadPasswordSafeFile(string fileName, byte[] passphraseBytes = null) {
             try {
                 Document document;
                 using (var fileStream = File.OpenRead(fileName)) {
-                    document = Document.Load(fileStream, password);
+                    document = Document.Load(fileStream, passphraseBytes);
                     document.TrackAccess = false;
 
                     if (document.LastSaveApplication.StartsWith("Bimil ")) { //convert temporary password safe fields to permanent ones
@@ -684,10 +694,10 @@ namespace Bimil {
             }
         }
 
-        private DocumentResult LoadBimilFile(string fileName, string password = null) {
+        private DocumentResult LoadBimilFile(string fileName, byte[] passphraseBytes = null) {
             try {
-                var legacyDoc = LegacyFile.BimilDocument.Open(fileName, password);
-                return new DocumentResult(DocumentConversion.ConvertFromBimil(legacyDoc, password), fileName);
+                var legacyDoc = LegacyFile.BimilDocument.Open(fileName, passphraseBytes);
+                return new DocumentResult(DocumentConversion.ConvertFromBimil(legacyDoc, passphraseBytes), fileName);
             } catch (FormatException) {
                 return null;
             }
