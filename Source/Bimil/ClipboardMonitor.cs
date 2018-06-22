@@ -65,10 +65,12 @@ namespace Bimil {
 
 
         private void OnClipboardChanged() {
-            var dataObject = Clipboard.GetDataObject();
-            if (dataObject != null) {
-                ClipboardChanged?.Invoke(this, new ClipboardChangedEventArgs(dataObject));
-            }
+            try {
+                var dataObject = Clipboard.GetDataObject();
+                if (dataObject != null) {
+                    ClipboardChanged?.Invoke(this, new ClipboardChangedEventArgs(dataObject));
+                }
+            } catch (ExternalException) { }
         }
 
 
