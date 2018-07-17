@@ -6,4 +6,4 @@ Description:    Password manager.
                 A small password manager compatible with Password Safe file format.
 Section:        misc
 Priority:       optional
-Depends:        mono-complete (>=3)
+Depends:        mono-complete (>=3), gnupg2

@@ -2,8 +2,8 @@
 Name=Bimil
 GenericName=Password Manager
 Comment=A small password manager.
-TryExec=/opt/bimil/bimil.exe
-Exec=/opt/bimil/bimil.exe %f
+TryExec=/opt/bimil/bimil
+Exec=/opt/bimil/bimil %f
 Icon=bimil
 Type=Application
 Categories=GTK;GNOME;Utility;
