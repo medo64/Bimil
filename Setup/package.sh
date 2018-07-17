@@ -121,7 +121,12 @@ then
     echo "Cannot extract archive!" >&2
     exit 1
 fi
-chmod 755 "$DIRECTORY_PACKAGE/opt/bimil/bimil.exe"
+
+cat << 'EOF' > "$DIRECTORY_PACKAGE/opt/bimil/bimil"
+#!/bin/bash
+/usr/bin/mono /opt/bimil/bimil.exe "$@"
+EOF
+chmod 755 "$DIRECTORY_PACKAGE/opt/bimil/bimil"
 
 dpkg-deb --build $DIRECTORY_PACKAGE > /dev/null
 
