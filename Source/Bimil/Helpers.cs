@@ -143,13 +143,14 @@ namespace Bimil {
 
                     var anyFailedChecks = false;
                     if (!searchText.Equals("*")) { //if text is literal *, show all
-                        foreach (var text in words) {
+                        foreach (var word in words) {
                             var successfulCheck = false;
+                            var isNegative = word.StartsWith("!", StringComparison.Ordinal);
+                            var text = isNegative ? word.Substring(1) : word;
 
                             if (string.Equals(item.Group, searchText, StringComparison.CurrentCultureIgnoreCase)) { //if group name fully matches
                                 item.AddMatch("Group");
-                                successfulCheck = true;
-                                break;
+                                break; //no need to set successfulCheck as it exists loop immediately
                             } else {
                                 foreach (var groupPart in item.Group.Split(new char[] { '.' }, StringSplitOptions.RemoveEmptyEntries)) {
                                     if ((text.Length > 0) && groupPart.StartsWith(text, StringComparison.CurrentCultureIgnoreCase)) { //if group name starts with any word
@@ -183,6 +184,8 @@ namespace Bimil {
                                     }
                                 }
                             }
+
+                            if (isNegative) { successfulCheck = !successfulCheck; }
 
                             anyFailedChecks |= !successfulCheck;
                             if (anyFailedChecks) { break; }
