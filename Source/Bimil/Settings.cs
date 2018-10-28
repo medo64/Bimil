@@ -218,12 +218,24 @@ namespace Bimil {
 
         #region PasswordGenerator
 
+        public enum PasswordGeneratorTab {
+            Classic = 0,
+            Word = 1,
+            Triplet = 2
+        }
+
         [Browsable(false)]
-        public static bool PasswordGeneratorUseWord {
+        public static PasswordGeneratorTab PasswordGeneratorTabSelection {
+            get { return (PasswordGeneratorTab)LimitBetween(Config.Read("PasswordGeneratorTabSelection", Medo.Configuration.Settings.Read("PasswordGeneratorTabSelection", (int)(PasswordGeneratorUseWord ? PasswordGeneratorTab.Word : PasswordGeneratorTab.Classic))), 0, 2, allowZero: true); }
+            set { Config.Write("PasswordGeneratorTabSelection", (int)value); }
+        }
+
+        private static bool PasswordGeneratorUseWord {
             get { return Config.Read("PasswordGeneratorUseWord", Medo.Configuration.Settings.Read("PasswordGeneratorUseWord", true)); }
             set { Config.Write("PasswordGeneratorUseWord", value); }
         }
 
+        #region Classic
 
         [Browsable(false)]
         public static bool PasswordGeneratorIncludeUpperCase {
@@ -279,6 +291,9 @@ namespace Bimil {
             set { Config.Write("PasswordGeneratorLength", LimitBetween(value, minValue: 1, maxValue: 99, allowZero: false)); }
         }
 
+        #endregion Classic
+
+        #region Word
 
         [Browsable(false)]
         public static bool PasswordGeneratorWordIncludeUpperCase {
@@ -334,7 +349,67 @@ namespace Bimil {
             set { Config.Write("PasswordGeneratorWordCount", LimitBetween(value, minValue: 1, maxValue: 9, allowZero: false)); }
         }
 
-        #endregion
+        #endregion Word
+
+        #region Triplet
+
+        [Browsable(false)]
+        public static bool PasswordGeneratorTripletIncludeNumber {
+            get { return Config.Read("PasswordGeneratorTripletIncludeNumber", Medo.Configuration.Settings.Read("PasswordGeneratorTripletIncludeNumber", true)); }
+            set { Config.Write("PasswordGeneratorTripletIncludeNumber", value); }
+        }
+
+        [Browsable(false)]
+        public static bool PasswordGeneratorTripletIncludeSpecialCharacter {
+            get { return Config.Read("PasswordGeneratorTripletIncludeSpecialCharacter", Medo.Configuration.Settings.Read("PasswordGeneratorTripletIncludeSpecialCharacter", true)); }
+            set { Config.Write("PasswordGeneratorTripletIncludeSpecialCharacter", value); }
+        }
+
+        [Browsable(false)]
+        public static bool PasswordGeneratorTripletRandomUpperCase {
+            get { return Config.Read("PasswordGeneratorTripletRandomUpperCase", Medo.Configuration.Settings.Read("PasswordGeneratorTripletRandomUpperCase", false)); }
+            set { Config.Write("PasswordGeneratorTripletRandomUpperCase", value); }
+        }
+
+        [Browsable(false)]
+        public static bool PasswordGeneratorTripletRandomLetterDrop {
+            get { return Config.Read("PasswordGeneratorTripletRandomLetterDrop", Medo.Configuration.Settings.Read("PasswordGeneratorTripletRandomLetterDrop", false)); }
+            set { Config.Write("PasswordGeneratorTripletRandomLetterDrop", value); }
+        }
+
+        [Browsable(false)]
+        public static bool PasswordGeneratorTripletRestrictTitleCase {
+            get { return Config.Read("PasswordGeneratorTripletRestrictTitleCase", Medo.Configuration.Settings.Read("PasswordGeneratorTripletRestrictTitleCase", true)); }
+            set { Config.Write("PasswordGeneratorTripletRestrictTitleCase", value); }
+        }
+
+        [Browsable(false)]
+        public static bool PasswordGeneratorTripletRestrictBreak {
+            get { return Config.Read("PasswordGeneratorTripletRestrictBreak", Medo.Configuration.Settings.Read("PasswordGeneratorTripletRestrictBreak", true)); }
+            set { Config.Write("PasswordGeneratorTripletRestrictBreak", value); }
+        }
+
+        [Browsable(false)]
+        public static bool PasswordGeneratorTripletRestrictSuffixOnly {
+            get { return Config.Read("PasswordGeneratorTripletRestrictSuffixOnly", Medo.Configuration.Settings.Read("PasswordGeneratorTripletRestrictSuffixOnly", true)); }
+            set { Config.Write("PasswordGeneratorTripletRestrictSuffixOnly", value); }
+        }
+
+        [Browsable(false)]
+        public static bool PasswordGeneratorTripletRestrictAddSpace {
+            get { return Config.Read("PasswordGeneratorTripletRestrictAddSpace", Medo.Configuration.Settings.Read("PasswordGeneratorTripletRestrictAddSpace", false)); }
+            set { Config.Write("PasswordGeneratorTripletRestrictAddSpace", value); }
+        }
+
+        [Browsable(false)]
+        public static int PasswordGeneratorTripletCount {
+            get { return LimitBetween(Config.Read("PasswordGeneratorTripletCount", Medo.Configuration.Settings.Read("PasswordGeneratorTripletCount", 6)), minValue: 1, maxValue: 9, allowZero: false); }
+            set { Config.Write("PasswordGeneratorTripletCount", LimitBetween(value, minValue: 1, maxValue: 9, allowZero: false)); }
+        }
+
+        #endregion Triplet
+
+        #endregion PasswordGenerator
 
 
         #region Autotype

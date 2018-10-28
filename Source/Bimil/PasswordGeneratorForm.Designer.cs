@@ -50,21 +50,39 @@ namespace Bimil {
             this.txtWordPasswordLength = new System.Windows.Forms.TextBox();
             this.btnSave = new System.Windows.Forms.Button();
             this.btnSaveAndCopy = new System.Windows.Forms.Button();
+            this.txtTripletPasswordLength = new System.Windows.Forms.TextBox();
+            this.chbTripletRestrictSuffixOnly = new System.Windows.Forms.CheckBox();
+            this.chbTripletRestrictTitleCase = new System.Windows.Forms.CheckBox();
+            this.txtTripletCount = new System.Windows.Forms.TextBox();
+            this.chbTripletIncludeSpecialCharacter = new System.Windows.Forms.CheckBox();
+            this.chbTripletIncludeNumber = new System.Windows.Forms.CheckBox();
+            this.chbTripletIncludeRandomLetterDrop = new System.Windows.Forms.CheckBox();
+            this.chbTripletIncludeRandomUpperCase = new System.Windows.Forms.CheckBox();
+            this.chbTripletRestrictAddSpace = new System.Windows.Forms.CheckBox();
+            this.chbTripletRestrictBreak = new System.Windows.Forms.CheckBox();
             this.tabStyle = new System.Windows.Forms.TabControl();
-            this.tabStyle_Words = new System.Windows.Forms.TabPage();
+            this.tabStyle_Word = new System.Windows.Forms.TabPage();
             this.lblWordPasswordLength = new System.Windows.Forms.Label();
             this.grpWordRestrict = new System.Windows.Forms.GroupBox();
             this.lblWordCount = new System.Windows.Forms.Label();
             this.grpWordInclude = new System.Windows.Forms.GroupBox();
+            this.tabStyle_Triplet = new System.Windows.Forms.TabPage();
+            this.lblTripletPasswordLength = new System.Windows.Forms.Label();
+            this.grpTripletRestrict = new System.Windows.Forms.GroupBox();
+            this.lblTripletCount = new System.Windows.Forms.Label();
+            this.grpTripletInclude = new System.Windows.Forms.GroupBox();
             this.tabStyle_Classic = new System.Windows.Forms.TabPage();
             this.lblLength = new System.Windows.Forms.Label();
             this.grpRestrictions = new System.Windows.Forms.GroupBox();
             this.grpInclude = new System.Windows.Forms.GroupBox();
             this.picSecurityRating = new System.Windows.Forms.PictureBox();
             this.tabStyle.SuspendLayout();
-            this.tabStyle_Words.SuspendLayout();
+            this.tabStyle_Word.SuspendLayout();
             this.grpWordRestrict.SuspendLayout();
             this.grpWordInclude.SuspendLayout();
+            this.tabStyle_Triplet.SuspendLayout();
+            this.grpTripletRestrict.SuspendLayout();
+            this.grpTripletInclude.SuspendLayout();
             this.tabStyle_Classic.SuspendLayout();
             this.grpRestrictions.SuspendLayout();
             this.grpInclude.SuspendLayout();
@@ -414,11 +432,151 @@ namespace Bimil {
             this.btnSaveAndCopy.UseVisualStyleBackColor = true;
             this.btnSaveAndCopy.Click += new System.EventHandler(this.btnSaveAndCopy_Click);
             // 
+            // txtTripletPasswordLength
+            // 
+            this.txtTripletPasswordLength.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.txtTripletPasswordLength.Location = new System.Drawing.Point(280, 125);
+            this.txtTripletPasswordLength.Margin = new System.Windows.Forms.Padding(3, 6, 3, 3);
+            this.txtTripletPasswordLength.MaxLength = 2;
+            this.txtTripletPasswordLength.Name = "txtTripletPasswordLength";
+            this.txtTripletPasswordLength.ReadOnly = true;
+            this.txtTripletPasswordLength.ShortcutsEnabled = false;
+            this.txtTripletPasswordLength.Size = new System.Drawing.Size(38, 20);
+            this.txtTripletPasswordLength.TabIndex = 11;
+            this.txtTripletPasswordLength.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.tip.SetToolTip(this.txtTripletPasswordLength, "Length of password (1-99).");
+            // 
+            // chbTripletRestrictSuffixOnly
+            // 
+            this.chbTripletRestrictSuffixOnly.AutoSize = true;
+            this.chbTripletRestrictSuffixOnly.Checked = true;
+            this.chbTripletRestrictSuffixOnly.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chbTripletRestrictSuffixOnly.Location = new System.Drawing.Point(6, 67);
+            this.chbTripletRestrictSuffixOnly.Name = "chbTripletRestrictSuffixOnly";
+            this.chbTripletRestrictSuffixOnly.Size = new System.Drawing.Size(124, 17);
+            this.chbTripletRestrictSuffixOnly.TabIndex = 2;
+            this.chbTripletRestrictSuffixOnly.Text = "Append to suffix-only";
+            this.tip.SetToolTip(this.chbTripletRestrictSuffixOnly, "Modifications to the words are done at the end of password only.");
+            this.chbTripletRestrictSuffixOnly.UseVisualStyleBackColor = true;
+            this.chbTripletRestrictSuffixOnly.CheckedChanged += new System.EventHandler(this.btnGenerate_Click);
+            // 
+            // chbTripletRestrictTitleCase
+            // 
+            this.chbTripletRestrictTitleCase.AutoSize = true;
+            this.chbTripletRestrictTitleCase.Checked = true;
+            this.chbTripletRestrictTitleCase.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chbTripletRestrictTitleCase.Location = new System.Drawing.Point(6, 21);
+            this.chbTripletRestrictTitleCase.Margin = new System.Windows.Forms.Padding(3, 24, 3, 3);
+            this.chbTripletRestrictTitleCase.Name = "chbTripletRestrictTitleCase";
+            this.chbTripletRestrictTitleCase.Size = new System.Drawing.Size(72, 17);
+            this.chbTripletRestrictTitleCase.TabIndex = 0;
+            this.chbTripletRestrictTitleCase.Text = "Title case";
+            this.tip.SetToolTip(this.chbTripletRestrictTitleCase, "First character of every word will be capitalized.");
+            this.chbTripletRestrictTitleCase.UseVisualStyleBackColor = true;
+            this.chbTripletRestrictTitleCase.CheckedChanged += new System.EventHandler(this.btnGenerate_Click);
+            // 
+            // txtTripletCount
+            // 
+            this.txtTripletCount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.txtTripletCount.Location = new System.Drawing.Point(115, 125);
+            this.txtTripletCount.Margin = new System.Windows.Forms.Padding(3, 6, 3, 3);
+            this.txtTripletCount.MaxLength = 1;
+            this.txtTripletCount.Name = "txtTripletCount";
+            this.txtTripletCount.ShortcutsEnabled = false;
+            this.txtTripletCount.Size = new System.Drawing.Size(38, 20);
+            this.txtTripletCount.TabIndex = 9;
+            this.txtTripletCount.Text = "5";
+            this.txtTripletCount.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.tip.SetToolTip(this.txtTripletCount, "Number of triplets to use (1-9)");
+            this.txtTripletCount.TextChanged += new System.EventHandler(this.btnGenerate_Click);
+            this.txtTripletCount.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtNumber_KeyDown);
+            this.txtTripletCount.Leave += new System.EventHandler(this.txtTripletCount_Leave);
+            // 
+            // chbTripletIncludeSpecialCharacter
+            // 
+            this.chbTripletIncludeSpecialCharacter.AutoSize = true;
+            this.chbTripletIncludeSpecialCharacter.Checked = true;
+            this.chbTripletIncludeSpecialCharacter.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chbTripletIncludeSpecialCharacter.Location = new System.Drawing.Point(6, 44);
+            this.chbTripletIncludeSpecialCharacter.Name = "chbTripletIncludeSpecialCharacter";
+            this.chbTripletIncludeSpecialCharacter.Size = new System.Drawing.Size(109, 17);
+            this.chbTripletIncludeSpecialCharacter.TabIndex = 1;
+            this.chbTripletIncludeSpecialCharacter.Text = "Special character";
+            this.tip.SetToolTip(this.chbTripletIncludeSpecialCharacter, "Include special character in one of the words");
+            this.chbTripletIncludeSpecialCharacter.UseVisualStyleBackColor = true;
+            this.chbTripletIncludeSpecialCharacter.CheckedChanged += new System.EventHandler(this.btnGenerate_Click);
+            // 
+            // chbTripletIncludeNumber
+            // 
+            this.chbTripletIncludeNumber.AutoSize = true;
+            this.chbTripletIncludeNumber.Checked = true;
+            this.chbTripletIncludeNumber.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chbTripletIncludeNumber.Location = new System.Drawing.Point(6, 21);
+            this.chbTripletIncludeNumber.Margin = new System.Windows.Forms.Padding(3, 24, 3, 3);
+            this.chbTripletIncludeNumber.Name = "chbTripletIncludeNumber";
+            this.chbTripletIncludeNumber.Size = new System.Drawing.Size(63, 17);
+            this.chbTripletIncludeNumber.TabIndex = 0;
+            this.chbTripletIncludeNumber.Text = "Number";
+            this.tip.SetToolTip(this.chbTripletIncludeNumber, "Include number in one of words");
+            this.chbTripletIncludeNumber.UseVisualStyleBackColor = true;
+            this.chbTripletIncludeNumber.CheckedChanged += new System.EventHandler(this.btnGenerate_Click);
+            // 
+            // chbTripletIncludeRandomLetterDrop
+            // 
+            this.chbTripletIncludeRandomLetterDrop.AutoSize = true;
+            this.chbTripletIncludeRandomLetterDrop.Location = new System.Drawing.Point(6, 90);
+            this.chbTripletIncludeRandomLetterDrop.Name = "chbTripletIncludeRandomLetterDrop";
+            this.chbTripletIncludeRandomLetterDrop.Size = new System.Drawing.Size(116, 17);
+            this.chbTripletIncludeRandomLetterDrop.TabIndex = 3;
+            this.chbTripletIncludeRandomLetterDrop.Text = "Random letter drop";
+            this.tip.SetToolTip(this.chbTripletIncludeRandomLetterDrop, "Remove a character from one of the words.");
+            this.chbTripletIncludeRandomLetterDrop.UseVisualStyleBackColor = true;
+            this.chbTripletIncludeRandomLetterDrop.CheckedChanged += new System.EventHandler(this.btnGenerate_Click);
+            // 
+            // chbTripletIncludeRandomUpperCase
+            // 
+            this.chbTripletIncludeRandomUpperCase.AutoSize = true;
+            this.chbTripletIncludeRandomUpperCase.Location = new System.Drawing.Point(6, 67);
+            this.chbTripletIncludeRandomUpperCase.Name = "chbTripletIncludeRandomUpperCase";
+            this.chbTripletIncludeRandomUpperCase.Size = new System.Drawing.Size(122, 17);
+            this.chbTripletIncludeRandomUpperCase.TabIndex = 2;
+            this.chbTripletIncludeRandomUpperCase.Text = "Random upper case";
+            this.tip.SetToolTip(this.chbTripletIncludeRandomUpperCase, "Upper case letter will be added at random locations.");
+            this.chbTripletIncludeRandomUpperCase.UseVisualStyleBackColor = true;
+            this.chbTripletIncludeRandomUpperCase.CheckedChanged += new System.EventHandler(this.btnGenerate_Click);
+            // 
+            // chbTripletRestrictAddSpace
+            // 
+            this.chbTripletRestrictAddSpace.AutoSize = true;
+            this.chbTripletRestrictAddSpace.Location = new System.Drawing.Point(6, 90);
+            this.chbTripletRestrictAddSpace.Name = "chbTripletRestrictAddSpace";
+            this.chbTripletRestrictAddSpace.Size = new System.Drawing.Size(85, 17);
+            this.chbTripletRestrictAddSpace.TabIndex = 3;
+            this.chbTripletRestrictAddSpace.Text = "Add spacing";
+            this.tip.SetToolTip(this.chbTripletRestrictAddSpace, "Adds spacing between words");
+            this.chbTripletRestrictAddSpace.UseVisualStyleBackColor = true;
+            this.chbTripletRestrictAddSpace.CheckedChanged += new System.EventHandler(this.btnGenerate_Click);
+            // 
+            // chbTripletRestrictBreak
+            // 
+            this.chbTripletRestrictBreak.AutoSize = true;
+            this.chbTripletRestrictBreak.Checked = true;
+            this.chbTripletRestrictBreak.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chbTripletRestrictBreak.Location = new System.Drawing.Point(6, 44);
+            this.chbTripletRestrictBreak.Name = "chbTripletRestrictBreak";
+            this.chbTripletRestrictBreak.Size = new System.Drawing.Size(122, 17);
+            this.chbTripletRestrictBreak.TabIndex = 1;
+            this.chbTripletRestrictBreak.Text = "Don\'t break up word";
+            this.tip.SetToolTip(this.chbTripletRestrictBreak, "Modifications to the words are done at the begining or at the end of word only.");
+            this.chbTripletRestrictBreak.UseVisualStyleBackColor = true;
+            this.chbTripletRestrictBreak.CheckedChanged += new System.EventHandler(this.btnGenerate_Click);
+            // 
             // tabStyle
             // 
             this.tabStyle.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tabStyle.Controls.Add(this.tabStyle_Words);
+            this.tabStyle.Controls.Add(this.tabStyle_Word);
+            this.tabStyle.Controls.Add(this.tabStyle_Triplet);
             this.tabStyle.Controls.Add(this.tabStyle_Classic);
             this.tabStyle.Location = new System.Drawing.Point(11, 12);
             this.tabStyle.Name = "tabStyle";
@@ -427,20 +585,20 @@ namespace Bimil {
             this.tabStyle.TabIndex = 1;
             this.tabStyle.SelectedIndexChanged += new System.EventHandler(this.btnGenerate_Click);
             // 
-            // tabStyle_Words
+            // tabStyle_Word
             // 
-            this.tabStyle_Words.Controls.Add(this.lblWordPasswordLength);
-            this.tabStyle_Words.Controls.Add(this.txtWordPasswordLength);
-            this.tabStyle_Words.Controls.Add(this.grpWordRestrict);
-            this.tabStyle_Words.Controls.Add(this.lblWordCount);
-            this.tabStyle_Words.Controls.Add(this.txtWordCount);
-            this.tabStyle_Words.Controls.Add(this.grpWordInclude);
-            this.tabStyle_Words.Location = new System.Drawing.Point(4, 22);
-            this.tabStyle_Words.Name = "tabStyle_Words";
-            this.tabStyle_Words.Size = new System.Drawing.Size(321, 148);
-            this.tabStyle_Words.TabIndex = 0;
-            this.tabStyle_Words.Text = "Word-based";
-            this.tabStyle_Words.UseVisualStyleBackColor = true;
+            this.tabStyle_Word.Controls.Add(this.lblWordPasswordLength);
+            this.tabStyle_Word.Controls.Add(this.txtWordPasswordLength);
+            this.tabStyle_Word.Controls.Add(this.grpWordRestrict);
+            this.tabStyle_Word.Controls.Add(this.lblWordCount);
+            this.tabStyle_Word.Controls.Add(this.txtWordCount);
+            this.tabStyle_Word.Controls.Add(this.grpWordInclude);
+            this.tabStyle_Word.Location = new System.Drawing.Point(4, 22);
+            this.tabStyle_Word.Name = "tabStyle_Word";
+            this.tabStyle_Word.Size = new System.Drawing.Size(321, 148);
+            this.tabStyle_Word.TabIndex = 0;
+            this.tabStyle_Word.Text = "Word";
+            this.tabStyle_Word.UseVisualStyleBackColor = true;
             // 
             // lblWordPasswordLength
             // 
@@ -492,6 +650,71 @@ namespace Bimil {
             this.grpWordInclude.TabStop = false;
             this.grpWordInclude.Text = "Include";
             // 
+            // tabStyle_Triplet
+            // 
+            this.tabStyle_Triplet.Controls.Add(this.lblTripletPasswordLength);
+            this.tabStyle_Triplet.Controls.Add(this.txtTripletPasswordLength);
+            this.tabStyle_Triplet.Controls.Add(this.grpTripletRestrict);
+            this.tabStyle_Triplet.Controls.Add(this.lblTripletCount);
+            this.tabStyle_Triplet.Controls.Add(this.txtTripletCount);
+            this.tabStyle_Triplet.Controls.Add(this.grpTripletInclude);
+            this.tabStyle_Triplet.Location = new System.Drawing.Point(4, 22);
+            this.tabStyle_Triplet.Name = "tabStyle_Triplet";
+            this.tabStyle_Triplet.Size = new System.Drawing.Size(321, 148);
+            this.tabStyle_Triplet.TabIndex = 2;
+            this.tabStyle_Triplet.Text = "Triplet";
+            this.tabStyle_Triplet.UseVisualStyleBackColor = true;
+            // 
+            // lblTripletPasswordLength
+            // 
+            this.lblTripletPasswordLength.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.lblTripletPasswordLength.AutoSize = true;
+            this.lblTripletPasswordLength.Location = new System.Drawing.Point(170, 128);
+            this.lblTripletPasswordLength.Name = "lblTripletPasswordLength";
+            this.lblTripletPasswordLength.Size = new System.Drawing.Size(88, 13);
+            this.lblTripletPasswordLength.TabIndex = 10;
+            this.lblTripletPasswordLength.Text = "Password length:";
+            // 
+            // grpTripletRestrict
+            // 
+            this.grpTripletRestrict.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.grpTripletRestrict.Controls.Add(this.chbTripletRestrictSuffixOnly);
+            this.grpTripletRestrict.Controls.Add(this.chbTripletRestrictTitleCase);
+            this.grpTripletRestrict.Controls.Add(this.chbTripletRestrictBreak);
+            this.grpTripletRestrict.Controls.Add(this.chbTripletRestrictAddSpace);
+            this.grpTripletRestrict.Location = new System.Drawing.Point(168, 3);
+            this.grpTripletRestrict.Margin = new System.Windows.Forms.Padding(12, 3, 3, 3);
+            this.grpTripletRestrict.Name = "grpTripletRestrict";
+            this.grpTripletRestrict.Padding = new System.Windows.Forms.Padding(3, 12, 3, 3);
+            this.grpTripletRestrict.Size = new System.Drawing.Size(150, 113);
+            this.grpTripletRestrict.TabIndex = 7;
+            this.grpTripletRestrict.TabStop = false;
+            this.grpTripletRestrict.Text = "Restrictions";
+            // 
+            // lblTripletCount
+            // 
+            this.lblTripletCount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.lblTripletCount.AutoSize = true;
+            this.lblTripletCount.Location = new System.Drawing.Point(6, 128);
+            this.lblTripletCount.Name = "lblTripletCount";
+            this.lblTripletCount.Size = new System.Drawing.Size(69, 13);
+            this.lblTripletCount.TabIndex = 8;
+            this.lblTripletCount.Text = "Triplet count:";
+            // 
+            // grpTripletInclude
+            // 
+            this.grpTripletInclude.Controls.Add(this.chbTripletIncludeSpecialCharacter);
+            this.grpTripletInclude.Controls.Add(this.chbTripletIncludeNumber);
+            this.grpTripletInclude.Controls.Add(this.chbTripletIncludeRandomLetterDrop);
+            this.grpTripletInclude.Controls.Add(this.chbTripletIncludeRandomUpperCase);
+            this.grpTripletInclude.Location = new System.Drawing.Point(3, 3);
+            this.grpTripletInclude.Name = "grpTripletInclude";
+            this.grpTripletInclude.Padding = new System.Windows.Forms.Padding(3, 12, 3, 3);
+            this.grpTripletInclude.Size = new System.Drawing.Size(150, 113);
+            this.grpTripletInclude.TabIndex = 6;
+            this.grpTripletInclude.TabStop = false;
+            this.grpTripletInclude.Text = "Include";
+            // 
             // tabStyle_Classic
             // 
             this.tabStyle_Classic.Controls.Add(this.lblLength);
@@ -499,9 +722,9 @@ namespace Bimil {
             this.tabStyle_Classic.Controls.Add(this.grpRestrictions);
             this.tabStyle_Classic.Controls.Add(this.grpInclude);
             this.tabStyle_Classic.Location = new System.Drawing.Point(4, 22);
-            this.tabStyle_Classic.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tabStyle_Classic.Margin = new System.Windows.Forms.Padding(2);
             this.tabStyle_Classic.Name = "tabStyle_Classic";
-            this.tabStyle_Classic.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tabStyle_Classic.Padding = new System.Windows.Forms.Padding(2);
             this.tabStyle_Classic.Size = new System.Drawing.Size(321, 148);
             this.tabStyle_Classic.TabIndex = 1;
             this.tabStyle_Classic.Text = "Classic";
@@ -573,7 +796,7 @@ namespace Bimil {
             this.Controls.Add(this.txtPassword);
             this.Controls.Add(this.lblCombinations);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "PasswordGeneratorForm";
@@ -584,12 +807,18 @@ namespace Bimil {
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form_FormClosed);
             this.Load += new System.EventHandler(this.Form_Load);
             this.tabStyle.ResumeLayout(false);
-            this.tabStyle_Words.ResumeLayout(false);
-            this.tabStyle_Words.PerformLayout();
+            this.tabStyle_Word.ResumeLayout(false);
+            this.tabStyle_Word.PerformLayout();
             this.grpWordRestrict.ResumeLayout(false);
             this.grpWordRestrict.PerformLayout();
             this.grpWordInclude.ResumeLayout(false);
             this.grpWordInclude.PerformLayout();
+            this.tabStyle_Triplet.ResumeLayout(false);
+            this.tabStyle_Triplet.PerformLayout();
+            this.grpTripletRestrict.ResumeLayout(false);
+            this.grpTripletRestrict.PerformLayout();
+            this.grpTripletInclude.ResumeLayout(false);
+            this.grpTripletInclude.PerformLayout();
             this.tabStyle_Classic.ResumeLayout(false);
             this.tabStyle_Classic.PerformLayout();
             this.grpRestrictions.ResumeLayout(false);
@@ -609,7 +838,7 @@ namespace Bimil {
         private System.Windows.Forms.Button btnCopy;
         private System.Windows.Forms.ToolTip tip;
         private System.Windows.Forms.TabControl tabStyle;
-        private System.Windows.Forms.TabPage tabStyle_Words;
+        private System.Windows.Forms.TabPage tabStyle_Word;
         private System.Windows.Forms.TabPage tabStyle_Classic;
         private System.Windows.Forms.Label lblLength;
         private System.Windows.Forms.TextBox txtLength;
@@ -640,5 +869,20 @@ namespace Bimil {
         private System.Windows.Forms.TextBox txtWordPasswordLength;
         private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.Button btnSaveAndCopy;
+        private System.Windows.Forms.TabPage tabStyle_Triplet;
+        private System.Windows.Forms.Label lblTripletPasswordLength;
+        private System.Windows.Forms.TextBox txtTripletPasswordLength;
+        private System.Windows.Forms.GroupBox grpTripletRestrict;
+        private System.Windows.Forms.CheckBox chbTripletRestrictSuffixOnly;
+        private System.Windows.Forms.CheckBox chbTripletRestrictTitleCase;
+        private System.Windows.Forms.Label lblTripletCount;
+        private System.Windows.Forms.TextBox txtTripletCount;
+        private System.Windows.Forms.GroupBox grpTripletInclude;
+        private System.Windows.Forms.CheckBox chbTripletIncludeSpecialCharacter;
+        private System.Windows.Forms.CheckBox chbTripletIncludeNumber;
+        private System.Windows.Forms.CheckBox chbTripletIncludeRandomLetterDrop;
+        private System.Windows.Forms.CheckBox chbTripletIncludeRandomUpperCase;
+        private System.Windows.Forms.CheckBox chbTripletRestrictAddSpace;
+        private System.Windows.Forms.CheckBox chbTripletRestrictBreak;
     }
 }

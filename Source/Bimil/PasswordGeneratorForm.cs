@@ -60,7 +60,7 @@ namespace Bimil {
 
 
         private void Form_Load(object sender, EventArgs e) {
-            {
+            { //Word
                 chbWordIncludeUpperCase.Checked = Settings.PasswordGeneratorWordIncludeUpperCase;
                 chbWordIncludeNumber.Checked = Settings.PasswordGeneratorWordIncludeNumber;
                 chbWordIncludeSpecialCharacter.Checked = Settings.PasswordGeneratorWordIncludeSpecialCharacter;
@@ -74,7 +74,21 @@ namespace Bimil {
                 txtWordCount.Text = Settings.PasswordGeneratorWordCount.ToString("0", CultureInfo.CurrentCulture);
             }
 
-            {
+            { //Triplet
+                chbTripletIncludeNumber.Checked = Settings.PasswordGeneratorTripletIncludeNumber;
+                chbTripletIncludeSpecialCharacter.Checked = Settings.PasswordGeneratorTripletIncludeSpecialCharacter;
+                chbTripletIncludeRandomUpperCase.Checked = Settings.PasswordGeneratorTripletRandomUpperCase;
+                chbTripletIncludeRandomLetterDrop.Checked = Settings.PasswordGeneratorTripletRandomLetterDrop;
+
+                chbTripletRestrictTitleCase.Checked = Settings.PasswordGeneratorTripletRestrictTitleCase;
+                chbTripletRestrictBreak.Checked = Settings.PasswordGeneratorTripletRestrictBreak;
+                chbTripletRestrictSuffixOnly.Checked = Settings.PasswordGeneratorTripletRestrictSuffixOnly;
+                chbTripletRestrictAddSpace.Checked = Settings.PasswordGeneratorTripletRestrictAddSpace;
+
+                txtWordCount.Text = Settings.PasswordGeneratorTripletCount.ToString("0", CultureInfo.CurrentCulture);
+            }
+
+            { //Classic
                 chbIncludeUpperCase.Checked = Settings.PasswordGeneratorIncludeUpperCase;
                 chbIncludeLowerCase.Checked = Settings.PasswordGeneratorIncludeLowerCase;
                 chbIncludeNumbers.Checked = Settings.PasswordGeneratorIncludeNumbers;
@@ -88,13 +102,23 @@ namespace Bimil {
                 txtLength.Text = Settings.PasswordGeneratorLength.ToString("0", CultureInfo.CurrentCulture);
             }
 
-            tabStyle.SelectedTab = Settings.PasswordGeneratorUseWord ? tabStyle_Words : tabStyle_Classic;
+            switch (Settings.PasswordGeneratorTabSelection) {
+                case Settings.PasswordGeneratorTab.Word:
+                    tabStyle.SelectedTab = tabStyle_Word;
+                    break;
+                case Settings.PasswordGeneratorTab.Triplet:
+                    tabStyle.SelectedTab = tabStyle_Triplet;
+                    break;
+                case Settings.PasswordGeneratorTab.Classic:
+                    tabStyle.SelectedTab = tabStyle_Classic;
+                    break;
+            }
 
             btnGenerate_Click(null, null);
         }
 
         private void Form_FormClosed(object sender, FormClosedEventArgs e) {
-            {
+            { //Word
                 Settings.PasswordGeneratorWordIncludeUpperCase = chbWordIncludeUpperCase.Checked;
                 Settings.PasswordGeneratorWordIncludeNumber = chbWordIncludeNumber.Checked;
                 Settings.PasswordGeneratorWordIncludeSpecialCharacter = chbWordIncludeSpecialCharacter.Checked;
@@ -110,7 +134,23 @@ namespace Bimil {
                 }
             }
 
-            {
+            { //Triplet
+                Settings.PasswordGeneratorTripletIncludeNumber = chbTripletIncludeNumber.Checked;
+                Settings.PasswordGeneratorTripletIncludeSpecialCharacter = chbTripletIncludeSpecialCharacter.Checked;
+                Settings.PasswordGeneratorTripletRandomUpperCase = chbTripletIncludeRandomUpperCase.Checked;
+                Settings.PasswordGeneratorTripletRandomLetterDrop = chbTripletIncludeRandomLetterDrop.Checked;
+
+                Settings.PasswordGeneratorTripletRestrictTitleCase = chbTripletRestrictTitleCase.Checked;
+                Settings.PasswordGeneratorTripletRestrictBreak = chbTripletRestrictBreak.Checked;
+                Settings.PasswordGeneratorTripletRestrictSuffixOnly = chbTripletRestrictSuffixOnly.Checked;
+                Settings.PasswordGeneratorTripletRestrictAddSpace = chbTripletRestrictAddSpace.Checked;
+
+                if (int.TryParse(txtTripletCount.Text, NumberStyles.Integer, CultureInfo.CurrentCulture, out var count)) {
+                    Settings.PasswordGeneratorTripletCount = count;
+                }
+            }
+
+            { //Classic
                 Settings.PasswordGeneratorIncludeUpperCase = chbIncludeUpperCase.Checked;
                 Settings.PasswordGeneratorIncludeLowerCase = chbIncludeLowerCase.Checked;
                 Settings.PasswordGeneratorIncludeNumbers = chbIncludeNumbers.Checked;
@@ -126,7 +166,13 @@ namespace Bimil {
                 }
             }
 
-            Settings.PasswordGeneratorUseWord = !tabStyle.SelectedTab.Equals(tabStyle_Classic);
+            if (tabStyle.SelectedTab.Equals(tabStyle_Word)) {
+                Settings.PasswordGeneratorTabSelection = Settings.PasswordGeneratorTab.Word;
+            } else if (tabStyle.SelectedTab.Equals(tabStyle_Triplet)) {
+                Settings.PasswordGeneratorTabSelection = Settings.PasswordGeneratorTab.Triplet;
+            } else {
+                Settings.PasswordGeneratorTabSelection = Settings.PasswordGeneratorTab.Classic;
+            }
         }
 
 
@@ -187,6 +233,13 @@ namespace Bimil {
                 count = Settings.PasswordGeneratorWordCount;
             }
             txtWordCount.Text = Math.Min(Math.Max(count, 1), 9).ToString(CultureInfo.CurrentCulture);
+        }
+
+        private void txtTripletCount_Leave(object sender, EventArgs e) {
+            if (!int.TryParse(txtTripletCount.Text, NumberStyles.Integer, CultureInfo.CurrentCulture, out var count)) {
+                count = Settings.PasswordGeneratorTripletCount;
+            }
+            txtTripletCount.Text = Math.Min(Math.Max(count, 1), 9).ToString(CultureInfo.CurrentCulture);
         }
 
         private void txtLength_Leave(object sender, EventArgs e) {
@@ -254,7 +307,22 @@ namespace Bimil {
                     password = GenerateClassicPassword(includeUpperCase, includeLowerCase, includeNumbers, includeSpecial, restrictSimilar, restrictMovable, restrictPronounceable, restrictRepeated, length);
                     combinations = CalculateClassicCombinations(includeUpperCase, includeLowerCase, includeNumbers, includeSpecial, restrictSimilar, restrictMovable, restrictPronounceable, restrictRepeated, length);
                 }
-            } else {
+            } else if (tabStyle.SelectedTab.Equals(tabStyle_Triplet)) {
+                if (int.TryParse(txtTripletCount.Text, NumberStyles.Integer, CultureInfo.InvariantCulture, out var count) && (count >= 1) && (count <= 9)) {
+                    var includeNumber = chbTripletIncludeNumber.Checked;
+                    var includeSpecial = chbTripletIncludeSpecialCharacter.Checked;
+                    var includeRandomUpperCase = chbTripletIncludeRandomUpperCase.Checked;
+                    var includeRandomDrop = chbTripletIncludeRandomLetterDrop.Checked;
+                    var restrictTitleCase = chbTripletRestrictTitleCase.Checked;
+                    var restrictBreak = chbTripletRestrictBreak.Checked;
+                    var restrictSuffixOnly = chbTripletRestrictSuffixOnly.Checked;
+                    var restrictAddSpace = chbTripletRestrictAddSpace.Checked;
+
+                    password = GenerateTripletPassword(includeNumber, includeSpecial, includeRandomUpperCase, includeRandomDrop, restrictTitleCase, restrictBreak, restrictSuffixOnly, restrictAddSpace, count);
+                    combinations = CalculateTripletCombinations(includeNumber, includeSpecial, includeRandomUpperCase, includeRandomDrop, restrictTitleCase, restrictBreak, restrictSuffixOnly, restrictAddSpace, count);
+                    txtTripletPasswordLength.Text = password.Length.ToString(CultureInfo.InvariantCulture);
+                }
+            } else { //Word
                 if (int.TryParse(txtWordCount.Text, NumberStyles.Integer, CultureInfo.InvariantCulture, out var count) && (count >= 1) && (count <= 9)) {
                     var includeUpperCase = chbWordIncludeUpperCase.Checked;
                     var includeNumber = chbWordIncludeNumber.Checked;
@@ -278,7 +346,7 @@ namespace Bimil {
                 lblCombinations.Text = "About " + crackDurationText + " to crack";
                 var tooltipText = $"{combinations:#,##0} ({GetEngineeringString(combinations)}) combinations.\n";
                 tooltipText += $"{entropyBits} bits of entropy.\n";
-                if (tabStyle.SelectedTab.Equals(tabStyle_Words)) { tooltipText += $"Based on dictionary with {this.Words.Count:#,##0} words.\n"; }
+                if (tabStyle.SelectedTab.Equals(tabStyle_Word)) { tooltipText += $"Based on dictionary with {this.Words.Count:#,##0} words.\n"; }
                 tooltipText += $"\nGiven cracking duration was calculated assuming the potential\nattacker knows exactly which method and dictionary were used\nto generate password (i.e. the worst case scenario) and assuming\n the attacker can check {Math.Floor(GetCracksPerSecond() / 1000000000000)} trillions passwords per second.";
                 tip.SetToolTip(lblCombinations, tooltipText);
                 if (secondsToCrack > 365 * 24 * 60 * 60) {
@@ -436,6 +504,154 @@ namespace Bimil {
             }
 
             return wordCombinations;
+        }
+
+        #endregion
+
+
+        #region Triplet password
+
+        private ReadOnlyCollection<string> Triplets = null;
+
+        private string GenerateTripletPassword(bool includeNumber, bool includeSpecial, bool includeRandomUpperCase, bool includeRandomDrop, bool restrictTitleCase, bool restrictBreak, bool restrictSuffixOnly, bool spaceSeparated, int count) {
+            var sb = new StringBuilder();
+
+            if (this.Triplets == null) {
+                var sw = Stopwatch.StartNew();
+
+                var tripletDictionary = new Dictionary<string, object>();
+
+                //read all word files
+                foreach (var streamName in Assembly.GetExecutingAssembly().GetManifestResourceNames()) {
+                    if (streamName.EndsWith(".words")) {
+                        using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(streamName))
+                        using (var textStream = new StreamReader(stream)) {
+                            var words = textStream.ReadToEnd().Split(new string[] { "\r\n", "\n", "\r" }, StringSplitOptions.RemoveEmptyEntries);
+                            foreach (var word in words) {
+                                var triplet = word.Substring(0, 3);
+                                if (!tripletDictionary.ContainsKey(triplet)) { tripletDictionary.Add(triplet, null); }
+                            }
+                        }
+                    }
+                }
+
+                //remove common passwords
+                using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Bimil.Resources.Common.passwords"))
+                using (var textStream = new StreamReader(stream)) {
+                    var words = textStream.ReadToEnd().Split(new string[] { "\r\n", "\n", "\r" }, StringSplitOptions.RemoveEmptyEntries);
+                    foreach (var word in words) {
+                        var triplet = word.Substring(0, 3);
+                        if (tripletDictionary.ContainsKey(triplet)) { tripletDictionary.Remove(triplet); }
+                    }
+                }
+
+                var tripletList = new List<string>(tripletDictionary.Keys);
+                this.Triplets = tripletList.AsReadOnly();
+
+                Debug.WriteLine($"Generated triplet list of {this.Triplets.Count} triplets in {sw.ElapsedMilliseconds} ms.");
+            }
+
+            var selectedTriplets = new List<List<char>>();
+            for (var i = 0; i < count; i++) {
+                var tripletIndex = GetRandomNumber(this.Triplets.Count);
+                selectedTriplets.Add(new List<char>(this.Triplets[tripletIndex]));
+            }
+
+            if (includeRandomDrop) {
+                var tripletIndex = restrictSuffixOnly ? selectedTriplets.Count - 1 : GetRandomNumber(selectedTriplets.Count); //drop may be restricted to last triplet only
+                if (restrictBreak) { //break restriction only removes last character
+                    selectedTriplets[tripletIndex].RemoveAt(selectedTriplets[tripletIndex].Count - 1);
+                } else {
+                    var charIndex = GetRandomNumber(selectedTriplets[tripletIndex].Count);
+                    selectedTriplets[tripletIndex].RemoveAt(charIndex);
+                }
+            }
+
+            if (includeRandomUpperCase) {
+                var tripletIndex = restrictSuffixOnly ? 0 : GetRandomNumber(selectedTriplets.Count); //uppercase may be restricted to first triplet only
+                int charIndex;
+                if (restrictBreak || restrictSuffixOnly) { //break restriction only uppercases the first character.
+                    charIndex = 0;
+                } else {
+                    charIndex = GetRandomNumber(selectedTriplets[tripletIndex].Count);
+                }
+                selectedTriplets[tripletIndex][charIndex] = char.ToUpperInvariant(selectedTriplets[tripletIndex][charIndex]);
+            }
+
+            if (restrictTitleCase) {
+                foreach (var selectedTriplet in selectedTriplets) {
+                    selectedTriplet[0] = char.ToUpperInvariant(selectedTriplet[0]);
+                }
+            }
+
+            if (includeNumber) {
+                var tripletIndex = restrictSuffixOnly ? selectedTriplets.Count - 1 : GetRandomNumber(selectedTriplets.Count); //number may be restricted to last triplet only
+                int charIndex;
+                if (restrictBreak) { //break restriction only adds number before or after the triplet
+                    if (restrictSuffixOnly) {
+                        charIndex = selectedTriplets[tripletIndex].Count;
+                    } else {
+                        charIndex = (GetRandomNumber(2) == 0) ? 0 : selectedTriplets[tripletIndex].Count;
+                    }
+                } else {
+                    charIndex = GetRandomNumber(selectedTriplets[tripletIndex].Count + 1);
+                }
+                var number = GetRandomNumber(100);
+                selectedTriplets[tripletIndex].InsertRange(charIndex, number.ToString(CultureInfo.InvariantCulture));
+            }
+
+            if (includeSpecial) {
+                var tripletIndex = restrictSuffixOnly ? selectedTriplets.Count - 1 : GetRandomNumber(selectedTriplets.Count); //special character may be restricted to last triplet only
+                int charIndex;
+                if (restrictBreak) { //break restriction only adds character before or after the triplet
+                    if (restrictSuffixOnly) {
+                        charIndex = selectedTriplets[tripletIndex].Count;
+                    } else {
+                        charIndex = (GetRandomNumber(2) == 0) ? 0 : selectedTriplets[tripletIndex].Count;
+                    }
+                } else {
+                    charIndex = GetRandomNumber(selectedTriplets[tripletIndex].Count + 1);
+                }
+
+                var specialCharacters = new List<char>(SpecialCharacters);
+                RemoveCharacters(specialCharacters, RestrictedSimilar); //remove those that are difficult to write or can get confused
+
+                var specialIndex = GetRandomNumber(specialCharacters.Count);
+                selectedTriplets[tripletIndex].Insert(charIndex, specialCharacters[specialIndex]);
+            }
+
+            for (var i = 0; i < selectedTriplets.Count; i++) {
+                if (spaceSeparated && (sb.Length > 0)) { sb.Append(" "); }
+                sb.Append(new string(selectedTriplets[i].ToArray()));
+            }
+
+            return sb.ToString();
+        }
+
+        private double CalculateTripletCombinations(bool includeNumber, bool includeSpecial, bool includeRandomUpperCase, bool includeRandomDrop, bool restrictTitleCase, bool restrictBreak, bool restrictSuffixOnly, bool spaceSeparated, int count) {
+            //this is really rough calculation assuming everybody knows exactly how password was created and it assumes all words are 5 characters only
+
+            var triplets = this.Triplets.Count;
+            if (includeRandomUpperCase && !restrictSuffixOnly) { triplets *= (1 + (restrictBreak ? 1 : 2) - (restrictTitleCase ? 1 : 0)); } //1 original + 3 characters (standard triplet length) that can be upper case; if break is restricted, only the first character will be upper-case; in case of title-case, first character is assumed fixed
+            if (includeRandomDrop && !restrictSuffixOnly) { triplets *= (1 + (restrictBreak ? 1 : 2)); } //1 original + 3 characters (standard triplet length) that can be upper case; if break is restricted, only the last character will be removed thus only doubling the space
+
+            var specialCharacters = new List<char>(SpecialCharacters);
+            RemoveCharacters(specialCharacters, RestrictedSimilar); //remove those that are difficult to write or can get confused
+
+            double tripletCombinations;
+            if (restrictSuffixOnly) {
+                var tripletsLast = this.Triplets.Count;
+                if (includeRandomDrop) { tripletsLast *= 2; }
+                if (includeNumber) { tripletsLast *= 100; }
+                if (includeSpecial) { tripletsLast *= specialCharacters.Count; }
+                tripletCombinations = Math.Pow(triplets, count - 1) * tripletsLast;
+            } else {
+                tripletCombinations = Math.Pow(triplets, count);
+                if (includeNumber) { tripletCombinations *= (restrictBreak ? 4 : 20) * 100; } //assume attacker knows number between 0 and 100 is to be inserted; if restricted, assume it knows it will be on triplet-breaks
+                if (includeSpecial) { tripletCombinations *= (restrictBreak ? 1 : 20) * specialCharacters.Count; } //special character can be inserted in any triplet at any place; if break is restricted, only start and end are good
+            }
+
+            return tripletCombinations;
         }
 
         #endregion
@@ -646,5 +862,6 @@ namespace Bimil {
 
             return string.Format(CultureInfo.CurrentCulture, "{0:0}e{1}", number, exponent);
         }
+
     }
 }
