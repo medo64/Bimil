@@ -75,10 +75,10 @@ namespace Bimil {
             // 
             this.lblCombinations.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblCombinations.Location = new System.Drawing.Point(12, 228);
-            this.lblCombinations.Margin = new System.Windows.Forms.Padding(3, 6, 3, 0);
+            this.lblCombinations.Location = new System.Drawing.Point(12, 188);
+            this.lblCombinations.Margin = new System.Windows.Forms.Padding(3);
             this.lblCombinations.Name = "lblCombinations";
-            this.lblCombinations.Size = new System.Drawing.Size(435, 20);
+            this.lblCombinations.Size = new System.Drawing.Size(328, 16);
             this.lblCombinations.TabIndex = 2;
             this.lblCombinations.Text = "-";
             this.lblCombinations.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -87,10 +87,10 @@ namespace Bimil {
             // 
             this.txtPassword.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtPassword.Location = new System.Drawing.Point(12, 251);
+            this.txtPassword.Location = new System.Drawing.Point(11, 210);
             this.txtPassword.Name = "txtPassword";
             this.txtPassword.ReadOnly = true;
-            this.txtPassword.Size = new System.Drawing.Size(435, 22);
+            this.txtPassword.Size = new System.Drawing.Size(328, 20);
             this.txtPassword.TabIndex = 3;
             this.txtPassword.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.tip.SetToolTip(this.txtPassword, "Generated password");
@@ -98,10 +98,10 @@ namespace Bimil {
             // btnGenerate
             // 
             this.btnGenerate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnGenerate.Location = new System.Drawing.Point(125, 291);
+            this.btnGenerate.Location = new System.Drawing.Point(88, 248);
             this.btnGenerate.Margin = new System.Windows.Forms.Padding(3, 15, 3, 3);
             this.btnGenerate.Name = "btnGenerate";
-            this.btnGenerate.Size = new System.Drawing.Size(110, 28);
+            this.btnGenerate.Size = new System.Drawing.Size(80, 23);
             this.btnGenerate.TabIndex = 4;
             this.btnGenerate.Text = "&Regenerate";
             this.tip.SetToolTip(this.btnGenerate, "Generate new password.");
@@ -113,10 +113,10 @@ namespace Bimil {
             this.btnCopy.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCopy.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.btnCopy.Enabled = false;
-            this.btnCopy.Location = new System.Drawing.Point(357, 291);
+            this.btnCopy.Location = new System.Drawing.Point(261, 249);
             this.btnCopy.Margin = new System.Windows.Forms.Padding(3, 15, 3, 3);
             this.btnCopy.Name = "btnCopy";
-            this.btnCopy.Size = new System.Drawing.Size(90, 28);
+            this.btnCopy.Size = new System.Drawing.Size(80, 23);
             this.btnCopy.TabIndex = 6;
             this.btnCopy.Text = "&Copy";
             this.tip.SetToolTip(this.btnCopy, "Copy password to clipboard.");
@@ -128,9 +128,9 @@ namespace Bimil {
             this.chbIncludeSpecialCharacters.AutoSize = true;
             this.chbIncludeSpecialCharacters.Checked = true;
             this.chbIncludeSpecialCharacters.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chbIncludeSpecialCharacters.Location = new System.Drawing.Point(6, 111);
+            this.chbIncludeSpecialCharacters.Location = new System.Drawing.Point(6, 90);
             this.chbIncludeSpecialCharacters.Name = "chbIncludeSpecialCharacters";
-            this.chbIncludeSpecialCharacters.Size = new System.Drawing.Size(147, 21);
+            this.chbIncludeSpecialCharacters.Size = new System.Drawing.Size(114, 17);
             this.chbIncludeSpecialCharacters.TabIndex = 3;
             this.chbIncludeSpecialCharacters.Text = "Special characters";
             this.tip.SetToolTip(this.chbIncludeSpecialCharacters, "Include special characters");
@@ -142,9 +142,9 @@ namespace Bimil {
             this.chbIncludeNumbers.AutoSize = true;
             this.chbIncludeNumbers.Checked = true;
             this.chbIncludeNumbers.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chbIncludeNumbers.Location = new System.Drawing.Point(6, 84);
+            this.chbIncludeNumbers.Location = new System.Drawing.Point(6, 67);
             this.chbIncludeNumbers.Name = "chbIncludeNumbers";
-            this.chbIncludeNumbers.Size = new System.Drawing.Size(87, 21);
+            this.chbIncludeNumbers.Size = new System.Drawing.Size(68, 17);
             this.chbIncludeNumbers.TabIndex = 2;
             this.chbIncludeNumbers.Text = "Numbers";
             this.tip.SetToolTip(this.chbIncludeNumbers, "Include numbers");
@@ -156,9 +156,10 @@ namespace Bimil {
             this.chbIncludeLowerCase.AutoSize = true;
             this.chbIncludeLowerCase.Checked = true;
             this.chbIncludeLowerCase.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chbIncludeLowerCase.Location = new System.Drawing.Point(6, 30);
+            this.chbIncludeLowerCase.Location = new System.Drawing.Point(6, 21);
+            this.chbIncludeLowerCase.Margin = new System.Windows.Forms.Padding(3, 24, 3, 3);
             this.chbIncludeLowerCase.Name = "chbIncludeLowerCase";
-            this.chbIncludeLowerCase.Size = new System.Drawing.Size(102, 21);
+            this.chbIncludeLowerCase.Size = new System.Drawing.Size(81, 17);
             this.chbIncludeLowerCase.TabIndex = 0;
             this.chbIncludeLowerCase.Text = "Lower case";
             this.tip.SetToolTip(this.chbIncludeLowerCase, "Include lower case letters");
@@ -170,9 +171,9 @@ namespace Bimil {
             this.chbIncludeUpperCase.AutoSize = true;
             this.chbIncludeUpperCase.Checked = true;
             this.chbIncludeUpperCase.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chbIncludeUpperCase.Location = new System.Drawing.Point(6, 57);
+            this.chbIncludeUpperCase.Location = new System.Drawing.Point(6, 44);
             this.chbIncludeUpperCase.Name = "chbIncludeUpperCase";
-            this.chbIncludeUpperCase.Size = new System.Drawing.Size(103, 21);
+            this.chbIncludeUpperCase.Size = new System.Drawing.Size(81, 17);
             this.chbIncludeUpperCase.TabIndex = 1;
             this.chbIncludeUpperCase.Text = "Upper case";
             this.tip.SetToolTip(this.chbIncludeUpperCase, "Include upper case letters");
@@ -182,9 +183,9 @@ namespace Bimil {
             // chbRestrictRepeated
             // 
             this.chbRestrictRepeated.AutoSize = true;
-            this.chbRestrictRepeated.Location = new System.Drawing.Point(6, 111);
+            this.chbRestrictRepeated.Location = new System.Drawing.Point(6, 90);
             this.chbRestrictRepeated.Name = "chbRestrictRepeated";
-            this.chbRestrictRepeated.Size = new System.Drawing.Size(163, 21);
+            this.chbRestrictRepeated.Size = new System.Drawing.Size(126, 17);
             this.chbRestrictRepeated.TabIndex = 3;
             this.chbRestrictRepeated.Text = "Repeated characters";
             this.tip.SetToolTip(this.chbRestrictRepeated, "Don\'t allow characters to repeat immediatelly one after another");
@@ -194,9 +195,9 @@ namespace Bimil {
             // chbRestrictPronounceable
             // 
             this.chbRestrictPronounceable.AutoSize = true;
-            this.chbRestrictPronounceable.Location = new System.Drawing.Point(6, 84);
+            this.chbRestrictPronounceable.Location = new System.Drawing.Point(6, 67);
             this.chbRestrictPronounceable.Name = "chbRestrictPronounceable";
-            this.chbRestrictPronounceable.Size = new System.Drawing.Size(126, 21);
+            this.chbRestrictPronounceable.Size = new System.Drawing.Size(98, 17);
             this.chbRestrictPronounceable.TabIndex = 2;
             this.chbRestrictPronounceable.Text = "Pronounceable";
             this.tip.SetToolTip(this.chbRestrictPronounceable, "Attempt to make password easier to pronounce by having every second letter a vowe" +
@@ -207,9 +208,9 @@ namespace Bimil {
             // chbRestrictMovable
             // 
             this.chbRestrictMovable.AutoSize = true;
-            this.chbRestrictMovable.Location = new System.Drawing.Point(6, 57);
+            this.chbRestrictMovable.Location = new System.Drawing.Point(6, 44);
             this.chbRestrictMovable.Name = "chbRestrictMovable";
-            this.chbRestrictMovable.Size = new System.Drawing.Size(122, 21);
+            this.chbRestrictMovable.Size = new System.Drawing.Size(96, 17);
             this.chbRestrictMovable.TabIndex = 1;
             this.chbRestrictMovable.Text = "Avoid movable";
             this.tip.SetToolTip(this.chbRestrictMovable, "Avoid characters that are often found on different spot on different keyboards");
@@ -219,9 +220,10 @@ namespace Bimil {
             // chbRestrictSimilar
             // 
             this.chbRestrictSimilar.AutoSize = true;
-            this.chbRestrictSimilar.Location = new System.Drawing.Point(6, 30);
+            this.chbRestrictSimilar.Location = new System.Drawing.Point(6, 21);
+            this.chbRestrictSimilar.Margin = new System.Windows.Forms.Padding(3, 24, 3, 3);
             this.chbRestrictSimilar.Name = "chbRestrictSimilar";
-            this.chbRestrictSimilar.Size = new System.Drawing.Size(109, 21);
+            this.chbRestrictSimilar.Size = new System.Drawing.Size(84, 17);
             this.chbRestrictSimilar.TabIndex = 0;
             this.chbRestrictSimilar.Text = "Avoid similar";
             this.tip.SetToolTip(this.chbRestrictSimilar, "Avoid similarly looking characters (e.g. l and 1)");
@@ -231,11 +233,12 @@ namespace Bimil {
             // txtLength
             // 
             this.txtLength.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.txtLength.Location = new System.Drawing.Point(156, 150);
+            this.txtLength.Location = new System.Drawing.Point(115, 125);
+            this.txtLength.Margin = new System.Windows.Forms.Padding(3, 6, 3, 3);
             this.txtLength.MaxLength = 2;
             this.txtLength.Name = "txtLength";
             this.txtLength.ShortcutsEnabled = false;
-            this.txtLength.Size = new System.Drawing.Size(50, 22);
+            this.txtLength.Size = new System.Drawing.Size(38, 20);
             this.txtLength.TabIndex = 3;
             this.txtLength.Text = "14";
             this.txtLength.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
@@ -247,11 +250,12 @@ namespace Bimil {
             // txtWordCount
             // 
             this.txtWordCount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.txtWordCount.Location = new System.Drawing.Point(156, 150);
+            this.txtWordCount.Location = new System.Drawing.Point(115, 125);
+            this.txtWordCount.Margin = new System.Windows.Forms.Padding(3, 6, 3, 3);
             this.txtWordCount.MaxLength = 1;
             this.txtWordCount.Name = "txtWordCount";
             this.txtWordCount.ShortcutsEnabled = false;
-            this.txtWordCount.Size = new System.Drawing.Size(50, 22);
+            this.txtWordCount.Size = new System.Drawing.Size(38, 20);
             this.txtWordCount.TabIndex = 3;
             this.txtWordCount.Text = "5";
             this.txtWordCount.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
@@ -263,9 +267,9 @@ namespace Bimil {
             // chbWordIncludeSpecialCharacter
             // 
             this.chbWordIncludeSpecialCharacter.AutoSize = true;
-            this.chbWordIncludeSpecialCharacter.Location = new System.Drawing.Point(6, 57);
+            this.chbWordIncludeSpecialCharacter.Location = new System.Drawing.Point(6, 44);
             this.chbWordIncludeSpecialCharacter.Name = "chbWordIncludeSpecialCharacter";
-            this.chbWordIncludeSpecialCharacter.Size = new System.Drawing.Size(140, 21);
+            this.chbWordIncludeSpecialCharacter.Size = new System.Drawing.Size(109, 17);
             this.chbWordIncludeSpecialCharacter.TabIndex = 1;
             this.chbWordIncludeSpecialCharacter.Text = "Special character";
             this.tip.SetToolTip(this.chbWordIncludeSpecialCharacter, "Include special character in one of the words");
@@ -277,9 +281,10 @@ namespace Bimil {
             this.chbWordIncludeNumber.AutoSize = true;
             this.chbWordIncludeNumber.Checked = true;
             this.chbWordIncludeNumber.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chbWordIncludeNumber.Location = new System.Drawing.Point(6, 30);
+            this.chbWordIncludeNumber.Location = new System.Drawing.Point(6, 21);
+            this.chbWordIncludeNumber.Margin = new System.Windows.Forms.Padding(3, 24, 3, 3);
             this.chbWordIncludeNumber.Name = "chbWordIncludeNumber";
-            this.chbWordIncludeNumber.Size = new System.Drawing.Size(80, 21);
+            this.chbWordIncludeNumber.Size = new System.Drawing.Size(63, 17);
             this.chbWordIncludeNumber.TabIndex = 0;
             this.chbWordIncludeNumber.Text = "Number";
             this.tip.SetToolTip(this.chbWordIncludeNumber, "Include number in one of words");
@@ -289,9 +294,9 @@ namespace Bimil {
             // chbWordIncludeIncomplete
             // 
             this.chbWordIncludeIncomplete.AutoSize = true;
-            this.chbWordIncludeIncomplete.Location = new System.Drawing.Point(6, 111);
+            this.chbWordIncludeIncomplete.Location = new System.Drawing.Point(6, 90);
             this.chbWordIncludeIncomplete.Name = "chbWordIncludeIncomplete";
-            this.chbWordIncludeIncomplete.Size = new System.Drawing.Size(132, 21);
+            this.chbWordIncludeIncomplete.Size = new System.Drawing.Size(104, 17);
             this.chbWordIncludeIncomplete.TabIndex = 3;
             this.chbWordIncludeIncomplete.Text = "Incomplete word";
             this.tip.SetToolTip(this.chbWordIncludeIncomplete, "Remove a character from one of the words.");
@@ -301,9 +306,9 @@ namespace Bimil {
             // chbWordIncludeUpperCase
             // 
             this.chbWordIncludeUpperCase.AutoSize = true;
-            this.chbWordIncludeUpperCase.Location = new System.Drawing.Point(6, 84);
+            this.chbWordIncludeUpperCase.Location = new System.Drawing.Point(6, 67);
             this.chbWordIncludeUpperCase.Name = "chbWordIncludeUpperCase";
-            this.chbWordIncludeUpperCase.Size = new System.Drawing.Size(139, 21);
+            this.chbWordIncludeUpperCase.Size = new System.Drawing.Size(107, 17);
             this.chbWordIncludeUpperCase.TabIndex = 2;
             this.chbWordIncludeUpperCase.Text = "Upper case letter";
             this.tip.SetToolTip(this.chbWordIncludeUpperCase, "Include upper case letter in one of words");
@@ -313,9 +318,9 @@ namespace Bimil {
             // chbWordRestrictAddSpace
             // 
             this.chbWordRestrictAddSpace.AutoSize = true;
-            this.chbWordRestrictAddSpace.Location = new System.Drawing.Point(6, 111);
+            this.chbWordRestrictAddSpace.Location = new System.Drawing.Point(6, 90);
             this.chbWordRestrictAddSpace.Name = "chbWordRestrictAddSpace";
-            this.chbWordRestrictAddSpace.Size = new System.Drawing.Size(108, 21);
+            this.chbWordRestrictAddSpace.Size = new System.Drawing.Size(85, 17);
             this.chbWordRestrictAddSpace.TabIndex = 3;
             this.chbWordRestrictAddSpace.Text = "Add spacing";
             this.tip.SetToolTip(this.chbWordRestrictAddSpace, "Adds spacing between words");
@@ -327,9 +332,9 @@ namespace Bimil {
             this.chbWordRestrictBreak.AutoSize = true;
             this.chbWordRestrictBreak.Checked = true;
             this.chbWordRestrictBreak.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chbWordRestrictBreak.Location = new System.Drawing.Point(6, 57);
+            this.chbWordRestrictBreak.Location = new System.Drawing.Point(6, 44);
             this.chbWordRestrictBreak.Name = "chbWordRestrictBreak";
-            this.chbWordRestrictBreak.Size = new System.Drawing.Size(157, 21);
+            this.chbWordRestrictBreak.Size = new System.Drawing.Size(122, 17);
             this.chbWordRestrictBreak.TabIndex = 1;
             this.chbWordRestrictBreak.Text = "Don\'t break up word";
             this.tip.SetToolTip(this.chbWordRestrictBreak, "Modifications to the words are done at the begining or at the end of word only.");
@@ -341,9 +346,10 @@ namespace Bimil {
             this.chbWordRestrictTitleCase.AutoSize = true;
             this.chbWordRestrictTitleCase.Checked = true;
             this.chbWordRestrictTitleCase.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chbWordRestrictTitleCase.Location = new System.Drawing.Point(6, 30);
+            this.chbWordRestrictTitleCase.Location = new System.Drawing.Point(6, 21);
+            this.chbWordRestrictTitleCase.Margin = new System.Windows.Forms.Padding(3, 24, 3, 3);
             this.chbWordRestrictTitleCase.Name = "chbWordRestrictTitleCase";
-            this.chbWordRestrictTitleCase.Size = new System.Drawing.Size(91, 21);
+            this.chbWordRestrictTitleCase.Size = new System.Drawing.Size(72, 17);
             this.chbWordRestrictTitleCase.TabIndex = 0;
             this.chbWordRestrictTitleCase.Text = "Title case";
             this.tip.SetToolTip(this.chbWordRestrictTitleCase, "First character of every word will be capitalized.");
@@ -355,9 +361,9 @@ namespace Bimil {
             this.chbWordRestrictSuffixOnly.AutoSize = true;
             this.chbWordRestrictSuffixOnly.Checked = true;
             this.chbWordRestrictSuffixOnly.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chbWordRestrictSuffixOnly.Location = new System.Drawing.Point(6, 84);
+            this.chbWordRestrictSuffixOnly.Location = new System.Drawing.Point(6, 67);
             this.chbWordRestrictSuffixOnly.Name = "chbWordRestrictSuffixOnly";
-            this.chbWordRestrictSuffixOnly.Size = new System.Drawing.Size(162, 21);
+            this.chbWordRestrictSuffixOnly.Size = new System.Drawing.Size(124, 17);
             this.chbWordRestrictSuffixOnly.TabIndex = 2;
             this.chbWordRestrictSuffixOnly.Text = "Append to suffix-only";
             this.tip.SetToolTip(this.chbWordRestrictSuffixOnly, "Modifications to the words are done at the end of password only.");
@@ -367,12 +373,13 @@ namespace Bimil {
             // txtWordPasswordLength
             // 
             this.txtWordPasswordLength.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.txtWordPasswordLength.Location = new System.Drawing.Point(371, 150);
+            this.txtWordPasswordLength.Location = new System.Drawing.Point(280, 125);
+            this.txtWordPasswordLength.Margin = new System.Windows.Forms.Padding(3, 6, 3, 3);
             this.txtWordPasswordLength.MaxLength = 2;
             this.txtWordPasswordLength.Name = "txtWordPasswordLength";
             this.txtWordPasswordLength.ReadOnly = true;
             this.txtWordPasswordLength.ShortcutsEnabled = false;
-            this.txtWordPasswordLength.Size = new System.Drawing.Size(50, 22);
+            this.txtWordPasswordLength.Size = new System.Drawing.Size(38, 20);
             this.txtWordPasswordLength.TabIndex = 5;
             this.txtWordPasswordLength.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.tip.SetToolTip(this.txtWordPasswordLength, "Length of password (1-99).");
@@ -382,10 +389,10 @@ namespace Bimil {
             this.btnSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnSave.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.btnSave.Enabled = false;
-            this.btnSave.Location = new System.Drawing.Point(357, 291);
+            this.btnSave.Location = new System.Drawing.Point(260, 248);
             this.btnSave.Margin = new System.Windows.Forms.Padding(3, 15, 3, 3);
             this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(90, 28);
+            this.btnSave.Size = new System.Drawing.Size(80, 23);
             this.btnSave.TabIndex = 0;
             this.btnSave.Text = "&Save";
             this.tip.SetToolTip(this.btnSave, "Save password");
@@ -397,10 +404,10 @@ namespace Bimil {
             this.btnSaveAndCopy.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnSaveAndCopy.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.btnSaveAndCopy.Enabled = false;
-            this.btnSaveAndCopy.Location = new System.Drawing.Point(241, 291);
+            this.btnSaveAndCopy.Location = new System.Drawing.Point(174, 248);
             this.btnSaveAndCopy.Margin = new System.Windows.Forms.Padding(3, 15, 3, 3);
             this.btnSaveAndCopy.Name = "btnSaveAndCopy";
-            this.btnSaveAndCopy.Size = new System.Drawing.Size(110, 28);
+            this.btnSaveAndCopy.Size = new System.Drawing.Size(80, 23);
             this.btnSaveAndCopy.TabIndex = 5;
             this.btnSaveAndCopy.Text = "&Save && Copy";
             this.tip.SetToolTip(this.btnSaveAndCopy, "Save password and copy to clipboard.");
@@ -409,12 +416,14 @@ namespace Bimil {
             // 
             // tabStyle
             // 
+            this.tabStyle.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.tabStyle.Controls.Add(this.tabStyle_Words);
             this.tabStyle.Controls.Add(this.tabStyle_Classic);
-            this.tabStyle.Location = new System.Drawing.Point(12, 12);
+            this.tabStyle.Location = new System.Drawing.Point(11, 12);
             this.tabStyle.Name = "tabStyle";
             this.tabStyle.SelectedIndex = 0;
-            this.tabStyle.Size = new System.Drawing.Size(435, 207);
+            this.tabStyle.Size = new System.Drawing.Size(329, 174);
             this.tabStyle.TabIndex = 1;
             this.tabStyle.SelectedIndexChanged += new System.EventHandler(this.btnGenerate_Click);
             // 
@@ -426,10 +435,9 @@ namespace Bimil {
             this.tabStyle_Words.Controls.Add(this.lblWordCount);
             this.tabStyle_Words.Controls.Add(this.txtWordCount);
             this.tabStyle_Words.Controls.Add(this.grpWordInclude);
-            this.tabStyle_Words.Location = new System.Drawing.Point(4, 25);
+            this.tabStyle_Words.Location = new System.Drawing.Point(4, 22);
             this.tabStyle_Words.Name = "tabStyle_Words";
-            this.tabStyle_Words.Padding = new System.Windows.Forms.Padding(3);
-            this.tabStyle_Words.Size = new System.Drawing.Size(427, 178);
+            this.tabStyle_Words.Size = new System.Drawing.Size(321, 148);
             this.tabStyle_Words.TabIndex = 0;
             this.tabStyle_Words.Text = "Word-based";
             this.tabStyle_Words.UseVisualStyleBackColor = true;
@@ -438,9 +446,9 @@ namespace Bimil {
             // 
             this.lblWordPasswordLength.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblWordPasswordLength.AutoSize = true;
-            this.lblWordPasswordLength.Location = new System.Drawing.Point(224, 153);
+            this.lblWordPasswordLength.Location = new System.Drawing.Point(170, 128);
             this.lblWordPasswordLength.Name = "lblWordPasswordLength";
-            this.lblWordPasswordLength.Size = new System.Drawing.Size(116, 17);
+            this.lblWordPasswordLength.Size = new System.Drawing.Size(88, 13);
             this.lblWordPasswordLength.TabIndex = 4;
             this.lblWordPasswordLength.Text = "Password length:";
             // 
@@ -451,11 +459,11 @@ namespace Bimil {
             this.grpWordRestrict.Controls.Add(this.chbWordRestrictTitleCase);
             this.grpWordRestrict.Controls.Add(this.chbWordRestrictBreak);
             this.grpWordRestrict.Controls.Add(this.chbWordRestrictAddSpace);
-            this.grpWordRestrict.Location = new System.Drawing.Point(221, 6);
+            this.grpWordRestrict.Location = new System.Drawing.Point(168, 3);
             this.grpWordRestrict.Margin = new System.Windows.Forms.Padding(12, 3, 3, 3);
             this.grpWordRestrict.Name = "grpWordRestrict";
             this.grpWordRestrict.Padding = new System.Windows.Forms.Padding(3, 12, 3, 3);
-            this.grpWordRestrict.Size = new System.Drawing.Size(200, 138);
+            this.grpWordRestrict.Size = new System.Drawing.Size(150, 113);
             this.grpWordRestrict.TabIndex = 1;
             this.grpWordRestrict.TabStop = false;
             this.grpWordRestrict.Text = "Restrictions";
@@ -464,9 +472,9 @@ namespace Bimil {
             // 
             this.lblWordCount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblWordCount.AutoSize = true;
-            this.lblWordCount.Location = new System.Drawing.Point(6, 153);
+            this.lblWordCount.Location = new System.Drawing.Point(6, 128);
             this.lblWordCount.Name = "lblWordCount";
-            this.lblWordCount.Size = new System.Drawing.Size(85, 17);
+            this.lblWordCount.Size = new System.Drawing.Size(66, 13);
             this.lblWordCount.TabIndex = 2;
             this.lblWordCount.Text = "Word count:";
             // 
@@ -476,10 +484,10 @@ namespace Bimil {
             this.grpWordInclude.Controls.Add(this.chbWordIncludeNumber);
             this.grpWordInclude.Controls.Add(this.chbWordIncludeIncomplete);
             this.grpWordInclude.Controls.Add(this.chbWordIncludeUpperCase);
-            this.grpWordInclude.Location = new System.Drawing.Point(6, 6);
+            this.grpWordInclude.Location = new System.Drawing.Point(3, 3);
             this.grpWordInclude.Name = "grpWordInclude";
             this.grpWordInclude.Padding = new System.Windows.Forms.Padding(3, 12, 3, 3);
-            this.grpWordInclude.Size = new System.Drawing.Size(200, 138);
+            this.grpWordInclude.Size = new System.Drawing.Size(150, 113);
             this.grpWordInclude.TabIndex = 0;
             this.grpWordInclude.TabStop = false;
             this.grpWordInclude.Text = "Include";
@@ -490,10 +498,11 @@ namespace Bimil {
             this.tabStyle_Classic.Controls.Add(this.txtLength);
             this.tabStyle_Classic.Controls.Add(this.grpRestrictions);
             this.tabStyle_Classic.Controls.Add(this.grpInclude);
-            this.tabStyle_Classic.Location = new System.Drawing.Point(4, 25);
+            this.tabStyle_Classic.Location = new System.Drawing.Point(4, 22);
+            this.tabStyle_Classic.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.tabStyle_Classic.Name = "tabStyle_Classic";
-            this.tabStyle_Classic.Padding = new System.Windows.Forms.Padding(3);
-            this.tabStyle_Classic.Size = new System.Drawing.Size(427, 178);
+            this.tabStyle_Classic.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tabStyle_Classic.Size = new System.Drawing.Size(321, 148);
             this.tabStyle_Classic.TabIndex = 1;
             this.tabStyle_Classic.Text = "Classic";
             this.tabStyle_Classic.UseVisualStyleBackColor = true;
@@ -502,9 +511,10 @@ namespace Bimil {
             // 
             this.lblLength.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblLength.AutoSize = true;
-            this.lblLength.Location = new System.Drawing.Point(6, 153);
+            this.lblLength.Location = new System.Drawing.Point(6, 128);
+            this.lblLength.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblLength.Name = "lblLength";
-            this.lblLength.Size = new System.Drawing.Size(56, 17);
+            this.lblLength.Size = new System.Drawing.Size(43, 13);
             this.lblLength.TabIndex = 2;
             this.lblLength.Text = "Length:";
             // 
@@ -515,11 +525,11 @@ namespace Bimil {
             this.grpRestrictions.Controls.Add(this.chbRestrictPronounceable);
             this.grpRestrictions.Controls.Add(this.chbRestrictMovable);
             this.grpRestrictions.Controls.Add(this.chbRestrictSimilar);
-            this.grpRestrictions.Location = new System.Drawing.Point(221, 6);
+            this.grpRestrictions.Location = new System.Drawing.Point(168, 3);
             this.grpRestrictions.Margin = new System.Windows.Forms.Padding(12, 3, 3, 3);
             this.grpRestrictions.Name = "grpRestrictions";
             this.grpRestrictions.Padding = new System.Windows.Forms.Padding(3, 12, 3, 3);
-            this.grpRestrictions.Size = new System.Drawing.Size(200, 138);
+            this.grpRestrictions.Size = new System.Drawing.Size(150, 113);
             this.grpRestrictions.TabIndex = 1;
             this.grpRestrictions.TabStop = false;
             this.grpRestrictions.Text = "Restrictions";
@@ -530,10 +540,10 @@ namespace Bimil {
             this.grpInclude.Controls.Add(this.chbIncludeNumbers);
             this.grpInclude.Controls.Add(this.chbIncludeLowerCase);
             this.grpInclude.Controls.Add(this.chbIncludeUpperCase);
-            this.grpInclude.Location = new System.Drawing.Point(6, 6);
+            this.grpInclude.Location = new System.Drawing.Point(3, 3);
             this.grpInclude.Name = "grpInclude";
             this.grpInclude.Padding = new System.Windows.Forms.Padding(3, 12, 3, 3);
-            this.grpInclude.Size = new System.Drawing.Size(200, 138);
+            this.grpInclude.Size = new System.Drawing.Size(150, 113);
             this.grpInclude.TabIndex = 0;
             this.grpInclude.TabStop = false;
             this.grpInclude.Text = "Include";
@@ -541,19 +551,19 @@ namespace Bimil {
             // picSecurityRating
             // 
             this.picSecurityRating.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.picSecurityRating.Location = new System.Drawing.Point(12, 274);
-            this.picSecurityRating.Margin = new System.Windows.Forms.Padding(3, 3, 3, 0);
+            this.picSecurityRating.Location = new System.Drawing.Point(9, 235);
+            this.picSecurityRating.Margin = new System.Windows.Forms.Padding(0);
             this.picSecurityRating.Name = "picSecurityRating";
-            this.picSecurityRating.Size = new System.Drawing.Size(48, 48);
+            this.picSecurityRating.Size = new System.Drawing.Size(36, 39);
             this.picSecurityRating.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
             this.picSecurityRating.TabIndex = 5;
             this.picSecurityRating.TabStop = false;
             // 
             // PasswordGeneratorForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(459, 331);
+            this.ClientSize = new System.Drawing.Size(352, 283);
             this.Controls.Add(this.btnSaveAndCopy);
             this.Controls.Add(this.btnSave);
             this.Controls.Add(this.picSecurityRating);
@@ -563,6 +573,7 @@ namespace Bimil {
             this.Controls.Add(this.txtPassword);
             this.Controls.Add(this.lblCombinations);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "PasswordGeneratorForm";
