@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Security;
 using System.Security.Cryptography;
 using System.Text;
@@ -221,7 +222,9 @@ namespace Bimil {
             }
 
             bwUpgradeCheck.CancelAsync();
-            ClipboardHelper.Cancel();
+            try {
+                ClipboardHelper.Cancel();
+            } catch (ExternalException) { } //to avoid exception when shutting down
 
             this.Document = null;
             this.DocumentFileName = null;
