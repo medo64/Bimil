@@ -1,5 +1,6 @@
 //Copyright 2017 by Josip Medved <jmedved@jmedved.com> (www.medo64.com) MIT License
 
+//2018-11-25: Refactored which file gets used if application is not installed.
 //2017-11-05: Suppress exception on UnauthorizedAccessException.
 //2017-10-09: Support for /opt installation on Linux.
 //2017-04-29: Added IsAssumedInstalled property.
@@ -16,7 +17,6 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
-using System.Runtime.InteropServices;
 using System.Text;
 
 namespace Medo.Configuration {
@@ -258,24 +258,30 @@ namespace Medo.Configuration {
         private static readonly object SyncReadWrite = new object();
 
 
-        private static bool IsAssumedInstalledBacking;
+        private static bool _isAssumedInstalled;
         /// <summary>
-        /// Gets if application is assumed to be installed.
-        /// Application is considered installed if it is located in Program Files directory (or opt) or if file is already present in Application Data folder.
+        /// Gets/sets if application is assumed to be installed.
+        /// Application is considered installed if it is located in Program Files directory (or opt).
+        /// Setting value to true before loading files will force assumption of installation status.
         /// </summary>
         public static bool IsAssumedInstalled {
             get {
                 lock (SyncReadWrite) {
                     if (!IsInitialized) { Initialize(); }
-                    return IsAssumedInstalledBacking;
+                    return _isAssumedInstalled;
                 }
+            }
+            set {
+                if (IsInitialized) { throw new InvalidOperationException("Cannot set value once config has been loaded."); }
+                _isAssumedInstalled = value;
             }
         }
 
-        private static string FileNameBacking;
+        private static string _fileName;
         /// <summary>
         /// Gets/sets the name of the file used for settings.
-        /// If executable is located under Program Files, properties file will be under Application Data.
+        /// Settings are always written to this file but reading might be done from override file first
+        /// If executable is located under Program Files, properties file will be in Application Data.
         /// If executable is located in some other directory, a local file will be used.
         /// </summary>
         /// <exception cref="ArgumentNullException">Value cannot be null.</exception>
@@ -284,7 +290,7 @@ namespace Medo.Configuration {
             get {
                 lock (SyncReadWrite) {
                     if (!IsInitialized) { Initialize(); }
-                    return FileNameBacking;
+                    return _fileName;
                 }
             }
             set {
@@ -295,26 +301,27 @@ namespace Medo.Configuration {
                     } else if (value.IndexOfAny(Path.GetInvalidPathChars()) >= 0) {
                         throw new ArgumentOutOfRangeException(nameof(value), "Value is not a valid path.");
                     } else {
-                        FileNameBacking = value;
+                        _fileName = value;
                         IsLoaded = false; //force loading
                     }
                 }
             }
         }
 
-        private static string OverrideFileNameBacking;
+        private static string _overrideFileName;
         /// <summary>
         /// Gets/sets the name of the file used for settings override.
-        /// This file is not written to.
+        /// Settings stored in this file are always read first and never written.
         /// If executable is located under Program Files, override properties file will be in executable's directory.
         /// If executable is located in some other directory, no override file will be used.
+        /// If application is installed under /opt on Linux, override config file will be located under /etc/opt.
         /// </summary>
         /// <exception cref="ArgumentOutOfRangeException">Value is not a valid path.</exception>
         public static string OverrideFileName {
             get {
                 lock (SyncReadWrite) {
                     if (!IsInitialized) { Initialize(); }
-                    return OverrideFileNameBacking;
+                    return _overrideFileName;
                 }
             }
             set {
@@ -323,7 +330,7 @@ namespace Medo.Configuration {
                     if ((value != null) && (value.IndexOfAny(Path.GetInvalidPathChars()) >= 0)) {
                         throw new ArgumentOutOfRangeException(nameof(value), "Value is not a valid path.");
                     } else {
-                        OverrideFileNameBacking = value;
+                        _overrideFileName = value;
                         IsLoaded = false;
                     }
                 }
@@ -358,6 +365,8 @@ namespace Medo.Configuration {
                     return DefaultPropertiesFile.FileExists;
                 }
             } finally {
+                Debug.WriteLine("[Settings] Primary: " + FileName);
+                Debug.WriteLine("[Settings] Override: " + OverrideFileName);
                 Debug.WriteLine("[Settings] Load completed in " + sw.ElapsedMilliseconds.ToString(CultureInfo.InvariantCulture) + " milliseconds.");
             }
         }
@@ -397,13 +406,14 @@ namespace Medo.Configuration {
         /// </summary>
         public static void Reset() {
             lock (SyncReadWrite) {
+                _isAssumedInstalled = false;
                 IsLoaded = false;
                 IsInitialized = false;
             }
         }
 
         /// <summary>
-        /// Gets/sets if setting is saved immediatelly.
+        /// Gets/sets if setting is saved immediately.
         /// </summary>
         public static bool ImmediateSave { get; set; } = true;
 
@@ -435,38 +445,75 @@ namespace Medo.Configuration {
                 ? application + ".cfg"
                 : "." + application.ToLowerInvariant();
 
-            var userFileLocation = IsOSWindows
+            var userFilePath = IsOSWindows
                 ? Path.Combine(Environment.GetEnvironmentVariable("AppData"), company, application, baseFileName)
                 : Path.Combine(Environment.GetEnvironmentVariable("HOME") ?? "~", baseFileName);
 
-            var priorityFileLocation = Path.Combine(Path.GetDirectoryName(executablePath), baseFileName);
+            var localFilePath = Path.Combine(Path.GetDirectoryName(executablePath), baseFileName);
 
-            bool isInProgramFiles;
             if (IsOSWindows) {
-                var isPF = executablePath.StartsWith(Environment.GetEnvironmentVariable("ProgramFiles") + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase);
-                var isPF32 = executablePath.StartsWith(Environment.GetEnvironmentVariable("ProgramFiles(x86)") + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase);
-                isInProgramFiles = isPF || isPF32;
-            } else {
+
+#if NETSTANDARD1_6
+                var isPF = executablePath.StartsWith(AddDirectorySuffixIfNeeded(Environment.GetEnvironmentVariable("ProgramFiles")), StringComparison.OrdinalIgnoreCase);
+                var isPF32 = executablePath.StartsWith(AddDirectorySuffixIfNeeded(Environment.GetEnvironmentVariable("ProgramFiles(x86)")), StringComparison.OrdinalIgnoreCase);
+                var isPF64 = executablePath.StartsWith(AddDirectorySuffixIfNeeded(Environment.GetEnvironmentVariable("ProgramW6432")), StringComparison.OrdinalIgnoreCase);
+                var isUserPF = executablePath.StartsWith(AddDirectorySuffixIfNeeded(Path.Combine(Environment.GetEnvironmentVariable("LOCALAPPDATA"), "Programs")), StringComparison.OrdinalIgnoreCase);
+#else
+                var isPF = executablePath.StartsWith(AddDirectorySuffixIfNeeded(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles)), StringComparison.OrdinalIgnoreCase);
+                var isPF32 = executablePath.StartsWith(AddDirectorySuffixIfNeeded(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86)), StringComparison.OrdinalIgnoreCase);
+                var isPF64 = executablePath.StartsWith(AddDirectorySuffixIfNeeded(Environment.GetEnvironmentVariable("ProgramW6432")), StringComparison.OrdinalIgnoreCase);
+                var isUserPF = executablePath.StartsWith(AddDirectorySuffixIfNeeded(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Programs")), StringComparison.OrdinalIgnoreCase);
+#endif
+                var isInstalled = isPF || isPF32 || isPF64 || isUserPF || _isAssumedInstalled;
+
+                if (isInstalled) { //if in program files, assume user config is first, use local file as override
+                    _isAssumedInstalled = true;
+                    _fileName = userFilePath;
+                    _overrideFileName = File.Exists(localFilePath) ? localFilePath : null;
+                } else { //if outside of program files, assume local file only
+                    _isAssumedInstalled = false;
+                    _fileName = localFilePath;
+                    _overrideFileName = null;
+                }
+
+            } else { //Linux
+
                 var isOpt = executablePath.StartsWith(Path.DirectorySeparatorChar + "opt" + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase);
                 var isBin = executablePath.StartsWith(Path.DirectorySeparatorChar + "bin" + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase);
                 var isUsrBin = executablePath.StartsWith(Path.DirectorySeparatorChar + "usr" + Path.DirectorySeparatorChar + "bin" + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase);
-                isInProgramFiles = isOpt || isBin || isUsrBin;
-                if (isOpt) { //change priority file location to /etc/opt/<app>/<app>.cfg
-                    priorityFileLocation = Path.DirectorySeparatorChar + "etc" + Path.Combine(Path.GetDirectoryName(executablePath), application.ToLowerInvariant() + ".conf");
-                }
-            }
+                var isInstalled = isOpt || isBin || isUsrBin || _isAssumedInstalled;
 
-            IsAssumedInstalledBacking = File.Exists(userFileLocation) || isInProgramFiles;
-            FileNameBacking = IsAssumedInstalledBacking ? userFileLocation : priorityFileLocation;
-            OverrideFileNameBacking = IsAssumedInstalledBacking ? priorityFileLocation : null; //no priority file - one in current directory is the default one
+                if (isInstalled) {
+                    _isAssumedInstalled = true;
+                    _fileName = userFilePath;
+                    if (isOpt) { //change override file location to /etc/opt/<app>/<app>.cfg
+                        var globalFilePath = Path.DirectorySeparatorChar + "etc" + Path.Combine(Path.GetDirectoryName(executablePath), application.ToLowerInvariant() + ".conf");
+                        _overrideFileName = File.Exists(globalFilePath) ? globalFilePath : null;
+                    } else {
+                        _overrideFileName = File.Exists(localFilePath) ? localFilePath : null;
+                    }
+                } else { //if outside of program files, assume local file only
+                    _isAssumedInstalled = false;
+                    _fileName = localFilePath;
+                    _overrideFileName = null;
+                }
+
+            }
 
             IsInitialized = true;
         }
 
+        private static string AddDirectorySuffixIfNeeded(string path) {
+            if (string.IsNullOrEmpty(path)) { return ""; }
+            path = path.Trim();
+            if (path.EndsWith(Path.DirectorySeparatorChar.ToString(), StringComparison.Ordinal)) { return path; }
+            return path + Path.DirectorySeparatorChar;
+        }
+
 #if NETSTANDARD2_0 || NETSTANDARD1_6
-        private static bool IsOSWindows => RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+        private static bool IsOSWindows => System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Windows);
 #else
-        private static bool IsOSWindows => (Type.GetType("Mono.Runtime") == null);
+        private static bool IsOSWindows => (Path.DirectorySeparatorChar == '\\'); //not fool-proof but good enough
 #endif
 
         #region PropertiesFile
@@ -482,7 +529,7 @@ namespace Medo.Configuration {
             private readonly List<LineData> Lines = new List<LineData>();
 
             public PropertiesFile(string fileName, bool isOverride = false) {
-                this.FileName = fileName;
+                FileName = fileName;
 
                 string fileContent = null;
                 try {
@@ -520,11 +567,11 @@ namespace Medo.Configuration {
                         }
                         prevChar = ch;
                     }
-                    this.FileExists = true;
+                    FileExists = true;
 
                     processLine(currLine);
                 }
-                this.LineEnding = lineEnding ?? Environment.NewLine;
+                LineEnding = lineEnding ?? Environment.NewLine;
 
                 void processLine(StringBuilder line) {
                     var lineText = line.ToString();
@@ -643,13 +690,27 @@ namespace Medo.Configuration {
                                 } else {
                                     char newCh;
                                     switch (ch) {
-                                        case '0': newCh = '\0'; break;
-                                        case 'b': newCh = '\b'; break;
-                                        case 't': newCh = '\t'; break;
-                                        case 'n': newCh = '\n'; break;
-                                        case 'r': newCh = '\r'; break;
-                                        case '_': newCh = ' '; break;
-                                        default: newCh = ch; break;
+                                        case '0':
+                                            newCh = '\0';
+                                            break;
+                                        case 'b':
+                                            newCh = '\b';
+                                            break;
+                                        case 't':
+                                            newCh = '\t';
+                                            break;
+                                        case 'n':
+                                            newCh = '\n';
+                                            break;
+                                        case 'r':
+                                            newCh = '\r';
+                                            break;
+                                        case '_':
+                                            newCh = ' ';
+                                            break;
+                                        default:
+                                            newCh = ch;
+                                            break;
                                     }
                                     if (state == State.KeyEscape) {
                                         sbKey.Append(newCh);
@@ -696,11 +757,11 @@ namespace Medo.Configuration {
                         prevState = state;
                     }
 
-                    this.Lines.Add(new LineData(sbKey.ToString(), separatorPrefix, valueSeparator, separatorSuffix, sbValue.ToString(), commentPrefix, sbComment.ToString()));
+                    Lines.Add(new LineData(sbKey.ToString(), separatorPrefix, valueSeparator, separatorSuffix, sbValue.ToString(), commentPrefix, sbComment.ToString()));
                 }
 
 #if DEBUG
-                foreach (var line in this.Lines) {
+                foreach (var line in Lines) {
                     if (!string.IsNullOrEmpty(line.Key)) {
                         Debug.WriteLine(string.Format(CultureInfo.InvariantCulture, "[Settings] {0}{2}: {1}", line.Key, line.Value, (isOverride ? "*" : "")));
                     }
@@ -711,9 +772,9 @@ namespace Medo.Configuration {
             public bool FileExists { get; } //false if there was an error during load
 
             public bool Save() {
-                string fileContent = string.Join(this.LineEnding, this.Lines);
+                string fileContent = string.Join(LineEnding, Lines);
                 try {
-                    var directoryPath = Path.GetDirectoryName(this.FileName);
+                    var directoryPath = Path.GetDirectoryName(FileName);
                     if (!Directory.Exists(directoryPath)) {
                         var directoryStack = new Stack<string>();
                         do {
@@ -732,7 +793,7 @@ namespace Medo.Configuration {
                         }
                     }
 
-                    File.WriteAllText(this.FileName, fileContent, Utf8);
+                    File.WriteAllText(FileName, fileContent, Utf8);
                     return true;
                 } catch (IOException) {
                     return false;
@@ -773,20 +834,20 @@ namespace Medo.Configuration {
                         var totalLengthWithoutSuffix = key.Length + (template.SeparatorPrefix?.Length ?? 0) + 1;
                         var maxSuffixLength = firstKeyTotalLength - totalLengthWithoutSuffix;
                         if (maxSuffixLength < 1) { maxSuffixLength = 1; } //leave at least one space
-                        if (this.SeparatorSuffix.Length > maxSuffixLength) {
-                            this.SeparatorSuffix = this.SeparatorSuffix.Substring(0, maxSuffixLength);
+                        if (SeparatorSuffix.Length > maxSuffixLength) {
+                            SeparatorSuffix = SeparatorSuffix.Substring(0, maxSuffixLength);
                         }
                     }
                 }
 
                 public LineData(string key, string separatorPrefix, char? separator, string separatorSuffix, string value, string commentPrefix, string comment) {
-                    this.Key = key;
-                    this.SeparatorPrefix = separatorPrefix;
-                    this.Separator = separator ?? ':';
-                    this.SeparatorSuffix = separatorSuffix;
-                    this.Value = value;
-                    this.CommentPrefix = commentPrefix;
-                    this.Comment = comment;
+                    Key = key;
+                    SeparatorPrefix = separatorPrefix;
+                    Separator = separator ?? ':';
+                    SeparatorSuffix = separatorSuffix;
+                    Value = value;
+                    CommentPrefix = commentPrefix;
+                    Comment = comment;
                 }
 
                 public string Key { get; set; }
@@ -799,31 +860,35 @@ namespace Medo.Configuration {
 
                 public override string ToString() {
                     var sb = new StringBuilder();
-                    if (!string.IsNullOrEmpty(this.Key)) {
-                        EscapeIntoStringBuilder(sb, this.Key, isKey: true);
+                    if (!string.IsNullOrEmpty(Key)) {
+                        EscapeIntoStringBuilder(sb, Key, isKey: true);
 
-                        if (!string.IsNullOrEmpty(this.Value)) {
-                            if ((this.Separator == ':') || (this.Separator == '=')) {
-                                sb.Append(this.SeparatorPrefix);
-                                sb.Append(this.Separator);
-                                sb.Append(this.SeparatorSuffix);
+                        if (!string.IsNullOrEmpty(Value)) {
+                            if ((Separator == ':') || (Separator == '=')) {
+                                sb.Append(SeparatorPrefix);
+                                sb.Append(Separator);
+                                sb.Append(SeparatorSuffix);
                             } else {
-                                sb.Append(string.IsNullOrEmpty(this.SeparatorSuffix) ? " " : this.SeparatorSuffix);
+                                sb.Append(string.IsNullOrEmpty(SeparatorSuffix) ? " " : SeparatorSuffix);
                             }
-                            EscapeIntoStringBuilder(sb, this.Value ?? "");
+                            EscapeIntoStringBuilder(sb, Value ?? "");
                         } else { //try to preserve formatting in case of spaces (thus omitted)
-                            sb.Append(this.SeparatorPrefix);
-                            switch (this.Separator) {
-                                case ':': sb.Append(":"); break;
-                                case '=': sb.Append("="); break;
+                            sb.Append(SeparatorPrefix);
+                            switch (Separator) {
+                                case ':':
+                                    sb.Append(":");
+                                    break;
+                                case '=':
+                                    sb.Append("=");
+                                    break;
                             }
-                            sb.Append(this.SeparatorSuffix);
+                            sb.Append(SeparatorSuffix);
                         }
                     }
 
-                    if (!string.IsNullOrEmpty(this.Comment)) {
-                        if (!string.IsNullOrEmpty(this.CommentPrefix)) { sb.Append(this.CommentPrefix); }
-                        sb.Append(this.Comment);
+                    if (!string.IsNullOrEmpty(Comment)) {
+                        if (!string.IsNullOrEmpty(CommentPrefix)) { sb.Append(CommentPrefix); }
+                        sb.Append(Comment);
                     }
 
                     return sb.ToString();
@@ -833,13 +898,27 @@ namespace Medo.Configuration {
                     for (int i = 0; i < text.Length; i++) {
                         var ch = text[i];
                         switch (ch) {
-                            case '\\': sb.Append(@"\\"); break;
-                            case '\0': sb.Append(@"\0"); break;
-                            case '\b': sb.Append(@"\b"); break;
-                            case '\t': sb.Append(@"\t"); break;
-                            case '\r': sb.Append(@"\r"); break;
-                            case '\n': sb.Append(@"\n"); break;
-                            case '#': sb.Append(@"\#"); break;
+                            case '\\':
+                                sb.Append(@"\\");
+                                break;
+                            case '\0':
+                                sb.Append(@"\0");
+                                break;
+                            case '\b':
+                                sb.Append(@"\b");
+                                break;
+                            case '\t':
+                                sb.Append(@"\t");
+                                break;
+                            case '\r':
+                                sb.Append(@"\r");
+                                break;
+                            case '\n':
+                                sb.Append(@"\n");
+                                break;
+                            case '#':
+                                sb.Append(@"\#");
+                                break;
                             default:
                                 if (char.IsControl(ch)) {
                                     sb.Append(((int)ch).ToString("X4", CultureInfo.InvariantCulture));
@@ -851,12 +930,24 @@ namespace Medo.Configuration {
                                     }
                                 } else if (char.IsWhiteSpace(ch)) {
                                     switch (ch) {
-                                        case '\0': sb.Append(@"\0"); break;
-                                        case '\b': sb.Append(@"\b"); break;
-                                        case '\t': sb.Append(@"\t"); break;
-                                        case '\n': sb.Append(@"\n"); break;
-                                        case '\r': sb.Append(@"\r"); break;
-                                        default: sb.Append(((int)ch).ToString("X4", CultureInfo.InvariantCulture)); break;
+                                        case '\0':
+                                            sb.Append(@"\0");
+                                            break;
+                                        case '\b':
+                                            sb.Append(@"\b");
+                                            break;
+                                        case '\t':
+                                            sb.Append(@"\t");
+                                            break;
+                                        case '\n':
+                                            sb.Append(@"\n");
+                                            break;
+                                        case '\r':
+                                            sb.Append(@"\r");
+                                            break;
+                                        default:
+                                            sb.Append(((int)ch).ToString("X4", CultureInfo.InvariantCulture));
+                                            break;
                                     }
                                 } else if (ch == '\\') {
                                     sb.Append(@"\\");
@@ -868,21 +959,21 @@ namespace Medo.Configuration {
                     }
                 }
 
-                public bool IsEmpty => string.IsNullOrEmpty(this.Key) && string.IsNullOrEmpty(this.Value) && string.IsNullOrEmpty(this.CommentPrefix) && string.IsNullOrEmpty(this.Comment);
+                public bool IsEmpty => string.IsNullOrEmpty(Key) && string.IsNullOrEmpty(Value) && string.IsNullOrEmpty(CommentPrefix) && string.IsNullOrEmpty(Comment);
 
             }
 
 
             private Dictionary<string, int> CachedEntries;
             private void FillCache() {
-                this.CachedEntries = new Dictionary<string, int>(KeyComparer);
-                for (var i = 0; i < this.Lines.Count; i++) {
-                    var line = this.Lines[i];
+                CachedEntries = new Dictionary<string, int>(KeyComparer);
+                for (var i = 0; i < Lines.Count; i++) {
+                    var line = Lines[i];
                     if (!line.IsEmpty) {
-                        if (this.CachedEntries.ContainsKey(line.Key)) {
-                            this.CachedEntries[line.Key] = i; //last key takes precedence
+                        if (CachedEntries.ContainsKey(line.Key)) {
+                            CachedEntries[line.Key] = i; //last key takes precedence
                         } else {
-                            this.CachedEntries.Add(line.Key, i);
+                            CachedEntries.Add(line.Key, i);
                         }
                     }
                 }
@@ -890,15 +981,15 @@ namespace Medo.Configuration {
 
 
             public string ReadOne(string key) {
-                if (this.CachedEntries == null) { FillCache(); }
+                if (CachedEntries == null) { FillCache(); }
 
-                return this.CachedEntries.TryGetValue(key, out var lineNumber) ? this.Lines[lineNumber].Value : null;
+                return CachedEntries.TryGetValue(key, out var lineNumber) ? Lines[lineNumber].Value : null;
             }
 
             public IEnumerable<string> ReadMany(string key) {
-                if (this.CachedEntries == null) { FillCache(); }
+                if (CachedEntries == null) { FillCache(); }
 
-                foreach (var line in this.Lines) {
+                foreach (var line in Lines) {
                     if (string.Equals(key, line.Key, KeyComparison)) {
                         yield return line.Value;
                     }
@@ -907,37 +998,37 @@ namespace Medo.Configuration {
 
 
             public void WriteOne(string key, string value) {
-                if (this.CachedEntries == null) { FillCache(); }
+                if (CachedEntries == null) { FillCache(); }
 
-                if (this.CachedEntries.TryGetValue(key, out var lineIndex)) {
-                    var data = this.Lines[lineIndex];
+                if (CachedEntries.TryGetValue(key, out var lineIndex)) {
+                    var data = Lines[lineIndex];
                     data.Key = key;
                     data.Value = value;
                 } else {
-                    var hasLines = (this.Lines.Count > 0);
-                    var newData = new LineData(hasLines ? this.Lines[0] : null, key, value);
+                    var hasLines = (Lines.Count > 0);
+                    var newData = new LineData(hasLines ? Lines[0] : null, key, value);
                     if (!hasLines) {
-                        this.CachedEntries.Add(key, this.Lines.Count);
-                        this.Lines.Add(newData);
-                        this.Lines.Add(new LineData());
-                    } else if (!this.Lines[this.Lines.Count - 1].IsEmpty) {
-                        this.CachedEntries.Add(key, this.Lines.Count);
-                        this.Lines.Add(newData);
+                        CachedEntries.Add(key, Lines.Count);
+                        Lines.Add(newData);
+                        Lines.Add(new LineData());
+                    } else if (!Lines[Lines.Count - 1].IsEmpty) {
+                        CachedEntries.Add(key, Lines.Count);
+                        Lines.Add(newData);
                     } else {
-                        this.CachedEntries.Add(key, this.Lines.Count - 1);
-                        this.Lines.Insert(this.Lines.Count - 1, newData);
+                        CachedEntries.Add(key, Lines.Count - 1);
+                        Lines.Insert(Lines.Count - 1, newData);
                     }
                 }
             }
 
             public void WriteMany(string key, IEnumerable<string> values) {
-                if (this.CachedEntries == null) { FillCache(); }
+                if (CachedEntries == null) { FillCache(); }
 
-                if (this.CachedEntries.TryGetValue(key, out var lineIndex)) {
+                if (CachedEntries.TryGetValue(key, out var lineIndex)) {
                     int lastIndex = 0;
                     LineData lastLine = null;
-                    for (var i = this.Lines.Count - 1; i >= 0; i--) { //find insertion point
-                        var line = this.Lines[i];
+                    for (var i = Lines.Count - 1; i >= 0; i--) { //find insertion point
+                        var line = Lines[i];
                         if (string.Equals(key, line.Key, KeyComparison)) {
                             if (lastLine == null) {
                                 lastLine = line;
@@ -945,34 +1036,34 @@ namespace Medo.Configuration {
                             } else {
                                 lastIndex--;
                             }
-                            this.Lines.RemoveAt(i);
+                            Lines.RemoveAt(i);
                         }
                     }
 
-                    var hasLines = (this.Lines.Count > 0);
+                    var hasLines = (Lines.Count > 0);
                     foreach (var value in values) {
-                        this.Lines.Insert(lastIndex, new LineData(lastLine ?? (hasLines ? this.Lines[0] : null), key, value));
+                        Lines.Insert(lastIndex, new LineData(lastLine ?? (hasLines ? Lines[0] : null), key, value));
                         lastIndex++;
                     }
 
                     FillCache();
                 } else {
-                    var hasLines = (this.Lines.Count > 0);
+                    var hasLines = (Lines.Count > 0);
                     if (!hasLines) {
                         foreach (var value in values) {
-                            this.CachedEntries[key] = this.Lines.Count;
-                            this.Lines.Add(new LineData(null, key, value));
+                            CachedEntries[key] = Lines.Count;
+                            Lines.Add(new LineData(null, key, value));
                         }
-                        this.Lines.Add(new LineData());
-                    } else if (!this.Lines[this.Lines.Count - 1].IsEmpty) {
+                        Lines.Add(new LineData());
+                    } else if (!Lines[Lines.Count - 1].IsEmpty) {
                         foreach (var value in values) {
-                            this.CachedEntries[key] = this.Lines.Count;
-                            this.Lines.Add(new LineData(this.Lines[0], key, value));
+                            CachedEntries[key] = Lines.Count;
+                            Lines.Add(new LineData(Lines[0], key, value));
                         }
                     } else {
                         foreach (var value in values) {
-                            this.CachedEntries[key] = this.Lines.Count - 1;
-                            this.Lines.Insert(this.Lines.Count - 1, new LineData(this.Lines[0], key, value));
+                            CachedEntries[key] = Lines.Count - 1;
+                            Lines.Insert(Lines.Count - 1, new LineData(Lines[0], key, value));
                         }
                     }
                 }
@@ -980,20 +1071,20 @@ namespace Medo.Configuration {
 
 
             public void Delete(string key) {
-                if (this.CachedEntries == null) { FillCache(); }
+                if (CachedEntries == null) { FillCache(); }
 
-                this.CachedEntries.Remove(key);
-                for (var i = this.Lines.Count - 1; i >= 0; i--) {
-                    var line = this.Lines[i];
+                CachedEntries.Remove(key);
+                for (var i = Lines.Count - 1; i >= 0; i--) {
+                    var line = Lines[i];
                     if (string.Equals(key, line.Key, KeyComparison)) {
-                        this.Lines.RemoveAt(i);
+                        Lines.RemoveAt(i);
                     }
                 }
             }
 
             public void DeleteAll() {
-                this.Lines.Clear();
-                this.FillCache();
+                Lines.Clear();
+                FillCache();
             }
 
         }
