@@ -2,6 +2,11 @@
 
 if [ "$1" == "remove" ]
 then
+    if [ -f "/usr/bin/bimil" ]
+    then
+        rm "/usr/bin/bimil"
+    fi
+
     if [ -f "$HOME/.bimil" ]
     then
         rm "$HOME/.bimil"

@@ -1,6 +1,7 @@
 #!/bin/bash
 
 chmod +x /opt/bimil/bimil
+ln -s /opt/bimil/bimil /usr/bin/bimil
 
 echo "deb [arch=all] https://medo64.com/repositories/deb stable main" > /etc/apt/sources.list.d/medo64.list
 echo "-----BEGIN PGP PUBLIC KEY BLOCK-----
