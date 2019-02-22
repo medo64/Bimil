@@ -259,7 +259,7 @@ namespace Bimil {
                         break;
 
                     case RecordType.Password: {
-                            var textBox = NewTextBox(labelWidth, y, record);
+                            var textBox = NewTextBox(labelWidth, y, record, font: FixedFont);
                             textBox.UseSystemPasswordChar = true;
                             pnl.Controls.Add(textBox);
 
@@ -478,10 +478,10 @@ namespace Bimil {
 
         #region Controls
 
-        private TextBox NewTextBox(int x, int y, Record record, string text = null, bool urlLookAndFeel = false, bool multiline = false) {
+        private TextBox NewTextBox(int x, int y, Record record, string text = null, bool urlLookAndFeel = false, bool multiline = false, Font font = null) {
             var padding = SystemInformation.VerticalScrollBarWidth + 1;
 
-            var textBox = new TextBoxEx() { Font = this.Font, Location = new Point(x + padding, y), Tag = record, Width = pnl.ClientSize.Width - x - padding, ReadOnly = !this.Editable, Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right };
+            var textBox = new TextBoxEx() { Font = (font != null) ? font : this.Font, Location = new Point(x + padding, y), Tag = record, Width = pnl.ClientSize.Width - x - padding, ReadOnly = !this.Editable, Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right };
             textBox.Text = text ?? record.Text;
 
             if (urlLookAndFeel) {
