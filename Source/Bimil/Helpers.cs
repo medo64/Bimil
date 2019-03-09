@@ -29,6 +29,11 @@ namespace Bimil {
 
         #region Record
 
+        public static class HeaderConstants {
+            public const HeaderType StaticKey = (HeaderType)0x6F;
+        }
+
+
         public static string GetRecordCaption(Record record) {
             return GetRecordCaption(record.RecordType);
         }
