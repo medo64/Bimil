@@ -1,4 +1,4 @@
-#### Word-based password generator ####
+## Word-based password generator
 
 Bimil uses word list extracted from WordNet database using the following
 commands:

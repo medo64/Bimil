@@ -22,13 +22,12 @@ so, subject to the following conditions:
 
 
 
-
-### QR Coder (https://github.com/codebude/QRCoder) ###
+## QR Coder (https://github.com/codebude/QRCoder)
 
 To generate QR codes Bimil uses modified  version of QRCoder.
 
 
-#### The MIT License (MIT) ####
+### The MIT License (MIT)
 
 Copyright (c) 2013-2015 Raffael Herrmann
 
@@ -51,15 +50,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 
-
-
-### WordNet (https://wordnet.princeton.edu) ###
+## WordNet (https://wordnet.princeton.edu)
 
 Bimil uses WordNet database as a source of words for its word-based password
 generator.
 
 
-#### WordNet 3.0 License ####
+### WordNet 3.0 License
 
 This software and database is being provided to you, the LICENSEE, by Princeton
 University under the following license. By obtaining, using and/or copying this
@@ -86,3 +83,33 @@ The name of Princeton University or Princeton may not be used in advertising or
 publicity pertaining to distribution of the software and/or database. Title to
 copyright in this software, database and any associated documentation shall at
 all times remain with Princeton University and LICENSEE agrees to preserve same.
+
+
+
+## Popular Baby Names (United States Social Security Administration)
+
+Public Domain
+
+
+
+## US Board On Geographic Names (States, Territories, Associated Areas of the United States)
+
+Public Domain
+
+
+
+## The Bible, King James Version, Complete (Project Gutenberg)
+
+Public Domain, The Project Gutenberg License
+
+
+
+## The Complete Works of William Shakespeare (Project Gutenberg)
+
+Public Domain, The Project Gutenberg License, Produced by World Library, Inc., from their Library of the Future
+
+
+
+## The Complete Works of Jane Austen (Project Gutenberg):
+
+Public Domain, The Project Gutenberg License
