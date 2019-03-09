@@ -102,6 +102,196 @@ namespace PasswordSafe.Test {
             }
         }
 
+        [Fact(DisplayName = "PasswordSafe: Document: Load/Save Simple.bimil")]
+        public void Document_SimpleBimil() {
+            var msSave = new MemoryStream();
+            using (var doc = PwSafe.Document.Load(GetResourceStream("Simple.bimil"), "123")) {
+                doc.TrackAccess = false;
+                doc.TrackModify = false;
+
+                Assert.Equal(8, doc.Headers.Count);
+                Assert.Equal(0x030D, doc.Headers[PwSafe.HeaderType.Version].Version);
+                Assert.Equal(new Guid("0b073824-a406-2f4b-87b2-48656a6b5011"), doc.Headers[PwSafe.HeaderType.Uuid].Uuid);
+                Assert.Equal("", doc.Headers[PwSafe.HeaderType.NonDefaultPreferences].Text);
+                Assert.Equal(new DateTime(2019, 03, 08, 04, 27, 29, DateTimeKind.Utc), doc.Headers[PwSafe.HeaderType.TimestampOfLastSave].Time);
+                Assert.Equal("Josip", doc.Headers[PwSafe.HeaderType.LastSavedByUser].Text);
+                Assert.Equal("GANDALF", doc.Headers[PwSafe.HeaderType.LastSavedOnHost].Text);
+                Assert.Equal("Bimil V2.70", doc.Headers[PwSafe.HeaderType.WhatPerformedLastSave].Text);
+                Assert.Equal("01a93b6ef7c5af4a5990bd5c20064cc62e", doc.Headers[PwSafe.HeaderType.RecentlyUsedEntries].Text);
+
+                Assert.Equal(2, doc.Entries.Count);
+
+                Assert.Equal(4, doc.Entries[0].Records.Count);
+                Assert.Equal(new Guid("f76e3ba9-afc5-594a-90bd-5c20064cc62e"), doc.Entries[0].Records[PwSafe.RecordType.Uuid].Uuid);
+                Assert.Equal("A", doc.Entries[0].Records[PwSafe.RecordType.Title].Text);
+                Assert.Equal("A123", doc.Entries[0].Records[PwSafe.RecordType.Password].Text);
+                Assert.Equal(new DateTime(2015, 12, 28, 8, 36, 47, DateTimeKind.Utc), doc.Entries[0].Records[PwSafe.RecordType.CreationTime].Time);
+
+                Assert.Equal(4, doc.Entries[1].Records.Count);
+                Assert.Equal(new Guid("fb40f24e-68ec-c74e-8e87-293dd274d10c"), doc.Entries[1].Records[PwSafe.RecordType.Uuid].Uuid);
+                Assert.Equal("B", doc.Entries[1].Records[PwSafe.RecordType.Title].Text);
+                Assert.Equal("B123", doc.Entries[1].Records[PwSafe.RecordType.Password].Text);
+                Assert.Equal(new DateTime(2015, 12, 28, 8, 36, 59, DateTimeKind.Utc), doc.Entries[1].Records[PwSafe.RecordType.CreationTime].Time);
+
+                Assert.False(doc.HasChanged);
+                doc.Save(msSave);
+                Assert.False(doc.HasChanged);
+            }
+
+            msSave.Position = 0;
+
+            using (var doc = PwSafe.Document.Load(msSave, "123")) { //reload to verify
+                doc.TrackAccess = false;
+                doc.TrackModify = false;
+
+                Assert.Equal(8, doc.Headers.Count);
+                Assert.Equal(0x030D, doc.Headers[PwSafe.HeaderType.Version].Version);
+                Assert.Equal(new Guid("0b073824-a406-2f4b-87b2-48656a6b5011"), doc.Headers[PwSafe.HeaderType.Uuid].Uuid);
+                Assert.Equal("", doc.Headers[PwSafe.HeaderType.NonDefaultPreferences].Text);
+                Assert.Equal(new DateTime(2019, 03, 08, 04, 27, 29, DateTimeKind.Utc), doc.Headers[PwSafe.HeaderType.TimestampOfLastSave].Time);
+                Assert.Equal("Josip", doc.Headers[PwSafe.HeaderType.LastSavedByUser].Text);
+                Assert.Equal("GANDALF", doc.Headers[PwSafe.HeaderType.LastSavedOnHost].Text);
+                Assert.Equal("Bimil V2.70", doc.Headers[PwSafe.HeaderType.WhatPerformedLastSave].Text);
+                Assert.Equal("01a93b6ef7c5af4a5990bd5c20064cc62e", doc.Headers[PwSafe.HeaderType.RecentlyUsedEntries].Text);
+
+                Assert.Equal(2, doc.Entries.Count);
+
+                Assert.Equal(4, doc.Entries[0].Records.Count);
+                Assert.Equal(new Guid("f76e3ba9-afc5-594a-90bd-5c20064cc62e"), doc.Entries[0].Records[PwSafe.RecordType.Uuid].Uuid);
+                Assert.Equal("A", doc.Entries[0].Records[PwSafe.RecordType.Title].Text);
+                Assert.Equal("A123", doc.Entries[0].Records[PwSafe.RecordType.Password].Text);
+                Assert.Equal(new DateTime(2015, 12, 28, 8, 36, 47, DateTimeKind.Utc), doc.Entries[0].Records[PwSafe.RecordType.CreationTime].Time);
+
+                Assert.Equal(4, doc.Entries[1].Records.Count);
+                Assert.Equal(new Guid("fb40f24e-68ec-c74e-8e87-293dd274d10c"), doc.Entries[1].Records[PwSafe.RecordType.Uuid].Uuid);
+                Assert.Equal("B", doc.Entries[1].Records[PwSafe.RecordType.Title].Text);
+                Assert.Equal("B123", doc.Entries[1].Records[PwSafe.RecordType.Password].Text);
+                Assert.Equal(new DateTime(2015, 12, 28, 8, 36, 59, DateTimeKind.Utc), doc.Entries[1].Records[PwSafe.RecordType.CreationTime].Time);
+
+                Assert.False(doc.HasChanged);
+            }
+        }
+
+
+        [Fact(DisplayName = "PasswordSafe: Document: Load/Save Simple.bimil from key")]
+        public void Document_SimpleBimilFromKey() {
+            var msSave = new MemoryStream();
+            using (var doc = PwSafe.Document.Load(GetResourceStream("Simple.bimil"), null, new byte[] { 0x98, 0x33, 0x9C, 0x6D, 0xE6, 0xCF, 0x5A, 0x35, 0x53, 0x36, 0x7D, 0xFE, 0xF2, 0xC9, 0xDB, 0x1A, 0xAC, 0x28, 0xBD, 0x60, 0xFB, 0xA3, 0x9C, 0x37, 0x38, 0x4C, 0x93, 0xE6, 0x63, 0x51, 0xFE, 0xF8, 0x75, 0x45, 0x5F, 0xCD, 0x8D, 0xC3, 0x93, 0xC2, 0x1C, 0xB9, 0x14, 0xF1, 0x8E, 0xAA, 0x70, 0x49, 0xBA, 0xDE, 0xEC, 0xFB, 0x50, 0xCA, 0x65, 0x35, 0x06, 0x3E, 0x09, 0x0A, 0xE4, 0xE0, 0xFC, 0xB9 })) {
+                doc.TrackAccess = false;
+                doc.TrackModify = false;
+
+                Assert.Equal(8, doc.Headers.Count);
+                Assert.Equal(0x030D, doc.Headers[PwSafe.HeaderType.Version].Version);
+                Assert.Equal(new Guid("0b073824-a406-2f4b-87b2-48656a6b5011"), doc.Headers[PwSafe.HeaderType.Uuid].Uuid);
+                Assert.Equal("", doc.Headers[PwSafe.HeaderType.NonDefaultPreferences].Text);
+                Assert.Equal(new DateTime(2019, 03, 08, 04, 27, 29, DateTimeKind.Utc), doc.Headers[PwSafe.HeaderType.TimestampOfLastSave].Time);
+                Assert.Equal("Josip", doc.Headers[PwSafe.HeaderType.LastSavedByUser].Text);
+                Assert.Equal("GANDALF", doc.Headers[PwSafe.HeaderType.LastSavedOnHost].Text);
+                Assert.Equal("Bimil V2.70", doc.Headers[PwSafe.HeaderType.WhatPerformedLastSave].Text);
+                Assert.Equal("01a93b6ef7c5af4a5990bd5c20064cc62e", doc.Headers[PwSafe.HeaderType.RecentlyUsedEntries].Text);
+
+                Assert.Equal(2, doc.Entries.Count);
+
+                Assert.Equal(4, doc.Entries[0].Records.Count);
+                Assert.Equal(new Guid("f76e3ba9-afc5-594a-90bd-5c20064cc62e"), doc.Entries[0].Records[PwSafe.RecordType.Uuid].Uuid);
+                Assert.Equal("A", doc.Entries[0].Records[PwSafe.RecordType.Title].Text);
+                Assert.Equal("A123", doc.Entries[0].Records[PwSafe.RecordType.Password].Text);
+                Assert.Equal(new DateTime(2015, 12, 28, 8, 36, 47, DateTimeKind.Utc), doc.Entries[0].Records[PwSafe.RecordType.CreationTime].Time);
+
+                Assert.Equal(4, doc.Entries[1].Records.Count);
+                Assert.Equal(new Guid("fb40f24e-68ec-c74e-8e87-293dd274d10c"), doc.Entries[1].Records[PwSafe.RecordType.Uuid].Uuid);
+                Assert.Equal("B", doc.Entries[1].Records[PwSafe.RecordType.Title].Text);
+                Assert.Equal("B123", doc.Entries[1].Records[PwSafe.RecordType.Password].Text);
+                Assert.Equal(new DateTime(2015, 12, 28, 8, 36, 59, DateTimeKind.Utc), doc.Entries[1].Records[PwSafe.RecordType.CreationTime].Time);
+
+                Assert.False(doc.HasChanged);
+                Assert.Throws<NotSupportedException>(() => {
+                    doc.Save(msSave);
+                });
+
+                doc.SetPassphrase("123");
+                doc.Save(msSave);
+                Assert.False(doc.HasChanged);
+            }
+
+            msSave.Position = 0;
+
+            using (var doc = PwSafe.Document.Load(msSave, "123")) { //reload to verify
+                doc.TrackAccess = false;
+                doc.TrackModify = false;
+
+                Assert.Equal(8, doc.Headers.Count);
+                Assert.Equal(0x030D, doc.Headers[PwSafe.HeaderType.Version].Version);
+                Assert.Equal(new Guid("0b073824-a406-2f4b-87b2-48656a6b5011"), doc.Headers[PwSafe.HeaderType.Uuid].Uuid);
+                Assert.Equal("", doc.Headers[PwSafe.HeaderType.NonDefaultPreferences].Text);
+                Assert.Equal(new DateTime(2019, 03, 08, 04, 27, 29, DateTimeKind.Utc), doc.Headers[PwSafe.HeaderType.TimestampOfLastSave].Time);
+                Assert.Equal("Josip", doc.Headers[PwSafe.HeaderType.LastSavedByUser].Text);
+                Assert.Equal("GANDALF", doc.Headers[PwSafe.HeaderType.LastSavedOnHost].Text);
+                Assert.Equal("Bimil V2.70", doc.Headers[PwSafe.HeaderType.WhatPerformedLastSave].Text);
+                Assert.Equal("01a93b6ef7c5af4a5990bd5c20064cc62e", doc.Headers[PwSafe.HeaderType.RecentlyUsedEntries].Text);
+
+                Assert.Equal(2, doc.Entries.Count);
+
+                Assert.Equal(4, doc.Entries[0].Records.Count);
+                Assert.Equal(new Guid("f76e3ba9-afc5-594a-90bd-5c20064cc62e"), doc.Entries[0].Records[PwSafe.RecordType.Uuid].Uuid);
+                Assert.Equal("A", doc.Entries[0].Records[PwSafe.RecordType.Title].Text);
+                Assert.Equal("A123", doc.Entries[0].Records[PwSafe.RecordType.Password].Text);
+                Assert.Equal(new DateTime(2015, 12, 28, 8, 36, 47, DateTimeKind.Utc), doc.Entries[0].Records[PwSafe.RecordType.CreationTime].Time);
+
+                Assert.Equal(4, doc.Entries[1].Records.Count);
+                Assert.Equal(new Guid("fb40f24e-68ec-c74e-8e87-293dd274d10c"), doc.Entries[1].Records[PwSafe.RecordType.Uuid].Uuid);
+                Assert.Equal("B", doc.Entries[1].Records[PwSafe.RecordType.Title].Text);
+                Assert.Equal("B123", doc.Entries[1].Records[PwSafe.RecordType.Password].Text);
+                Assert.Equal(new DateTime(2015, 12, 28, 8, 36, 59, DateTimeKind.Utc), doc.Entries[1].Records[PwSafe.RecordType.CreationTime].Time);
+
+                Assert.False(doc.HasChanged);
+            }
+        }
+
+        [Fact(DisplayName = "PasswordSafe: Document: Load/Save Simple.bimil using key")]
+        public void Document_SimpleBimilToKey() {
+            var msSave = new MemoryStream();
+            using (var doc = PwSafe.Document.Load(GetResourceStream("Simple.bimil"), "123")) {
+                doc.TrackAccess = false;
+                doc.TrackModify = false;
+                doc.Save(msSave, null, new byte[] { 0x11, 0x22, 0x33, 0x6D, 0xE6, 0xCF, 0x5A, 0x35, 0x53, 0x36, 0x7D, 0xFE, 0xF2, 0xC9, 0xDB, 0x1A, 0xAC, 0x28, 0xBD, 0x60, 0xFB, 0xA3, 0x9C, 0x37, 0x38, 0x4C, 0x93, 0xE6, 0x63, 0x51, 0xFE, 0xF8, 0x75, 0x45, 0x5F, 0xCD, 0x8D, 0xC3, 0x93, 0xC2, 0x1C, 0xB9, 0x14, 0xF1, 0x8E, 0xAA, 0x70, 0x49, 0xBA, 0xDE, 0xEC, 0xFB, 0x50, 0xCA, 0x65, 0x35, 0x06, 0x3E, 0x09, 0x0A, 0xE4, 0x11, 0x22, 0x33 });
+            }
+
+            msSave.Position = 0;
+
+            using (var doc = PwSafe.Document.Load(msSave, "123")) { //reload to verify
+                doc.TrackAccess = false;
+                doc.TrackModify = false;
+
+                Assert.Equal(8, doc.Headers.Count);
+                Assert.Equal(0x030D, doc.Headers[PwSafe.HeaderType.Version].Version);
+                Assert.Equal(new Guid("0b073824-a406-2f4b-87b2-48656a6b5011"), doc.Headers[PwSafe.HeaderType.Uuid].Uuid);
+                Assert.Equal("", doc.Headers[PwSafe.HeaderType.NonDefaultPreferences].Text);
+                Assert.Equal(new DateTime(2019, 03, 08, 04, 27, 29, DateTimeKind.Utc), doc.Headers[PwSafe.HeaderType.TimestampOfLastSave].Time);
+                Assert.Equal("Josip", doc.Headers[PwSafe.HeaderType.LastSavedByUser].Text);
+                Assert.Equal("GANDALF", doc.Headers[PwSafe.HeaderType.LastSavedOnHost].Text);
+                Assert.Equal("Bimil V2.70", doc.Headers[PwSafe.HeaderType.WhatPerformedLastSave].Text);
+                Assert.Equal("01a93b6ef7c5af4a5990bd5c20064cc62e", doc.Headers[PwSafe.HeaderType.RecentlyUsedEntries].Text);
+
+                Assert.Equal(2, doc.Entries.Count);
+
+                Assert.Equal(4, doc.Entries[0].Records.Count);
+                Assert.Equal(new Guid("f76e3ba9-afc5-594a-90bd-5c20064cc62e"), doc.Entries[0].Records[PwSafe.RecordType.Uuid].Uuid);
+                Assert.Equal("A", doc.Entries[0].Records[PwSafe.RecordType.Title].Text);
+                Assert.Equal("A123", doc.Entries[0].Records[PwSafe.RecordType.Password].Text);
+                Assert.Equal(new DateTime(2015, 12, 28, 8, 36, 47, DateTimeKind.Utc), doc.Entries[0].Records[PwSafe.RecordType.CreationTime].Time);
+
+                Assert.Equal(4, doc.Entries[1].Records.Count);
+                Assert.Equal(new Guid("fb40f24e-68ec-c74e-8e87-293dd274d10c"), doc.Entries[1].Records[PwSafe.RecordType.Uuid].Uuid);
+                Assert.Equal("B", doc.Entries[1].Records[PwSafe.RecordType.Title].Text);
+                Assert.Equal("B123", doc.Entries[1].Records[PwSafe.RecordType.Password].Text);
+                Assert.Equal(new DateTime(2015, 12, 28, 8, 36, 59, DateTimeKind.Utc), doc.Entries[1].Records[PwSafe.RecordType.CreationTime].Time);
+
+                Assert.False(doc.HasChanged);
+            }
+        }
+
+
         [Fact(DisplayName = "PasswordSafe: Document: Load/Save Simple.psafe3 (track modify)")]
         public void Document_Simple_TrackModify() {
             var msSave = new MemoryStream();
