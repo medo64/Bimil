@@ -2,6 +2,7 @@ using System;
 using System.Drawing;
 using System.Security.Cryptography;
 using System.Windows.Forms;
+using Medo.Convert;
 using Medo.Security.Cryptography.PasswordSafe;
 
 namespace Bimil {
@@ -38,8 +39,10 @@ namespace Bimil {
                     try {
                         if (bytes.Length == 64) {
                             chbStaticKey.Checked = true;
-                            txtStaticKey.Text = Convert.ToBase64String(bytes);
+                            txtStaticKey.Text = Base58.ToString(bytes);
                             break;
+                        } else {
+                            Array.Clear(bytes, 0, bytes.Length);
                         }
                     } finally {
                         Array.Clear(bytes, 0, bytes.Length);
@@ -64,7 +67,7 @@ namespace Bimil {
                 try {
                     var random = RandomNumberGenerator.Create();
                     random.GetBytes(keyBytes);
-                    txtStaticKey.Text = Convert.ToBase64String(keyBytes);
+                    txtStaticKey.Text = Base58.ToString(keyBytes);
                 } finally {
                     Array.Clear(keyBytes, 0, keyBytes.Length);
                 }
@@ -99,7 +102,7 @@ namespace Bimil {
 
                 //add new static key header
                 if (chbStaticKey.Checked) {
-                    var bytes = Convert.FromBase64String(txtStaticKey.Text);
+                    var bytes = Base58.AsBytes(txtStaticKey.Text);
                     try {
                         var header = new Header(Helpers.HeaderConstants.StaticKey, bytes);
                         this.Document.Headers.Add(header);

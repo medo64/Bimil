@@ -201,7 +201,7 @@ namespace Medo.Windows.Forms {
 
             var baseValueName = Helper.GetControlPath(form);
 
-            Write(baseValueName + ".WindowState", Convert.ToInt32(form.WindowState, CultureInfo.InvariantCulture));
+            Write(baseValueName + ".WindowState", System.Convert.ToInt32(form.WindowState, CultureInfo.InvariantCulture));
             if (form.WindowState == FormWindowState.Normal) {
                 Write(baseValueName + ".Left", form.Bounds.Left);
                 Write(baseValueName + ".Top", form.Bounds.Top);
@@ -227,7 +227,7 @@ namespace Medo.Windows.Forms {
 
             var baseValueName = Helper.GetControlPath(form);
 
-            var currWindowState = Convert.ToInt32(form.WindowState, CultureInfo.InvariantCulture);
+            var currWindowState = System.Convert.ToInt32(form.WindowState, CultureInfo.InvariantCulture);
             int currLeft, currTop, currWidth, currHeight;
             if (form.WindowState == FormWindowState.Normal) {
                 currLeft = form.Bounds.Left;
@@ -290,7 +290,7 @@ namespace Medo.Windows.Forms {
             form.Location = new Point(newLeft, newTop);
             form.Size = new Size(newWidth, newHeight);
 
-            if (newWindowState == Convert.ToInt32(FormWindowState.Maximized, CultureInfo.InvariantCulture)) {
+            if (newWindowState == System.Convert.ToInt32(FormWindowState.Maximized, CultureInfo.InvariantCulture)) {
                 form.WindowState = FormWindowState.Maximized;
             } //no need for any code - it is already either in normal state or minimized (will be restored to normal).
         }
@@ -312,7 +312,7 @@ namespace Medo.Windows.Forms {
             var baseValueName = Helper.GetControlPath(control);
 
             try {
-                control.PropertySort = (PropertySort)(Read(baseValueName + ".PropertySort", Convert.ToInt32(control.PropertySort, CultureInfo.InvariantCulture)));
+                control.PropertySort = (PropertySort)(Read(baseValueName + ".PropertySort", System.Convert.ToInt32(control.PropertySort, CultureInfo.InvariantCulture)));
             } catch (InvalidEnumArgumentException) { }
 
             var fieldGridView = control.GetType().GetField("gridView", BindingFlags.GetField | BindingFlags.NonPublic | BindingFlags.Instance);
@@ -350,7 +350,7 @@ namespace Medo.Windows.Forms {
 
             var baseValueName = Helper.GetControlPath(control);
 
-            Write(baseValueName + ".PropertySort", Convert.ToInt32(control.PropertySort, CultureInfo.InvariantCulture));
+            Write(baseValueName + ".PropertySort", System.Convert.ToInt32(control.PropertySort, CultureInfo.InvariantCulture));
 
             var fieldGridView = control.GetType().GetField("gridView", BindingFlags.GetField | BindingFlags.NonPublic | BindingFlags.Instance);
             var gridViewObject = fieldGridView.GetValue(control);
@@ -416,7 +416,7 @@ namespace Medo.Windows.Forms {
             var baseValueName = Helper.GetControlPath(control);
 
             try {
-                control.Orientation = (Orientation)(Read(baseValueName + ".Orientation", Convert.ToInt32(control.Orientation, CultureInfo.InvariantCulture)));
+                control.Orientation = (Orientation)(Read(baseValueName + ".Orientation", System.Convert.ToInt32(control.Orientation, CultureInfo.InvariantCulture)));
             } catch (InvalidEnumArgumentException) { }
             try {
                 var distance = Read(baseValueName + ".SplitterDistance", control.SplitterDistance);
@@ -436,7 +436,7 @@ namespace Medo.Windows.Forms {
 
             var baseValueName = Helper.GetControlPath(control);
 
-            Write(baseValueName + ".Orientation", Convert.ToInt32(control.Orientation, CultureInfo.InvariantCulture));
+            Write(baseValueName + ".Orientation", System.Convert.ToInt32(control.Orientation, CultureInfo.InvariantCulture));
             Write(baseValueName + ".SplitterDistance", control.SplitterDistance);
         }
 
