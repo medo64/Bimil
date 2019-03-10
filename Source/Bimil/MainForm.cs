@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using Medo.Configuration;
+using Medo.Convert;
 using Medo.Security.Cryptography;
 using Medo.Security.Cryptography.PasswordSafe;
 using LegacyFile = Medo.Security.Cryptography.Bimil;
@@ -614,7 +615,7 @@ namespace Bimil {
                 if (document != null) {
                     this.Document = document.Document;
                     this.DocumentFileName = document.FileName;
-                    SetReadonly(isReadOnly || (isFileReadOnly == true));
+                    SetReadonly(isReadOnly || (isFileReadOnly == true || this.Document.IsReadOnly));
                     this.DocumentReadOnlyChanged = false;
                 }
 
@@ -625,11 +626,49 @@ namespace Bimil {
             }
         }
 
+        private void SaveFile(string fileName) {
+            var passphraseBytes = this.Document.GetPassphrase();
+            byte[] keyBytes = null;
+            try {
+                foreach (var header in this.Document.Headers) {
+                    if (header.HeaderType == Helpers.HeaderConstants.StaticKey) {
+                        keyBytes = header.GetBytes();
+                        if (keyBytes.Length == 64) {
+                            break;
+                        } else {
+                            Array.Clear(keyBytes, 0, keyBytes.Length);
+                            keyBytes = null;
+                        }
+                    }
+                }
+
+                if (passphraseBytes == null) {
+                    using (var frm = new NewPasswordForm()) {
+                        if (frm.ShowDialog(this) == DialogResult.OK) {
+                            using (var stream = new MemoryStream()) {
+                                this.Document.ChangePassphrase(frm.Password);
+                                passphraseBytes = this.Document.GetPassphrase();
+                            }
+                        } else {
+                            return;
+                        }
+                    }
+                }
+
+                using (var fileStream = new FileStream(fileName, FileMode.Create, FileAccess.Write)) {
+                    this.Document.Save(fileStream, passphraseBytes, keyBytes);
+                }
+            } finally {
+                if (keyBytes != null) { Array.Clear(keyBytes, 0, keyBytes.Length); }
+                if (passphraseBytes != null) { Array.Clear(passphraseBytes, 0, passphraseBytes.Length); }
+                GC.Collect(); //in attempt to kill password string
+            }
+        }
+
         private void SetReadonly(bool isReadOnly) {
             this.Document.IsReadOnly = isReadOnly; //file status is changed upon save
             this.DocumentReadOnlyChanged = true;
 
-            cmbSearch.BackColor = isReadOnly ? SystemColors.Control : SystemColors.Window;
             lsvEntries.BackColor = isReadOnly ? SystemColors.Control : SystemColors.Window;
             lsvEntries.LabelEdit = !isReadOnly;
 
@@ -639,11 +678,32 @@ namespace Bimil {
         }
 
 
+        private static readonly Encoding Utf8 = new UTF8Encoding(false);
+
         private DocumentResult LoadPasswordSafeFile(string fileName, byte[] passphraseBytes = null) {
             try {
                 Document document;
                 using (var fileStream = File.OpenRead(fileName)) {
-                    document = Document.Load(fileStream, passphraseBytes);
+                    try {
+                        document = Document.Load(fileStream, passphraseBytes);
+                    } catch (FormatException) { //try to open using raw keys
+                        byte[] keyBytes = null;
+                        try {
+                            keyBytes = Base58.AsBytes(Utf8.GetString(passphraseBytes));
+                            if (keyBytes.Length == 64) { //use raw key to open file
+                                fileStream.Position = 0;
+                                document = Document.Load(fileStream, null, keyBytes);
+                                document.IsReadOnly = true;
+                            } else {
+                                throw;
+                            }
+                        } catch (FormatException) {
+                            throw;
+                        } finally {
+                            if (keyBytes != null) { Array.Clear(keyBytes, 0, keyBytes.Length); }
+                            GC.Collect(); //in attempt to kill password string
+                        }
+                    }
                     document.TrackAccess = false;
 
                     if (document.LastSaveApplication.StartsWith("Bimil ")) { //convert temporary password safe fields to permanent ones
@@ -712,9 +772,7 @@ namespace Bimil {
             if (this.DocumentFileName != null) {
                 try {
                     if (Helpers.GetReadOnly(this.DocumentFileName) == true) { Helpers.SetReadOnly(this.DocumentFileName, false); } //remove read-only before saving
-                    using (var fileStream = new FileStream(this.DocumentFileName, FileMode.Create, FileAccess.Write)) {
-                        this.Document.Save(fileStream);
-                    }
+                    SaveFile(this.DocumentFileName);
                     if (this.Document.IsReadOnly) { Helpers.SetReadOnly(this.DocumentFileName, true); }
                     this.DocumentReadOnlyChanged = false;
                 } catch (SystemException ex) {
@@ -739,9 +797,7 @@ namespace Bimil {
                 }
                 if (frm.ShowDialog(this) == DialogResult.OK) {
                     if (Helpers.GetReadOnly(frm.FileName) == true) { Helpers.SetReadOnly(frm.FileName, false); } //remove read-only before saving
-                    using (var fileStream = new FileStream(frm.FileName, FileMode.Create, FileAccess.Write)) {
-                        this.Document.Save(fileStream);
-                    }
+                    SaveFile(frm.FileName);
                     if (this.Document.IsReadOnly) { Helpers.SetReadOnly(frm.FileName, true); }
                     this.DocumentFileName = frm.FileName;
                     this.DocumentReadOnlyChanged = false;
