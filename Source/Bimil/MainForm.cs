@@ -860,7 +860,9 @@ namespace Bimil {
 
         private void mnuProperties_Click(object sender, EventArgs e) {
             using (var frm = new DocumentInfoForm(this.Document)) {
-                frm.ShowDialog(this);
+                if (frm.ShowDialog(this) == DialogResult.OK) {
+                    UpdateMenu();
+                }
             }
         }
 
