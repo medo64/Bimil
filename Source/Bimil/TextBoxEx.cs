@@ -4,6 +4,14 @@ using System.Windows.Forms;
 namespace Bimil {
     internal class TextBoxEx : TextBox {
 
+        protected override void OnKeyDown(KeyEventArgs e) {
+            if (e.KeyData == (Keys.Control | Keys.A)) {
+                this.SelectAll();
+            } else {
+                base.OnKeyDown(e);
+            }
+        }
+
         protected override void WndProc(ref Message m) {
             if (m.Msg == NativeMethods.WM_PASTE) {
                 if (Clipboard.ContainsText()) {

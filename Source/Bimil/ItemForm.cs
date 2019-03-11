@@ -500,14 +500,6 @@ namespace Bimil {
                 ((TextBox)sender).SelectAll();
             };
 
-            textBox.KeyDown += (object sender, KeyEventArgs e) => {
-                switch (e.KeyData) {
-                    case Keys.Control | Keys.A:
-                        ((TextBox)sender).SelectAll();
-                        break;
-                }
-            };
-
             return textBox;
         }
 
