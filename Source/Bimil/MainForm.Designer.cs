@@ -370,7 +370,7 @@ namespace Bimil {
             // 
             this.mnuAppDebugRandomizeAllPasswords.Name = "mnuAppDebugRandomizeAllPasswords";
             this.mnuAppDebugRandomizeAllPasswords.Size = new System.Drawing.Size(227, 26);
-            this.mnuAppDebugRandomizeAllPasswords.Text = "Randomize all entries";
+            this.mnuAppDebugRandomizeAllPasswords.Text = "DEBUG: Randomize all entries";
             this.mnuAppDebugRandomizeAllPasswords.Visible = false;
             this.mnuAppDebugRandomizeAllPasswords.Click += new System.EventHandler(this.mnuAppDebugRandomizeAllPasswords_Click);
             // 
