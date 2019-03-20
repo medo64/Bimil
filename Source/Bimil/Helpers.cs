@@ -526,24 +526,27 @@ namespace Bimil {
         }
 
         private static KeyValuePair<int, string> GetSizeAndSet(double scaleBoost, params Control[] controls) {
-            using (var g = controls[0].CreateGraphics()) {
-                var scale = Math.Max(Math.Max(g.DpiX, g.DpiY), 96.0) / 96.0;
-                scale += scaleBoost;
+            double scale;
+            using (var control = new Control())
+            using (var g = control.CreateGraphics()) {
+                scale = Math.Max(Math.Max(g.DpiX, g.DpiY), 96.0) / 96.0;
+            }
 
-                if (scale < 1.5) {
-                    return new KeyValuePair<int, string>(16, "_16");
-                } else if (scale < 2) {
-                    return new KeyValuePair<int, string>(24, "_24");
-                } else if (scale < 3) {
-                    return new KeyValuePair<int, string>(32, "_32");
+            scale += scaleBoost;
+
+            if (scale < 1.5) {
+                return new KeyValuePair<int, string>(16, "_16");
+            } else if (scale < 2) {
+                return new KeyValuePair<int, string>(24, "_24");
+            } else if (scale < 3) {
+                return new KeyValuePair<int, string>(32, "_32");
+            } else {
+                var base32 = 16 * scale / 32;
+                var base48 = 16 * scale / 48;
+                if ((base48 - (int)base48) < (base32 - (int)base32)) {
+                    return new KeyValuePair<int, string>(48 * (int)base48, "_48");
                 } else {
-                    var base32 = 16 * scale / 32;
-                    var base48 = 16 * scale / 48;
-                    if ((base48 - (int)base48) < (base32 - (int)base32)) {
-                        return new KeyValuePair<int, string>(48 * (int)base48, "_48");
-                    } else {
-                        return new KeyValuePair<int, string>(32 * (int)base32, "_32");
-                    }
+                    return new KeyValuePair<int, string>(32 * (int)base32, "_32");
                 }
             }
         }
