@@ -12,9 +12,9 @@ namespace Bimil {
         public AutotypeForm(Entry entry) {
             InitializeComponent();
 
-            this.Font = SystemFonts.MessageBoxFont;
+            Font = SystemFonts.MessageBoxFont;
             Medo.Windows.Forms.State.Attach(this);
-            this.Opacity = Settings.AutoTypeWindowOpacity / 100;
+            Opacity = Settings.AutoTypeWindowOpacity / 100;
 
             var y = 0;
 
@@ -85,13 +85,13 @@ namespace Bimil {
             y += SystemInformation.DragSize.Height;
 
             var btnClose = AddGenericButton(y, "Close");
-            btnClose.Click += delegate { this.Close(); };
+            btnClose.Click += delegate { Close(); };
 
-            this.ClientSize = new Size(SystemInformation.VerticalScrollBarWidth * 12, btnClose.Bottom);
-            this.MinimumSize = new Size(SystemInformation.VerticalScrollBarWidth * 10, this.Height);
-            this.MaximumSize = new Size(SystemInformation.VerticalScrollBarWidth * 30, this.Height);
+            ClientSize = new Size(SystemInformation.VerticalScrollBarWidth * 12, btnClose.Bottom);
+            MinimumSize = new Size(SystemInformation.VerticalScrollBarWidth * 10, Height);
+            MaximumSize = new Size(SystemInformation.VerticalScrollBarWidth * 30, Height);
 
-            this.Entry = entry;
+            Entry = entry;
         }
 
 
@@ -102,7 +102,7 @@ namespace Bimil {
         protected override bool ProcessDialogKey(Keys keyData) {
             switch (keyData) {
                 case Keys.Escape:
-                    this.Close();
+                    Close();
                     return true;
             }
 
@@ -117,8 +117,8 @@ namespace Bimil {
         private void bwType_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e) {
             var tokens = new List<AutotypeToken>((IEnumerable<AutotypeToken>)e.Argument).AsReadOnly();
 
-            this.Delay = Settings.AutoTypeDelay;
-            this.UseSendWait = Settings.AutoTypeUseSendWait;
+            Delay = Settings.AutoTypeDelay;
+            UseSendWait = Settings.AutoTypeUseSendWait;
 
             for (var i = 0; i < tokens.Count; i++) {
                 var token = tokens[i];
@@ -130,7 +130,7 @@ namespace Bimil {
                     switch (command) {
                         case "Delay": {
                                 if (int.TryParse(argument, NumberStyles.Integer, CultureInfo.InvariantCulture, out var ms)) {
-                                    this.Delay = ms;
+                                    Delay = ms;
                                 }
                             }
                             break;
@@ -143,16 +143,16 @@ namespace Bimil {
                             break;
 
                         case "Legacy":
-                            this.UseSendWait = !this.UseSendWait;
+                            UseSendWait = !UseSendWait;
                             break;
                     }
                 } else {
                     bwType.ReportProgress(i * 100 / tokens.Count, token.Content);
-                    Thread.Sleep(this.Delay);
+                    Thread.Sleep(Delay);
                 }
             }
 
-            switch (this.Suffix) {
+            switch (Suffix) {
                 case SuffixType.Tab: bwType.ReportProgress(100, "{TAB}"); break;
                 case SuffixType.Enter: bwType.ReportProgress(100, "{ENTER}"); break;
             }
@@ -161,7 +161,7 @@ namespace Bimil {
         private void bwType_ProgressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e) {
             var content = (string)e.UserState;
 
-            if (this.UseSendWait) {
+            if (UseSendWait) {
                 SendKeys.SendWait((Control.IsKeyLocked(Keys.CapsLock) ? "{CAPSLOCK}" : "") + content);
             } else {
                 SendKeys.Send((Control.IsKeyLocked(Keys.CapsLock) ? "{CAPSLOCK}" : "") + content);
@@ -182,7 +182,7 @@ namespace Bimil {
         private void bwType_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e) {
             tryProgress.Visible = false;
             if (CloseAfterType) {
-                this.Close();
+                Close();
             } else {
                 tmrRestore.Enabled = true;
             }
@@ -190,16 +190,16 @@ namespace Bimil {
 
         private void tmrRestore_Tick(object sender, EventArgs e) {
             tmrRestore.Enabled = false;
-            this.Visible = true;
-            this.Select();
+            Visible = true;
+            Select();
         }
 
 
         private Button AddGenericButton(int top, string caption, double heightMultiplier = 2) {
-            var btn = new Button() { Text = caption, Left = this.ClientRectangle.Left, Width = this.ClientRectangle.Width, Top = top, Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right, AutoEllipsis = true };
+            var btn = new Button() { Text = caption, Left = ClientRectangle.Left, Width = ClientRectangle.Width, Top = top, Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right, AutoEllipsis = true };
             btn.Height = (int)(SystemInformation.HorizontalScrollBarHeight * 1.25 * heightMultiplier);
 
-            this.Controls.Add(btn);
+            Controls.Add(btn);
 
             return btn;
         }
@@ -221,19 +221,19 @@ namespace Bimil {
                 ExecuteTokens(processedTokens, isDefinedAutoType);
             };
 
-            this.Controls.Add(btn);
+            Controls.Add(btn);
 
             return btn;
         }
 
         private IEnumerable<AutotypeToken> GetProcessedTokens(Record record, IEnumerable<AutotypeToken> tokens, AutotypeToken suffixToken = null) {
-            var tokenList = new List<AutotypeToken>(AutotypeToken.GetAutotypeTokens(tokens, this.Entry));
+            var tokenList = new List<AutotypeToken>(AutotypeToken.GetAutotypeTokens(tokens, Entry));
             if (suffixToken != null) { tokenList.Add(suffixToken); }
 
             var processedTokens = new List<AutotypeToken>();
             foreach (var token in tokenList) {
                 if ((token.Kind == AutotypeTokenKind.Command) && token.Content.Equals("TwoFactorCode", StringComparison.Ordinal)) {
-                    var bytes = (record != null) ? record.GetBytes() : this.Entry.TwoFactorKey;
+                    var bytes = (record != null) ? record.GetBytes() : Entry.TwoFactorKey;
                     var key = OneTimePassword.ToBase32(bytes, bytes.Length, SecretFormatFlags.Spacing | SecretFormatFlags.Padding);
                     processedTokens.AddRange(AutotypeToken.GetAutotypeTokensFromText(Helpers.GetTwoFactorCode(key)));
                 } else {
@@ -291,9 +291,9 @@ namespace Bimil {
         }
 
         private void ExecuteTokens(IEnumerable<AutotypeToken> tokens, bool closeAfterType) {
-            this.Visible = false;
+            Visible = false;
 
-            this.CloseAfterType = closeAfterType;
+            CloseAfterType = closeAfterType;
             tryProgress.Icon = Bimil.Properties.Resources.icoProgress0;
             tryProgress.Visible = true;
             bwType.RunWorkerAsync(tokens);

@@ -23,19 +23,19 @@ namespace Bimil {
 
         public ItemForm(Document document, Entry item, IList<string> categories, bool startsAsEditable, bool isNew = false, string defaultCategory = null, bool hideAutotype = false) {
             InitializeComponent();
-            this.Font = SystemFonts.MessageBoxFont;
+            Font = SystemFonts.MessageBoxFont;
             Helpers.ScaleButton(btnAutotypeConfigure);
 
-            this.Document = document;
-            this.Item = item;
-            this.Editable = startsAsEditable && !this.Document.IsReadOnly;
-            this.IsNew = isNew;
-            this.Categories = categories;
-            this.DefaultCategory = categories.Contains(defaultCategory) ? defaultCategory : null;
+            Document = document;
+            Item = item;
+            Editable = startsAsEditable && !Document.IsReadOnly;
+            IsNew = isNew;
+            Categories = categories;
+            DefaultCategory = categories.Contains(defaultCategory) ? defaultCategory : null;
 
             var autoTypeShown = !Helpers.IsRunningOnMono && !hideAutotype; //filling form includes operations not supported under Linux - Mono under Windows might have some troubles too but it is disabled there because it enables easy testing :)
 
-            btnEdit.Visible = !this.Document.IsReadOnly;
+            btnEdit.Visible = !Document.IsReadOnly;
             btnAutotype.Visible = autoTypeShown;
             btnAutotypeConfigure.Visible = autoTypeShown;
 
@@ -44,7 +44,7 @@ namespace Bimil {
                 btnFields.Location = btnAutotype.Location;
             } //move Edit button if Autotype is hidden
 
-            this.Text = this.Document.IsReadOnly ? "View" : "Edit";
+            Text = Document.IsReadOnly ? "View" : "Edit";
 
             State.Attach(this);
         }
@@ -63,15 +63,15 @@ namespace Bimil {
 
 
         private class NativeMethods {
-            internal const Int32 WM_SYSCOMMAND = 0x0112;
-            internal readonly static IntPtr SC_MINIMIZE = new IntPtr(0xF020);
+            internal const int WM_SYSCOMMAND = 0x0112;
+            internal static readonly IntPtr SC_MINIMIZE = new IntPtr(0xF020);
         }
 
         #endregion
 
 
         private void Form_Load(object sender, EventArgs e) {
-            if (this.Editable) {
+            if (Editable) {
                 btnEdit_Click(null, null);
             }
             FillRecords();
@@ -99,12 +99,12 @@ namespace Bimil {
 
                 case Keys.F7: //show all
                     var alreadyHidden = false;
-                    foreach (var control in this.pnl.Controls) {
+                    foreach (var control in pnl.Controls) {
                         if (control is TextBox textBox) {
                             if ((textBox.Tag is Record record) && Helpers.GetIsHideable(record.RecordType) && (textBox.UseSystemPasswordChar)) { alreadyHidden = true; break; }
                         }
                     }
-                    foreach (var control in this.pnl.Controls) {
+                    foreach (var control in pnl.Controls) {
                         if (control is TextBox textBox) {
                             if ((textBox.Tag is Record record) && Helpers.GetIsHideable(record.RecordType)) { textBox.UseSystemPasswordChar = !alreadyHidden; }
                         }
@@ -140,7 +140,7 @@ namespace Bimil {
 
 
         private void tmrClose_Tick(object sender, EventArgs e) {
-            foreach (var form in this.OwnedForms) {
+            foreach (var form in OwnedForms) {
                 foreach (var innerForm in form.OwnedForms) {
                     innerForm.Close();
                 }
@@ -150,7 +150,7 @@ namespace Bimil {
             if (Settings.AutoCloseSave && btnOK.Visible && btnOK.Enabled) {
                 btnOK.PerformClick();
             }
-            this.Close();
+            Close();
         }
 
 
@@ -158,15 +158,15 @@ namespace Bimil {
             pnl.Visible = false;
             pnl.Controls.Clear();
 
-            var unitHeight = (new TextBox() { Font = this.Font }).Height;
+            var unitHeight = (new TextBox() { Font = Font }).Height;
             var labelWidth = pnl.ClientSize.Width / 4;
             var labelBuffer = SystemInformation.VerticalScrollBarWidth + 1;
 
             var y = 0;
             TextBox titleTextBox;
             {
-                var record = this.Item[RecordType.Title];
-                titleTextBox = new TextBox() { Font = this.Font, Location = new Point(labelWidth + labelBuffer, 0), Tag = record, Text = record.ToString(), Width = pnl.ClientSize.Width - labelWidth - labelBuffer, ReadOnly = !this.Editable, Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right };
+                var record = Item[RecordType.Title];
+                titleTextBox = new TextBox() { Font = Font, Location = new Point(labelWidth + labelBuffer, 0), Tag = record, Text = record.ToString(), Width = pnl.ClientSize.Width - labelWidth - labelBuffer, ReadOnly = !Editable, Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right };
                 titleTextBox.GotFocus += (object sender2, EventArgs e2) => { ((TextBox)sender2).SelectAll(); };
                 titleTextBox.TextChanged += (object sender2, EventArgs e2) => { btnOK.Enabled = (((Control)sender2).Text.Trim().Length > 0); };
                 pnl.Controls.Add(titleTextBox);
@@ -178,13 +178,13 @@ namespace Bimil {
 
             ComboBox categoryComboBox;
             {
-                var record = this.Item[RecordType.Group];
-                categoryComboBox = new ComboBox() { Font = this.Font, Location = new Point(labelWidth + labelBuffer, y), Tag = record, Text = record.ToString(), Width = pnl.ClientSize.Width - labelWidth - labelBuffer, Enabled = this.Editable, Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right };
+                var record = Item[RecordType.Group];
+                categoryComboBox = new ComboBox() { Font = Font, Location = new Point(labelWidth + labelBuffer, y), Tag = record, Text = record.ToString(), Width = pnl.ClientSize.Width - labelWidth - labelBuffer, Enabled = Editable, Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right };
                 categoryComboBox.GotFocus += (object sender2, EventArgs e2) => { ((ComboBox)sender2).SelectAll(); };
-                foreach (var category in this.Categories) {
+                foreach (var category in Categories) {
                     categoryComboBox.Items.Add(category);
                 }
-                if (this.DefaultCategory != null) { categoryComboBox.Text = this.DefaultCategory; }
+                if (DefaultCategory != null) { categoryComboBox.Text = DefaultCategory; }
                 pnl.Controls.Add(categoryComboBox);
                 var label = new Label() { AutoEllipsis = true, Location = new Point(0, y), Size = new Size(labelWidth, unitHeight), Text = "Category:", TextAlign = ContentAlignment.MiddleLeft, UseMnemonic = false };
                 pnl.Controls.Add(label);
@@ -193,9 +193,9 @@ namespace Bimil {
                     var renameButton = NewCustomCommandButton(categoryComboBox, delegate {
                         using (var frm = new InputBox($"Rename all categories named \"{record.Text}\" to:", categoryComboBox.Text)) {
                             if (frm.ShowDialog(this) == DialogResult.OK) {
-                                var groupFrom = this.Item.Group;
+                                var groupFrom = Item.Group;
                                 var groupTo = frm.Text;
-                                foreach (var entry in this.Document.Entries) {
+                                foreach (var entry in Document.Entries) {
                                     if (string.Equals(groupFrom, entry.Group, StringComparison.CurrentCultureIgnoreCase)) {
                                         entry.Group = groupTo;
                                     }
@@ -218,7 +218,7 @@ namespace Bimil {
             y += unitHeight / 2;
 
             int yH;
-            foreach (var record in this.Item.Records) {
+            foreach (var record in Item.Records) {
                 var label = new Label() { AutoEllipsis = true, Location = new Point(0, y), Size = new Size(labelWidth, unitHeight), Text = Helpers.GetRecordCaption(record) + ":", TextAlign = ContentAlignment.MiddleLeft, UseMnemonic = false };
 
                 switch (record.RecordType) {
@@ -265,7 +265,7 @@ namespace Bimil {
 
                             pnl.Controls.Add(NewCopyButton(textBox, record.RecordType));
                             pnl.Controls.Add(NewConfigureButton(textBox, delegate {
-                                using (var frm = new PasswordDetailsForm(this.Item, textBox.ReadOnly)) {
+                                using (var frm = new PasswordDetailsForm(Item, textBox.ReadOnly)) {
                                     frm.ShowDialog(this);
                                 }
                             }, "Password policy configuration."));
@@ -381,8 +381,7 @@ namespace Bimil {
 
             if (pnl.VerticalScroll.Visible == true) {
                 foreach (Control control in pnl.Controls) {
-                    var label = control as Label;
-                    if (label == null) {
+                    if (!(control is Label label)) {
                         control.Left -= SystemInformation.VerticalScrollBarWidth;
                     }
                 }
@@ -390,7 +389,7 @@ namespace Bimil {
 
             pnl.Visible = true;
 
-            if (this.IsNew) {
+            if (IsNew) {
                 titleTextBox.Select();
             }
         }
@@ -408,20 +407,20 @@ namespace Bimil {
             btnEdit.Visible = false;
             btnOK.Visible = true;
             btnCancel.Text = "Cancel";
-            this.Editable = true;
+            Editable = true;
         }
 
         private void btnAutotype_Click(object sender, EventArgs e) {
-            var originalState = this.Owner.WindowState;
-            var ownerForm = this.Owner;
+            var originalState = Owner.WindowState;
+            var ownerForm = Owner;
 
             if (btnOK.Visible && btnOK.Enabled) {
                 btnOK.PerformClick(); //save any changes
             }
 
-            this.Close();
+            Close();
 
-            var frm = new AutotypeForm(this.Item);
+            var frm = new AutotypeForm(Item);
             frm.Shown += delegate {
                 ownerForm.Visible = false;
             };
@@ -433,7 +432,7 @@ namespace Bimil {
         }
 
         private void btnAutotypeConfigure_Click(object sender, EventArgs e) {
-            using (var frm = new AutotypeConfigureForm(this.Item, !this.Editable)) {
+            using (var frm = new AutotypeConfigureForm(Item, !Editable)) {
                 frm.ShowDialog(this);
             }
         }
@@ -468,7 +467,7 @@ namespace Bimil {
 
         private void btnFields_Click(object sender, EventArgs e) {
             btnOK_Click(null, null);
-            using (var frm = new RecordEditorForm(this.Document, this.Item)) {
+            using (var frm = new RecordEditorForm(Document, Item)) {
                 if (frm.ShowDialog(this) == DialogResult.OK) {
                     FillRecords();
                 }
@@ -481,7 +480,7 @@ namespace Bimil {
         private TextBox NewTextBox(int x, int y, Record record, string text = null, bool urlLookAndFeel = false, bool multiline = false, Font font = null) {
             var padding = SystemInformation.VerticalScrollBarWidth + 1;
 
-            var textBox = new TextBoxEx() { Font = (font != null) ? font : this.Font, Location = new Point(x + padding, y), Tag = record, Width = pnl.ClientSize.Width - x - padding, ReadOnly = !this.Editable, Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right };
+            var textBox = new TextBoxEx() { Font = font ?? Font, Location = new Point(x + padding, y), Tag = record, Width = pnl.ClientSize.Width - x - padding, ReadOnly = !Editable, Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right };
             textBox.Text = text ?? record.Text;
 
             if (urlLookAndFeel) {
@@ -506,7 +505,7 @@ namespace Bimil {
         private ComboBox NewPasswordHistoryComboBox(int x, int y, Entry entry) {
             var padding = SystemInformation.VerticalScrollBarWidth + 1;
 
-            var control = new ComboBox() { BackColor = SystemColors.Control, Font = this.Font, Location = new Point(x + padding, y), DropDownStyle = ComboBoxStyle.DropDownList, Width = pnl.ClientSize.Width - x - padding, Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right };
+            var control = new ComboBox() { BackColor = SystemColors.Control, Font = Font, Location = new Point(x + padding, y), DropDownStyle = ComboBoxStyle.DropDownList, Width = pnl.ClientSize.Width - x - padding, Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right };
             control.Items.Add("Open dropdown to show password history (" + entry.PasswordHistory.Count.ToString(CultureInfo.CurrentCulture) + ")");
             control.SelectedIndex = 0;
 
@@ -632,7 +631,7 @@ namespace Bimil {
                 Tag = parentTextBox,
                 Text = "",
                 Anchor = AnchorStyles.Top | AnchorStyles.Right,
-                Enabled = this.Editable
+                Enabled = Editable
             };
             Helpers.ScaleButton(button);
 
@@ -765,7 +764,7 @@ namespace Bimil {
 
                 var key = Helpers.FilterText(textBox.Text.ToUpperInvariant(), Helpers.Base32Characters);
                 if (key.Length > 0) {
-                    var keyUrl = string.Format(CultureInfo.InvariantCulture, "otpauth://totp/{0}?secret={1}", HttpUtility.UrlPathEncode(this.Item.Title), HttpUtility.UrlEncode(key));
+                    var keyUrl = string.Format(CultureInfo.InvariantCulture, "otpauth://totp/{0}?secret={1}", HttpUtility.UrlPathEncode(Item.Title), HttpUtility.UrlEncode(key));
                     using (var frm = new QRCodeForm(keyUrl)) {
                         frm.ShowDialog(this);
                     }

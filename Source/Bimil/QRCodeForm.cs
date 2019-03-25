@@ -6,21 +6,21 @@ namespace Bimil {
     internal partial class QRCodeForm : Form {
         public QRCodeForm(string text) {
             InitializeComponent();
-            this.Font = SystemFonts.MessageBoxFont;
+            Font = SystemFonts.MessageBoxFont;
 
-            this.Coder = new QRCoder.QRCode(text);
+            Coder = new QRCoder.QRCode(text);
 
             int qrSize;
-            using (var bmp = this.Coder.GetBitmap()) {
+            using (var bmp = Coder.GetBitmap()) {
                 qrSize = Math.Max(bmp.Width, bmp.Height);
             }
 
             var screen = Screen.GetWorkingArea(this);
             var factor = Math.Min(screen.Width, screen.Height) / qrSize / 2;
 
-            var scaledBitmap = this.Coder.GetBitmap(factor);
-            this.ClientSize = scaledBitmap.Size;
-            this.BackgroundImage = scaledBitmap;
+            var scaledBitmap = Coder.GetBitmap(factor);
+            ClientSize = scaledBitmap.Size;
+            BackgroundImage = scaledBitmap;
         }
 
         private readonly QRCoder.QRCode Coder;
@@ -39,8 +39,8 @@ namespace Bimil {
 
 
         private class NativeMethods {
-            internal const Int32 WM_SYSCOMMAND = 0x0112;
-            internal readonly static IntPtr SC_MINIMIZE = new IntPtr(0xF020);
+            internal const int WM_SYSCOMMAND = 0x0112;
+            internal static readonly IntPtr SC_MINIMIZE = new IntPtr(0xF020);
         }
 
         #endregion
@@ -48,7 +48,7 @@ namespace Bimil {
 
         protected override void OnKeyDown(KeyEventArgs e) {
             base.OnKeyDown(e);
-            if ((e.KeyData == Keys.Escape) || (e.KeyData == Keys.Return)) { this.DialogResult = DialogResult.Cancel; }
+            if ((e.KeyData == Keys.Escape) || (e.KeyData == Keys.Return)) { DialogResult = DialogResult.Cancel; }
         }
 
     }

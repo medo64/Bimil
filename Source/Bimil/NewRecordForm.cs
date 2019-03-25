@@ -8,13 +8,13 @@ namespace Bimil {
     internal partial class NewRecordForm : Form {
         public NewRecordForm(Document document, IEnumerable<Record> recordsInUse) {
             InitializeComponent();
-            this.Font = SystemFonts.MessageBoxFont;
+            Font = SystemFonts.MessageBoxFont;
 
             erp.SetIconAlignment(cmbRecordType, ErrorIconAlignment.MiddleLeft);
             erp.SetIconPadding(cmbRecordType, cmbRecordType.Height / 6);
 
-            this.Document = document;
-            this.RecordsInUse = recordsInUse;
+            Document = document;
+            RecordsInUse = recordsInUse;
         }
 
         private readonly Document Document;
@@ -26,12 +26,12 @@ namespace Bimil {
                 cmbRecordType.Items.Add(new BimilFormatWrapper(Helpers.GetRecordCaption(recordType), recordType));
             }
 
-            if (this.Record != null) {
-                cmbRecordType.SelectedItem = this.Record.RecordType;
+            if (Record != null) {
+                cmbRecordType.SelectedItem = Record.RecordType;
             } else {
                 foreach (BimilFormatWrapper item in cmbRecordType.Items) {
                     var isAlreadyUsed = false;
-                    foreach (var record in this.RecordsInUse) {
+                    foreach (var record in RecordsInUse) {
                         if (item.Format == record.RecordType) {
                             isAlreadyUsed = true;
                             break;
@@ -52,8 +52,8 @@ namespace Bimil {
         public Record Record { get; private set; }
 
         private void btnOK_Click(object sender, EventArgs e) {
-            this.Record = new Record(((BimilFormatWrapper)cmbRecordType.SelectedItem).Format);
-            if (this.Record.RecordType == RecordType.PasswordHistory) { this.Record.Text = "10300"; } //enable by default
+            Record = new Record(((BimilFormatWrapper)cmbRecordType.SelectedItem).Format);
+            if (Record.RecordType == RecordType.PasswordHistory) { Record.Text = "10300"; } //enable by default
         }
 
 
@@ -61,22 +61,22 @@ namespace Bimil {
 
         private class BimilFormatWrapper {
             public BimilFormatWrapper(string text, RecordType format) {
-                this.Text = text;
-                this.Format = format;
+                Text = text;
+                Format = format;
             }
             public string Text { get; private set; }
             public RecordType Format { get; private set; }
             public override bool Equals(object obj) {
                 if (obj is RecordType otherFormat) {
-                    return (this.Format == otherFormat);
+                    return (Format == otherFormat);
                 }
                 return base.Equals(obj);
             }
             public override int GetHashCode() {
-                return this.Format.GetHashCode();
+                return Format.GetHashCode();
             }
             public override string ToString() {
-                return this.Text;
+                return Text;
             }
         }
 
@@ -100,7 +100,7 @@ namespace Bimil {
 
                 default:
                     var recordTypeCount = 0;
-                    foreach (var item in this.RecordsInUse) {
+                    foreach (var item in RecordsInUse) {
                         if (item.RecordType == wrap.Format) { recordTypeCount++; }
                     }
                     if (recordTypeCount >= 1) {

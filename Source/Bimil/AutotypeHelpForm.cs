@@ -7,7 +7,7 @@ namespace Bimil {
     internal partial class AutotypeHelpForm : Form {
         public AutotypeHelpForm(string autotypeText, bool isReadOnly) {
             InitializeComponent();
-            this.Font = SystemFonts.MessageBoxFont;
+            Font = SystemFonts.MessageBoxFont;
             Medo.Windows.Forms.State.Attach(this);
 
             if (string.IsNullOrEmpty(autotypeText)) {
@@ -38,8 +38,8 @@ namespace Bimil {
 
 
         private class NativeMethods {
-            internal const Int32 WM_SYSCOMMAND = 0x0112;
-            internal readonly static IntPtr SC_MINIMIZE = new IntPtr(0xF020);
+            internal const int WM_SYSCOMMAND = 0x0112;
+            internal static readonly IntPtr SC_MINIMIZE = new IntPtr(0xF020);
         }
 
         #endregion
@@ -84,7 +84,7 @@ namespace Bimil {
         public string AutotypeText { get; private set; }
 
         private void btnOK_Click(object sender, System.EventArgs e) {
-            this.AutotypeText = txtAutotype.Text;
+            AutotypeText = txtAutotype.Text;
         }
 
 
@@ -107,11 +107,11 @@ namespace Bimil {
             var lvi = new ListViewItem(escapeSequence);
             lvi.SubItems.Add(helpText);
 
-            if (this.Groups.ContainsKey(group)) {
-                lvi.Group = this.Groups[group];
+            if (Groups.ContainsKey(group)) {
+                lvi.Group = Groups[group];
             } else {
                 lvi.Group = new ListViewGroup(group);
-                this.Groups.Add(group, lvi.Group);
+                Groups.Add(group, lvi.Group);
                 lsvHelp.Groups.Add(lvi.Group);
             }
 

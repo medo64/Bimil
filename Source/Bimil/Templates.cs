@@ -29,15 +29,15 @@ namespace Bimil {
     internal class Template {
 
         internal Template(string title, params RecordType[] recordTypes) {
-            this.Title = title;
-            this.RecordTypes = new List<RecordType>(recordTypes);
+            Title = title;
+            RecordTypes = new List<RecordType>(recordTypes);
         }
 
         public string Title { get; private set; }
         public IList<RecordType> RecordTypes { get; private set; }
 
         public override string ToString() {
-            return this.Title;
+            return Title;
         }
 
     }

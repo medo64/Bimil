@@ -7,7 +7,7 @@ namespace Bimil {
     internal partial class StartForm : Form {
         public StartForm() {
             InitializeComponent();
-            this.Font = SystemFonts.MessageBoxFont;
+            Font = SystemFonts.MessageBoxFont;
             lsvRecent.Font = SystemFonts.MessageBoxFont;
             Medo.Windows.Forms.State.Attach(this);
 
@@ -46,8 +46,8 @@ namespace Bimil {
 
 
         private class NativeMethods {
-            internal const Int32 WM_SYSCOMMAND = 0x0112;
-            internal readonly static IntPtr SC_MINIMIZE = new IntPtr(0xF020);
+            internal const int WM_SYSCOMMAND = 0x0112;
+            internal static readonly IntPtr SC_MINIMIZE = new IntPtr(0xF020);
         }
 
         #endregion
@@ -69,7 +69,7 @@ namespace Bimil {
             btnOpen.Enabled = (fileName == null) || (isReadOnly == false);
             btnOpenReadOnly.Enabled = (fileName == null) || (isReadOnly != null);
 
-            this.AcceptButton = (!btnOpen.Enabled && btnOpenReadOnly.Enabled) ? btnOpenReadOnly : btnOpen;
+            AcceptButton = (!btnOpen.Enabled && btnOpenReadOnly.Enabled) ? btnOpenReadOnly : btnOpen;
         }
 
         private void lsvRecent_ItemActivate(object sender, EventArgs e) {
@@ -80,7 +80,7 @@ namespace Bimil {
 
             SelectResult(isReadOnly ? Helpers.StartAction.OpenReadonly : Helpers.StartAction.Open,
                                       ((RecentlyUsedFile)lsvRecent.SelectedItems[0].Tag).FileName);
-            this.DialogResult = DialogResult.OK;
+            DialogResult = DialogResult.OK;
         }
 
 
@@ -122,12 +122,12 @@ namespace Bimil {
         }
 
         private void mnxListOpen_Click(object sender, EventArgs e) {
-            this.DialogResult = DialogResult.OK;
+            DialogResult = DialogResult.OK;
             btnOpen_Click(null, null);
         }
 
         private void mnxListOpenReadOnly_Click(object sender, EventArgs e) {
-            this.DialogResult = DialogResult.OK;
+            DialogResult = DialogResult.OK;
             btnOpenReadOnly_Click(null, null);
         }
 
@@ -154,8 +154,8 @@ namespace Bimil {
 
 
         private void SelectResult(Helpers.StartAction action, string fileName) {
-            this.Action = action;
-            this.FileName = fileName;
+            Action = action;
+            FileName = fileName;
         }
     }
 }

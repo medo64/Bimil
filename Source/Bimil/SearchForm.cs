@@ -8,12 +8,12 @@ namespace Bimil {
     internal partial class SearchForm : Form {
         public SearchForm(Document document, IList<string> categories, string defaultText) {
             InitializeComponent();
-            this.Font = SystemFonts.MessageBoxFont;
+            Font = SystemFonts.MessageBoxFont;
             Medo.Windows.Forms.State.Attach(this);
 
-            this.Document = document;
-            this.Categories = categories;
-            this.DefaultText = defaultText;
+            Document = document;
+            Categories = categories;
+            DefaultText = defaultText;
 
             erp.SetIconAlignment(chbIncludeHiddenFields, ErrorIconAlignment.MiddleRight);
             erp.SetIconPadding(chbIncludeHiddenFields, chbIncludeHiddenFields.Height / 6);
@@ -37,8 +37,8 @@ namespace Bimil {
 
 
         private class NativeMethods {
-            internal const Int32 WM_SYSCOMMAND = 0x0112;
-            internal readonly static IntPtr SC_MINIMIZE = new IntPtr(0xF020);
+            internal const int WM_SYSCOMMAND = 0x0112;
+            internal static readonly IntPtr SC_MINIMIZE = new IntPtr(0xF020);
         }
 
         #endregion
@@ -46,12 +46,12 @@ namespace Bimil {
 
         private void Form_KeyDown(object sender, KeyEventArgs e) {
             if (e.KeyData == Keys.Escape) {
-                this.Close();
+                Close();
             }
         }
 
         private void Form_Shown(object sender, EventArgs e) {
-            cmbSearch.Text = this.DefaultText;
+            cmbSearch.Text = DefaultText;
             cmbSearch.SelectAll();
         }
 
@@ -72,18 +72,18 @@ namespace Bimil {
         }
 
         private void cmbText_TextChanged(object sender, System.EventArgs e) {
-            Helpers.PerformEntrySearch(this.Document, lsvEntries, cmbSearch.Text, extendedSearch: true, addMatchDescription: true, includeHidden: chbIncludeHiddenFields.Checked);
+            Helpers.PerformEntrySearch(Document, lsvEntries, cmbSearch.Text, extendedSearch: true, addMatchDescription: true, includeHidden: chbIncludeHiddenFields.Checked);
             Form_Resize(null, null); //to support both ListView full row with and without scrollbar
         }
 
 
         private void lsvEntries_ItemActivate(object sender, EventArgs e) {
-            if ((this.Document == null) || (lsvEntries.SelectedItems.Count != 1)) { return; }
+            if ((Document == null) || (lsvEntries.SelectedItems.Count != 1)) { return; }
 
             var item = (Entry)(lsvEntries.SelectedItems[0].Tag);
-            using (var frm2 = new ItemForm(this.Document, item, this.Categories, startsAsEditable: Settings.EditableByDefault, hideAutotype: true)) {
+            using (var frm2 = new ItemForm(Document, item, Categories, startsAsEditable: Settings.EditableByDefault, hideAutotype: true)) {
                 if (frm2.ShowDialog(this) == DialogResult.OK) {
-                    Helpers.PerformEntrySearch(this.Document, lsvEntries, cmbSearch.Text, entriesToSelect: new Entry[] { item }, extendedSearch: true, addMatchDescription: true);
+                    Helpers.PerformEntrySearch(Document, lsvEntries, cmbSearch.Text, entriesToSelect: new Entry[] { item }, extendedSearch: true, addMatchDescription: true);
                     Form_Resize(null, null); //to support both ListView full row with and without scrollbar
                 }
             }

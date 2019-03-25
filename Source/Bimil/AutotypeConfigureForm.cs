@@ -7,12 +7,12 @@ namespace Bimil {
     internal partial class AutotypeConfigureForm : Form {
         public AutotypeConfigureForm(Entry entry, bool isReadOnly) {
             InitializeComponent();
-            this.Font = SystemFonts.MessageBoxFont;
+            Font = SystemFonts.MessageBoxFont;
 
             Medo.Windows.Forms.State.Attach(this, lsvItems);
 
-            this.Entry = entry;
-            this.IsReadOnly = isReadOnly;
+            Entry = entry;
+            IsReadOnly = isReadOnly;
 
             foreach (var record in entry.Records) {
                 if (record.RecordType == RecordType.Autotype) {
@@ -44,9 +44,9 @@ namespace Bimil {
         }
 
         private void lsvItems_SelectedIndexChanged(object sender, EventArgs e) {
-            btnEdit.Enabled = !this.IsReadOnly && (lsvItems.SelectedItems.Count == 1);
+            btnEdit.Enabled = !IsReadOnly && (lsvItems.SelectedItems.Count == 1);
             btnView.Enabled = (lsvItems.SelectedItems.Count == 1);
-            btnRemove.Enabled = !this.IsReadOnly && (lsvItems.SelectedItems.Count > 0);
+            btnRemove.Enabled = !IsReadOnly && (lsvItems.SelectedItems.Count > 0);
         }
 
         private void lsvItems_AfterLabelEdit(object sender, LabelEditEventArgs e) {
@@ -64,7 +64,7 @@ namespace Bimil {
                     break;
 
                 case Keys.F2:
-                    if (!this.IsReadOnly && (lsvItems.SelectedItems.Count == 1)) {
+                    if (!IsReadOnly && (lsvItems.SelectedItems.Count == 1)) {
                         lsvItems.SelectedItems[0].BeginEdit();
                     }
                     e.Handled = true;
@@ -126,7 +126,7 @@ namespace Bimil {
 
 
         private void btnAdd_Click(object sender, EventArgs e) {
-            using (var frm = new AutotypeHelpForm(null, this.IsReadOnly)) {
+            using (var frm = new AutotypeHelpForm(null, IsReadOnly)) {
                 if (frm.ShowDialog(this) == DialogResult.OK) {
                     var item = new ListViewItem(frm.AutotypeText);
                     UpdateItemDescription(item);
@@ -139,9 +139,9 @@ namespace Bimil {
             if (lsvItems.SelectedItems.Count != 1) { return; }
             var item = lsvItems.SelectedItems[0];
 
-            using (var frm = new AutotypeHelpForm(item.Text, this.IsReadOnly)) {
+            using (var frm = new AutotypeHelpForm(item.Text, IsReadOnly)) {
                 if (frm.ShowDialog(this) == DialogResult.OK) {
-                    if (!this.IsReadOnly) {
+                    if (!IsReadOnly) {
                         item.Text = frm.AutotypeText;
                         UpdateItemDescription(item);
                     }
@@ -159,16 +159,16 @@ namespace Bimil {
 
         private void btnOK_Click(object sender, EventArgs e) {
             //remove all old auto-type records
-            for (var i = this.Entry.Records.Count - 1; i >= 0; i--) {
-                if (this.Entry.Records[i].RecordType == RecordType.Autotype) {
-                    this.Entry.Records.RemoveAt(i);
+            for (var i = Entry.Records.Count - 1; i >= 0; i--) {
+                if (Entry.Records[i].RecordType == RecordType.Autotype) {
+                    Entry.Records.RemoveAt(i);
                 }
             }
 
             //add new records
             foreach (ListViewItem item in lsvItems.Items) {
                 var record = new Record(RecordType.Autotype) { Text = item.Text };
-                this.Entry.Records.Add(record);
+                Entry.Records.Add(record);
             }
         }
 

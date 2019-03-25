@@ -11,14 +11,14 @@ namespace Bimil {
     [DefaultEvent("ClipboardChanged")]
     internal class ClipboardMonitor : Control {
         public ClipboardMonitor() {
-            this.CreateHandle();
+            CreateHandle();
             try {
-                this.NextViewerPtr = NativeMethods.SetClipboardViewer(this.Handle);
+                NextViewerPtr = NativeMethods.SetClipboardViewer(Handle);
             } catch (EntryPointNotFoundException) { } //happens on Linux
         }
 
         ~ClipboardMonitor() {
-            this.Dispose(disposing: false);
+            Dispose(disposing: false);
         }
 
 
@@ -32,9 +32,9 @@ namespace Bimil {
 
 
         protected override void Dispose(bool disposing) {
-            if (this.NextViewerPtr != IntPtr.Zero) {
-                NativeMethods.ChangeClipboardChain(this.Handle, NextViewerPtr);
-                this.NextViewerPtr = IntPtr.Zero;
+            if (NextViewerPtr != IntPtr.Zero) {
+                NativeMethods.ChangeClipboardChain(Handle, NextViewerPtr);
+                NextViewerPtr = IntPtr.Zero;
             }
         }
 
@@ -49,10 +49,10 @@ namespace Bimil {
 
                 case NativeMethods.WM_CHANGECBCHAIN:
                     Debug.WriteLine("ClipboardMonitor WndProc: WM_CHANGECBCHAIN");
-                    if (m.WParam == this.NextViewerPtr) {
-                        this.NextViewerPtr = m.LParam;
+                    if (m.WParam == NextViewerPtr) {
+                        NextViewerPtr = m.LParam;
                     } else {
-                        NativeMethods.SendMessage(this.NextViewerPtr, m.Msg, m.WParam, m.LParam);
+                        NativeMethods.SendMessage(NextViewerPtr, m.Msg, m.WParam, m.LParam);
                     }
                     break;
 
@@ -77,8 +77,8 @@ namespace Bimil {
 
         private static class NativeMethods {
 
-            internal const Int32 WM_DRAWCLIPBOARD = 0x0308;
-            internal const Int32 WM_CHANGECBCHAIN = 0x030D;
+            internal const int WM_DRAWCLIPBOARD = 0x0308;
+            internal const int WM_CHANGECBCHAIN = 0x030D;
 
 
             [DllImport("User32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
@@ -89,7 +89,7 @@ namespace Bimil {
             internal static extern bool ChangeClipboardChain(IntPtr hWndRemove, IntPtr hWndNewNext);
 
             [DllImport("user32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
-            internal static extern IntPtr SendMessage(IntPtr hwnd, Int32 wMsg, IntPtr wParam, IntPtr lParam);
+            internal static extern IntPtr SendMessage(IntPtr hwnd, int wMsg, IntPtr wParam, IntPtr lParam);
 
         }
     }
@@ -97,7 +97,7 @@ namespace Bimil {
 
     internal class ClipboardChangedEventArgs : EventArgs {
         public ClipboardChangedEventArgs(IDataObject dataObject) {
-            this.DataObject = dataObject;
+            DataObject = dataObject;
         }
 
         public IDataObject DataObject { get; }

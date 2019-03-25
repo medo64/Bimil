@@ -6,7 +6,7 @@ namespace Bimil {
     internal partial class SelectTemplateForm : Form {
         public SelectTemplateForm() {
             InitializeComponent();
-            this.Font = SystemFonts.MessageBoxFont;
+            Font = SystemFonts.MessageBoxFont;
 
             cmbTemplate.Items.AddRange(Templates.GetTemplates());
             cmbTemplate.SelectedIndex = 0;
@@ -26,15 +26,15 @@ namespace Bimil {
 
 
         private class NativeMethods {
-            internal const Int32 WM_SYSCOMMAND = 0x0112;
-            internal readonly static IntPtr SC_MINIMIZE = new IntPtr(0xF020);
+            internal const int WM_SYSCOMMAND = 0x0112;
+            internal static readonly IntPtr SC_MINIMIZE = new IntPtr(0xF020);
         }
 
         #endregion
 
 
         private void btnOK_Click(object sender, EventArgs e) {
-            this.Template = (Template)cmbTemplate.SelectedItem;
+            Template = (Template)cmbTemplate.SelectedItem;
         }
 
         public Template Template { get; private set; }

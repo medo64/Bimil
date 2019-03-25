@@ -6,7 +6,7 @@ namespace Bimil {
 
         protected override void OnKeyDown(KeyEventArgs e) {
             if (e.KeyData == (Keys.Control | Keys.A)) {
-                this.SelectAll();
+                SelectAll();
             } else {
                 base.OnKeyDown(e);
             }
@@ -16,7 +16,7 @@ namespace Bimil {
             if (m.Msg == NativeMethods.WM_PASTE) {
                 if (Clipboard.ContainsText()) {
                     var lines = Clipboard.GetText().Split(new string[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
-                    this.SelectedText = string.Join(Environment.NewLine, lines);
+                    SelectedText = string.Join(Environment.NewLine, lines);
                 }
             } else {
                 base.WndProc(ref m);

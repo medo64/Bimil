@@ -12,10 +12,10 @@ namespace Bimil {
 
         public RecordEditorForm(Document document, Entry item) {
             InitializeComponent();
-            this.Font = SystemFonts.MessageBoxFont;
+            Font = SystemFonts.MessageBoxFont;
 
-            this.Document = document;
-            this.Item = item;
+            Document = document;
+            Item = item;
         }
 
 
@@ -32,8 +32,8 @@ namespace Bimil {
 
 
         private class NativeMethods {
-            internal const Int32 WM_SYSCOMMAND = 0x0112;
-            internal readonly static IntPtr SC_MINIMIZE = new IntPtr(0xF020);
+            internal const int WM_SYSCOMMAND = 0x0112;
+            internal static readonly IntPtr SC_MINIMIZE = new IntPtr(0xF020);
         }
 
         #endregion
@@ -42,7 +42,7 @@ namespace Bimil {
         private void Form_Load(object sender, EventArgs e) {
             lsvFields.Columns[0].Width = lsvFields.Width - SystemInformation.VerticalScrollBarWidth;
 
-            foreach (var record in this.Item.Records) {
+            foreach (var record in Item.Records) {
                 var caption = Helpers.GetRecordCaption(record);
                 if (caption != null) {
                     var lvi = new ListViewItem(caption) { Tag = record };
@@ -118,7 +118,7 @@ namespace Bimil {
             foreach (ListViewItem item in lsvFields.Items) {
                 records.Add((Record)item.Tag);
             }
-            using (var frm = new NewRecordForm(this.Document, records.AsReadOnly())) {
+            using (var frm = new NewRecordForm(Document, records.AsReadOnly())) {
                 if (frm.ShowDialog(this) == DialogResult.OK) {
                     var lvi = new ListViewItem(Helpers.GetRecordCaption(frm.Record)) { Tag = frm.Record };
                     lsvFields.Items.Add(lvi);
@@ -130,22 +130,22 @@ namespace Bimil {
 
         private void btnRemove_Click(object sender, EventArgs e) {
             if (lsvFields.SelectedItems.Count == 1) {
-                this.RecordsToRemove.Add(lsvFields.SelectedItems[0].Tag as Record);
+                RecordsToRemove.Add(lsvFields.SelectedItems[0].Tag as Record);
                 lsvFields.Items.RemoveAt(lsvFields.SelectedItems[0].Index);
             }
         }
 
         private void btnOK_Click(object sender, EventArgs e) {
-            foreach (var record in this.RecordsToRemove) {
-                this.Item.Records.Remove(record);
+            foreach (var record in RecordsToRemove) {
+                Item.Records.Remove(record);
             }
             foreach (ListViewItem lvi in lsvFields.Items) {
                 var record = (Record)lvi.Tag;
-                if (this.Item.Records.Contains(record)) {
-                    this.Item.Records.Remove(record);
-                    this.Item.Records.Add(record);
+                if (Item.Records.Contains(record)) {
+                    Item.Records.Remove(record);
+                    Item.Records.Add(record);
                 } else {
-                    this.Item.Records.Add(record);
+                    Item.Records.Add(record);
                 }
             }
         }

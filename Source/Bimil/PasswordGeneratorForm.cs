@@ -14,7 +14,7 @@ namespace Bimil {
     internal partial class PasswordGeneratorForm : Form {
         public PasswordGeneratorForm(bool noSave = true) {
             InitializeComponent();
-            this.Font = SystemFonts.MessageBoxFont;
+            Font = SystemFonts.MessageBoxFont;
 
             if (noSave) {
                 btnGenerate.Location = btnSaveAndCopy.Location;
@@ -32,7 +32,7 @@ namespace Bimil {
 
         protected override bool ProcessDialogKey(Keys keyData) {
             if (keyData == Keys.Escape) {
-                this.Close();
+                Close();
                 return true;
             } else {
                 return base.ProcessDialogKey(keyData);
@@ -52,8 +52,8 @@ namespace Bimil {
 
 
         private class NativeMethods {
-            internal const Int32 WM_SYSCOMMAND = 0x0112;
-            internal readonly static IntPtr SC_MINIMIZE = new IntPtr(0xF020);
+            internal const int WM_SYSCOMMAND = 0x0112;
+            internal static readonly IntPtr SC_MINIMIZE = new IntPtr(0xF020);
         }
 
         #endregion
@@ -262,11 +262,11 @@ namespace Bimil {
 
 
         private void btnSave_Click(object sender, EventArgs e) {
-            this.Password = txtPassword.Text;
+            Password = txtPassword.Text;
         }
 
         private void btnSaveAndCopy_Click(object sender, EventArgs e) {
-            this.Password = txtPassword.Text;
+            Password = txtPassword.Text;
             ClipboardHelper.SetClipboardText(this, txtPassword.Text, sensitiveData: true);
         }
 
@@ -346,7 +346,7 @@ namespace Bimil {
                 lblCombinations.Text = "About " + crackDurationText + " to crack";
                 var tooltipText = $"{combinations:#,##0} ({GetEngineeringString(combinations)}) combinations.\n";
                 tooltipText += $"{entropyBits} bits of entropy.\n";
-                if (tabStyle.SelectedTab.Equals(tabStyle_Word)) { tooltipText += $"Based on dictionary with {this.Words.Count:#,##0} words.\n"; }
+                if (tabStyle.SelectedTab.Equals(tabStyle_Word)) { tooltipText += $"Based on dictionary with {Words.Count:#,##0} words.\n"; }
                 tooltipText += $"\nGiven cracking duration was calculated assuming the potential\nattacker knows exactly which method and dictionary were used\nto generate password (i.e. the worst case scenario) and assuming\n the attacker can check {Math.Floor(GetCracksPerSecond() / 1000000000000)} trillions passwords per second.";
                 tip.SetToolTip(lblCombinations, tooltipText);
                 if (secondsToCrack > 365 * 24 * 60 * 60) {
@@ -377,7 +377,7 @@ namespace Bimil {
         private string GenerateWordPassword(bool includeUpperCase, bool includeNumber, bool includeSpecial, bool includeIncomplete, bool spaceSeparated, bool restrictTitleCase, bool restrictSuffixOnly, bool restrictBreak, int count) {
             var sb = new StringBuilder();
 
-            if (this.Words == null) {
+            if (Words == null) {
                 var sw = Stopwatch.StartNew();
 
                 var wordDictionary = new Dictionary<string, object>();
@@ -405,15 +405,15 @@ namespace Bimil {
                 }
 
                 var wordList = new List<string>(wordDictionary.Keys);
-                this.Words = wordList.AsReadOnly();
+                Words = wordList.AsReadOnly();
 
                 Debug.WriteLine($"Generated word list of {Words.Count} words in {sw.ElapsedMilliseconds} ms.");
             }
 
             var selectedWords = new List<List<char>>();
             for (var i = 0; i < count; i++) {
-                var wordIndex = GetRandomNumber(this.Words.Count);
-                selectedWords.Add(new List<char>(this.Words[wordIndex]));
+                var wordIndex = GetRandomNumber(Words.Count);
+                selectedWords.Add(new List<char>(Words[wordIndex]));
             }
 
             if (includeIncomplete) {
@@ -486,13 +486,13 @@ namespace Bimil {
         private double CalculateWordCombinations(bool includeUpperCase, bool includeNumber, bool includeSpecial, bool includeIncomplete, bool spaceSeparated, bool restrictTitleCase, bool restrictSuffixOnly, bool restrictBreak, int count) {
             //this is really rough calculation assuming everybody knows exactly how password was created and it assumes all words are 5 characters only
 
-            var words = this.Words.Count;
+            var words = Words.Count;
             if (includeUpperCase && !restrictSuffixOnly) { words *= (1 + (restrictBreak ? 1 : 4) - (restrictTitleCase ? 1 : 0)); } //1 original + 5 characters (shortest length) that can be upper case; if break is restricted, only the first character will be upper-case; in case of title-case, first character is assumed fixed
             if (includeIncomplete && !restrictSuffixOnly) { words *= (1 + (restrictBreak ? 1 : 4)); } //1 original + 5 characters (shortest length) that can be upper case; if break is restricted, only the last character will be removed thus only doubling the space
 
             double wordCombinations;
             if (restrictSuffixOnly) {
-                var wordsLast = this.Words.Count;
+                var wordsLast = Words.Count;
                 if (includeIncomplete) { wordsLast *= 2; }
                 if (includeNumber) { wordsLast *= 100; }
                 if (includeSpecial) { wordsLast *= SpecialCharacters.Length; }
@@ -516,7 +516,7 @@ namespace Bimil {
         private string GenerateTripletPassword(bool includeNumber, bool includeSpecial, bool includeRandomUpperCase, bool includeRandomDrop, bool restrictTitleCase, bool restrictBreak, bool restrictSuffixOnly, bool spaceSeparated, int count) {
             var sb = new StringBuilder();
 
-            if (this.Triplets == null) {
+            if (Triplets == null) {
                 var sw = Stopwatch.StartNew();
 
                 var tripletDictionary = new Dictionary<string, object>();
@@ -546,15 +546,15 @@ namespace Bimil {
                 }
 
                 var tripletList = new List<string>(tripletDictionary.Keys);
-                this.Triplets = tripletList.AsReadOnly();
+                Triplets = tripletList.AsReadOnly();
 
-                Debug.WriteLine($"Generated triplet list of {this.Triplets.Count} triplets in {sw.ElapsedMilliseconds} ms.");
+                Debug.WriteLine($"Generated triplet list of {Triplets.Count} triplets in {sw.ElapsedMilliseconds} ms.");
             }
 
             var selectedTriplets = new List<List<char>>();
             for (var i = 0; i < count; i++) {
-                var tripletIndex = GetRandomNumber(this.Triplets.Count);
-                selectedTriplets.Add(new List<char>(this.Triplets[tripletIndex]));
+                var tripletIndex = GetRandomNumber(Triplets.Count);
+                selectedTriplets.Add(new List<char>(Triplets[tripletIndex]));
             }
 
             if (includeRandomDrop) {
@@ -631,7 +631,7 @@ namespace Bimil {
         private double CalculateTripletCombinations(bool includeNumber, bool includeSpecial, bool includeRandomUpperCase, bool includeRandomDrop, bool restrictTitleCase, bool restrictBreak, bool restrictSuffixOnly, bool spaceSeparated, int count) {
             //this is really rough calculation assuming everybody knows exactly how password was created and it assumes all words are 5 characters only
 
-            var triplets = this.Triplets.Count;
+            var triplets = Triplets.Count;
             if (includeRandomUpperCase && !restrictSuffixOnly) { triplets *= (1 + (restrictBreak ? 1 : 2) - (restrictTitleCase ? 1 : 0)); } //1 original + 3 characters (standard triplet length) that can be upper case; if break is restricted, only the first character will be upper-case; in case of title-case, first character is assumed fixed
             if (includeRandomDrop && !restrictSuffixOnly) { triplets *= (1 + (restrictBreak ? 1 : 2)); } //1 original + 3 characters (standard triplet length) that can be upper case; if break is restricted, only the last character will be removed thus only doubling the space
 
@@ -640,7 +640,7 @@ namespace Bimil {
 
             double tripletCombinations;
             if (restrictSuffixOnly) {
-                var tripletsLast = this.Triplets.Count;
+                var tripletsLast = Triplets.Count;
                 if (includeRandomDrop) { tripletsLast *= 2; }
                 if (includeNumber) { tripletsLast *= 100; }
                 if (includeSpecial) { tripletsLast *= specialCharacters.Count; }
@@ -762,10 +762,10 @@ namespace Bimil {
 
                 int countUpper = 0, countLower = 0, countNumber = 0, countSpecial = 0;
                 for (var i = 0; i < sb.Length; i++) {
-                    if ((Array.IndexOf(this.LowerCaseConsonants, sb[i]) > 0) || (Array.IndexOf(this.LowerCaseVowels, sb[i]) > 0)) { countLower += 1; }
-                    if ((Array.IndexOf(this.UpperCaseConsonants, sb[i]) > 0) || (Array.IndexOf(this.UpperCaseVowels, sb[i]) > 0)) { countUpper += 1; }
-                    if (Array.IndexOf(this.Digits, sb[i]) > 0) { countNumber += 1; }
-                    if (Array.IndexOf(this.SpecialCharacters, sb[i]) > 0) { countSpecial += 1; }
+                    if ((Array.IndexOf(LowerCaseConsonants, sb[i]) > 0) || (Array.IndexOf(LowerCaseVowels, sb[i]) > 0)) { countLower += 1; }
+                    if ((Array.IndexOf(UpperCaseConsonants, sb[i]) > 0) || (Array.IndexOf(UpperCaseVowels, sb[i]) > 0)) { countUpper += 1; }
+                    if (Array.IndexOf(Digits, sb[i]) > 0) { countNumber += 1; }
+                    if (Array.IndexOf(SpecialCharacters, sb[i]) > 0) { countSpecial += 1; }
                 }
 
                 //another loop if one of selected is missing

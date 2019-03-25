@@ -9,10 +9,10 @@ namespace Bimil {
     internal partial class DocumentInfoForm : Form {
         public DocumentInfoForm(Document document) {
             InitializeComponent();
-            this.Font = SystemFonts.MessageBoxFont;
+            Font = SystemFonts.MessageBoxFont;
             Medo.Windows.Forms.State.Attach(this);
 
-            this.Document = document;
+            Document = document;
 
             txtName.ReadOnly = document.IsReadOnly;
             txtDescription.ReadOnly = document.IsReadOnly;
@@ -24,16 +24,16 @@ namespace Bimil {
 
 
         private void Form_Load(object sender, EventArgs e) {
-            txtName.Text = this.Document.Name;
-            txtDescription.Text = this.Document.Description;
+            txtName.Text = Document.Name;
+            txtDescription.Text = Document.Description;
 
-            txtUuid.Text = this.Document.Uuid.ToString();
+            txtUuid.Text = Document.Uuid.ToString();
 
-            txtLastSaveApplication.Text = this.Document.LastSaveApplication;
-            txtLastSaveUser.Text = this.Document.LastSaveUser + " (" + this.Document.LastSaveHost + ")";
-            txtLastSaveTime.Text = this.Document.LastSaveTime.ToString("f");
+            txtLastSaveApplication.Text = Document.LastSaveApplication;
+            txtLastSaveUser.Text = Document.LastSaveUser + " (" + Document.LastSaveHost + ")";
+            txtLastSaveTime.Text = Document.LastSaveTime.ToString("f");
 
-            foreach (var header in this.Document.Headers) {
+            foreach (var header in Document.Headers) {
                 if (header.HeaderType == Helpers.HeaderConstants.StaticKey) {
                     var bytes = header.GetBytes();
                     try {
@@ -50,7 +50,7 @@ namespace Bimil {
                 }
             }
             chbStaticKey_CheckedChanged(null, null); //to sort out size diffs
-            if (this.Document.IsReadOnly) { chbStaticKey.Enabled = false; }
+            if (Document.IsReadOnly) { chbStaticKey.Enabled = false; }
         }
 
 
@@ -58,9 +58,9 @@ namespace Bimil {
             var heightDiff = grpStaticKey.Bottom - chbStaticKey.Bottom;
             if (chbStaticKey.Checked && !grpStaticKey.Visible) {
                 grpStaticKey.Visible = true;
-                this.MinimumSize = new Size(this.MinimumSize.Width, this.MinimumSize.Height + heightDiff);
-                this.Size = new Size(this.Size.Width, this.MinimumSize.Height);
-                this.MaximumSize = new Size(this.MaximumSize.Width, this.MinimumSize.Height);
+                MinimumSize = new Size(MinimumSize.Width, MinimumSize.Height + heightDiff);
+                Size = new Size(Size.Width, MinimumSize.Height);
+                MaximumSize = new Size(MaximumSize.Width, MinimumSize.Height);
 
                 //make a new key
                 var keyBytes = new byte[64];
@@ -73,26 +73,26 @@ namespace Bimil {
                 }
             } else if (!chbStaticKey.Checked && grpStaticKey.Visible) {
                 grpStaticKey.Visible = false;
-                this.MinimumSize = new Size(this.MinimumSize.Width, this.MinimumSize.Height - heightDiff);
-                this.Size = new Size(this.Size.Width, this.MinimumSize.Height);
-                this.MaximumSize = new Size(this.MaximumSize.Width, this.MinimumSize.Height);
+                MinimumSize = new Size(MinimumSize.Width, MinimumSize.Height - heightDiff);
+                Size = new Size(Size.Width, MinimumSize.Height);
+                MaximumSize = new Size(MaximumSize.Width, MinimumSize.Height);
             }
         }
 
 
         private void btnOK_Click(object sender, EventArgs e) {
-            this.Document.Name = txtName.Text;
-            this.Document.Description = txtDescription.Text;
+            Document.Name = txtName.Text;
+            Document.Description = txtDescription.Text;
 
             if (chbStaticKey.Enabled) { //just if document is not read-only
                 //first remove old static key header - if any
-                for (var i = this.Document.Headers.Count - 1; i >= 0; i--) {
-                    var header = this.Document.Headers[i];
+                for (var i = Document.Headers.Count - 1; i >= 0; i--) {
+                    var header = Document.Headers[i];
                     if (header.HeaderType == Helpers.HeaderConstants.StaticKey) {
                         var bytes = header.GetBytes();
                         try {
                             if (bytes.Length == 64) {
-                                this.Document.Headers.RemoveAt(i);
+                                Document.Headers.RemoveAt(i);
                             }
                         } finally {
                             Array.Clear(bytes, 0, bytes.Length);
@@ -105,7 +105,7 @@ namespace Bimil {
                     var bytes = Base58.AsBytes(txtStaticKey.Text);
                     try {
                         var header = new Header(Helpers.HeaderConstants.StaticKey, bytes);
-                        this.Document.Headers.Add(header);
+                        Document.Headers.Add(header);
                     } finally {
                         Array.Clear(bytes, 0, bytes.Length);
                         txtStaticKey.Text = "";

@@ -9,15 +9,15 @@ namespace Bimil {
         public PasswordDetailsForm(Entry entry, bool isReadonly) {
             InitializeComponent();
 
-            this.Entry = entry;
-            this.IsReadonly = isReadonly;
-            this.IsEnabled = entry.Records.Contains(RecordType.PasswordHistory);
+            Entry = entry;
+            IsReadonly = isReadonly;
+            IsEnabled = entry.Records.Contains(RecordType.PasswordHistory);
 
             nudHistoryCount.Value = Settings.SavePasswordHistoryDefaultCount;
 
             var listItems = new Stack<ListViewItem>(); //to get in the reverse
 
-            if (this.IsEnabled) {
+            if (IsEnabled) {
                 nudHistoryCount.Value = entry.PasswordHistory.MaximumCount;
                 foreach (var password in entry.PasswordHistory) {
                     listItems.Push(NewHistoricalPasswordListViewItem(password.HistoricalPassword, password.TimeFirstUsed));
@@ -39,8 +39,8 @@ namespace Bimil {
 
             SetupHistoryStates();
 
-            btnOK.Visible = !this.IsReadonly;
-            lblEditInfo.Visible = this.IsReadonly;
+            btnOK.Visible = !IsReadonly;
+            lblEditInfo.Visible = IsReadonly;
         }
 
         private ListViewItem NewHistoricalPasswordListViewItem(string password, DateTime utcTime, bool isCurrent = false) {
@@ -73,8 +73,8 @@ namespace Bimil {
 
 
         private class NativeMethods {
-            internal const Int32 WM_SYSCOMMAND = 0x0112;
-            internal readonly static IntPtr SC_MINIMIZE = new IntPtr(0xF020);
+            internal const int WM_SYSCOMMAND = 0x0112;
+            internal static readonly IntPtr SC_MINIMIZE = new IntPtr(0xF020);
         }
 
         #endregion
@@ -98,7 +98,7 @@ namespace Bimil {
                 item.SubItems[1].Text = (string)(item.Tag);
             }
             btnHistoryShow.Enabled = false;
-            this.IsHidden = true;
+            IsHidden = true;
         }
 
         private void lsvHistoryPasswords_ColumnWidthChanging(object sender, ColumnWidthChangingEventArgs e) {
@@ -119,12 +119,12 @@ namespace Bimil {
 
 
         private void SetupHistoryStates() {
-            chbHistoryEnabled.Enabled = !this.IsReadonly;
-            lblHistoryCount.Enabled = chbHistoryEnabled.Checked && !this.IsReadonly;
-            nudHistoryCount.Enabled = chbHistoryEnabled.Checked && !this.IsReadonly;
-            btnHistoryClean.Enabled = chbHistoryEnabled.Checked && !this.IsReadonly;
-            btnHistoryShow.Enabled = this.IsEnabled && !this.IsHidden;
-            lsvHistoryPasswords.Enabled = this.IsEnabled;
+            chbHistoryEnabled.Enabled = !IsReadonly;
+            lblHistoryCount.Enabled = chbHistoryEnabled.Checked && !IsReadonly;
+            nudHistoryCount.Enabled = chbHistoryEnabled.Checked && !IsReadonly;
+            btnHistoryClean.Enabled = chbHistoryEnabled.Checked && !IsReadonly;
+            btnHistoryShow.Enabled = IsEnabled && !IsHidden;
+            lsvHistoryPasswords.Enabled = IsEnabled;
         }
 
 
@@ -133,21 +133,21 @@ namespace Bimil {
         }
 
         private void btnOK_Click(object sender, System.EventArgs e) {
-            if (this.IsEnabled && chbHistoryEnabled.Checked) { //it was enabled and it is still
+            if (IsEnabled && chbHistoryEnabled.Checked) { //it was enabled and it is still
 
-                var changedMaxCount = (nudHistoryCount.Value != this.Entry.PasswordHistory.MaximumCount);
-                var wasCleared = (this.Entry.PasswordHistory.Count > 0) && (lsvHistoryPasswords.Items.Count == 0);
-                if (changedMaxCount) { this.Entry.PasswordHistory.MaximumCount = (int)nudHistoryCount.Value; }
-                if (wasCleared) { this.Entry.PasswordHistory.Clear(); }
+                var changedMaxCount = (nudHistoryCount.Value != Entry.PasswordHistory.MaximumCount);
+                var wasCleared = (Entry.PasswordHistory.Count > 0) && (lsvHistoryPasswords.Items.Count == 0);
+                if (changedMaxCount) { Entry.PasswordHistory.MaximumCount = (int)nudHistoryCount.Value; }
+                if (wasCleared) { Entry.PasswordHistory.Clear(); }
 
-            } else if (this.IsEnabled && !chbHistoryEnabled.Checked) { //was enabled - ought to be disabled now
+            } else if (IsEnabled && !chbHistoryEnabled.Checked) { //was enabled - ought to be disabled now
 
-                this.Entry.Records.Remove(this.Entry.Records[RecordType.PasswordHistory]);
+                Entry.Records.Remove(Entry.Records[RecordType.PasswordHistory]);
 
-            } else if (!this.IsEnabled && chbHistoryEnabled.Checked) { //was not enabled - ought to be enabled now
+            } else if (!IsEnabled && chbHistoryEnabled.Checked) { //was not enabled - ought to be enabled now
 
-                this.Entry.PasswordHistory.Enabled = true;
-                this.Entry.PasswordHistory.MaximumCount = (int)nudHistoryCount.Value;
+                Entry.PasswordHistory.Enabled = true;
+                Entry.PasswordHistory.MaximumCount = (int)nudHistoryCount.Value;
 
             }
         }

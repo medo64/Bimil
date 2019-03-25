@@ -439,7 +439,7 @@ namespace Bimil {
 
         private static Random Random = new Random();
 
-        private static string DefaultNtpServer = Random.Next(0, 4).ToString(CultureInfo.InvariantCulture) + ".medo64.pool.ntp.org";
+        private static readonly string DefaultNtpServer = Random.Next(0, 4).ToString(CultureInfo.InvariantCulture) + ".medo64.pool.ntp.org";
 
         private static int LimitBetween(int value, int minValue, int maxValue, bool allowZero = false) {
             if (allowZero && (value == 0)) { return 0; }

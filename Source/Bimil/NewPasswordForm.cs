@@ -7,7 +7,7 @@ namespace Bimil {
 
         public NewPasswordForm() {
             InitializeComponent();
-            this.Font = SystemFonts.MessageBoxFont;
+            Font = SystemFonts.MessageBoxFont;
 
             erp.SetIconAlignment(txtPassword2, ErrorIconAlignment.MiddleLeft);
             erp.SetIconPadding(txtPassword2, SystemInformation.Border3DSize.Width);
@@ -27,8 +27,8 @@ namespace Bimil {
 
 
         private class NativeMethods {
-            internal const Int32 WM_SYSCOMMAND = 0x0112;
-            internal readonly static IntPtr SC_MINIMIZE = new IntPtr(0xF020);
+            internal const int WM_SYSCOMMAND = 0x0112;
+            internal static readonly IntPtr SC_MINIMIZE = new IntPtr(0xF020);
         }
 
         #endregion
@@ -44,7 +44,7 @@ namespace Bimil {
             if (e.KeyData == Keys.Enter) {
                 if (btnOK.Enabled) {
                     btnOK_Click(null, null);
-                    this.DialogResult = DialogResult.OK;
+                    DialogResult = DialogResult.OK;
                 }
             }
         }
@@ -57,12 +57,12 @@ namespace Bimil {
                 erp.SetError(txtPassword2, "Passwords don't match.");
                 btnOK.Enabled = false;
             }
-            this.AcceptButton = btnOK.Enabled ? btnOK : null;
+            AcceptButton = btnOK.Enabled ? btnOK : null;
         }
 
 
         private void btnOK_Click(object sender, EventArgs e) {
-            this.Password = txtPassword.Text;
+            Password = txtPassword.Text;
         }
 
         public string Password { get; private set; }

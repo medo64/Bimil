@@ -69,16 +69,16 @@ namespace Bimil {
         [DataMember] internal bool IsVerified;
         [DataMember] internal bool IsFabricated;
         internal bool IsApplicable(string url, DateTime lastPasswordModification, string title) {
-            if (this.IsVerified && !this.IsFabricated) {
-                if (!string.IsNullOrEmpty(this.Domain)) { //check only if we know the domain
-                    if (DateTime.TryParseExact(this.BreachDate, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var breachDate)) { //only check if we do have a breach date
+            if (IsVerified && !IsFabricated) {
+                if (!string.IsNullOrEmpty(Domain)) { //check only if we know the domain
+                    if (DateTime.TryParseExact(BreachDate, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var breachDate)) { //only check if we do have a breach date
                         //check domain
-                        if (url.IndexOf(this.Domain, StringComparison.OrdinalIgnoreCase) >= 0) { //check only if URL matches domain
+                        if (url.IndexOf(Domain, StringComparison.OrdinalIgnoreCase) >= 0) { //check only if URL matches domain
                             return (breachDate > lastPasswordModification);
                         }
 
                         //check title - fuzzy
-                        var domainComponents = this.Domain.Split('.');
+                        var domainComponents = Domain.Split('.');
                         var mainDomainComponent = (domainComponents.Length > 1) ? domainComponents[domainComponents.Length - 2] : null; //take only middle component of domain name
                         if (!string.IsNullOrEmpty(mainDomainComponent)) {
                             if (title.IndexOf(mainDomainComponent, StringComparison.OrdinalIgnoreCase) >= 0) { //only part of domain has to match title

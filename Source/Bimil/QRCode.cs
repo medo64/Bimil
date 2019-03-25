@@ -53,8 +53,8 @@ namespace QRCoder {
         /// <param name="text">Text.</param>
         /// <param name="errorCorrectionLevel">Error-correction level.</param>
         public QRCode(string text, QRCodeErrorCorrectionLevel errorCorrectionLevel) {
-            this.Text = text;
-            this.ErrorCorrectionLevel = errorCorrectionLevel;
+            Text = text;
+            ErrorCorrectionLevel = errorCorrectionLevel;
         }
 
 
@@ -64,8 +64,8 @@ namespace QRCoder {
         /// </summary>
         /// <exception cref="System.ArgumentNullException">Value cannot be null.</exception>
         public string Text {
-            get { return this._text; }
-            set { this._text = value ?? throw new ArgumentNullException(nameof(value), "Value cannot be null."); }
+            get { return _text; }
+            set { _text = value ?? throw new ArgumentNullException(nameof(value), "Value cannot be null."); }
         }
 
         /// <summary>
@@ -94,10 +94,10 @@ namespace QRCoder {
         /// Returns QR code as a bitmap.
         /// </summary>
         public Bitmap GetBitmap() {
-            var qrCodeData = QRCodeGenerator.CreateQrCode(this.Text, this.ErrorCorrectionLevel, true);
+            var qrCodeData = QRCodeGenerator.CreateQrCode(Text, ErrorCorrectionLevel, true);
 
-            var size = (qrCodeData.ModuleMatrix.Count - (this.IncludeQuietZone ? 0 : 8));
-            var offset = this.IncludeQuietZone ? 0 : 4;
+            var size = (qrCodeData.ModuleMatrix.Count - (IncludeQuietZone ? 0 : 8));
+            var offset = IncludeQuietZone ? 0 : 4;
 
             Bitmap newBitmap = null;
             try {
@@ -105,9 +105,9 @@ namespace QRCoder {
                 for (var x = 0; x < size + offset; x++) {
                     for (var y = 0; y < size + offset; y++) {
                         if (qrCodeData.ModuleMatrix[y][x]) {
-                            newBitmap.SetPixel(x, y, this.DarkColor);
+                            newBitmap.SetPixel(x, y, DarkColor);
                         } else {
-                            newBitmap.SetPixel(x, y, this.LightColor);
+                            newBitmap.SetPixel(x, y, LightColor);
                         }
                     }
                 }
@@ -167,9 +167,9 @@ namespace QRCoder {
         private class QRCodeData {
             public QRCodeData(int version) {
                 var size = 21 + (version - 1) * 4;
-                this.ModuleMatrix = new List<BitArray>();
+                ModuleMatrix = new List<BitArray>();
                 for (var i = 0; i < size; i++) {
-                    this.ModuleMatrix.Add(new BitArray(size));
+                    ModuleMatrix.Add(new BitArray(size));
                 }
             }
 
@@ -1045,7 +1045,7 @@ namespace QRCoder {
             private static bool IsValidISO(string input) {
                 var bytes = Iso88591Encoding.GetBytes(input);
                 var result = Iso88591Encoding.GetString(bytes);
-                return String.Equals(input, result);
+                return string.Equals(input, result);
             }
 
             private static string PlainTextToBinary(string plainText, EncodingMode encMode, bool utf8BOM) {
@@ -1220,8 +1220,8 @@ namespace QRCoder {
             [DebuggerDisplay("Code={CodeWords.Count} ECC={ECCWords.Count}")]
             private struct CodewordBlock {
                 public CodewordBlock(List<string> codeWords, List<string> eccWords) {
-                    this.CodeWords = codeWords;
-                    this.ECCWords = eccWords;
+                    CodeWords = codeWords;
+                    ECCWords = eccWords;
                 }
 
                 public List<string> CodeWords { get; }
@@ -1231,14 +1231,14 @@ namespace QRCoder {
             [DebuggerDisplay("{Version} {ErrorCorrectionLevel}")]
             private struct ECCInfo {
                 public ECCInfo(int version, QRCodeErrorCorrectionLevel errorCorrectionLevel, int totalDataCodewords, int eccPerBlock, int blocksInGroup1, int codewordsInGroup1, int blocksInGroup2, int codewordsInGroup2) {
-                    this.Version = version;
-                    this.ErrorCorrectionLevel = errorCorrectionLevel;
-                    this.TotalDataCodewords = totalDataCodewords;
-                    this.ECCPerBlock = eccPerBlock;
-                    this.BlocksInGroup1 = blocksInGroup1;
-                    this.CodewordsInGroup1 = codewordsInGroup1;
-                    this.BlocksInGroup2 = blocksInGroup2;
-                    this.CodewordsInGroup2 = codewordsInGroup2;
+                    Version = version;
+                    ErrorCorrectionLevel = errorCorrectionLevel;
+                    TotalDataCodewords = totalDataCodewords;
+                    ECCPerBlock = eccPerBlock;
+                    BlocksInGroup1 = blocksInGroup1;
+                    CodewordsInGroup1 = codewordsInGroup1;
+                    BlocksInGroup2 = blocksInGroup2;
+                    CodewordsInGroup2 = codewordsInGroup2;
                 }
 
                 public int Version { get; }
@@ -1254,8 +1254,8 @@ namespace QRCoder {
             [DebuggerDisplay("{Version}")]
             private struct VersionInfo {
                 public VersionInfo(int version, List<VersionInfoDetails> versionInfoDetails) {
-                    this.Version = version;
-                    this.Details = versionInfoDetails;
+                    Version = version;
+                    Details = versionInfoDetails;
                 }
 
                 public int Version { get; }
@@ -1265,8 +1265,8 @@ namespace QRCoder {
             [DebuggerDisplay("{ECCLevel}")]
             private struct VersionInfoDetails {
                 public VersionInfoDetails(QRCodeErrorCorrectionLevel errorCorrectionLevel, Dictionary<EncodingMode, int> capacityDict) {
-                    this.ErrorCorrectionLevel = errorCorrectionLevel;
-                    this.CapacityDict = capacityDict;
+                    ErrorCorrectionLevel = errorCorrectionLevel;
+                    CapacityDict = capacityDict;
                 }
 
                 public QRCodeErrorCorrectionLevel ErrorCorrectionLevel { get; }
@@ -1276,8 +1276,8 @@ namespace QRCoder {
             [DebuggerDisplay("{IntegerValue}^{ExponentAlpha}")]
             private struct Antilog {
                 public Antilog(int exponentAlpha, int integerValue) {
-                    this.ExponentAlpha = exponentAlpha;
-                    this.IntegerValue = integerValue;
+                    ExponentAlpha = exponentAlpha;
+                    IntegerValue = integerValue;
                 }
 
                 public int ExponentAlpha { get; }
@@ -1288,8 +1288,8 @@ namespace QRCoder {
             [DebuggerDisplay("{Coefficient}^{Exponent}")]
             private struct PolynomItem {
                 public PolynomItem(int coefficient, int exponent) {
-                    this.Coefficient = coefficient;
-                    this.Exponent = exponent;
+                    Coefficient = coefficient;
+                    Exponent = exponent;
                 }
 
                 public int Coefficient { get; }
@@ -1304,7 +1304,7 @@ namespace QRCoder {
             private static string Reverse(string text) {
                 var chars = text.ToCharArray();
                 Array.Reverse(chars);
-                return new String(chars);
+                return new string(chars);
             }
 
             private static byte[] Concat(byte[] bytes1, byte[] bytes2) {

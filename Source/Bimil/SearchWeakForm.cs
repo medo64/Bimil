@@ -14,12 +14,12 @@ namespace Bimil {
     internal partial class SearchWeakForm : Form {
         public SearchWeakForm(Document document, IList<string> categories) {
             InitializeComponent();
-            this.Font = SystemFonts.MessageBoxFont;
+            Font = SystemFonts.MessageBoxFont;
             Medo.Windows.Forms.State.Attach(this);
             lsvEntries.SmallImageList = Helpers.GetImageList(this, "picWarning", "picError");
 
-            this.Document = document;
-            this.Categories = categories;
+            Document = document;
+            Categories = categories;
 
             bwSearchWeak.RunWorkerAsync();
         }
@@ -43,7 +43,7 @@ namespace Bimil {
 
         private void Form_KeyDown(object sender, KeyEventArgs e) {
             if (e.KeyData == Keys.Escape) {
-                this.Close();
+                Close();
             }
         }
 
@@ -53,10 +53,10 @@ namespace Bimil {
 
 
         private void lsvEntries_ItemActivate(object sender, System.EventArgs e) {
-            if ((this.Document == null) || (lsvEntries.SelectedItems.Count != 1)) { return; }
+            if ((Document == null) || (lsvEntries.SelectedItems.Count != 1)) { return; }
 
             var entry = (Entry)(lsvEntries.SelectedItems[0].Tag);
-            using (var frm = new ItemForm(this.Document, entry, this.Categories, startsAsEditable: Settings.EditableByDefault, hideAutotype: true)) {
+            using (var frm = new ItemForm(Document, entry, Categories, startsAsEditable: Settings.EditableByDefault, hideAutotype: true)) {
                 frm.ShowDialog(this);
             }
         }
@@ -73,9 +73,9 @@ namespace Bimil {
             bwSearchHibp.ReportProgress(0, new ProgressState("Searching for weak passwords..."));
 
             var sw = Stopwatch.StartNew();
-            var count = this.Document.Entries.Count;
+            var count = Document.Entries.Count;
             for (var i = 0; i < count; i++) {
-                var entry = this.Document.Entries[i];
+                var entry = Document.Entries[i];
                 foreach (var record in entry.Records) {
                     if (record.RecordType == RecordType.Password) {
                         if (BadPasswords.IsCommon(record.Text, out var matchedPassword)) {
@@ -163,7 +163,7 @@ namespace Bimil {
             //collect all user-names
             var sw = Stopwatch.StartNew();
             var userEntryDictionary = new Dictionary<string, List<Entry>>();
-            foreach (var entry in this.Document.Entries) {
+            foreach (var entry in Document.Entries) {
                 if (entry.Records.Contains(RecordType.Password)) {
                     foreach (var record in entry.Records) {
                         if ((record.RecordType == RecordType.EmailAddress) || (record.RecordType == RecordType.UserName)) {
@@ -247,7 +247,7 @@ namespace Bimil {
             var sha1 = new SHA1Managed();
 
             var userEntryDictionary = new Dictionary<string, List<Entry>>();
-            foreach (var entry in this.Document.Entries) {
+            foreach (var entry in Document.Entries) {
                 if (entry.Records.Contains(RecordType.Password)) {
                     foreach (var record in entry.Records) {
                         if (record.RecordType == RecordType.Password) {
@@ -384,9 +384,9 @@ namespace Bimil {
 
         private class ProgressState {
             public ProgressState(ListViewItem item, string statusText, int? estimatedMillisecondsRemaining) {
-                this.Item = item;
-                this.StatusText = statusText;
-                this.EstimatedSecondsRemaining = (estimatedMillisecondsRemaining != null) ? estimatedMillisecondsRemaining / 1000 : null;
+                Item = item;
+                StatusText = statusText;
+                EstimatedSecondsRemaining = (estimatedMillisecondsRemaining != null) ? estimatedMillisecondsRemaining / 1000 : null;
             }
             public ProgressState(ListViewItem item) : this(item, null, null) { }
             public ProgressState(string statusText) : this(null, statusText, null) { }
@@ -400,8 +400,8 @@ namespace Bimil {
         [DebuggerDisplay("{Entries.Count} entries for {Account,nq}")]
         private class AccountAndEntryStorage {
             public AccountAndEntryStorage(string account, List<Entry> entries) {
-                this.Account = account;
-                this.Entries = entries.AsReadOnly();
+                Account = account;
+                Entries = entries.AsReadOnly();
             }
             public string Account { get; }
             public IList<Entry> Entries { get; }
@@ -411,9 +411,9 @@ namespace Bimil {
         private class PasswordAndEntryStorage {
             private static Random Random = new Random();
             public PasswordAndEntryStorage(string passwordHash, List<Entry> entries) {
-                this.PasswordHash = passwordHash;
-                this.Entries = entries.AsReadOnly();
-                this.RandomValue = Random.Next();
+                PasswordHash = passwordHash;
+                Entries = entries.AsReadOnly();
+                RandomValue = Random.Next();
             }
             public string PasswordHash { get; }
             public IList<Entry> Entries { get; }

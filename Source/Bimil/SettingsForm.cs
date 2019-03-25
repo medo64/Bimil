@@ -7,7 +7,7 @@ namespace Bimil {
     internal partial class SettingsForm : Form {
         public SettingsForm() {
             InitializeComponent();
-            this.Font = SystemFonts.MessageBoxFont;
+            Font = SystemFonts.MessageBoxFont;
         }
 
         private void Form_Load(object sender, EventArgs e) {

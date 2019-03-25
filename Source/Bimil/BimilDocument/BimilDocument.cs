@@ -18,16 +18,16 @@ namespace Medo.Security.Cryptography.Bimil {
 
 
         private BimilDocument() {
-            this.Rng = RandomNumberGenerator.Create();
+            Rng = RandomNumberGenerator.Create();
 
-            this.Crypto = new RijndaelManaged {
+            Crypto = new RijndaelManaged {
                 BlockSize = 128,
                 KeySize = 128,
                 Mode = CipherMode.CBC,
                 Padding = PaddingMode.PKCS7
             };
 
-            this.Items = new List<BimilItem>();
+            Items = new List<BimilItem>();
         }
 
         /// <summary>
@@ -36,12 +36,12 @@ namespace Medo.Security.Cryptography.Bimil {
         /// <param name="password">Password to use.</param>
         public BimilDocument(string password)
             : this() {
-            this.PasswordSalt = new byte[16];
-            this.Rng.GetBytes(this.PasswordSalt);
+            PasswordSalt = new byte[16];
+            Rng.GetBytes(PasswordSalt);
 
-            var deriveBytes = new Rfc2898DeriveBytes(UTF8Encoding.UTF8.GetBytes(password), this.PasswordSalt, 4096);
-            this.Crypto.Key = deriveBytes.GetBytes(16);
-            this.Crypto.IV = deriveBytes.GetBytes(16);
+            var deriveBytes = new Rfc2898DeriveBytes(UTF8Encoding.UTF8.GetBytes(password), PasswordSalt, 4096);
+            Crypto.Key = deriveBytes.GetBytes(16);
+            Crypto.IV = deriveBytes.GetBytes(16);
         }
 
 
@@ -51,11 +51,11 @@ namespace Medo.Security.Cryptography.Bimil {
         /// <param name="stream">Stream.</param>
         public void Save(Stream stream) {
             using (var timer = new Medo.Diagnostics.LifetimeWatch("Save")) {
-                stream.Write(this.PasswordSalt, 0, this.PasswordSalt.Length);
+                stream.Write(PasswordSalt, 0, PasswordSalt.Length);
 
                 var buffer = new List<byte>(65536);
                 buffer.AddRange(new byte[] { 0x41, 0x31, 0x32, 0x38 });
-                foreach (var item in this.Items) {
+                foreach (var item in Items) {
                     var bytes = item.GetBytes();
                     buffer.AddRange(GetInt32Bytes(bytes.Length));
                     buffer.AddRange(bytes);
@@ -63,7 +63,7 @@ namespace Medo.Security.Cryptography.Bimil {
                 buffer.AddRange(new byte[] { 0x41, 0x31, 0x32, 0x38 });
 
                 byte[] encBuffer;
-                using (var enc = this.Crypto.CreateEncryptor()) {
+                using (var enc = Crypto.CreateEncryptor()) {
                     encBuffer = enc.TransformFinalBlock(buffer.ToArray(), 0, buffer.Count);
                 }
 
@@ -88,7 +88,7 @@ namespace Medo.Security.Cryptography.Bimil {
         /// <param name="newPassword">Password.</param>
         public void Save(Stream stream, string newPassword) {
             using (var newDoc = new BimilDocument(newPassword)) {
-                foreach (var item in this.Items) {
+                foreach (var item in Items) {
                     var newItem = newDoc.AddItem(item.Name, item.IconIndex);
                     foreach (var record in item.Records) {
                         newItem.AddRecord(record.Key.Text, record.Value.Text, record.Format);
@@ -196,7 +196,7 @@ namespace Medo.Security.Cryptography.Bimil {
         public BimilItem AddItem(string name, int iconIndex) {
             var item = new BimilItem(this) { IconIndex = iconIndex };
             item.NameRecord.Value.Text = name;
-            this.Items.Add(item);
+            Items.Add(item);
             return item;
         }
 
@@ -209,7 +209,7 @@ namespace Medo.Security.Cryptography.Bimil {
         /// <param name="disposing">True to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
         protected virtual void Dispose(bool disposing) {
             if (disposing) {
-                this.Crypto.Clear();
+                Crypto.Clear();
             }
         }
 

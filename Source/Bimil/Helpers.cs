@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
 using System.Text;
@@ -121,7 +120,7 @@ namespace Bimil {
 
         #region Entry search
 
-        public static void PerformEntrySearch(Document document, ListView listView, String searchText, IEnumerable<Entry> entriesToSelect = null, bool extendedSearch = false, bool addMatchDescription = false, bool includeHidden = false) {
+        public static void PerformEntrySearch(Document document, ListView listView, string searchText, IEnumerable<Entry> entriesToSelect = null, bool extendedSearch = false, bool addMatchDescription = false, bool includeHidden = false) {
             var entriesToSelectList = new List<Entry>(entriesToSelect ?? new Entry[] { });
             var remainingEntriesToSelect = new List<Entry>(entriesToSelectList);
 

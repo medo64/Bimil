@@ -6,10 +6,10 @@ namespace Bimil {
     internal class EntryCache {
 
         public EntryCache(Entry entry) {
-            this.Entry = entry;
+            Entry = entry;
 
-            this.Title = entry.Title;
-            this.Group = entry.Group;
+            Title = entry.Title;
+            Group = entry.Group;
         }
 
         public Entry Entry { get; }
