@@ -124,6 +124,7 @@ fi
 
 cat << 'EOF' > "$DIRECTORY_PACKAGE/opt/bimil/bimil"
 #!/bin/bash
+TERM=xterm
 /usr/bin/mono /opt/bimil/bimil.exe "$@"
 EOF
 chmod 755 "$DIRECTORY_PACKAGE/opt/bimil/bimil"
