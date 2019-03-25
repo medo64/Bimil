@@ -33,7 +33,7 @@ namespace Bimil {
             mnu.Renderer = Helpers.ToolStripBorderlessSystemRendererInstance;
             Helpers.ScaleToolstrip(mnu);
 
-            Medo.Windows.Forms.State.SetupOnLoadAndClose(this);
+            Medo.Windows.Forms.State.Attach(this);
 
 #if DEBUG
             mnuAppDebug.Visible = true;
@@ -163,6 +163,8 @@ namespace Bimil {
         }
 
         private void Form_Shown(object sender, EventArgs e) {
+            Medo.Windows.Forms.State.Load(this); //workaround for Mono form resize
+
             var args = Environment.GetCommandLineArgs();
             var fileName = (args.Length) > 1 ? args[1] : null;
             if (fileName != null) {

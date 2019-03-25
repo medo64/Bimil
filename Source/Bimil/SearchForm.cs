@@ -9,7 +9,7 @@ namespace Bimil {
         public SearchForm(Document document, IList<string> categories, string defaultText) {
             InitializeComponent();
             this.Font = SystemFonts.MessageBoxFont;
-            Medo.Windows.Forms.State.SetupOnLoadAndClose(this);
+            Medo.Windows.Forms.State.Attach(this);
 
             this.Document = document;
             this.Categories = categories;

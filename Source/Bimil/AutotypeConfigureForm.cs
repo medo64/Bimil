@@ -9,7 +9,7 @@ namespace Bimil {
             InitializeComponent();
             this.Font = SystemFonts.MessageBoxFont;
 
-            Medo.Windows.Forms.State.SetupOnLoadAndClose(this, lsvItems);
+            Medo.Windows.Forms.State.Attach(this, lsvItems);
 
             this.Entry = entry;
             this.IsReadOnly = isReadOnly;

@@ -1,5 +1,7 @@
-//Josip Medved <jmedved@jmedved.com>   www.medo64.com
+/* Josip Medved <jmedved@jmedved.com> * www.medo64.com * MIT License */
 
+//2019-03-24: Workaround for resize bugs on mono.
+//            Cleanup.
 //2018-02-24: Added option to raise event on read/write instead of using registry.
 //2010-10-31: Added option to skip registry writes (NoRegistryWrites).
 //2010-10-17: Limited all loaded forms to screen's working area.
@@ -56,8 +58,8 @@ namespace Medo.Windows.Forms {
                         company = ((AssemblyCompanyAttribute)companyAttributes[companyAttributes.Length - 1]).Company;
                     }
 
-                    string product = null;
                     var productAttributes = assembly.GetCustomAttributes(typeof(AssemblyProductAttribute), true);
+                    string product;
                     if ((productAttributes != null) && (productAttributes.Length >= 1)) {
                         product = ((AssemblyProductAttribute)productAttributes[productAttributes.Length - 1]).Product;
                     } else {
@@ -86,21 +88,7 @@ namespace Medo.Windows.Forms {
         public static bool NoRegistryWrites { get; set; }
 
 
-        #region Load Save - All
-
-        /// <summary>
-        /// Loads previous state.
-        /// Supported controls are Form, PropertyGrid, ListView and SplitContainer.
-        /// </summary>
-        /// <param name="form">Form on which's FormClosing handler this function will attach. State will not be altered for this parameter.</param>
-        /// <param name="controls">Controls to load and to save.</param>
-        /// <exception cref="ArgumentNullException">Form is null.</exception>
-        /// <exception cref="NotSupportedException">This control's parents cannot be resolved using Name property.</exception>
-        /// <exception cref="ArgumentException">Form already used.</exception>
-        [Obsolete("Use SetupOnLoadAndClose instead.")]
-        public static void LoadNowAndSaveOnClose(Form form, params Control[] controls) {
-            SetupOnLoadAndClose(form, controls);
-        }
+        #region Obsoleted
 
         /// <summary>
         /// Loads previous state.
@@ -111,37 +99,64 @@ namespace Medo.Windows.Forms {
         /// <exception cref="ArgumentNullException">Form is null.</exception>
         /// <exception cref="NotSupportedException">This control's parents cannot be resolved using Name property.</exception>
         /// <exception cref="ArgumentException">Form setup already done.</exception>
+        [Obsolete("Use Attach instead.")]
         public static void SetupOnLoadAndClose(Form form, params Control[] controls) {
             if (form == null) { throw new ArgumentNullException("form", "Form is null."); }
 
-            if (formSetup.ContainsKey(form)) { throw new ArgumentException("Form setup already done.", "form"); }
+            if (AttachedFormControls.ContainsKey(form)) { throw new ArgumentException("Form setup already done.", "form"); }
 
-            Load(form);
-            if (controls != null) { Load(controls); }
-
-            formSetup.Add(form, controls);
-            form.Load += new EventHandler(form_Load);
-            form.FormClosed += new FormClosedEventHandler(form_FormClosed);
+            AttachedFormControls.Add(form, controls);
+            form.Load += new EventHandler(HandleLoadEvent);
+            form.FormClosed += new FormClosedEventHandler(HandleSaveEvent);
         }
 
-        private static Dictionary<Form, Control[]> formSetup = new Dictionary<Form, Control[]>();
+        #endregion
 
-        private static void form_Load(object sender, EventArgs e) {
+
+        #region Attach
+
+        /// <summary>
+        /// Attaches to form's events to automtically resize desired controls.
+        /// Supported controls are Form, PropertyGrid, ListView and SplitContainer.
+        /// </summary>
+        /// <param name="form">Form on which handlers will attach.</param>
+        /// <param name="controls">Controls for which dimensions will be controlled.</param>
+        /// <exception cref="ArgumentNullException">Form is null.</exception>
+        /// <exception cref="NotSupportedException">This control's parents cannot be resolved using Name property.</exception>
+        /// <exception cref="ArgumentException">Form setup already done.</exception>
+        public static void Attach(Form form, params Control[] controls) {
+            if (form == null) { throw new ArgumentNullException("form", "Form is null."); }
+
+            if (AttachedFormControls.ContainsKey(form)) { throw new ArgumentException("Form setup already done.", "form"); }
+
+            AttachedFormControls.Add(form, controls);
+            form.Shown += new EventHandler(HandleLoadEvent);
+            form.Closed += new EventHandler(HandleSaveEvent);
+        }
+
+        private static readonly Dictionary<Form, Control[]> AttachedFormControls = new Dictionary<Form, Control[]>();
+
+        private static void HandleLoadEvent(object sender, EventArgs e) {
             var form = sender as Form;
-            if (formSetup.ContainsKey(form)) {
+            if (AttachedFormControls.ContainsKey(form)) {
                 Load(form);
-                Load(formSetup[form]);
+                Load(AttachedFormControls[form]);
             }
         }
 
-        private static void form_FormClosed(object sender, FormClosedEventArgs e) {
+        private static void HandleSaveEvent(object sender, EventArgs e) {
             var form = sender as Form;
-            if (formSetup.ContainsKey(form)) {
+            if (AttachedFormControls.ContainsKey(form)) {
                 Save(form);
-                Save(formSetup[form]);
-                formSetup.Remove(form);
+                Save(AttachedFormControls[form]);
+                AttachedFormControls.Remove(form);
             }
         }
+
+        #endregion
+
+
+        #region Load Save - All
 
         /// <summary>
         /// Loads previous state.
@@ -186,7 +201,6 @@ namespace Medo.Windows.Forms {
         }
 
         #endregion
-
 
         #region Load Save - Form
 
@@ -566,9 +580,9 @@ namespace Medo.Windows.Forms {
             if (name == null) { throw new ArgumentNullException(nameof(name), "Name cannot be null."); }
             if (string.IsNullOrWhiteSpace(name)) { throw new ArgumentOutOfRangeException(nameof(name), "Name cannot be empty."); }
 
-            this.Name = name;
-            this.DefaultValue = defaultValue;
-            this.Value = defaultValue;
+            Name = name;
+            DefaultValue = defaultValue;
+            Value = defaultValue;
         }
 
 
@@ -605,8 +619,8 @@ namespace Medo.Windows.Forms {
             if (name == null) { throw new ArgumentNullException(nameof(name), "Name cannot be null."); }
             if (string.IsNullOrWhiteSpace(name)) { throw new ArgumentOutOfRangeException(nameof(name), "Name cannot be empty."); }
 
-            this.Name = name;
-            this.Value = value;
+            Name = name;
+            Value = value;
         }
 
 
@@ -621,5 +635,4 @@ namespace Medo.Windows.Forms {
         public int Value { get; }
 
     }
-
 }

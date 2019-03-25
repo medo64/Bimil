@@ -10,7 +10,7 @@ namespace Bimil {
         public DocumentInfoForm(Document document) {
             InitializeComponent();
             this.Font = SystemFonts.MessageBoxFont;
-            Medo.Windows.Forms.State.SetupOnLoadAndClose(this);
+            Medo.Windows.Forms.State.Attach(this);
 
             this.Document = document;
 

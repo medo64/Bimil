@@ -8,7 +8,7 @@ namespace Bimil {
         public AutotypeHelpForm(string autotypeText, bool isReadOnly) {
             InitializeComponent();
             this.Font = SystemFonts.MessageBoxFont;
-            Medo.Windows.Forms.State.SetupOnLoadAndClose(this);
+            Medo.Windows.Forms.State.Attach(this);
 
             if (string.IsNullOrEmpty(autotypeText)) {
                 txtAutotype.Text = @"\u\t\p\n";

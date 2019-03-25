@@ -15,7 +15,7 @@ namespace Bimil {
         public SearchWeakForm(Document document, IList<string> categories) {
             InitializeComponent();
             this.Font = SystemFonts.MessageBoxFont;
-            Medo.Windows.Forms.State.SetupOnLoadAndClose(this);
+            Medo.Windows.Forms.State.Attach(this);
             lsvEntries.SmallImageList = Helpers.GetImageList(this, "picWarning", "picError");
 
             this.Document = document;
