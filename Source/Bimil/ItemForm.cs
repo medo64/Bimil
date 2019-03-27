@@ -422,6 +422,7 @@ namespace Bimil {
 
             var frm = new AutotypeForm(Item);
             frm.Shown += delegate {
+                Medo.Windows.Forms.State.Load(frm); //workaround for Mono form resize
                 ownerForm.Visible = false;
             };
             frm.FormClosed += delegate {

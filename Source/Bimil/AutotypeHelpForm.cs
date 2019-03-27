@@ -77,6 +77,7 @@ namespace Bimil {
         }
 
         private void Form_Shown(object sender, System.EventArgs e) {
+            Medo.Windows.Forms.State.Load(this); //workaround for Mono form resize
             txtAutotype.SelectionStart = txtAutotype.Text.Length;
         }
 

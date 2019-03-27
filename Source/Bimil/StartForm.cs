@@ -54,6 +54,7 @@ namespace Bimil {
 
 
         private void Form_Shown(object sender, EventArgs e) {
+            Medo.Windows.Forms.State.Load(this); //workaround for Mono form resize
             Form_Resize(null, null);
         }
 
