@@ -19,6 +19,7 @@ namespace Bimil {
         public static void SetClipboardText(IWin32Window owner, string text, bool sensitiveData) {
             var data = new DataObject();
             if (text.Length > 0) {
+                data.SetText(text, TextDataFormat.Text);
                 data.SetText(text, TextDataFormat.UnicodeText);
             }
 
