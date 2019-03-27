@@ -25,15 +25,17 @@ namespace Bimil {
 
             PauseMonitor();
 
+            bool clearSensitive = sensitiveData || (Settings.AutoClearClipboardForSensitiveDataOnly == false);
+
             try {
                 Debug.WriteLine("Clipboard: SetData (text)");
-                Clipboard.SetDataObject(data, false, 5, 100);
+                Clipboard.SetDataObject(data, copy: !clearSensitive, retryTimes: 5, retryDelay: 100);
             } catch (ExternalException ex) {
                 Medo.MessageBox.ShowError(owner, "Cannot copy to clipboard!\n\n" + ex.Message);
                 return;
             }
 
-            if (sensitiveData || (Settings.AutoClearClipboardForSensitiveDataOnly == false)) {
+            if (clearSensitive) {
                 StartMonitor();
                 ClipboardClearThread.ScheduleClear();
             }
