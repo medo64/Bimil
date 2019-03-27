@@ -40,26 +40,28 @@ namespace Bimil {
 
 
         protected override void WndProc(ref Message m) {
-            switch (m.Msg) {
-                case NativeMethods.WM_DRAWCLIPBOARD:
-                    Debug.WriteLine("ClipboardMonitor WndProc: WM_DRAWCLIPBOARD");
-                    NativeMethods.SendMessage(NextViewerPtr, m.Msg, m.WParam, m.LParam);
-                    OnClipboardChanged();
-                    break;
-
-                case NativeMethods.WM_CHANGECBCHAIN:
-                    Debug.WriteLine("ClipboardMonitor WndProc: WM_CHANGECBCHAIN");
-                    if (m.WParam == NextViewerPtr) {
-                        NextViewerPtr = m.LParam;
-                    } else {
+            if (m != null) {
+                switch (m.Msg) {
+                    case NativeMethods.WM_DRAWCLIPBOARD:
+                        Debug.WriteLine("ClipboardMonitor WndProc: WM_DRAWCLIPBOARD");
                         NativeMethods.SendMessage(NextViewerPtr, m.Msg, m.WParam, m.LParam);
-                    }
-                    break;
+                        OnClipboardChanged();
+                        break;
 
-                default:
-                    Debug.WriteLine("ClipboardMonitor WndProc: 0x" + m.Msg.ToString("X4"));
-                    base.WndProc(ref m);
-                    break;
+                    case NativeMethods.WM_CHANGECBCHAIN:
+                        Debug.WriteLine("ClipboardMonitor WndProc: WM_CHANGECBCHAIN");
+                        if (m.WParam == NextViewerPtr) {
+                            NextViewerPtr = m.LParam;
+                        } else {
+                            NativeMethods.SendMessage(NextViewerPtr, m.Msg, m.WParam, m.LParam);
+                        }
+                        break;
+
+                    default:
+                        Debug.WriteLine("ClipboardMonitor WndProc: 0x" + m.Msg.ToString("X4"));
+                        base.WndProc(ref m);
+                        break;
+                }
             }
         }
 

@@ -13,12 +13,12 @@ namespace Bimil {
         }
 
         protected override void WndProc(ref Message m) {
-            if (m.Msg == NativeMethods.WM_PASTE) {
+            if ((m != null) && (m.Msg == NativeMethods.WM_PASTE)) {
                 if (Clipboard.ContainsText()) {
                     var lines = Clipboard.GetText().Split(new string[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
                     SelectedText = string.Join(Environment.NewLine, lines);
                 }
-            } else {
+            } else if (m != null) {
                 base.WndProc(ref m);
             }
         }

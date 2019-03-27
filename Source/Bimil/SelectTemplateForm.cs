@@ -17,9 +17,9 @@ namespace Bimil {
 
         protected override void WndProc(ref Message m) {
             if ((Environment.OSVersion.Platform == PlatformID.Win32NT) && (Environment.OSVersion.Version.Major < 10)
-                && (m.Msg == NativeMethods.WM_SYSCOMMAND) && (m.WParam == NativeMethods.SC_MINIMIZE)) {
+                && (m != null) && (m.Msg == NativeMethods.WM_SYSCOMMAND) && (m.WParam == NativeMethods.SC_MINIMIZE)) {
                 m.Result = IntPtr.Zero;
-            } else {
+            } else if (m != null) {
                 base.WndProc(ref m);
             }
         }
