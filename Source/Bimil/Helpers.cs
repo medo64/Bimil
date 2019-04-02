@@ -464,13 +464,14 @@ namespace Bimil {
             var set = sizeAndSet.Value;
 
             var resources = Bimil.Properties.Resources.ResourceManager;
-            var bitmap = resources.GetObject(name + set) as Bitmap;
             item.ImageScaling = ToolStripItemImageScaling.None;
+            if (resources.GetObject(name + set) is Bitmap bitmap) {
+                item.Image = new Bitmap(bitmap, size, size);
+            } else {
 #if DEBUG
-            item.Image = (bitmap != null) ? new Bitmap(bitmap, size, size) : new Bitmap(size, size, System.Drawing.Imaging.PixelFormat.Format8bppIndexed);
-#else
-            if (bitmap != null) { item.Image = new Bitmap(bitmap, size, size); }
+                item.Image = new Bitmap(size, size, System.Drawing.Imaging.PixelFormat.Format8bppIndexed);
 #endif
+            }
         }
 
         internal static void ScaleButton(Button item) {

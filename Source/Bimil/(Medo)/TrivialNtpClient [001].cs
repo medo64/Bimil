@@ -1,4 +1,4 @@
-//Copyright 2017 by Josip Medved <jmedved@jmedved.com> (www.medo64.com) MIT License
+/* Josip Medved <jmedved@jmedved.com> * www.medo64.com * MIT License */
 
 //2017-09-17: Initial version.
 
@@ -39,8 +39,8 @@ namespace Medo.Net {
             if (string.IsNullOrWhiteSpace(hostName)) { throw new ArgumentOutOfRangeException(nameof(hostName), "Host name cannot be empty."); }
             if ((port < 1) || (port > 65535)) { throw new ArgumentOutOfRangeException(nameof(port), "Port must be between 1 and 65535."); }
 
-            this.HostName = hostName;
-            this.Port = port;
+            HostName = hostName;
+            Port = port;
         }
 
 
@@ -64,10 +64,10 @@ namespace Medo.Net {
         /// Gets/sets timeout in milliseconds.
         /// </summary>
         public int Timeout {
-            get { return this._timeout; }
+            get { return _timeout; }
             set {
                 if (value <= 0) { throw new ArgumentOutOfRangeException(nameof(value), "Value cannot be 0 or negative."); }
-                this._timeout = value;
+                _timeout = value;
             }
         }
 
@@ -82,10 +82,10 @@ namespace Medo.Net {
 
             try {
                 using (var udp = new UdpClient()) {
-                    udp.Client.ReceiveTimeout = this.Timeout;
-                    udp.Client.SendTimeout = this.Timeout;
+                    udp.Client.ReceiveTimeout = Timeout;
+                    udp.Client.SendTimeout = Timeout;
 
-                    udp.Send(requestBytes, requestBytes.Length, this.HostName, this.Port);
+                    udp.Send(requestBytes, requestBytes.Length, HostName, Port);
 
                     IPEndPoint remoteEP = null;
                     var responseBytes = udp.Receive(ref remoteEP);
@@ -115,14 +115,14 @@ namespace Medo.Net {
 
             try {
                 using (var udp = new UdpClient()) {
-                    udp.Client.ReceiveTimeout = this.Timeout;
-                    udp.Client.SendTimeout = this.Timeout;
+                    udp.Client.ReceiveTimeout = Timeout;
+                    udp.Client.SendTimeout = Timeout;
 
-                    await udp.SendAsync(requestBytes, requestBytes.Length, this.HostName, this.Port);
+                    await udp.SendAsync(requestBytes, requestBytes.Length, HostName, Port);
 
                     var receiveTask = udp.ReceiveAsync();
                     using (var timeoutCancellationToken = new CancellationTokenSource()) {
-                        var completedTask = await Task.WhenAny(receiveTask, Task.Delay(this.Timeout, timeoutCancellationToken.Token));
+                        var completedTask = await Task.WhenAny(receiveTask, Task.Delay(Timeout, timeoutCancellationToken.Token));
                         if (completedTask == receiveTask) {
                             timeoutCancellationToken.Cancel();
                             await receiveTask;
@@ -151,7 +151,7 @@ namespace Medo.Net {
         /// <param name="time">Time if successful.</param>
         public bool TryRetrieveTime(out DateTime time) {
             try {
-                time = this.RetrieveTime();
+                time = RetrieveTime();
                 return true;
             } catch (InvalidOperationException) {
                 time = DateTime.MinValue;
@@ -237,17 +237,17 @@ namespace Medo.Net {
             /// <summary>
             /// This is a number indicating the minimum interval between transmitted messages, in seconds as a power of two. For instance, a value of six indicates a minimum interval of 64 seconds.
             /// </summary>
-            public Int32 PollAsLog2 { get; private set; }
+            public int PollAsLog2 { get; private set; }
 
             /// <summary>
             /// This is a number indicating the precision of the various clocks, in seconds to the nearest power of two. The value must be rounded to the next larger power of two; for instance, a 50-Hz (20 ms) or 60-Hz (16.67 ms) power-frequency clock would be assigned the value -5 (31.25 ms), while a 1000-Hz (1 ms) crystal-controlled clock would be assigned the value -9 (1.95 ms).
             /// </summary>
-            public Int32 PrecisionAsLog2 { get; private set; }
+            public int PrecisionAsLog2 { get; private set; }
 
             /// <summary>
             /// This is a signed fixed-point number indicating the total roundtrip delay to the primary reference source at the root of the synchronization subnet, in seconds. Note that this variable can take on both positive and negative values, depending on clock precision and skew.
             /// </summary>
-            public Int32 RootDelay { get; private set; }
+            public int RootDelay { get; private set; }
 
             /// <summary>
             /// This is a signed fixed-point number indicating the maximum error relative to the primary reference source at the root of the synchronization subnet, in seconds. Only positive values greater than zero are possible.
@@ -286,28 +286,28 @@ namespace Medo.Net {
             public byte[] GetBytes() {
                 var bytes = new List<byte>();
 
-                var li = (int)this.LeapIndicator;
-                var vn = (int)this.VersionNumber;
-                var mode = (int)this.Mode;
+                var li = (int)LeapIndicator;
+                var vn = (int)VersionNumber;
+                var mode = (int)Mode;
                 bytes.Add((byte)((li << 6) | (vn << 3) | (mode)));
 
-                bytes.Add((byte)this.Stratum);
-                bytes.Add((byte)this.PollAsLog2);
-                bytes.Add((byte)this.PrecisionAsLog2);
+                bytes.Add((byte)Stratum);
+                bytes.Add((byte)PollAsLog2);
+                bytes.Add((byte)PrecisionAsLog2);
 
-                var rootDelay = BitConverter.GetBytes(this.RootDelay);
+                var rootDelay = BitConverter.GetBytes(RootDelay);
                 bytes.AddRange(new byte[] { rootDelay[3], rootDelay[2], rootDelay[1], rootDelay[0] });
 
-                var rootDispersion = BitConverter.GetBytes(this.RootDispersion);
+                var rootDispersion = BitConverter.GetBytes(RootDispersion);
                 bytes.AddRange(new byte[] { rootDispersion[3], rootDispersion[2], rootDispersion[1], rootDispersion[0] });
 
-                var referenceID = BitConverter.GetBytes(this.ReferenceIdentifier);
+                var referenceID = BitConverter.GetBytes(ReferenceIdentifier);
                 bytes.AddRange(new byte[] { referenceID[3], referenceID[2], referenceID[1], referenceID[0] });
 
-                bytes.AddRange(GetTimestamp(this.ReferenceTimestamp));
-                bytes.AddRange(GetTimestamp(this.OriginTimestamp));
-                bytes.AddRange(GetTimestamp(this.ReceiveTimestamp));
-                bytes.AddRange(GetTimestamp(this.TransmitTimestamp));
+                bytes.AddRange(GetTimestamp(ReferenceTimestamp));
+                bytes.AddRange(GetTimestamp(OriginTimestamp));
+                bytes.AddRange(GetTimestamp(ReceiveTimestamp));
+                bytes.AddRange(GetTimestamp(TransmitTimestamp));
 
                 return bytes.ToArray();
             }
@@ -364,16 +364,16 @@ namespace Medo.Net {
             private static byte[] GetTimestamp(DateTime? timestamp) {
                 if (timestamp == null) { return new byte[] { 0, 0, 0, 0, 0, 0, 0, 0 }; }
 
-                DateTime time = timestamp.Value;
+                var time = timestamp.Value;
                 if (time.Kind == DateTimeKind.Local) { time = time.ToUniversalTime(); }
 
                 var eraTime = new DateTime(1900, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
                 var ts = time - eraTime;
-                var n1 = (UInt32)ts.TotalSeconds;
+                var n1 = (uint)ts.TotalSeconds;
                 var buffer1LE = BitConverter.GetBytes(n1);
 
                 var timeSec = eraTime.AddSeconds(n1);
-                var n2 = (UInt32)System.Math.Min(System.Math.Max((time.Ticks - timeSec.Ticks) / 10000000.0 * 4294967296, 0), 4294967296);
+                var n2 = (uint)System.Math.Min(System.Math.Max((time.Ticks - timeSec.Ticks) / 10000000.0 * 4294967296, 0), 4294967296);
                 var buffer2LE = BitConverter.GetBytes(n2);
 
                 return new byte[] { buffer1LE[3], buffer1LE[2], buffer1LE[1], buffer1LE[0], buffer2LE[3], buffer2LE[2], buffer2LE[1], buffer2LE[0] };

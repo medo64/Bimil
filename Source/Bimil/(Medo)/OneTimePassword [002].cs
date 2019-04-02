@@ -71,6 +71,7 @@ namespace Medo.Security.Cryptography {
         private readonly byte[] SecretBuffer = new byte[1024]; //ProtectedMemory requires length of the data to be a multiple of 16 bytes.
         private readonly int SecretLength;
 
+#if NETSTANDARD1_6 || NETSTANDARD2_0
         private static readonly Lazy<byte[]> lazyRandomKey = new Lazy<byte[]>(() => {
             var buffer = new byte[16];
             RandomNumberGenerator.Create().GetBytes(buffer);
@@ -81,8 +82,10 @@ namespace Medo.Security.Cryptography {
             aes.Padding = PaddingMode.None;
             return aes;
         });
+#endif
 
         private void ProtectSecret() {
+#if NETSTANDARD1_6 || NETSTANDARD2_0
             using (var ms = new MemoryStream()) {
                 using (var encryptor = aes.Value.CreateEncryptor(lazyRandomKey.Value, new byte[16]))
                 using (var cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write)) {
@@ -90,9 +93,13 @@ namespace Medo.Security.Cryptography {
                 }
                 Buffer.BlockCopy(ms.ToArray(), 0, SecretBuffer, 0, SecretBuffer.Length);
             }
+#else
+            ProtectedMemory.Protect(SecretBuffer, MemoryProtectionScope.SameProcess);
+#endif
         }
 
         private void UnprotectSecret() {
+#if NETSTANDARD1_6 || NETSTANDARD2_0
             using (var ms = new MemoryStream(SecretBuffer)) {
                 using (var decryptor = aes.Value.CreateDecryptor(lazyRandomKey.Value, new byte[16]))
                 using (var cs = new CryptoStream(ms, decryptor, CryptoStreamMode.Read)) {
@@ -102,6 +109,9 @@ namespace Medo.Security.Cryptography {
                     Array.Clear(decryptedBuffer, 0, decryptedBuffer.Length);
                 }
             }
+#else
+            ProtectedMemory.Unprotect(SecretBuffer, MemoryProtectionScope.SameProcess);
+#endif
         }
 
 
@@ -379,7 +389,7 @@ namespace Medo.Security.Cryptography {
         private static readonly IList<char> Base32Alphabet = new List<char>("ABCDEFGHIJKLMNOPQRSTUVWXYZ234567").AsReadOnly();
         private static readonly byte[] Base32Bitmask = new byte[] { 0x00, 0x01, 0x03, 0x07, 0x0F, 0x1F };
 
-        internal static void FromBase32(string text, byte[] buffer, out int length) {
+        private static void FromBase32(string text, byte[] buffer, out int length) {
             var index = 0;
 
             var bitPosition = 0;
@@ -418,7 +428,7 @@ namespace Medo.Security.Cryptography {
             length = index;
         }
 
-        internal static string ToBase32(byte[] bytes, int length, SecretFormatFlags format) {
+        private static string ToBase32(byte[] bytes, int length, SecretFormatFlags format) {
             if (length == 0) { return string.Empty; }
 
             var hasSpacing = (format & SecretFormatFlags.Spacing) == SecretFormatFlags.Spacing;

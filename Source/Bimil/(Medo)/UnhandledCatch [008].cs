@@ -1,15 +1,15 @@
-//Copyright (c) 2007 Josip Medved <jmedved@jmedved.com>
+/* Josip Medved <jmedved@jmedved.com> * www.medo64.com * MIT License */
 
-//2007-12-30: New version.
-//2008-01-02: Added support for inner exceptions.
-//            Added thread-safe locking.
-//2008-01-03: Added Resources.
-//2008-01-06: System.Environment.Exit returns E_UNEXPECTED (0x8000ffff).
+//2010-11-22: Changed default exception mode to CatchException.
+//2010-11-07: Compatible with Mono (ignoring FailFast).
+//2009-03-31: Changed FailFast to optional in order to avoid WER messages.
 //2008-01-13: Changed default mode to ThrowException.
 //            Uses FailFast to exit application.
-//2009-03-31: Changed FailFast to optional in order to avoid WER messages.
-//2010-11-07: Compatible with Mono (ignoring FailFast).
-//2010-11-22: Changed default exception mode to CatchException.
+//2008-01-06: System.Environment.Exit returns E_UNEXPECTED (0x8000ffff).
+//2008-01-03: Added Resources.
+//2008-01-02: Added support for inner exceptions.
+//            Added thread-safe locking.
+//2007-12-30: New version.
 
 
 using System;
@@ -112,7 +112,7 @@ namespace Medo.Application {
                     System.Windows.Forms.Application.ThreadException -= Application_ThreadException;
                     System.AppDomain.CurrentDomain.UnhandledException -= AppDomain_UnhandledException;
 
-                    if (ThreadException != null) { ThreadException(null, new ThreadExceptionEventArgs(exception)); }
+                    ThreadException?.Invoke(null, new ThreadExceptionEventArgs(exception));
                 }
 
                 System.Diagnostics.Trace.TraceError("Exit(E_UNEXPECTED): Unhandled exception has occurred.  {Medo.Application.UnhandledCatch}");
@@ -132,5 +132,4 @@ namespace Medo.Application {
         }
 
     }
-
 }

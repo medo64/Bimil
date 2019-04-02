@@ -1,31 +1,32 @@
-//Copyright (c) 2008 Josip Medved <jmedved@jmedved.com>
+/* Josip Medved <jmedved@jmedved.com> * www.medo64.com * MIT License */
 
-//2008-01-07: First version.
-//2008-01-15: Added overloads for SaveToTemp and ShowDialog.
-//2008-01-17: SendToWeb returns false instead of throwing WebException.
-//2008-01-27: Changed Version format.
-//2008-03-01: Added Product and Time.
-//2008-03-30: Added SaveToEventLog.
-//            Fixed mixed English and Croatian messages.
-//2008-04-11: Cleaned code to match FxCop 1.36 beta 2 (NormalizeStringsToUppercase, SpecifyStringComparison).
-//2008-12-17: Changed SendToWeb to PostToWeb.
-//2009-03-30: Refactoring.
-//            Added user confirmation form in PostToWeb.
-//2009-04-07: Success check is done with status code.
-//2009-06-26: Added Version and removed EntryAssembly from arguments.
-//            Obsoleted PostToWeb, ShowDialog took over functionality.
-//            Deleted old obsoleted methods.
+//2012-09-16: Added retry upon send failure.
+//2010-11-06: Graphical update.
+//2010-10-30: Fixed bug with sending error report.
+//2010-03-07: Changed Math.* to System.Math.*.
+//2010-03-02: Line wrapping at 72nd character.
+//2010-02-13: Added TopMost.
+//2010-02-13: Send button is disabled if there is neither exception nor message.
+//            Log file is now ErrorReport "[{application}].log" and "ErrorReport [{application}] {time}.log".
 //2009-12-09: Changed source to use only preallocated buffers for writing to log file.
 //            Log file name is now ErrorReport.{application}.log (does not contain version info).
 //            NameValueCollection is no longer used for passing custom parameters. String array is used instead.
 //            If sending of message does not succeed whole message is saved in temp as ErrorReport.{application}.{time}.log.
-//2010-02-13: Send button is disabled if there is neither exception nor message.
-//            Log file is now ErrorReport "[{application}].log" and "ErrorReport [{application}] {time}.log".
-//2010-02-13: Added TopMost.
-//2010-03-02: Line wrapping at 72nd character.
-//2010-03-07: Changed Math.* to System.Math.*.
-//2010-10-30: Fixed bug with sending error report.
-//2010-11-06: Graphical update.
+//2009-06-26: Added Version and removed EntryAssembly from arguments.
+//            Obsoleted PostToWeb, ShowDialog took over functionality.
+//            Deleted old obsoleted methods.
+//2009-04-07: Success check is done with status code.
+//2009-03-30: Refactoring.
+//            Added user confirmation form in PostToWeb.
+//2008-12-17: Changed SendToWeb to PostToWeb.
+//2008-04-11: Cleaned code to match FxCop 1.36 beta 2 (NormalizeStringsToUppercase, SpecifyStringComparison).
+//2008-03-30: Added SaveToEventLog.
+//            Fixed mixed English and Croatian messages.
+//2008-03-01: Added Product and Time.
+//2008-01-27: Changed Version format.
+//2008-01-17: SendToWeb returns false instead of throwing WebException.
+//2008-01-15: Added overloads for SaveToTemp and ShowDialog.
+//2008-01-07: First version.
 
 
 using System;
@@ -67,11 +68,11 @@ namespace Medo.Diagnostics {
         static ErrorReport() {
             var assembly = Assembly.GetEntryAssembly();
 
-            object[] productAttributes = assembly.GetCustomAttributes(typeof(AssemblyProductAttribute), true);
+            var productAttributes = assembly.GetCustomAttributes(typeof(AssemblyProductAttribute), true);
             if ((productAttributes != null) && (productAttributes.Length >= 1)) {
                 ErrorReport._infoProductTitle = ((AssemblyProductAttribute)productAttributes[productAttributes.Length - 1]).Product;
             } else {
-                object[] titleAttributes = assembly.GetCustomAttributes(typeof(AssemblyTitleAttribute), true);
+                var titleAttributes = assembly.GetCustomAttributes(typeof(AssemblyTitleAttribute), true);
                 if ((titleAttributes != null) && (titleAttributes.Length >= 1)) {
                     ErrorReport._infoProductTitle = ((AssemblyTitleAttribute)titleAttributes[titleAttributes.Length - 1]).Title;
                 } else {
@@ -139,20 +140,24 @@ namespace Medo.Diagnostics {
 
                         if (exception != null) {
                             if (ShowDialogInform(owner, address) == DialogResult.OK) {
-                                string message, email, displayName;
-                                if (ShowDialogCollect(owner, exception, out message, out email, out displayName) == DialogResult.OK) {
-                                    string fullMessage = LogBufferGetStringWithUserInformation(message, displayName, email);
-                                    if (ShowDialogSend(owner, address, fullMessage, email, displayName) == DialogResult.OK) {
-                                        return DialogResult.OK;
+                                if (ShowDialogCollect(owner, exception, out var message, out var email, out var displayName) == DialogResult.OK) {
+                                    var fullMessage = LogBufferGetStringWithUserInformation(message, displayName, email);
+                                    while (true) {
+                                        var result = ShowDialogSend(owner, address, fullMessage, email, displayName);
+                                        if (result != DialogResult.Retry) {
+                                            return result;
+                                        }
                                     }
                                 }
                             }
                         } else {
-                            string message, email, displayName;
-                            if (ShowDialogCollect(owner, exception, out message, out email, out displayName) == DialogResult.OK) {
-                                string fullMessage = LogBufferGetStringWithUserInformation(message, displayName, email);
-                                if (ShowDialogSend(owner, address, fullMessage, email, displayName) == DialogResult.OK) {
-                                    return DialogResult.OK;
+                            if (ShowDialogCollect(owner, exception, out var message, out var email, out var displayName) == DialogResult.OK) {
+                                var fullMessage = LogBufferGetStringWithUserInformation(message, displayName, email);
+                                while (true) {
+                                    var result = ShowDialogSend(owner, address, fullMessage, email, displayName);
+                                    if (result != DialogResult.Retry) {
+                                        return result;
+                                    }
                                 }
                             }
                         }
@@ -264,8 +269,6 @@ namespace Medo.Diagnostics {
 
 
         private static DialogResult ShowDialogInform(IWin32Window owner, Uri address) {
-            var ownerForm = owner as Form;
-
             using (var form = new Form())
             using (var label = new Label())
             using (var sendButton = new Button())
@@ -275,7 +278,7 @@ namespace Medo.Diagnostics {
                 form.ControlBox = true;
                 form.Font = SystemFonts.MessageBoxFont;
                 form.FormBorderStyle = FormBorderStyle.FixedDialog;
-                if (ownerForm != null) {
+                if (owner is Form ownerForm) {
                     form.Icon = ownerForm.Icon;
                     form.StartPosition = FormStartPosition.CenterParent;
                 } else {
@@ -336,8 +339,6 @@ namespace Medo.Diagnostics {
         }
 
         private static DialogResult ShowDialogCollect(IWin32Window owner, Exception exception, out string message, out string email, out string displayName) {
-            var ownerForm = owner as Form;
-
             using (var form = new Form())
             using (var panelContent = new Panel())
             using (var labelHelp = new Label())
@@ -356,7 +357,7 @@ namespace Medo.Diagnostics {
                 form.ControlBox = true;
                 form.Font = SystemFonts.MessageBoxFont;
                 form.FormBorderStyle = FormBorderStyle.FixedDialog;
-                if (ownerForm != null) {
+                if (owner is Form ownerForm) {
                     form.Icon = ownerForm.Icon;
                     form.StartPosition = FormStartPosition.CenterParent;
                 } else {
@@ -509,31 +510,26 @@ namespace Medo.Diagnostics {
                     message = textMessage.Text.Trim();
                     email = textEmail.Text.Trim();
                     displayName = textName.Text.Trim();
-                    form.Dispose();
                     return DialogResult.OK;
                 } else {
                     message = null;
                     email = null;
                     displayName = null;
-                    form.Dispose();
                     return DialogResult.Cancel;
                 }
             }
         }
 
         private static void textMessage_TextChanged(object sender, EventArgs e) {
-            var senderTextBox = sender as TextBox;
-            if (senderTextBox != null) {
-                var button = senderTextBox.Tag as Button;
-                if (button != null) {
+            if (sender is TextBox senderTextBox) {
+                if (senderTextBox.Tag is Button button) {
                     button.Enabled = senderTextBox.Text.Length > 0;
                 }
             }
         }
 
         private static void text_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e) {
-            var senderTextBox = sender as TextBox;
-            if (senderTextBox != null) {
+            if (sender is TextBox senderTextBox) {
                 if (e.KeyData == (Keys.Control | Keys.A)) {
                     senderTextBox.SelectAll();
                     e.IsInputKey = false;
@@ -597,10 +593,11 @@ namespace Medo.Diagnostics {
                 form.Controls.Add(label);
                 form.Controls.Add(progressBar);
 
-                var allFormParameters = new NameValueCollection();
-                allFormParameters.Add("Product", _infoProductTitle);
-                allFormParameters.Add("Version", _infoProductVersion);
-                allFormParameters.Add("Message", message);
+                var allFormParameters = new NameValueCollection {
+                    { "Product", _infoProductTitle },
+                    { "Version", _infoProductVersion },
+                    { "Message", message }
+                };
                 if (!string.IsNullOrEmpty(email)) { allFormParameters.Add("Email", email); }
                 if (!string.IsNullOrEmpty(displayName)) { allFormParameters.Add("DisplayName", displayName); }
 
@@ -615,13 +612,16 @@ namespace Medo.Diagnostics {
                 } else {
                     if (!ErrorReport.DisableAutomaticSaveToTemp) {
                         try {
-                            string fullLogFileName = System.IO.Path.Combine(System.IO.Path.GetTempPath(), string.Format(System.Globalization.CultureInfo.InvariantCulture, @"ErrorReport [{0}] {1:yyyyMMdd\THHmmss}.log", _infoProductTitle, DateTime.Now));
+                            var fullLogFileName = System.IO.Path.Combine(System.IO.Path.GetTempPath(), string.Format(System.Globalization.CultureInfo.InvariantCulture, @"ErrorReport [{0}] {1:yyyyMMdd\THHmmss}.log", _infoProductTitle, DateTime.Now));
                             System.IO.File.WriteAllText(fullLogFileName, message);
                         } catch (System.Security.SecurityException) {
                         } catch (System.IO.IOException) { }
                     }
-                    System.Windows.Forms.MessageBox.Show(owner, Resources.GetInCurrentLanguage("Error report cannot be sent.", "Izvještaj o grešci ne može biti poslan."), _infoProductTitle, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, mbOptions);
-                    return DialogResult.Cancel;
+                    if (System.Windows.Forms.MessageBox.Show(owner, Resources.GetInCurrentLanguage("Error report cannot be sent.\nDo you wish to retry?", "Izvještaj o grešci ne može biti poslan.\nŽelite li ponovno pokušati?"), _infoProductTitle, MessageBoxButtons.YesNo, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, mbOptions) == DialogResult.Yes) {
+                        return DialogResult.Retry;
+                    } else {
+                        return DialogResult.Cancel;
+                    }
                 }
             }
         }
@@ -635,28 +635,28 @@ namespace Medo.Diagnostics {
 
             try {
 
-                WebRequest request = WebRequest.Create(address);
+                var request = WebRequest.Create(address);
                 request.Method = "POST";
                 request.Proxy = HttpWebRequest.DefaultWebProxy;
                 request.Proxy.Credentials = CredentialCache.DefaultNetworkCredentials;
 
-                StringBuilder sbPostData = new StringBuilder();
-                for (int i = 0; i < allFormParameters.Count; ++i) {
+                var sbPostData = new StringBuilder();
+                for (var i = 0; i < allFormParameters.Count; ++i) {
                     if (sbPostData.Length > 0) { sbPostData.Append("&"); }
                     sbPostData.Append(UrlEncode(allFormParameters.GetKey(i)) + "=" + UrlEncode(allFormParameters[i]));
                 }
 
-                byte[] byteArray = Encoding.UTF8.GetBytes(sbPostData.ToString());
+                var byteArray = Encoding.UTF8.GetBytes(sbPostData.ToString());
                 request.ContentType = "application/x-www-form-urlencoded";
                 request.ContentLength = byteArray.Length;
-                using (System.IO.Stream dataStream = request.GetRequestStream()) {
+                using (var dataStream = request.GetRequestStream()) {
                     dataStream.Write(byteArray, 0, byteArray.Length);
                 }
 
                 using (var response = (HttpWebResponse)request.GetResponse()) {
                     if (response.StatusCode == HttpStatusCode.OK) {
-                        using (System.IO.StreamReader reader = new System.IO.StreamReader(response.GetResponseStream())) {
-                            string responseFromServer = reader.ReadToEnd();
+                        using (var reader = new System.IO.StreamReader(response.GetResponseStream())) {
+                            var responseFromServer = reader.ReadToEnd();
                             if (responseFromServer.Length == 0) { //no data is outputed in case of real 200 response (instead of 500 wrapped in generic 200 page)
                                 e.Result = new object[] { form, DialogResult.OK };
                             } else {
@@ -706,8 +706,8 @@ namespace Medo.Diagnostics {
 
             if (exception != null) {
                 AppendLine("", _logBuffer);
-                Exception ex = exception;
-                int exLevel = 0;
+                var ex = exception;
+                var exLevel = 0;
                 while (ex != null) {
                     AppendLine("", _logBuffer);
 
@@ -737,7 +737,7 @@ namespace Medo.Diagnostics {
                 AppendLine("", _logBuffer);
                 AppendLine("Referenced assemblies", _logBuffer);
                 AppendLine("", _logBuffer);
-                for (int i = 0; i < _infoReferencedAssemblies.Length; ++i) {
+                for (var i = 0; i < _infoReferencedAssemblies.Length; ++i) {
                     AppendLine(_infoReferencedAssemblies[i], _logBuffer, 1, true);
                 }
             }
@@ -747,7 +747,7 @@ namespace Medo.Diagnostics {
                 AppendLine("", _logBuffer);
                 AppendLine("Additional information", _logBuffer);
                 AppendLine("", _logBuffer);
-                for (int i = 0; i < additionalInformation.Length; ++i) {
+                for (var i = 0; i < additionalInformation.Length; ++i) {
                     AppendLine(additionalInformation[i], _logBuffer, 1, true);
                 }
             }
@@ -782,9 +782,9 @@ namespace Medo.Diagnostics {
         }
 
         private static string UrlEncode(string text) {
-            byte[] source = System.Text.UTF8Encoding.UTF8.GetBytes(text);
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < source.Length; ++i) {
+            var source = System.Text.UTF8Encoding.UTF8.GetBytes(text);
+            var sb = new StringBuilder();
+            for (var i = 0; i < source.Length; ++i) {
                 if (((source[i] >= 48) && (source[i] <= 57)) || ((source[i] >= 65) && (source[i] <= 90)) || ((source[i] >= 97) && (source[i] <= 122)) || (source[i] == 45) || (source[i] == 46) || (source[i] == 95) || (source[i] == 126)) { //A-Z a-z - . _ ~
                     sb.Append(System.Convert.ToChar(source[i]));
                 } else {
@@ -813,10 +813,10 @@ namespace Medo.Diagnostics {
             }
 
 
-            int maxWidth = LineLength - indentLevel * 3;
-            int end = input.Length - 1;
+            var maxWidth = LineLength - indentLevel * 3;
+            var end = input.Length - 1;
 
-            int firstChar = 0;
+            var firstChar = 0;
 
             int lastChar;
             int nextChar;
@@ -825,8 +825,8 @@ namespace Medo.Diagnostics {
                     lastChar = end;
                     nextChar = end + 1;
                 } else {
-                    int nextCrBreak = input.IndexOf('\r', firstChar, maxWidth);
-                    int nextLfBreak = input.IndexOf('\n', firstChar, maxWidth);
+                    var nextCrBreak = input.IndexOf('\r', firstChar, maxWidth);
+                    var nextLfBreak = input.IndexOf('\n', firstChar, maxWidth);
                     int nextCrLfBreak;
                     if (nextCrBreak == -1) {
                         nextCrLfBreak = nextLfBreak;
@@ -844,16 +844,16 @@ namespace Medo.Diagnostics {
                             }
                         }
                     } else {
-                        int nextSpaceBreak = input.LastIndexOf(' ', firstChar + maxWidth, maxWidth);
+                        var nextSpaceBreak = input.LastIndexOf(' ', firstChar + maxWidth, maxWidth);
                         if ((nextSpaceBreak != -1) && ((nextSpaceBreak - firstChar) <= maxWidth)) {
                             lastChar = nextSpaceBreak;
                             nextChar = lastChar + 1;
                         } else {
-                            int nextOtherBreak1 = input.LastIndexOf('-', firstChar + maxWidth, maxWidth);
-                            int nextOtherBreak2 = input.LastIndexOf(':', firstChar + maxWidth, maxWidth);
-                            int nextOtherBreak3 = input.LastIndexOf('(', firstChar + maxWidth, maxWidth);
-                            int nextOtherBreak4 = input.LastIndexOf(',', firstChar + maxWidth, maxWidth);
-                            int nextOtherBreak = System.Math.Max(nextOtherBreak1, System.Math.Max(nextOtherBreak2, System.Math.Max(nextOtherBreak3, nextOtherBreak4)));
+                            var nextOtherBreak1 = input.LastIndexOf('-', firstChar + maxWidth, maxWidth);
+                            var nextOtherBreak2 = input.LastIndexOf(':', firstChar + maxWidth, maxWidth);
+                            var nextOtherBreak3 = input.LastIndexOf('(', firstChar + maxWidth, maxWidth);
+                            var nextOtherBreak4 = input.LastIndexOf(',', firstChar + maxWidth, maxWidth);
+                            var nextOtherBreak = System.Math.Max(nextOtherBreak1, System.Math.Max(nextOtherBreak2, System.Math.Max(nextOtherBreak3, nextOtherBreak4)));
                             if ((nextOtherBreak != -1) && ((nextOtherBreak - firstChar) <= maxWidth)) {
                                 lastChar = nextOtherBreak;
                                 nextChar = lastChar + 1;
@@ -867,13 +867,13 @@ namespace Medo.Diagnostics {
                 }
 
                 if (tickO) {
-                    for (int i = 0; i < indentLevel - 1; ++i) { output.Append("   "); }
+                    for (var i = 0; i < indentLevel - 1; ++i) { output.Append("   "); }
                     output.Append("o  ");
                     tickO = false;
                 } else {
-                    for (int i = 0; i < indentLevel; ++i) { output.Append("   "); }
+                    for (var i = 0; i < indentLevel; ++i) { output.Append("   "); }
                 }
-                for (int i = firstChar; i <= lastChar; ++i) {
+                for (var i = firstChar; i <= lastChar; ++i) {
                     output.Append(input[i]);
                 }
                 output.AppendLine();

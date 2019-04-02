@@ -110,21 +110,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="%28Medo%29\AboutBox [010].cs" />
-    <Compile Include="%28Medo%29\Base58.cs" />
-    <Compile Include="%28Medo%29\ErrorReport [018].cs" />
-    <Compile Include="%28Medo%29\InputBox.cs" />
+    <Compile Include="%28Medo%29\AboutBox [013].cs" />
+    <Compile Include="%28Medo%29\Base58 [001].cs" />
+    <Compile Include="%28Medo%29\ErrorReport [019].cs" />
+    <Compile Include="%28Medo%29\InputBox [002].cs" />
     <Compile Include="%28Medo%29\LifetimeWatch [001].cs" />
-    <Compile Include="%28Medo%29\MessageBox [006].cs" />
+    <Compile Include="%28Medo%29\MessageBox [007].cs" />
     <Compile Include="%28Medo%29\OneTimePassword [002+].cs" />
     <Compile Include="%28Medo%29\Config [006].cs" />
-    <Compile Include="%28Medo%29\RecentFiles.cs" />
+    <Compile Include="%28Medo%29\RecentFiles [---].cs" />
     <Compile Include="%28Medo%29\RecentlyUsed [001].cs" />
-    <Compile Include="%28Medo%29\Settings [011].cs" />
+    <Compile Include="%28Medo%29\Settings [---].cs" />
     <Compile Include="%28Medo%29\State [017].cs" />
     <Compile Include="%28Medo%29\TrivialNtpClient [001].cs" />
     <Compile Include="%28Medo%29\UnhandledCatch [008].cs" />
-    <Compile Include="%28Medo%29\Upgrade.cs" />
+    <Compile Include="%28Medo%29\Upgrade [004].cs" />
     <Compile Include="..\..\Libraries\PasswordSafe\Source\PasswordSafe\%28Medo%29\Twofish.cs">
       <Link>%28PasswordSafe%29\Twofish.cs</Link>
     </Compile>

@@ -1,22 +1,31 @@
-//Copyright (c) 2008 Josip Medved <jmedved@jmedved.com>
+/* Josip Medved <jmedved@jmedved.com> * www.medo64.com * MIT License */
 
-//2008-01-02: New version.
-//2008-01-05: Top line now contains product name.
-//2008-01-22: Changed caption to "About" instead of "About...".
-//2008-01-25: Added product title parameter.
-//2008-04-11: Cleaned code to match FxCop 1.36 beta 2 (NormalizeStringsToUppercase, SpecifyMarshalingForPInvokeStringArguments).
-//2008-11-05: Refactoring (Microsoft.Maintainability : 'AboutBox.ShowDialog(IWin32Window, Uri, string)' has a cyclomatic complexity of 27, Microsoft.Maintainability : 'AboutBox.ShowDialog(IWin32Window, Uri, string)' is coupled with 38 different types from 10 different namespaces.).
-//2008-12-20: Adjusted for high DPI mode.
-//2009-10-25: Adjusted disposing of buttons.
+//2014-12-20: Added support for .text files.
+//2012-11-24: Suppressing bogus CA5122 warning (http://connect.microsoft.com/VisualStudio/feedback/details/729254/bogus-ca5122-warning-about-p-invoke-declarations-should-not-be-safe-critical).
+//2012-03-05: Added padding to buttons.
+//2011-09-01: Added DEBUG sufix for DEBUG builds.
 //2010-11-03: Informational version is used for program name.
 //            Content background is now in Window system color.
+//2009-10-25: Adjusted disposing of buttons.
+//2008-12-20: Adjusted for high DPI mode.
+//2008-11-05: Refactoring (Microsoft.Maintainability : 'AboutBox.ShowDialog(IWin32Window, Uri, string)' has a cyclomatic complexity of 27, Microsoft.Maintainability : 'AboutBox.ShowDialog(IWin32Window, Uri, string)' is coupled with 38 different types from 10 different namespaces.).
+//2008-04-11: Cleaned code to match FxCop 1.36 beta 2 (NormalizeStringsToUppercase, SpecifyMarshalingForPInvokeStringArguments).
+//2008-01-25: Added product title parameter.
+//2008-01-22: Changed caption to "About" instead of "About...".
+//2008-01-05: Top line now contains product name.
+//2008-01-02: New version.
 
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Text;
+using System.Threading;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 
@@ -70,13 +79,16 @@ namespace Medo.Windows.Forms {
         /// <param name="productText">Title to use. If null, title will be provided from assembly info.</param>
         public static DialogResult ShowDialog(IWin32Window owner, Uri webpage, string productText) {
             lock (_syncRoot) {
-                Assembly assembly = System.Reflection.Assembly.GetEntryAssembly();
-                AssemblyName assemblyName = System.Reflection.Assembly.GetEntryAssembly().GetName();
+                var assembly = Assembly.GetEntryAssembly();
+                var assemblyName = Assembly.GetEntryAssembly().GetName();
 
                 if (productText == null) { productText = GetAppProductText(assembly); }
-                string versionText = GetAppTitleText(assembly) + " " + assemblyName.Version.ToString();
-                string copyrightText = GetAppCopyright(assembly);
-                string applicationPath = Assembly.GetEntryAssembly().Location;
+                var versionText = GetAppTitleText(assembly) + " " + assemblyName.Version.ToString();
+#if DEBUG
+                versionText += " DEBUG";
+#endif
+                var copyrightText = GetAppCopyright(assembly);
+                var applicationPath = Assembly.GetEntryAssembly().Location;
 
                 ShowForm(owner, webpage, productText, versionText, copyrightText, applicationPath);
 
@@ -96,7 +108,7 @@ namespace Medo.Windows.Forms {
             Button buttonClose = null;
             Button buttonWebPage = null;
 
-            using (Form form = new Form()) {
+            using (var form = new Form()) {
                 try {
                     form.FormBorderStyle = FormBorderStyle.FixedDialog;
                     form.ShowIcon = false;
@@ -108,25 +120,25 @@ namespace Medo.Windows.Forms {
                     form.Text = Resources.Caption;
 
 
-                    int imageHeight = 32;
-                    int maxRight = 320;
-                    int maxBottom = 80;
-                    using (Graphics graphics = form.CreateGraphics()) {
+                    var imageHeight = 32;
+                    var maxRight = 320;
+                    var maxBottom = 80;
+                    using (var graphics = form.CreateGraphics()) {
                         //icon
-                        Bitmap bitmap = GetAppIcon(applicationPath);
+                        var bitmap = NativeMethods.GetIconBitmap(applicationPath);
                         if (bitmap != null) {
                             _paintImage = new PaintItem(bitmap, new Point(7, 7));
                         }
 
                         //title
-                        int imageRight = 7;
+                        var imageRight = 7;
                         if (_paintImage != null) {
                             imageRight = _paintImage.Rectangle.Right + 7;
                         }
                         if (_paintImage != null) {
                             imageHeight = _paintImage.Rectangle.Height;
                         }
-                        productFont = new Font(SystemFonts.MessageBoxFont.Name, imageHeight, System.Drawing.SystemFonts.MessageBoxFont.Style, System.Drawing.GraphicsUnit.Pixel, System.Drawing.SystemFonts.MessageBoxFont.GdiCharSet);
+                        productFont = new Font(SystemFonts.MessageBoxFont.Name, imageHeight, SystemFonts.MessageBoxFont.Style, GraphicsUnit.Pixel, SystemFonts.MessageBoxFont.GdiCharSet);
                         _paintProduct = new PaintItem(productText, productFont, imageRight, 7, imageHeight, VerticalAlignment.Center, graphics);
 
                         _titleHeight = 7 + imageHeight + 7;
@@ -147,7 +159,7 @@ namespace Medo.Windows.Forms {
                         maxBottom = System.Math.Max(maxBottom, dotNetFramework.Rectangle.Bottom);
                         _infoLines.Add(dotNetFramework);
 
-                        osVersion = new PaintItem(System.Environment.OSVersion.VersionString, SystemFonts.MessageBoxFont, 7, dotNetFramework.Rectangle.Bottom, 0, VerticalAlignment.Top, graphics);
+                        osVersion = new PaintItem(Environment.OSVersion.VersionString, SystemFonts.MessageBoxFont, 7, dotNetFramework.Rectangle.Bottom, 0, VerticalAlignment.Top, graphics);
                         maxRight = System.Math.Max(maxRight, osVersion.Rectangle.Right);
                         maxBottom = System.Math.Max(maxBottom, osVersion.Rectangle.Bottom);
                         _infoLines.Add(osVersion);
@@ -160,10 +172,10 @@ namespace Medo.Windows.Forms {
                         }
                     }
 
-                    int buttonMinRight = 7;
+                    var buttonMinRight = 7;
 
                     //Close button
-                    buttonClose = new Button();
+                    buttonClose = new Button() { Padding = new Padding(3, 1, 3, 1) };
                     buttonClose.Anchor = AnchorStyles.Right | AnchorStyles.Bottom;
                     buttonClose.AutoSize = true;
                     buttonClose.DialogResult = DialogResult.OK;
@@ -172,26 +184,26 @@ namespace Medo.Windows.Forms {
                     buttonMinRight += buttonClose.Width + 11;
 
                     //Readme button
-                    string readMePath = System.IO.Path.Combine(System.Windows.Forms.Application.StartupPath, "readme.txt");
-                    if (System.IO.File.Exists(readMePath)) {
-                        buttonReadme = new Button();
+                    var readMePath = GetReadMePath();
+                    if (readMePath != null) {
+                        buttonReadme = new Button() { Padding = new Padding(3, 1, 3, 1) };
                         buttonReadme.Anchor = AnchorStyles.Left | AnchorStyles.Bottom;
                         buttonReadme.AutoSize = true;
                         buttonReadme.Text = Resources.ReadMe;
                         buttonReadme.Tag = readMePath;
-                        buttonReadme.Click += new System.EventHandler(buttonReadme_Click);
+                        buttonReadme.Click += new EventHandler(buttonReadme_Click);
                         form.Controls.Add(buttonReadme);
                         buttonMinRight += buttonReadme.Width + 7;
                     }
 
                     //WebPage button
                     if (webpage != null) {
-                        buttonWebPage = new Button();
+                        buttonWebPage = new Button() { Padding = new Padding(3, 1, 3, 1) };
                         buttonWebPage.Anchor = AnchorStyles.Left | AnchorStyles.Bottom;
                         buttonWebPage.AutoSize = true;
                         buttonWebPage.Text = Resources.WebPage;
                         buttonWebPage.Tag = webpage.ToString();
-                        buttonWebPage.Click += new System.EventHandler(buttonWebPage_Click);
+                        buttonWebPage.Click += new EventHandler(buttonWebPage_Click);
                         form.Controls.Add(buttonWebPage);
                         buttonMinRight += buttonWebPage.Width + 7;
                     }
@@ -199,8 +211,8 @@ namespace Medo.Windows.Forms {
                     maxRight = System.Math.Max(maxRight, buttonMinRight);
 
 
-                    int borderX = (form.Width - form.ClientRectangle.Width);
-                    int borderY = (form.Height - form.ClientRectangle.Height);
+                    var borderX = (form.Width - form.ClientRectangle.Width);
+                    var borderY = (form.Height - form.ClientRectangle.Height);
                     form.Width = borderX + maxRight + 7;
                     form.Height = borderY + maxBottom + 11 + 11 + buttonClose.Size.Height + 7;
                     if (owner == null) {
@@ -210,7 +222,7 @@ namespace Medo.Windows.Forms {
                     }
 
 
-                    int buttonLeft = form.ClientRectangle.Left + 7;
+                    var buttonLeft = form.ClientRectangle.Left + 7;
 
                     if (buttonReadme != null) {
                         buttonReadme.Location = new Point(buttonLeft, form.ClientRectangle.Bottom - buttonClose.Height - 7);
@@ -232,8 +244,7 @@ namespace Medo.Windows.Forms {
                     form.Paint += Form_Paint;
 
                     if (owner != null) {
-                        Form formOwner = owner as Form;
-                        if ((formOwner != null) && (formOwner.TopMost == true)) {
+                        if ((owner is Form formOwner) && (formOwner.TopMost == true)) {
                             form.TopMost = false;
                             form.TopMost = true;
                         }
@@ -259,8 +270,16 @@ namespace Medo.Windows.Forms {
             }
         }
 
+        private static string GetReadMePath() {
+            foreach (var fileName in new string[] { "ReadMe.text", "readme.text", "ReadMe.txt", "readme.txt" }) {
+                var path = Path.Combine(System.Windows.Forms.Application.StartupPath, fileName);
+                if (File.Exists(path)) { return path; }
+            }
+            return null;
+        }
+
         private static string GetAppCopyright(Assembly assembly) {
-            object[] copyrightAttributes = assembly.GetCustomAttributes(typeof(AssemblyCopyrightAttribute), true);
+            var copyrightAttributes = assembly.GetCustomAttributes(typeof(AssemblyCopyrightAttribute), true);
             if ((copyrightAttributes != null) && (copyrightAttributes.Length >= 1)) {
                 return ((AssemblyCopyrightAttribute)copyrightAttributes[copyrightAttributes.Length - 1]).Copyright;
             }
@@ -269,14 +288,14 @@ namespace Medo.Windows.Forms {
 
         private static string GetAppProductText(Assembly assembly) {
             string product;
-            object[] productAttributes = assembly.GetCustomAttributes(typeof(AssemblyProductAttribute), true);
+            var productAttributes = assembly.GetCustomAttributes(typeof(AssemblyProductAttribute), true);
             if ((productAttributes != null) && (productAttributes.Length >= 1)) {
                 product = ((AssemblyProductAttribute)productAttributes[productAttributes.Length - 1]).Product;
             } else {
                 product = GetAppTitleText(assembly);
             }
 
-            object[] infoVersionAttributes = assembly.GetCustomAttributes(typeof(AssemblyInformationalVersionAttribute), true);
+            var infoVersionAttributes = assembly.GetCustomAttributes(typeof(AssemblyInformationalVersionAttribute), true);
             if ((infoVersionAttributes != null) && (infoVersionAttributes.Length >= 1)) {
                 return product + " " + ((AssemblyInformationalVersionAttribute)infoVersionAttributes[infoVersionAttributes.Length - 1]).InformationalVersion;
             } else {
@@ -285,7 +304,7 @@ namespace Medo.Windows.Forms {
         }
 
         private static string GetAppTitleText(Assembly assembly) {
-            object[] titleAttributes = assembly.GetCustomAttributes(typeof(AssemblyTitleAttribute), true);
+            var titleAttributes = assembly.GetCustomAttributes(typeof(AssemblyTitleAttribute), true);
             if ((titleAttributes != null) && (titleAttributes.Length >= 1)) {
                 return ((AssemblyTitleAttribute)titleAttributes[titleAttributes.Length - 1]).Title;
             } else {
@@ -294,22 +313,31 @@ namespace Medo.Windows.Forms {
         }
 
 
-        static void buttonWebPage_Click(object sender, System.EventArgs e) {
+        private static void buttonWebPage_Click(object sender, EventArgs e) {
             try {
-                string url = (string)((Control)sender).Tag;
-                System.Diagnostics.Process.Start(url);
-            } catch (System.ComponentModel.Win32Exception) { }
+                var url = (string)((Control)sender).Tag;
+                Process.Start(url);
+            } catch (Win32Exception) { }
         }
 
-        static void buttonReadme_Click(object sender, System.EventArgs e) {
+        private static void buttonReadme_Click(object sender, EventArgs e) {
             try {
-                string path = (string)((Control)sender).Tag;
-                System.Diagnostics.Process.Start(path);
-            } catch (System.ComponentModel.Win32Exception) { }
+                var path = (string)((Control)sender).Tag;
+                if (path.EndsWith(".text", StringComparison.Ordinal) && !AboutBox.IsRunningOnMono) {
+                    var exe = NativeMethods.AssocQueryString(".txt");
+                    if (exe != null) {
+                        Process.Start(exe, path);
+                    } else {
+                        Process.Start(path);
+                    }
+                } else {
+                    Process.Start(path);
+                }
+            } catch (Win32Exception) { }
         }
 
 
-        private static void Form_Paint(object sender, System.Windows.Forms.PaintEventArgs e) {
+        private static void Form_Paint(object sender, PaintEventArgs e) {
             lock (_syncRoot) {
                 if (_infoLines != null) {
                     e.Graphics.FillRectangle(SystemBrushes.Window, e.ClipRectangle.Left, e.ClipRectangle.Top, e.ClipRectangle.Width, _infoLines[_infoLines.Count - 1].Rectangle.Bottom + 11);
@@ -320,7 +348,7 @@ namespace Medo.Windows.Forms {
                 if (_paintImage != null) { _paintImage.Paint(e.Graphics); }
                 if (_paintProduct != null) { _paintProduct.Paint(e.Graphics); }
                 if (_infoLines != null) {
-                    for (int i = 0; i < _infoLines.Count; ++i) {
+                    for (var i = 0; i < _infoLines.Count; ++i) {
                         _infoLines[i].Paint(e.Graphics);
                     }
                 }
@@ -328,79 +356,56 @@ namespace Medo.Windows.Forms {
 
         }
 
-        private static Bitmap GetAppIcon(string fileName) {
-            if (!AboutBox.IsRunningOnMono) {
-                System.IntPtr hLibrary = NativeMethods.LoadLibrary(fileName);
-                if (!hLibrary.Equals(System.IntPtr.Zero)) {
-                    System.IntPtr hIcon = NativeMethods.LoadIcon(hLibrary, "#32512");
-                    if (!hIcon.Equals(System.IntPtr.Zero)) {
-                        Bitmap bitmap = System.Drawing.Icon.FromHandle(hIcon).ToBitmap();
-                        if (bitmap != null) { return bitmap; }
-                    }
-                }
-            }
-            return null;
-        }
 
-
-        private class PaintItem : System.IDisposable {
+        private class PaintItem : IDisposable {
 
             public PaintItem(Image image, Point location) {
-                this._image = image;
-                this._location = location;
-                this._rectangle = new Rectangle(location, image.Size);
+                Image = image;
+                _location = location;
+                _rectangle = new Rectangle(location, image.Size);
             }
 
-            public PaintItem(string title, Font font, int x, int y, int height, System.Windows.Forms.VisualStyles.VerticalAlignment align, Graphics measurementGraphics) {
-                this._text = title;
-                this._font = font;
-                Size size = measurementGraphics.MeasureString(title, font, 600).ToSize();
+            public PaintItem(string title, Font font, int x, int y, int height, VerticalAlignment align, Graphics measurementGraphics) {
+                Text = title;
+                Font = font;
+                var size = measurementGraphics.MeasureString(title, font, 600).ToSize();
                 switch (align) {
                     case VerticalAlignment.Top:
-                        this._location = new Point(x, y);
+                        _location = new Point(x, y);
                         break;
                     case VerticalAlignment.Center:
-                        this._location = new Point(x, y + (height - size.Height) / 2);
+                        _location = new Point(x, y + (height - size.Height) / 2);
                         break;
                     case VerticalAlignment.Bottom:
-                        this._location = new Point(x, y + height - size.Height);
+                        _location = new Point(x, y + height - size.Height);
                         break;
                 }
-                this._rectangle = new Rectangle(this.Location, size);
+                _rectangle = new Rectangle(Location, size);
             }
 
 
-            private Image _image;
-            public Image Image {
-                get { return this._image; }
-            }
+            public Image Image { get; private set; }
 
-            private string _text;
-            public string Text {
-                get { return this._text; }
-            }
+            public string Text { get; private set; }
 
-            private Font _font;
-            public Font Font {
-                get { return this._font; }
-            }
+            public Font Font { get; private set; }
 
             private Point _location;
             public Point Location {
-                get { return this._location; }
+                get { return _location; }
             }
 
             private Rectangle _rectangle;
             public Rectangle Rectangle {
-                get { return this._rectangle; }
+                get { return _rectangle; }
             }
 
 
             public void Paint(Graphics graphics) {
-                if (this.Image != null) {
-                    graphics.DrawImage(this.Image, this.Rectangle);
-                } else if (this.Text != null) {
-                    graphics.DrawString(this.Text, this.Font, SystemBrushes.ControlText, this.Location);
+                if (Image != null) {
+                    graphics.DrawImage(Image, Rectangle);
+                } else if (Text != null) {
+                    graphics.DrawString(Text, Font, SystemBrushes.ControlText, Location);
                 }
             }
 
@@ -413,15 +418,15 @@ namespace Medo.Windows.Forms {
             /// <param name="disposing">True to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
             protected virtual void Dispose(bool disposing) {
                 if (disposing) {
-                    if (this.Image != null) {
-                        this.Image.Dispose();
-                        this._image = null;
+                    if (Image != null) {
+                        Image.Dispose();
+                        Image = null;
                     }
-                    if (this.Font != null) {
-                        if (!this.Font.IsSystemFont) {
-                            this.Font.Dispose();
+                    if (Font != null) {
+                        if (!Font.IsSystemFont) {
+                            Font.Dispose();
                         }
-                        this._font = null;
+                        Font = null;
                     }
                 }
             }
@@ -431,7 +436,7 @@ namespace Medo.Windows.Forms {
             /// </summary>
             public void Dispose() {
                 Dispose(true);
-                System.GC.SuppressFinalize(this);
+                GC.SuppressFinalize(this);
             }
 
             #endregion
@@ -459,7 +464,7 @@ namespace Medo.Windows.Forms {
 
 
             private static string GetInCurrentLanguage(string en_US, string hr_HR) {
-                switch (System.Threading.Thread.CurrentThread.CurrentUICulture.Name.ToUpperInvariant()) {
+                switch (Thread.CurrentThread.CurrentUICulture.Name.ToUpperInvariant()) {
                     case "EN":
                     case "EN-US":
                     case "EN-GB":
@@ -486,15 +491,56 @@ namespace Medo.Windows.Forms {
 
 
         private static class NativeMethods {
+#pragma warning disable IDE0049 // Simplify Names
 
+            #region API
+
+            private const Int32 S_OK = 0;
+            private const Int32 ASSOCF_NONE = 0;
+            private const Int32 ASSOCSTR_EXECUTABLE = 2;
+
+
+            [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA5122:PInvokesShouldNotBeSafeCriticalFxCopRule", Justification = "Warning is bogus.")]
             [DllImport("user32.dll", CharSet = CharSet.Unicode)]
-            static extern internal IntPtr LoadIcon(IntPtr hInstance, string lpIconName);
+            private static extern IntPtr LoadIcon(IntPtr hInstance, String lpIconName);
 
+            [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA5122:PInvokesShouldNotBeSafeCriticalFxCopRule", Justification = "Warning is bogus.")]
             [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
-            static extern internal IntPtr LoadLibrary(string lpFileName);
+            private static extern IntPtr LoadLibrary(String lpFileName);
 
+            [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA5122:PInvokesShouldNotBeSafeCriticalFxCopRule", Justification = "Warning is bogus.")]
+            [DllImport("Shlwapi.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+            private static extern Int32 AssocQueryString(Int32 flags, Int32 str, String pszAssoc, String pszExtra, StringBuilder pszOutDWORD, ref Int32 pcchOut);
+
+            #endregion
+
+
+            internal static Bitmap GetIconBitmap(string executablePath) {
+                if (!AboutBox.IsRunningOnMono) {
+                    var hLibrary = LoadLibrary(executablePath);
+                    if (!hLibrary.Equals(IntPtr.Zero)) {
+                        var hIcon = LoadIcon(hLibrary, "#32512");
+                        if (!hIcon.Equals(IntPtr.Zero)) {
+                            var bitmap = Icon.FromHandle(hIcon).ToBitmap();
+                            if (bitmap != null) { return bitmap; }
+                        }
+                    }
+                }
+                return null;
+            }
+
+            internal static string AssocQueryString(string extension) {
+                if (!AboutBox.IsRunningOnMono) {
+                    var sbExe = new StringBuilder(1024);
+                    var len = sbExe.Capacity;
+                    if (AssocQueryString(ASSOCF_NONE, ASSOCSTR_EXECUTABLE, extension, null, sbExe, ref len) == NativeMethods.S_OK) {
+                        return sbExe.ToString();
+                    }
+                }
+                return null;
+            }
+#pragma warning restore IDE0049 // Simplify Names
         }
 
     }
-
 }

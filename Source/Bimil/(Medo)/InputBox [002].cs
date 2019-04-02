@@ -1,4 +1,4 @@
-//Josip Medved <jmedved@jmedved.com>   www.medo64.com
+/* Josip Medved <jmedved@jmedved.com> * www.medo64.com * MIT License */
 
 //2012-11-24: Suppressing bogus CA5122 warning (http://connect.microsoft.com/VisualStudio/feedback/details/729254/bogus-ca5122-warning-about-p-invoke-declarations-should-not-be-safe-critical).
 //2010-11-29: Initial version.
@@ -30,8 +30,8 @@ namespace Medo.Windows.Forms {
         /// <param name="description">Short description.</param>
         /// <param name="defaultText">Default text.</param>
         public InputBox(string description, string defaultText) {
-            this.Description = description;
-            this.DefaultText = defaultText;
+            Description = description;
+            DefaultText = defaultText;
         }
 
 
@@ -77,17 +77,16 @@ namespace Medo.Windows.Forms {
                 frm.Text = Localizations.Title;
 
                 if (owner != null) {
-                    this.frm.ShowInTaskbar = false;
-                    Form formOwner = owner as Form;
-                    if ((formOwner != null) && (formOwner.TopMost == true)) {
-                        this.frm.TopMost = false;
-                        this.frm.TopMost = true;
+                    frm.ShowInTaskbar = false;
+                    if ((owner is Form formOwner) && (formOwner.TopMost == true)) {
+                        frm.TopMost = false;
+                        frm.TopMost = true;
                     }
-                    this.frm.StartPosition = FormStartPosition.CenterParent;
+                    frm.StartPosition = FormStartPosition.CenterParent;
                 } else {
-                    this.frm.Icon = GetAppIcon(Assembly.GetEntryAssembly().Location);
-                    this.frm.ShowInTaskbar = true;
-                    this.frm.StartPosition = FormStartPosition.CenterScreen;
+                    frm.Icon = GetAppIcon(Assembly.GetEntryAssembly().Location);
+                    frm.ShowInTaskbar = true;
+                    frm.StartPosition = FormStartPosition.CenterScreen;
                 }
 
                 float zoomFactorX;
@@ -117,11 +116,11 @@ namespace Medo.Windows.Forms {
                     lblDescription.ForeColor = SystemColors.WindowText;
                     lblDescription.Location = new Point(11, 11);
                     lblDescription.Size = new Size(panel.Width - 11 - 11, (int)(lblDescription.PreferredSize.Height * zoomFactorY));
-                    lblDescription.Text = this.Description;
+                    lblDescription.Text = Description;
                     panel.Controls.Add(lblDescription);
 
                     txtValue.Location = new Point(11, lblDescription.Bottom + 7);
-                    txtValue.Text = this.DefaultText;
+                    txtValue.Text = DefaultText;
                     txtValue.Width = panel.Width - 11 - 11;
                     panel.Controls.Add(txtValue);
 
@@ -151,28 +150,28 @@ namespace Medo.Windows.Forms {
                     btnOk.Click += new EventHandler(btnOk_Click);
                     frm.Load += new EventHandler(frm_Load);
 
-                    return this.frm.ShowDialog(owner);
+                    return frm.ShowDialog(owner);
                 }
             }
         }
 
-        void btnOk_Click(object sender, EventArgs e) {
-            this.Text = this.txtValue.Text;
-            this.frm.DialogResult = DialogResult.OK;
+        private void btnOk_Click(object sender, EventArgs e) {
+            Text = txtValue.Text;
+            frm.DialogResult = DialogResult.OK;
         }
 
-        void frm_Load(object sender, EventArgs e) {
-            this.txtValue.Text = this.DefaultText;
-            this.txtValue.SelectAll();
-            this.txtValue.Focus();
+        private void frm_Load(object sender, EventArgs e) {
+            txtValue.Text = DefaultText;
+            txtValue.SelectAll();
+            txtValue.Focus();
         }
 
 
         private static Icon GetAppIcon(string fileName) {
             if (!InputBox.IsRunningOnMono) {
-                System.IntPtr hLibrary = NativeMethods.LoadLibrary(fileName);
+                var hLibrary = NativeMethods.LoadLibrary(fileName);
                 if (!hLibrary.Equals(System.IntPtr.Zero)) {
-                    System.IntPtr hIcon = NativeMethods.LoadIcon(hLibrary, "#32512");
+                    var hIcon = NativeMethods.LoadIcon(hLibrary, "#32512");
                     if (!hIcon.Equals(System.IntPtr.Zero)) {
                         var icon = System.Drawing.Icon.FromHandle(hIcon);
                         if (icon != null) { return icon; }
@@ -190,15 +189,17 @@ namespace Medo.Windows.Forms {
 
 
         private static class NativeMethods {
+#pragma warning disable IDE0049 // Simplify Names
 
             [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA5122:PInvokesShouldNotBeSafeCriticalFxCopRule", Justification = "Warning is bogus.")]
             [DllImport("user32.dll", CharSet = CharSet.Unicode)]
-            static extern internal IntPtr LoadIcon(IntPtr hInstance, string lpIconName);
+            static extern internal IntPtr LoadIcon(IntPtr hInstance, String lpIconName);
 
             [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA5122:PInvokesShouldNotBeSafeCriticalFxCopRule", Justification = "Warning is bogus.")]
             [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
-            static extern internal IntPtr LoadLibrary(string lpFileName);
+            static extern internal IntPtr LoadLibrary(String lpFileName);
 
+#pragma warning restore IDE0049 // Simplify Names
         }
 
         private static class Localizations {

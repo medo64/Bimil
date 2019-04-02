@@ -1,4 +1,4 @@
-//Copyright 2017 by Josip Medved <jmedved@jmedved.com> (www.medo64.com) MIT License
+/* Josip Medved <jmedved@jmedved.com> * www.medo64.com * MIT License */
 
 //2017-04-17: New version.
 
@@ -41,11 +41,11 @@ namespace Medo.Configuration {
         /// <exception cref="ArgumentOutOfRangeException">Maximum count must be between 1 and 99.</exception>
         public RecentlyUsed(IEnumerable<string> fileNames, int maximumCount) {
             if ((maximumCount < 1) || (maximumCount > 99)) { throw new ArgumentOutOfRangeException(nameof(maximumCount), "Maximum count must be between 1 and 99."); }
-            this.MaximumCount = maximumCount;
+            MaximumCount = maximumCount;
             if (fileNames != null) {
                 foreach (var fileName in fileNames) {
-                    this.BaseItems.Add(new RecentlyUsedFile(fileName));
-                    if (this.BaseItems.Count >= this.MaximumCount) { break; }
+                    BaseItems.Add(new RecentlyUsedFile(fileName));
+                    if (BaseItems.Count >= MaximumCount) { break; }
                 }
             }
         }
@@ -60,19 +60,19 @@ namespace Medo.Configuration {
         /// Gets number of file names.
         /// </summary>
         public int Count {
-            get { return this.BaseItems.Count; }
+            get { return BaseItems.Count; }
         }
 
 
         [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
-        private List<RecentlyUsedFile> BaseItems = new List<RecentlyUsedFile>();
+        private readonly List<RecentlyUsedFile> BaseItems = new List<RecentlyUsedFile>();
 
         /// <summary>
         /// Gets file at given index.
         /// </summary>
         /// <param name="index">Index.</param>
         public RecentlyUsedFile this[int index] {
-            get { return this.BaseItems[index]; }
+            get { return BaseItems[index]; }
         }
 
         /// <summary>
@@ -80,7 +80,7 @@ namespace Medo.Configuration {
         /// </summary>
         public IEnumerable<RecentlyUsedFile> Files {
             get {
-                foreach (var item in this.BaseItems) {
+                foreach (var item in BaseItems) {
                     yield return item;
                 }
             }
@@ -91,7 +91,7 @@ namespace Medo.Configuration {
         /// </summary>
         public IEnumerable<string> FileNames {
             get {
-                foreach (var item in this.Files) {
+                foreach (var item in Files) {
                     yield return item.FileName;
                 }
             }
@@ -106,14 +106,14 @@ namespace Medo.Configuration {
             try {
                 file = new RecentlyUsedFile(fileName);
             } catch (ArgumentException) { return false; }
-            this.BaseItems.Insert(0, file);
-            for (var i = this.BaseItems.Count - 1; i > 0; i--) { //remove same file if somewhere on the list
-                if (this.BaseItems[i].Equals(file)) { this.BaseItems.RemoveAt(i); }
+            BaseItems.Insert(0, file);
+            for (var i = BaseItems.Count - 1; i > 0; i--) { //remove same file if somewhere on the list
+                if (BaseItems[i].Equals(file)) { BaseItems.RemoveAt(i); }
             }
-            if (this.BaseItems.Count > this.MaximumCount) { //limit to maximum count
-                this.BaseItems.RemoveRange(this.MaximumCount, this.BaseItems.Count - this.MaximumCount);
+            if (BaseItems.Count > MaximumCount) { //limit to maximum count
+                BaseItems.RemoveRange(MaximumCount, BaseItems.Count - MaximumCount);
             }
-            this.OnChanged(EventArgs.Empty);
+            OnChanged(EventArgs.Empty);
             return true;
         }
 
@@ -124,13 +124,13 @@ namespace Medo.Configuration {
         /// <param name="fileName">File name.</param>
         public void Remove(string fileName) {
             var changed = false;
-            for (var i = this.BaseItems.Count - 1; i >= 0; i--) {
-                if (this.BaseItems[i].Equals(fileName)) {
-                    this.BaseItems.RemoveAt(i);
+            for (var i = BaseItems.Count - 1; i >= 0; i--) {
+                if (BaseItems[i].Equals(fileName)) {
+                    BaseItems.RemoveAt(i);
                     changed = true;
                 }
             }
-            if (changed) { this.OnChanged(EventArgs.Empty); }
+            if (changed) { OnChanged(EventArgs.Empty); }
         }
 
         /// <summary>
@@ -139,22 +139,22 @@ namespace Medo.Configuration {
         /// <param name="file">Recently used file.</param>
         public void Remove(RecentlyUsedFile file) {
             var changed = false;
-            for (var i = this.BaseItems.Count - 1; i >= 0; i--) {
-                if (this.BaseItems[i].Equals(file)) {
-                    this.BaseItems.RemoveAt(i);
+            for (var i = BaseItems.Count - 1; i >= 0; i--) {
+                if (BaseItems[i].Equals(file)) {
+                    BaseItems.RemoveAt(i);
                     changed = true;
                 }
             }
-            if (changed) { this.OnChanged(EventArgs.Empty); }
+            if (changed) { OnChanged(EventArgs.Empty); }
         }
 
         /// <summary>
         /// Removes all files from list.
         /// </summary>
         public void Clear() {
-            if (this.BaseItems.Count > 0) {
-                this.BaseItems.Clear();
-                this.OnChanged(EventArgs.Empty);
+            if (BaseItems.Count > 0) {
+                BaseItems.Clear();
+                OnChanged(EventArgs.Empty);
             }
         }
 
@@ -165,7 +165,7 @@ namespace Medo.Configuration {
         public event EventHandler Changed;
 
         private void OnChanged(EventArgs e) {
-            this.Changed?.Invoke(this, e);
+            Changed?.Invoke(this, e);
         }
     }
 
@@ -181,8 +181,8 @@ namespace Medo.Configuration {
         /// </summary>
         /// <param name="fileName">File name.</param>
         internal RecentlyUsedFile(string fileName) {
-            this.FileName = new FileInfo(fileName).FullName; //expand local names
-            this.Title = HideExtension ? Path.GetFileNameWithoutExtension(this.FileName) : Path.GetFileName(this.FileName);
+            FileName = new FileInfo(fileName).FullName; //expand local names
+            Title = HideExtension ? Path.GetFileNameWithoutExtension(FileName) : Path.GetFileName(FileName);
         }
 
 
@@ -203,7 +203,7 @@ namespace Medo.Configuration {
         public bool FileExists {
             get {
                 try {
-                    return File.Exists(this.FileName);
+                    return File.Exists(FileName);
                 } catch (IOException) {
                 } catch (SecurityException) { }
                 return false;
@@ -217,10 +217,10 @@ namespace Medo.Configuration {
         /// <param name="obj">The object to compare with the current object.</param>
         public override bool Equals(object obj) {
             if (obj is RecentlyUsedFile other) {
-                return string.Equals(this.FileName, other.FileName, StringComparison.OrdinalIgnoreCase);
+                return string.Equals(FileName, other.FileName, StringComparison.OrdinalIgnoreCase);
             }
             if (obj is string otherString) {
-                return string.Equals(this.FileName, otherString, StringComparison.OrdinalIgnoreCase);
+                return string.Equals(FileName, otherString, StringComparison.OrdinalIgnoreCase);
             }
             return false;
         }
@@ -229,18 +229,18 @@ namespace Medo.Configuration {
         /// Serves as a hash function for a particular type.
         /// </summary>
         public override int GetHashCode() {
-            return this.FileName.GetHashCode();
+            return FileName.GetHashCode();
         }
 
         /// <summary>
         /// Returns a file title.
         /// </summary>
         public override string ToString() {
-            return this.Title;
+            return Title;
         }
 
 
-#if NETSTANDARD1_6
+#if NETSTANDARD1_6 || NETSTANDARD2_0
         private static bool HideExtension {
             get { return false; }
         }

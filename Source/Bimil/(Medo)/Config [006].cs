@@ -542,7 +542,7 @@ namespace Medo.Configuration {
                     var currLine = new StringBuilder();
                     var lineEndingDetermined = false;
 
-                    char prevChar = '\0';
+                    var prevChar = '\0';
                     foreach (var ch in fileContent) {
                         if (ch == '\n') {
                             if (prevChar == '\r') { //CRLF pair
@@ -772,7 +772,7 @@ namespace Medo.Configuration {
             public bool FileExists { get; } //false if there was an error during load
 
             public bool Save() {
-                string fileContent = string.Join(LineEnding, Lines);
+                var fileContent = string.Join(LineEnding, Lines);
                 try {
                     var directoryPath = Path.GetDirectoryName(FileName);
                     if (!Directory.Exists(directoryPath)) {
@@ -895,7 +895,7 @@ namespace Medo.Configuration {
                 }
 
                 private static void EscapeIntoStringBuilder(StringBuilder sb, string text, bool isKey = false) {
-                    for (int i = 0; i < text.Length; i++) {
+                    for (var i = 0; i < text.Length; i++) {
                         var ch = text[i];
                         switch (ch) {
                             case '\\':
@@ -1024,8 +1024,8 @@ namespace Medo.Configuration {
             public void WriteMany(string key, IEnumerable<string> values) {
                 if (CachedEntries == null) { FillCache(); }
 
-                if (CachedEntries.TryGetValue(key, out var lineIndex)) {
-                    int lastIndex = 0;
+                if (CachedEntries.TryGetValue(key, out _)) {
+                    var lastIndex = 0;
                     LineData lastLine = null;
                     for (var i = Lines.Count - 1; i >= 0; i--) { //find insertion point
                         var line = Lines[i];
