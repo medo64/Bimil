@@ -447,7 +447,7 @@ namespace Bimil {
 
                         item.ImageScaling = ToolStripItemImageScaling.None;
 #if DEBUG
-                        item.Image = (bitmap != null) ? new Bitmap(bitmap, size, size) : new Bitmap(size, size, PixelFormat.Format8bppIndexed);
+                        item.Image = (bitmap != null) ? new Bitmap(bitmap, size, size) : new Bitmap(size, size, System.Drawing.Imaging.PixelFormat.Format8bppIndexed);
 #else
                         if (bitmap != null) { item.Image = new Bitmap(bitmap, size, size); }
 #endif
@@ -467,7 +467,7 @@ namespace Bimil {
             var bitmap = resources.GetObject(name + set) as Bitmap;
             item.ImageScaling = ToolStripItemImageScaling.None;
 #if DEBUG
-            item.Image = (bitmap != null) ? new Bitmap(bitmap, size, size) : new Bitmap(size, size, PixelFormat.Format8bppIndexed);
+            item.Image = (bitmap != null) ? new Bitmap(bitmap, size, size) : new Bitmap(size, size, System.Drawing.Imaging.PixelFormat.Format8bppIndexed);
 #else
             if (bitmap != null) { item.Image = new Bitmap(bitmap, size, size); }
 #endif
@@ -484,7 +484,7 @@ namespace Bimil {
                 bitmap = resources.GetObject(item.Tag + set) as Bitmap;
             }
 #if DEBUG
-            item.Image = (bitmap != null) ? new Bitmap(bitmap, size, size) : new Bitmap(size, size, PixelFormat.Format8bppIndexed);
+            item.Image = (bitmap != null) ? new Bitmap(bitmap, size, size) : new Bitmap(size, size, System.Drawing.Imaging.PixelFormat.Format8bppIndexed);
 #else
             item.Image = (bitmap != null) ? new Bitmap(bitmap, size, size) : null;
 #endif
@@ -498,7 +498,7 @@ namespace Bimil {
             var resources = Bimil.Properties.Resources.ResourceManager;
             var bitmap = resources.GetObject(nameRoot + set) as Bitmap;
 #if DEBUG
-            pictureBox.Image = (bitmap != null) ? new Bitmap(bitmap, size, size) : new Bitmap(size, size, PixelFormat.Format8bppIndexed);
+            pictureBox.Image = (bitmap != null) ? new Bitmap(bitmap, size, size) : new Bitmap(size, size, System.Drawing.Imaging.PixelFormat.Format8bppIndexed);
 #else
             pictureBox.Image = (bitmap != null) ? new Bitmap(bitmap, size, size) : null;
 #endif
