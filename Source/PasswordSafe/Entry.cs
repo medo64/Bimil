@@ -23,7 +23,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// </summary>
         /// <param name="title">Title.</param>
         public Entry(string title) : this() {
-            this.Title = title;
+            Title = title;
         }
 
         /// <summary>
@@ -32,13 +32,13 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// <param name="group">Group.</param>
         /// <param name="title">Title.</param>
         public Entry(GroupPath group, string title) : this() {
-            this.Group = group;
-            this.Title = title;
+            Group = group;
+            Title = title;
         }
 
 
         internal Entry(ICollection<Record> records) {
-            this.Records = new RecordCollection(this, records);
+            Records = new RecordCollection(this, records);
         }
 
 
@@ -48,7 +48,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// Used to mark document as changed.
         /// </summary>
         protected void MarkAsChanged() {
-            if (this.Owner != null) { this.Owner.MarkAsChanged(); }
+            if (Owner != null) { Owner.MarkAsChanged(); }
         }
 
 
@@ -56,16 +56,16 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// Gets/sets UUID.
         /// </summary>
         public Guid Uuid {
-            get { return this.Records.Contains(RecordType.Uuid) ? this.Records[RecordType.Uuid].Uuid : Guid.Empty; }
-            set { this.Records[RecordType.Uuid].Uuid = value; }
+            get { return Records.Contains(RecordType.Uuid) ? Records[RecordType.Uuid].Uuid : Guid.Empty; }
+            set { Records[RecordType.Uuid].Uuid = value; }
         }
 
         /// <summary>
         /// Gets/sets group.
         /// </summary>
         public GroupPath Group {
-            get { return this.Records.Contains(RecordType.Group) ? this.Records[RecordType.Group].Text : ""; }
-            set { this.Records[RecordType.Group].Text = value; }
+            get { return Records.Contains(RecordType.Group) ? Records[RecordType.Group].Text : ""; }
+            set { Records[RecordType.Group].Text = value; }
         }
 
 
@@ -73,32 +73,32 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// Gets/sets title.
         /// </summary>
         public string Title {
-            get { return this.Records.Contains(RecordType.Title) ? this.Records[RecordType.Title].Text : ""; }
-            set { this.Records[RecordType.Title].Text = value; }
+            get { return Records.Contains(RecordType.Title) ? Records[RecordType.Title].Text : ""; }
+            set { Records[RecordType.Title].Text = value; }
         }
 
         /// <summary>
         /// Gets/sets user name.
         /// </summary>
         public string UserName {
-            get { return this.Records.Contains(RecordType.UserName) ? this.Records[RecordType.UserName].Text : ""; }
-            set { this.Records[RecordType.UserName].Text = value; }
+            get { return Records.Contains(RecordType.UserName) ? Records[RecordType.UserName].Text : ""; }
+            set { Records[RecordType.UserName].Text = value; }
         }
 
         /// <summary>
         /// Gets/sets notes.
         /// </summary>
         public string Notes {
-            get { return this.Records.Contains(RecordType.Notes) ? this.Records[RecordType.Notes].Text : ""; }
-            set { this.Records[RecordType.Notes].Text = value; }
+            get { return Records.Contains(RecordType.Notes) ? Records[RecordType.Notes].Text : ""; }
+            set { Records[RecordType.Notes].Text = value; }
         }
 
         /// <summary>
         /// Gets/sets password.
         /// </summary>
         public string Password {
-            get { return this.Records.Contains(RecordType.Password) ? this.Records[RecordType.Password].Text : ""; }
-            set { this.Records[RecordType.Password].Text = value; }
+            get { return Records.Contains(RecordType.Password) ? Records[RecordType.Password].Text : ""; }
+            set { Records[RecordType.Password].Text = value; }
         }
 
 
@@ -106,40 +106,40 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// Gets/sets creation time.
         /// </summary>
         public DateTime CreationTime {
-            get { return this.Records.Contains(RecordType.CreationTime) ? this.Records[RecordType.CreationTime].Time : DateTime.MinValue; }
-            set { this.Records[RecordType.CreationTime].Time = value; }
+            get { return Records.Contains(RecordType.CreationTime) ? Records[RecordType.CreationTime].Time : DateTime.MinValue; }
+            set { Records[RecordType.CreationTime].Time = value; }
         }
 
         /// <summary>
         /// Gets/sets password modification time.
         /// </summary>
         public DateTime PasswordModificationTime {
-            get { return this.Records.Contains(RecordType.PasswordModificationTime) ? this.Records[RecordType.PasswordModificationTime].Time : DateTime.MinValue; }
-            set { this.Records[RecordType.PasswordModificationTime].Time = value; }
+            get { return Records.Contains(RecordType.PasswordModificationTime) ? Records[RecordType.PasswordModificationTime].Time : DateTime.MinValue; }
+            set { Records[RecordType.PasswordModificationTime].Time = value; }
         }
 
         /// <summary>
         /// Gets/sets last access time.
         /// </summary>
         public DateTime LastAccessTime {
-            get { return this.Records.Contains(RecordType.LastAccessTime) ? this.Records[RecordType.LastAccessTime].Time : DateTime.MinValue; }
-            set { this.Records[RecordType.LastAccessTime].Time = value; }
+            get { return Records.Contains(RecordType.LastAccessTime) ? Records[RecordType.LastAccessTime].Time : DateTime.MinValue; }
+            set { Records[RecordType.LastAccessTime].Time = value; }
         }
 
         /// <summary>
         /// Gets/sets password expiry time.
         /// </summary>
         public DateTime PasswordExpiryTime {
-            get { return this.Records.Contains(RecordType.PasswordExpiryTime) ? this.Records[RecordType.PasswordExpiryTime].Time : DateTime.MinValue; }
-            set { this.Records[RecordType.PasswordExpiryTime].Time = value; }
+            get { return Records.Contains(RecordType.PasswordExpiryTime) ? Records[RecordType.PasswordExpiryTime].Time : DateTime.MinValue; }
+            set { Records[RecordType.PasswordExpiryTime].Time = value; }
         }
 
         /// <summary>
         /// Gets/sets last modification time.
         /// </summary>
         public DateTime LastModificationTime {
-            get { return this.Records.Contains(RecordType.LastModificationTime) ? this.Records[RecordType.LastModificationTime].Time : DateTime.MinValue; }
-            set { this.Records[RecordType.LastModificationTime].Time = value; }
+            get { return Records.Contains(RecordType.LastModificationTime) ? Records[RecordType.LastModificationTime].Time : DateTime.MinValue; }
+            set { Records[RecordType.LastModificationTime].Time = value; }
         }
 
 
@@ -148,8 +148,8 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1056:UriPropertiesShouldNotBeStrings", Justification = "Password Safe file format doesn't require this URL to follow URL format.")]
         public string Url {
-            get { return this.Records.Contains(RecordType.Url) ? this.Records[RecordType.Url].Text : ""; }
-            set { this.Records[RecordType.Url].Text = value; }
+            get { return Records.Contains(RecordType.Url) ? Records[RecordType.Url].Text : ""; }
+            set { Records[RecordType.Url].Text = value; }
         }
 
 
@@ -157,8 +157,8 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// Gets/sets e-mail address.
         /// </summary>
         public string Email {
-            get { return this.Records.Contains(RecordType.EmailAddress) ? this.Records[RecordType.EmailAddress].Text : ""; }
-            set { this.Records[RecordType.EmailAddress].Text = value; }
+            get { return Records.Contains(RecordType.EmailAddress) ? Records[RecordType.EmailAddress].Text : ""; }
+            set { Records[RecordType.EmailAddress].Text = value; }
         }
 
 
@@ -168,8 +168,8 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1819:PropertiesShouldNotReturnArrays", Justification = "Property returns copy of the array (in Field.GetBytes() and Field.SetBytes()).")]
         public byte[] TwoFactorKey {
-            get { return this.Records.Contains(RecordType.TwoFactorKey) ? this.Records[RecordType.TwoFactorKey].GetBytes() : new byte[0]; }
-            set { this.Records[RecordType.TwoFactorKey].SetBytes(value); }
+            get { return Records.Contains(RecordType.TwoFactorKey) ? Records[RecordType.TwoFactorKey].GetBytes() : new byte[0]; }
+            set { Records[RecordType.TwoFactorKey].SetBytes(value); }
         }
 
 
@@ -178,8 +178,8 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// Number should consist of digits and spaces.
         /// </summary>
         public string CreditCardNumber {
-            get { return this.Records.Contains(RecordType.CreditCardNumber) ? this.Records[RecordType.CreditCardNumber].Text : ""; }
-            set { this.Records[RecordType.CreditCardNumber].Text = value; }
+            get { return Records.Contains(RecordType.CreditCardNumber) ? Records[RecordType.CreditCardNumber].Text : ""; }
+            set { Records[RecordType.CreditCardNumber].Text = value; }
         }
 
         /// <summary>
@@ -187,8 +187,8 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// Format should be MM/YY, where MM is 01-12, and YY 00-99.
         /// </summary>
         public string CreditCardExpiration {
-            get { return this.Records.Contains(RecordType.CreditCardExpiration) ? this.Records[RecordType.CreditCardExpiration].Text : ""; }
-            set { this.Records[RecordType.CreditCardExpiration].Text = value; }
+            get { return Records.Contains(RecordType.CreditCardExpiration) ? Records[RecordType.CreditCardExpiration].Text : ""; }
+            set { Records[RecordType.CreditCardExpiration].Text = value; }
         }
 
         /// <summary>
@@ -196,8 +196,8 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// CVV (CVV2) is three or four digits.
         /// </summary>
         public string CreditCardVerificationValue {
-            get { return this.Records.Contains(RecordType.CreditCardVerificationValue) ? this.Records[RecordType.CreditCardVerificationValue].Text : ""; }
-            set { this.Records[RecordType.CreditCardVerificationValue].Text = value; }
+            get { return Records.Contains(RecordType.CreditCardVerificationValue) ? Records[RecordType.CreditCardVerificationValue].Text : ""; }
+            set { Records[RecordType.CreditCardVerificationValue].Text = value; }
         }
 
         /// <summary>
@@ -205,16 +205,16 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// PIN is four to twelve digits long (ISO-9564).
         /// </summary>
         public string CreditCardPin {
-            get { return this.Records.Contains(RecordType.CreditCardPin) ? this.Records[RecordType.CreditCardPin].Text : ""; }
-            set { this.Records[RecordType.CreditCardPin].Text = value; }
+            get { return Records.Contains(RecordType.CreditCardPin) ? Records[RecordType.CreditCardPin].Text : ""; }
+            set { Records[RecordType.CreditCardPin].Text = value; }
         }
 
         /// <summary>
         /// Gets/sets UTF-8 encoded text used for QR code generation.
         /// </summary>
         public string QRCode {
-            get { return this.Records.Contains(RecordType.QRCode) ? this.Records[RecordType.QRCode].Text : ""; }
-            set { this.Records[RecordType.QRCode].Text = value; }
+            get { return Records.Contains(RecordType.QRCode) ? Records[RecordType.QRCode].Text : ""; }
+            set { Records[RecordType.QRCode].Text = value; }
         }
 
 
@@ -222,8 +222,8 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// Gets/sets auto-type text.
         /// </summary>
         public string Autotype {
-            get { return this.Records.Contains(RecordType.Autotype) ? this.Records[RecordType.Autotype].Text : ""; }
-            set { this.Records[RecordType.Autotype].Text = value; }
+            get { return Records.Contains(RecordType.Autotype) ? Records[RecordType.Autotype].Text : ""; }
+            set { Records[RecordType.Autotype].Text = value; }
         }
 
         /// <summary>
@@ -235,7 +235,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// * Legacy: Switches processing to legacy mode.
         /// </summary>
         public IEnumerable<AutotypeToken> AutotypeTokens {
-            get { return AutotypeToken.GetAutotypeTokens(this.Autotype, this); }
+            get { return AutotypeToken.GetAutotypeTokens(Autotype, this); }
         }
 
 
@@ -243,7 +243,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// Gets password history.
         /// </summary>
         public PasswordHistoryCollection PasswordHistory {
-            get { return new PasswordHistoryCollection(this.Records); }
+            get { return new PasswordHistoryCollection(Records); }
         }
 
 
@@ -251,15 +251,15 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// Gets password policy.
         /// </summary>
         public PasswordPolicy PasswordPolicy {
-            get { return new PasswordPolicy(this.Records); }
+            get { return new PasswordPolicy(Records); }
         }
 
         /// <summary>
         /// Gets password policy name.
         /// </summary>
         public string PasswordPolicyName {
-            get { return this.Records.Contains(RecordType.PasswordPolicyName) ? this.Records[RecordType.PasswordPolicyName].Text : ""; }
-            set { this.Records[RecordType.PasswordPolicyName].Text = value; }
+            get { return Records.Contains(RecordType.PasswordPolicyName) ? Records[RecordType.PasswordPolicyName].Text : ""; }
+            set { Records[RecordType.PasswordPolicyName].Text = value; }
         }
 
 
@@ -273,7 +273,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// Returns a string representation of an object.
         /// </summary>
         public override string ToString() {
-            return this.Records.Contains(RecordType.Title) ? this.Records[RecordType.Title].Text : "";
+            return Records.Contains(RecordType.Title) ? Records[RecordType.Title].Text : "";
         }
 
 
@@ -289,8 +289,8 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// <param name="type">Type.</param>
         /// <exception cref="ArgumentOutOfRangeException">Only null value is supported.</exception>
         public Record this[RecordType type] {
-            get { return this.Records[type]; }
-            set { this.Records[type] = value; }
+            get { return Records[type]; }
+            set { Records[type] = value; }
         }
 
         #endregion
@@ -303,7 +303,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// </summary>
         public Entry Clone() {
             var records = new List<Record>();
-            foreach (var record in this.Records) {
+            foreach (var record in Records) {
                 records.Add(record.Clone());
             }
             return new Entry(records);

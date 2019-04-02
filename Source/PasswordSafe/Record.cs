@@ -14,19 +14,19 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// <param name="type">Record type.</param>
         public Record(RecordType type)
             : base() {
-            this.RecordType = type;
-            if (this.RecordType == RecordType.Autotype) { this.Text = @"\u\t\p\n"; } //to have default value
+            RecordType = type;
+            if (RecordType == RecordType.Autotype) { Text = @"\u\t\p\n"; } //to have default value
         }
 
         internal Record(RecordType type, byte[] rawData) : base() {
             if ((type < 0) || (type >= RecordType.EndOfEntry)) { throw new ArgumentOutOfRangeException(nameof(type), "Type not supported."); }
-            this.RecordType = type;
-            this.RawData = rawData;
+            RecordType = type;
+            RawData = rawData;
         }
 
         internal Record(RecordCollection owner, RecordType type)
             : this(type) {
-            this.Owner = owner;
+            Owner = owner;
         }
 
 
@@ -46,12 +46,12 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         public override string Text {
             get { return base.Text; }
             set {
-                if (this.RecordType == RecordType.Password) { //only for password change update history
-                    if ((this.Owner != null) && this.Owner.Contains(RecordType.PasswordHistory) && this.Owner.Contains(RecordType.Password)) {
-                        var history = new PasswordHistoryCollection(this.Owner);
+                if (RecordType == RecordType.Password) { //only for password change update history
+                    if ((Owner != null) && Owner.Contains(RecordType.PasswordHistory) && Owner.Contains(RecordType.Password)) {
+                        var history = new PasswordHistoryCollection(Owner);
                         if (history.Enabled) {
-                            var time = this.Owner.Contains(RecordType.PasswordModificationTime) ? this.Owner[RecordType.PasswordModificationTime].Time : DateTime.UtcNow;
-                            history.AddPasswordToHistory(time, this.Text); //save current password
+                            var time = Owner.Contains(RecordType.PasswordModificationTime) ? Owner[RecordType.PasswordModificationTime].Time : DateTime.UtcNow;
+                            history.AddPasswordToHistory(time, Text); //save current password
                         }
                     }
                 }
@@ -64,21 +64,21 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// Used to mark document as changed.
         /// </summary>
         protected override void MarkAsChanged() {
-            if (this.Owner != null) { this.Owner.MarkAsChanged(this.RecordType); }
+            if (Owner != null) { Owner.MarkAsChanged(RecordType); }
         }
 
         /// <summary>
         /// Used to mark document as accessed.
         /// </summary>
         protected override void MarkAsAccessed() {
-            if (this.Owner != null) { this.Owner.MarkAsAccessed(this.RecordType); }
+            if (Owner != null) { Owner.MarkAsAccessed(RecordType); }
         }
 
         /// <summary>
         /// Gets if object is read-only.
         /// </summary>
         protected override bool IsReadOnly {
-            get { return this.Owner?.IsReadOnly ?? false; }
+            get { return Owner?.IsReadOnly ?? false; }
         }
 
 
@@ -87,7 +87,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// </summary>
         protected override PasswordSafeFieldDataType DataType {
             get {
-                switch (this.RecordType) {
+                switch (RecordType) {
                     case RecordType.Uuid:
                         return PasswordSafeFieldDataType.Uuid;
 
@@ -133,7 +133,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// Returns the exact copy of the record.
         /// </summary>
         public Record Clone() {
-            return new Record(this.RecordType, base.RawDataDirect);
+            return new Record(RecordType, base.RawDataDirect);
         }
 
         #endregion

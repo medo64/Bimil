@@ -13,12 +13,12 @@ namespace Medo.Security.Cryptography.PasswordSafe {
     public sealed class NamedPasswordPolicyCollection : IEnumerable<NamedPasswordPolicy> {
 
         internal NamedPasswordPolicyCollection(Document owner) {
-            this.Owner = owner;
+            Owner = owner;
 
             if (owner.Headers.Contains(HeaderType.NamedPasswordPolicies)) {
                 var text = owner.Headers[HeaderType.NamedPasswordPolicies].Text;
                 foreach (var item in ParseMultiple(text)) {
-                    this.BaseCollection.Add(item);
+                    BaseCollection.Add(item);
                 }
             }
         }
@@ -31,12 +31,12 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// Used to mark document as changed.
         /// </summary>
         internal void MarkAsChanged() {
-            var header = this.Owner.Headers[HeaderType.NamedPasswordPolicies];
+            var header = Owner.Headers[HeaderType.NamedPasswordPolicies];
 
             var sb = new StringBuilder();
-            sb.Append(this.BaseCollection.Count.ToString("X2", CultureInfo.InvariantCulture));
+            sb.Append(BaseCollection.Count.ToString("X2", CultureInfo.InvariantCulture));
 
-            foreach (var item in this.BaseCollection) {
+            foreach (var item in BaseCollection) {
                 sb.Append(item.Name.Length.ToString("X2", CultureInfo.InvariantCulture));
                 sb.Append(item.Name);
 
@@ -60,8 +60,8 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// Removes all passwords currently stored.
         /// </summary>
         public void Clear() {
-            this.BaseCollection.Clear();
-            this.MarkAsChanged();
+            BaseCollection.Clear();
+            MarkAsChanged();
         }
 
 
@@ -72,7 +72,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// Gets the number of items contained in the collection.
         /// </summary>
         public int Count {
-            get { return this.BaseCollection.Count; }
+            get { return BaseCollection.Count; }
         }
 
         /// <summary>
@@ -81,17 +81,17 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// <param name="index">The zero-based index of the element to get or set.</param>
         /// <exception cref="ArgumentOutOfRangeException">Index is less than 0. -or- Index is equal to or greater than collection count. -or- Duplicate name in collection.</exception>
         public NamedPasswordPolicy this[int index] {
-            get { return this.BaseCollection[index]; }
+            get { return BaseCollection[index]; }
         }
 
         #region IEnumerable
 
         IEnumerator<NamedPasswordPolicy> IEnumerable<NamedPasswordPolicy>.GetEnumerator() {
-            return this.BaseCollection.AsReadOnly().GetEnumerator();
+            return BaseCollection.AsReadOnly().GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator() {
-            return this.BaseCollection.AsReadOnly().GetEnumerator();
+            return BaseCollection.AsReadOnly().GetEnumerator();
         }
 
         #endregion

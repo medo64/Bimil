@@ -12,13 +12,13 @@ namespace Medo.Security.Cryptography.PasswordSafe {
     public class PasswordHistoryItem {
 
         internal PasswordHistoryItem(PasswordHistoryCollection owner, DateTime firstTimeUsed, string historicalPassword) {
-            this.Owner = owner;
-            this.TimeFirstUsed = firstTimeUsed;
+            Owner = owner;
+            TimeFirstUsed = firstTimeUsed;
 
             byte[] historicalPasswordBytes = null;
             try {
                 historicalPasswordBytes = Utf8Encoding.GetBytes(historicalPassword);
-                this.RawHistoricalPasswordData = historicalPasswordBytes;
+                RawHistoricalPasswordData = historicalPasswordBytes;
             } finally {
                 if (historicalPasswordBytes != null) { Array.Clear(historicalPasswordBytes, 0, historicalPasswordBytes.Length); }
             }
@@ -32,7 +32,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// Used to mark document as changed.
         /// </summary>
         protected void MarkAsChanged() {
-            if (this.Owner != null) { this.Owner.MarkAsChanged(); }
+            if (Owner != null) { Owner.MarkAsChanged(); }
         }
 
 
@@ -46,7 +46,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// </summary>
         public string HistoricalPassword {
             get {
-                var data = this.RawHistoricalPasswordData;
+                var data = RawHistoricalPasswordData;
                 try {
                     return Utf8Encoding.GetString(data);
                 } finally {
@@ -58,7 +58,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
 
         private static readonly Encoding Utf8Encoding = new UTF8Encoding(false);
         private static readonly RandomNumberGenerator Rnd = RandomNumberGenerator.Create();
-        private byte[] RawHistoricalPasswordDataEntropy = new byte[16];
+        private readonly byte[] RawHistoricalPasswordDataEntropy = new byte[16];
 
         private byte[] _rawHistoricalPasswordData = null;
         /// <summary>
@@ -67,12 +67,12 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// </summary>
         private byte[] RawHistoricalPasswordData {
             get {
-                if (this._rawHistoricalPasswordData == null) { return new byte[0]; } //return empty array if no value has been set so far
-                return UnprotectData(this._rawHistoricalPasswordData, this.RawHistoricalPasswordDataEntropy);
+                if (_rawHistoricalPasswordData == null) { return new byte[0]; } //return empty array if no value has been set so far
+                return UnprotectData(_rawHistoricalPasswordData, RawHistoricalPasswordDataEntropy);
             }
             set {
-                Rnd.GetBytes(this.RawHistoricalPasswordDataEntropy); //new entropy every save
-                this._rawHistoricalPasswordData = ProtectData(value, this.RawHistoricalPasswordDataEntropy);
+                Rnd.GetBytes(RawHistoricalPasswordDataEntropy); //new entropy every save
+                _rawHistoricalPasswordData = ProtectData(value, RawHistoricalPasswordDataEntropy);
                 Array.Clear(value, 0, value.Length);
             }
         }

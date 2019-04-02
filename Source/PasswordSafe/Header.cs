@@ -14,20 +14,20 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// <param name="type">Header type.</param>
         public Header(HeaderType type)
             : base() {
-            this.HeaderType = type;
+            HeaderType = type;
         }
 
 
         internal Header(HeaderCollection owner, HeaderType type)
             : this(type) {
-            this.Owner = owner;
+            Owner = owner;
         }
 
         internal Header(HeaderType type, byte[] rawData)
             : base() {
             if ((type < 0) || (type >= HeaderType.EndOfEntry)) { throw new ArgumentOutOfRangeException(nameof(type), "Type not supported."); }
-            this.HeaderType = type;
-            this.RawData = rawData;
+            HeaderType = type;
+            RawData = rawData;
         }
 
 
@@ -38,7 +38,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// Used to mark document as changed.
         /// </summary>
         protected override void MarkAsChanged() {
-            if (this.Owner != null) { this.Owner.MarkAsChanged(); }
+            if (Owner != null) { Owner.MarkAsChanged(); }
         }
 
         /// <summary>
@@ -50,7 +50,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// Gets if object is read-only.
         /// </summary>
         protected override bool IsReadOnly {
-            get { return this.Owner?.IsReadOnly ?? false; }
+            get { return Owner?.IsReadOnly ?? false; }
         }
 
 
@@ -65,7 +65,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// </summary>
         protected override PasswordSafeFieldDataType DataType {
             get {
-                switch (this.HeaderType) {
+                switch (HeaderType) {
                     case HeaderType.Version:
                         return PasswordSafeFieldDataType.Version;
 

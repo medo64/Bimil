@@ -1380,7 +1380,6 @@ namespace PasswordSafe.Test {
 
         [Fact(DisplayName = "PasswordSafe: Document: Change to same (track modify)")]
         public void Document_NoModify_ChangeToSame() {
-            var msSave = new MemoryStream();
             using (var doc = PwSafe.Document.Load(GetResourceStream("Simple.psafe3"), "123")) {
                 doc.TrackAccess = false;
                 Assert.False(doc.HasChanged);
