@@ -24,11 +24,11 @@ namespace Medo.Security.Cryptography.PasswordSafe {
                     }
                 }
             }
-            this.Group = sb.ToString();
+            Group = sb.ToString();
         }
 
         private GroupPath(string group) {
-            this.Group = group;
+            Group = group;
         }
 
 
@@ -42,7 +42,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
             var escaped = false;
             var segmentList = new List<string>();
             var segment = new StringBuilder();
-            foreach (var ch in this.Group) {
+            foreach (var ch in Group) {
                 if (ch == '.') {
                     if (escaped) {
                         segment[segment.Length - 1] = '.';
@@ -67,9 +67,9 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// <param name="segment">Segment to append.</param>
         public GroupPath Append(string segment) {
             if (string.IsNullOrEmpty(segment)) { return this; } //ok since class is immutable;
-            if (string.IsNullOrEmpty(this.Group)) { return new GroupPath(segment); }
+            if (string.IsNullOrEmpty(Group)) { return new GroupPath(segment); }
 
-            var segments = this.GetSegments();
+            var segments = GetSegments();
             var newSegments = new string[segments.Length + 1];
             Array.Copy(segments, 0, newSegments, 0, segments.Length);
             newSegments[newSegments.Length - 1] = segment;
@@ -80,7 +80,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// Returns path one level up the hierarchy.
         /// </summary>
         public GroupPath Up() {
-            var segments = this.GetSegments();
+            var segments = GetSegments();
             if (segments.Length <= 1) { return new GroupPath(""); }
 
             var newSegments = new string[segments.Length - 1];
@@ -95,7 +95,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// <param name="index">The zero-based index of the element to get.</param>
         public string this[int index] {
             get {
-                var segements = this.GetSegments();
+                var segements = GetSegments();
                 if ((index < 0) || (index >= segements.Length)) { return null; }
                 return segements[index];
             }
@@ -109,17 +109,17 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// </summary>
         /// <param name="obj">The object to compare with the current object.</param>
         public override bool Equals(object obj) {
-            if (obj is GroupPath path) { return this.Group.Equals(path.Group, StringComparison.OrdinalIgnoreCase); }
+            if (obj is GroupPath path) { return Group.Equals(path.Group, StringComparison.OrdinalIgnoreCase); }
 
             var group = obj as string;
-            return this.Group.Equals(group, StringComparison.OrdinalIgnoreCase);
+            return Group.Equals(group, StringComparison.OrdinalIgnoreCase);
         }
 
         /// <summary>
         /// A hash code for the current object.
         /// </summary>
         public override int GetHashCode() {
-            return this.Group.GetHashCode();
+            return Group.GetHashCode();
         }
 
         /// <summary>
@@ -127,7 +127,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// </summary>
         /// <returns></returns>
         public override string ToString() {
-            return this.Group;
+            return Group;
         }
 
         #endregion

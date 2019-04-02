@@ -3,8 +3,8 @@ using System;
 using System.IO;
 
 namespace Example {
-    class App {
-        static void Main(string[] args) {
+    internal class App {
+        private static void Main(string[] args) {
             var existingFile = @"Resources\Simple.psafe3";
             var newFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), @"NewExample.psafe3");
 

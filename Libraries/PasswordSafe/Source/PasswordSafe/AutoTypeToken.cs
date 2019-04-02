@@ -16,8 +16,8 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         }
 
         internal AutotypeToken(string content, AutotypeTokenKind type) {
-            this.Content = content;
-            this.Kind = type;
+            Content = content;
+            Kind = type;
         }
 
 
@@ -36,7 +36,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// Returns Text if token is Key, otherwise Command:Argument.
         /// </summary>
         public override string ToString() {
-            return this.Content;
+            return Content;
         }
 
 

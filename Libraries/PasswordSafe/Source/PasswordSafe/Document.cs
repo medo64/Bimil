@@ -14,15 +14,15 @@ namespace Medo.Security.Cryptography.PasswordSafe {
     public class Document : IDisposable {
 
         private Document() {
-            this.Headers = new HeaderCollection(this, new Header[] {
+            Headers = new HeaderCollection(this, new Header[] {
                 new Header(HeaderType.Version, BitConverter.GetBytes(Header.DefaultVersion)),
                 new Header(HeaderType.Uuid,Guid.NewGuid().ToByteArray()),
             });
-            this.Entries = new EntryCollection(this);
-            this.NamedPasswordPolicies = new NamedPasswordPolicyCollection(this);
+            Entries = new EntryCollection(this);
+            NamedPasswordPolicies = new NamedPasswordPolicyCollection(this);
 
-            this.TrackAccess = true;
-            this.TrackModify = true;
+            TrackAccess = true;
+            TrackModify = true;
         }
 
         /// <summary>
@@ -32,7 +32,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         public Document(byte[] passphraseBuffer)
             : this() {
             //no need for passphraseBuffer copy - will be done in property setter
-            this.SetPassphraseBuffer(passphraseBuffer ?? throw new ArgumentNullException(nameof(passphraseBuffer), "Passphrase cannot be null."));
+            SetPassphraseBuffer(passphraseBuffer ?? throw new ArgumentNullException(nameof(passphraseBuffer), "Passphrase cannot be null."));
         }
 
         /// <summary>
@@ -42,19 +42,19 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// <exception cref="ArgumentNullException">Passphrase cannot be null.</exception>
         public Document(string passphrase)
             : this() {
-            this.SetPassphrase(passphrase);
+            SetPassphrase(passphrase);
         }
 
 
         internal Document(byte[] passphraseBuffer, int iterations, ICollection<Header> headers, params ICollection<Record>[] records) {
-            this.Headers = new HeaderCollection(this, headers);
-            this.NamedPasswordPolicies = new NamedPasswordPolicyCollection(this);
-            this.Entries = new EntryCollection(this, records);
-            this._iterations = iterations; //set directly to avoid usual minimum of 2048 iterations
-            if (passphraseBuffer != null) { this.SetPassphrase(passphraseBuffer); }
+            Headers = new HeaderCollection(this, headers);
+            NamedPasswordPolicies = new NamedPasswordPolicyCollection(this);
+            Entries = new EntryCollection(this, records);
+            _iterations = iterations; //set directly to avoid usual minimum of 2048 iterations
+            if (passphraseBuffer != null) { SetPassphrase(passphraseBuffer); }
 
-            this.TrackAccess = true;
-            this.TrackModify = true;
+            TrackAccess = true;
+            TrackModify = true;
         }
 
 
@@ -62,8 +62,8 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// Gets/sets database version.
         /// </summary>
         public int Version {
-            get { return this.Headers[HeaderType.Version].Version; }
-            set { this.Headers[HeaderType.Version].Version = value; }
+            get { return Headers[HeaderType.Version].Version; }
+            set { Headers[HeaderType.Version].Version = value; }
         }
 
 
@@ -71,56 +71,56 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// Gets/sets UUID.
         /// </summary>
         public Guid Uuid {
-            get { return this.Headers.Contains(HeaderType.Uuid) ? this.Headers[HeaderType.Uuid].Uuid : Guid.Empty; }
-            set { this.Headers[HeaderType.Uuid].Uuid = value; }
+            get { return Headers.Contains(HeaderType.Uuid) ? Headers[HeaderType.Uuid].Uuid : Guid.Empty; }
+            set { Headers[HeaderType.Uuid].Uuid = value; }
         }
 
         /// <summary>
         /// Gets/sets last save time.
         /// </summary>
         public DateTime LastSaveTime {
-            get { return this.Headers.Contains(HeaderType.TimestampOfLastSave) ? this.Headers[HeaderType.TimestampOfLastSave].Time : DateTime.MinValue; }
-            set { this.Headers[HeaderType.TimestampOfLastSave].Time = value; }
+            get { return Headers.Contains(HeaderType.TimestampOfLastSave) ? Headers[HeaderType.TimestampOfLastSave].Time : DateTime.MinValue; }
+            set { Headers[HeaderType.TimestampOfLastSave].Time = value; }
         }
 
         /// <summary>
         /// Gets/sets last save application.
         /// </summary>
         public string LastSaveApplication {
-            get { return this.Headers.Contains(HeaderType.WhatPerformedLastSave) ? this.Headers[HeaderType.WhatPerformedLastSave].Text : ""; }
-            set { this.Headers[HeaderType.WhatPerformedLastSave].Text = value; }
+            get { return Headers.Contains(HeaderType.WhatPerformedLastSave) ? Headers[HeaderType.WhatPerformedLastSave].Text : ""; }
+            set { Headers[HeaderType.WhatPerformedLastSave].Text = value; }
         }
 
         /// <summary>
         /// Gets/sets last save user.
         /// </summary>
         public string LastSaveUser {
-            get { return this.Headers.Contains(HeaderType.LastSavedByUser) ? this.Headers[HeaderType.LastSavedByUser].Text : ""; }
-            set { this.Headers[HeaderType.LastSavedByUser].Text = value; }
+            get { return Headers.Contains(HeaderType.LastSavedByUser) ? Headers[HeaderType.LastSavedByUser].Text : ""; }
+            set { Headers[HeaderType.LastSavedByUser].Text = value; }
         }
 
         /// <summary>
         /// Gets/sets last save computer.
         /// </summary>
         public string LastSaveHost {
-            get { return this.Headers.Contains(HeaderType.LastSavedOnHost) ? this.Headers[HeaderType.LastSavedOnHost].Text : ""; }
-            set { this.Headers[HeaderType.LastSavedOnHost].Text = value; }
+            get { return Headers.Contains(HeaderType.LastSavedOnHost) ? Headers[HeaderType.LastSavedOnHost].Text : ""; }
+            set { Headers[HeaderType.LastSavedOnHost].Text = value; }
         }
 
         /// <summary>
         /// Gets/sets database name.
         /// </summary>
         public string Name {
-            get { return this.Headers.Contains(HeaderType.DatabaseName) ? this.Headers[HeaderType.DatabaseName].Text : ""; }
-            set { this.Headers[HeaderType.DatabaseName].Text = value; }
+            get { return Headers.Contains(HeaderType.DatabaseName) ? Headers[HeaderType.DatabaseName].Text : ""; }
+            set { Headers[HeaderType.DatabaseName].Text = value; }
         }
 
         /// <summary>
         /// Gets/sets database description.
         /// </summary>
         public string Description {
-            get { return this.Headers.Contains(HeaderType.DatabaseDescription) ? this.Headers[HeaderType.DatabaseDescription].Text : ""; }
-            set { this.Headers[HeaderType.DatabaseDescription].Text = value; }
+            get { return Headers.Contains(HeaderType.DatabaseDescription) ? Headers[HeaderType.DatabaseDescription].Text : ""; }
+            set { Headers[HeaderType.DatabaseDescription].Text = value; }
         }
 
 
@@ -130,10 +130,10 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// Cannot be less than 2048.
         /// </summary>
         public int Iterations {
-            get { return this._iterations; }
+            get { return _iterations; }
             set {
                 if (value < 2048) { value = 2048; }
-                this._iterations = value;
+                _iterations = value;
             }
         }
 
@@ -361,7 +361,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         public void Save(Stream stream) {
             if (stream == null) { throw new ArgumentNullException(nameof(stream), "Stream cannot be null."); }
 
-            var passphraseBytes = this.GetPassphrase();
+            var passphraseBytes = GetPassphrase();
             if (passphraseBytes == null) { throw new NotSupportedException("Missing passphrase."); }
             try {
                 Save(stream, passphraseBytes);
@@ -411,7 +411,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// <param name="passphraseBuffer">Password bytes. Caller has to avoid keeping bytes unencrypted in memory.</param>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "Medo.Security.Cryptography.PasswordSafe.Field.set_Text(System.String)", Justification = "String is not exposed to the end user.")]
         public void Save(Stream stream, byte[] passphraseBuffer) {
-            this.Save(stream, passphraseBuffer, null);
+            Save(stream, passphraseBuffer, null);
         }
 
         /// <summary>
@@ -425,18 +425,18 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "Medo.Security.Cryptography.PasswordSafe.Field.set_Text(System.String)", Justification = "String is not exposed to the end user.")]
         internal void Save(Stream stream, byte[] passphraseBuffer, byte[] keyBuffer) {
             if (stream == null) { throw new ArgumentNullException(nameof(stream), "Stream cannot be null."); }
-            if (passphraseBuffer == null) { passphraseBuffer = this.GetPassphrase(); } //first try old passphrase
+            if (passphraseBuffer == null) { passphraseBuffer = GetPassphrase(); } //first try old passphrase
             if (passphraseBuffer == null) { throw new ArgumentNullException(nameof(passphraseBuffer), "Passphrase cannot be null."); }
             if ((keyBuffer != null) && (keyBuffer.Length != 64)) { throw new ArgumentOutOfRangeException(nameof(keyBuffer), "Keys must be 64 bytes long."); }
 
-            if (!this.IsReadOnly && this.TrackModify) {
-                this.Headers[HeaderType.TimestampOfLastSave].Time = DateTime.UtcNow;
+            if (!IsReadOnly && TrackModify) {
+                Headers[HeaderType.TimestampOfLastSave].Time = DateTime.UtcNow;
 
                 var assemblyName = Assembly.GetExecutingAssembly().GetName();
-                this.Headers[HeaderType.WhatPerformedLastSave].Text = string.Format(CultureInfo.InvariantCulture, "{0} V{1}.{2:00}", assemblyName.Name, assemblyName.Version.Major, assemblyName.Version.Minor);
+                Headers[HeaderType.WhatPerformedLastSave].Text = string.Format(CultureInfo.InvariantCulture, "{0} V{1}.{2:00}", assemblyName.Name, assemblyName.Version.Major, assemblyName.Version.Minor);
 
-                this.Headers[HeaderType.LastSavedByUser].Text = Environment.UserName;
-                this.Headers[HeaderType.LastSavedOnHost].Text = Environment.MachineName;
+                Headers[HeaderType.LastSavedByUser].Text = Environment.UserName;
+                Headers[HeaderType.LastSavedOnHost].Text = Environment.MachineName;
             }
 
             byte[] stretchedKey = null;
@@ -449,8 +449,8 @@ namespace Medo.Security.Cryptography.PasswordSafe {
                 Rnd.GetBytes(salt);
                 stream.Write(salt, 0, salt.Length);
 
-                this.Iterations = this.Iterations; //to force minimum iteration count
-                var iter = (uint)this.Iterations;
+                Iterations = Iterations; //to force minimum iteration count
+                var iter = (uint)Iterations;
                 stream.Write(BitConverter.GetBytes(iter), 0, 4);
 
                 stretchedKey = GetStretchedKey(passphraseBuffer, salt, iter);
@@ -481,12 +481,12 @@ namespace Medo.Security.Cryptography.PasswordSafe {
                     twofish.Key = keyK;
                     twofish.IV = iv;
                     using (var dataEncryptor = twofish.CreateEncryptor()) {
-                        foreach (var field in this.Headers) {
+                        foreach (var field in Headers) {
                             WriteBlock(stream, dataHash, dataEncryptor, (byte)field.HeaderType, field.RawData);
                         }
                         WriteBlock(stream, dataHash, dataEncryptor, (byte)HeaderType.EndOfEntry, new byte[] { });
 
-                        foreach (var entry in this.Entries) {
+                        foreach (var entry in Entries) {
                             foreach (var field in entry.Records) {
                                 WriteBlock(stream, dataHash, dataEncryptor, (byte)field.RecordType, field.RawData);
                             }
@@ -502,7 +502,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
                     stream.Write(BitConverter.GetBytes(TagEof), 0, 4);
 
                     stream.Write(dataHash.Hash, 0, dataHash.Hash.Length);
-                    this.HasChanged = false;
+                    HasChanged = false;
                 }
             } finally {
                 if (stretchedKey != null) { Array.Clear(stretchedKey, 0, stretchedKey.Length); }
@@ -515,8 +515,8 @@ namespace Medo.Security.Cryptography.PasswordSafe {
 
         #region Passphrase
 
-        private static RandomNumberGenerator Rnd = RandomNumberGenerator.Create();
-        private byte[] PassphraseEntropy = new byte[16];
+        private static readonly RandomNumberGenerator Rnd = RandomNumberGenerator.Create();
+        private readonly byte[] PassphraseEntropy = new byte[16];
 
         private byte[] _passphraseBuffer;
 
@@ -526,7 +526,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// It's caller responsibility to dispose of returned bytes.
         /// </summary>
         public byte[] GetPassphrase() {
-            return (this._passphraseBuffer != null) ? UnprotectData(this._passphraseBuffer, this.PassphraseEntropy) : null;
+            return (_passphraseBuffer != null) ? UnprotectData(_passphraseBuffer, PassphraseEntropy) : null;
         }
 
         /// <summary>
@@ -538,8 +538,8 @@ namespace Medo.Security.Cryptography.PasswordSafe {
             if (newPassphraseBuffer == null) { throw new ArgumentNullException(nameof(newPassphraseBuffer), "Passphrase cannot be null."); }
 
             try {
-                Rnd.GetBytes(this.PassphraseEntropy);
-                this._passphraseBuffer = ProtectData(newPassphraseBuffer, this.PassphraseEntropy);
+                Rnd.GetBytes(PassphraseEntropy);
+                _passphraseBuffer = ProtectData(newPassphraseBuffer, PassphraseEntropy);
             } finally {
                 Array.Clear(newPassphraseBuffer, 0, newPassphraseBuffer.Length);
             }
@@ -552,8 +552,8 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// <param name="newPassphraseBuffer">New password bytes. Buffer is cleared upon execution.</param>
         /// <exception cref="ArgumentNullException">Passphrase cannot be null.</exception>
         public void ChangePassphrase(byte[] newPassphraseBuffer) {
-            this.SetPassphrase(newPassphraseBuffer);
-            this.MarkAsChanged();
+            SetPassphrase(newPassphraseBuffer);
+            MarkAsChanged();
         }
 
         /// <summary>
@@ -565,7 +565,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
 
             var passphraseBuffer = Utf8Encoding.GetBytes(newPassphrase);
             try {
-                this.ChangePassphrase(passphraseBuffer);
+                ChangePassphrase(passphraseBuffer);
             } finally {
                 Array.Clear(passphraseBuffer, 0, passphraseBuffer.Length); //remove passphrase bytes from memory - nothing to do about the string. :(
             }
@@ -581,8 +581,8 @@ namespace Medo.Security.Cryptography.PasswordSafe {
             if (oldPassphraseBuffer == null) { throw new ArgumentNullException(nameof(oldPassphraseBuffer), "Passphrase cannot be null."); }
             if (newPassphraseBuffer == null) { throw new ArgumentNullException(nameof(newPassphraseBuffer), "Passphrase cannot be null."); }
 
-            if (this.ValidatePassphrase(oldPassphraseBuffer)) {
-                this.ChangePassphrase(newPassphraseBuffer);
+            if (ValidatePassphrase(oldPassphraseBuffer)) {
+                ChangePassphrase(newPassphraseBuffer);
                 return true;
             }
             return false;
@@ -600,7 +600,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
             var oldPassphraseBuffer = Utf8Encoding.GetBytes(oldPassphrase);
             var newPassphraseBuffer = Utf8Encoding.GetBytes(newPassphrase);
             try {
-                return this.TryChangePassphrase(oldPassphraseBuffer, newPassphraseBuffer);
+                return TryChangePassphrase(oldPassphraseBuffer, newPassphraseBuffer);
             } finally {
                 Array.Clear(oldPassphraseBuffer, 0, oldPassphraseBuffer.Length); //remove passphrase bytes from memory - nothing to do about the string. :(
                 Array.Clear(newPassphraseBuffer, 0, newPassphraseBuffer.Length); //remove passphrase bytes from memory - nothing to do about the string. :(
@@ -615,7 +615,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         public bool ValidatePassphrase(byte[] oldPassphraseBuffer) {
             if (oldPassphraseBuffer == null) { throw new ArgumentNullException(nameof(oldPassphraseBuffer), "Passphrase cannot be null."); }
 
-            var currPassphraseBuffer = this.GetPassphrase();
+            var currPassphraseBuffer = GetPassphrase();
             try {
                 if (currPassphraseBuffer != null) {
                     if (currPassphraseBuffer.Length != oldPassphraseBuffer.Length) { return false; }
@@ -638,7 +638,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
 
             var oldPassphraseBuffer = Utf8Encoding.GetBytes(oldPassphrase);
             try {
-                return this.ValidatePassphrase(oldPassphraseBuffer);
+                return ValidatePassphrase(oldPassphraseBuffer);
             } finally {
                 Array.Clear(oldPassphraseBuffer, 0, oldPassphraseBuffer.Length); //remove passphrase bytes from memory - nothing to do about the string. :(
             }
@@ -679,8 +679,8 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         public void SetPassphraseBuffer(byte[] passphraseBuffer) {
             if (passphraseBuffer == null) { throw new ArgumentNullException(nameof(passphraseBuffer), "Passphrase cannot be null."); }
             try {
-                Rnd.GetBytes(this.PassphraseEntropy);
-                this._passphraseBuffer = ProtectData(passphraseBuffer, this.PassphraseEntropy);
+                Rnd.GetBytes(PassphraseEntropy);
+                _passphraseBuffer = ProtectData(passphraseBuffer, PassphraseEntropy);
             } finally {
                 Array.Clear(passphraseBuffer, 0, passphraseBuffer.Length);
             }
@@ -695,7 +695,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
             if (passphrase == null) { throw new ArgumentNullException(nameof(passphrase), "Passphrase cannot be null."); }
 
             var passphraseBuffer = Utf8Encoding.GetBytes(passphrase);
-            this.SetPassphraseBuffer(passphraseBuffer);
+            SetPassphraseBuffer(passphraseBuffer);
         }
 
         #endregion Load/Save
@@ -717,18 +717,13 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// </summary>
         public bool TrackModify { get; set; }
 
-
-        private bool _hasChanged;
         /// <summary>
         /// Gets is document has been changed since last save.
         /// </summary>
-        public bool HasChanged {
-            get { return this._hasChanged; }
-            private set { this._hasChanged = value; }
-        }
+        public bool HasChanged { get; private set; }
 
         internal void MarkAsChanged() {
-            this.HasChanged = true;
+            HasChanged = true;
         }
 
 
@@ -809,7 +804,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// <param name="disposing">True if managed resources are to be disposed.</param>
         protected virtual void Dispose(bool disposing) {
             if (disposing) {
-                if (this._passphraseBuffer != null) { Array.Clear(this._passphraseBuffer, 0, this._passphraseBuffer.Length); }
+                if (_passphraseBuffer != null) { Array.Clear(_passphraseBuffer, 0, _passphraseBuffer.Length); }
             }
         }
 

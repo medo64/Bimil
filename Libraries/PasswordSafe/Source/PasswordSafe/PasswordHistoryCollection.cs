@@ -13,14 +13,14 @@ namespace Medo.Security.Cryptography.PasswordSafe {
     public sealed class PasswordHistoryCollection : IEnumerable<PasswordHistoryItem> {
 
         internal PasswordHistoryCollection(RecordCollection records) {
-            this.Records = records;
+            Records = records;
 
-            if (this.Records.Contains(RecordType.PasswordHistory)) {
-                var text = this.Records[RecordType.PasswordHistory].Text;
+            if (Records.Contains(RecordType.PasswordHistory)) {
+                var text = Records[RecordType.PasswordHistory].Text;
                 if (text.Length >= 5) {
-                    this._enabled = text[0] == '0' ? false : true;
-                    if (!int.TryParse(text.Substring(1, 2), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out this._maximumCount)) {
-                        this._maximumCount = DefaultMaximumCount;
+                    _enabled = text[0] == '0' ? false : true;
+                    if (!int.TryParse(text.Substring(1, 2), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out _maximumCount)) {
+                        _maximumCount = DefaultMaximumCount;
                     }
 
                     if (int.TryParse(text.Substring(3, 2), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out var count)) {
@@ -32,7 +32,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
                                     j += 12; //skip time and length
                                     if (text.Length >= j + length) {
                                         var item = new PasswordHistoryItem(this, UnixEpoch.AddSeconds(time), text.Substring(j, length));
-                                        this.BaseCollection.Add(item);
+                                        BaseCollection.Add(item);
                                         j += length; //skip password
                                     } else {
                                         break; //something is wrong with parsing
@@ -56,13 +56,13 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// Used to mark document as changed.
         /// </summary>
         internal void MarkAsChanged() {
-            var record = this.Records[RecordType.PasswordHistory];
+            var record = Records[RecordType.PasswordHistory];
 
             var sb = new StringBuilder();
-            sb.Append(this.Enabled ? "1" : "0");
-            sb.Append(this._maximumCount.ToString("x2", CultureInfo.InvariantCulture));
-            sb.Append(this.BaseCollection.Count.ToString("x2", CultureInfo.InvariantCulture));
-            foreach (var item in this.BaseCollection) {
+            sb.Append(Enabled ? "1" : "0");
+            sb.Append(_maximumCount.ToString("x2", CultureInfo.InvariantCulture));
+            sb.Append(BaseCollection.Count.ToString("x2", CultureInfo.InvariantCulture));
+            foreach (var item in BaseCollection) {
                 var seconds = (item.TimeFirstUsed - UnixEpoch).TotalSeconds;
                 uint unixTime;
                 if (seconds < 0) {
@@ -86,12 +86,12 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// Gets/sets whether password history is enabled.
         /// </summary>
         public bool Enabled {
-            get { return this._enabled; }
+            get { return _enabled; }
             set {
-                if (this._enabled != value) {
-                    this._enabled = value;
-                    if (value == false) { this.BaseCollection.Clear(); } //remove all history
-                    this.MarkAsChanged();
+                if (_enabled != value) {
+                    _enabled = value;
+                    if (value == false) { BaseCollection.Clear(); } //remove all history
+                    MarkAsChanged();
                 }
             }
         }
@@ -103,13 +103,13 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// <exception cref="ArgumentOutOfRangeException">Value must be between 1 and 255.</exception>
         public int MaximumCount {
             get {
-                return this._maximumCount;
+                return _maximumCount;
             }
             set {
                 if ((value < 1) || (value > 255)) { throw new ArgumentOutOfRangeException("value", "Value must be between 1 and 255."); }
-                if (this._maximumCount != value) {
-                    this._maximumCount = value;
-                    this.MarkAsChanged();
+                if (_maximumCount != value) {
+                    _maximumCount = value;
+                    MarkAsChanged();
                 }
             }
         }
@@ -119,18 +119,18 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// Removes all passwords currently stored.
         /// </summary>
         public void Clear() {
-            this.BaseCollection.Clear();
-            this.MarkAsChanged();
+            BaseCollection.Clear();
+            MarkAsChanged();
         }
 
 
         internal void AddPasswordToHistory(DateTime time, string password) {
-            if (this.Enabled && !string.IsNullOrEmpty(password)) { //change only if enabled and not empty
-                this.BaseCollection.Add(new PasswordHistoryItem(this, time, password));
-                while (this.BaseCollection.Count > this.MaximumCount) {
-                    this.BaseCollection.RemoveAt(0);
+            if (Enabled && !string.IsNullOrEmpty(password)) { //change only if enabled and not empty
+                BaseCollection.Add(new PasswordHistoryItem(this, time, password));
+                while (BaseCollection.Count > MaximumCount) {
+                    BaseCollection.RemoveAt(0);
                 }
-                this.MarkAsChanged();
+                MarkAsChanged();
             }
         }
 
@@ -142,7 +142,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// Gets the number of items contained in the collection.
         /// </summary>
         public int Count {
-            get { return this.BaseCollection.Count; }
+            get { return BaseCollection.Count; }
         }
 
         /// <summary>
@@ -151,17 +151,17 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// <param name="index">The zero-based index of the element to get or set.</param>
         /// <exception cref="ArgumentOutOfRangeException">Index is less than 0. -or- Index is equal to or greater than collection count. -or- Duplicate name in collection.</exception>
         public PasswordHistoryItem this[int index] {
-            get { return this.BaseCollection[index]; }
+            get { return BaseCollection[index]; }
         }
 
         #region IEnumerable
 
         IEnumerator<PasswordHistoryItem> IEnumerable<PasswordHistoryItem>.GetEnumerator() {
-            return this.BaseCollection.AsReadOnly().GetEnumerator();
+            return BaseCollection.AsReadOnly().GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator() {
-            return this.BaseCollection.AsReadOnly().GetEnumerator();
+            return BaseCollection.AsReadOnly().GetEnumerator();
         }
 
         #endregion

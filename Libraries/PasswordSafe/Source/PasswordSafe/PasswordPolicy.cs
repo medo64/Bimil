@@ -15,7 +15,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// </summary>
         /// <param name="passwordLength">Password length.</param>
         public PasswordPolicy(int passwordLength) {
-            this.TotalPasswordLength = passwordLength;
+            TotalPasswordLength = passwordLength;
         }
 
         internal PasswordPolicy(RecordCollection records) {
@@ -26,10 +26,10 @@ namespace Medo.Security.Cryptography.PasswordSafe {
 
             if (records.Contains(RecordType.OwnSymbolsForPassword)) {
                 var text = records[RecordType.OwnSymbolsForPassword].Text;
-                this.SetSpecialSymbolSet(text.ToCharArray());
+                SetSpecialSymbolSet(text.ToCharArray());
             }
 
-            this.Records = records;
+            Records = records;
         }
 
         private readonly RecordCollection Records;
@@ -39,15 +39,15 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// Used to mark document as changed.
         /// </summary>
         protected void MarkPolicyAsChanged() {
-            if (this.Records != null) {
-                var record = this.Records[RecordType.PasswordPolicy];
+            if (Records != null) {
+                var record = Records[RecordType.PasswordPolicy];
                 var sb = new StringBuilder();
-                sb.Append(((ushort)this.Style).ToString("X4", CultureInfo.InvariantCulture));
-                sb.Append(this.TotalPasswordLength.ToString("X3", CultureInfo.InvariantCulture));
-                sb.Append(this.MinimumLowercaseCount.ToString("X3", CultureInfo.InvariantCulture));
-                sb.Append(this.MinimumUppercaseCount.ToString("X3", CultureInfo.InvariantCulture));
-                sb.Append(this.MinimumDigitCount.ToString("X3", CultureInfo.InvariantCulture));
-                sb.Append(this.MinimumSymbolCount.ToString("X3", CultureInfo.InvariantCulture));
+                sb.Append(((ushort)Style).ToString("X4", CultureInfo.InvariantCulture));
+                sb.Append(TotalPasswordLength.ToString("X3", CultureInfo.InvariantCulture));
+                sb.Append(MinimumLowercaseCount.ToString("X3", CultureInfo.InvariantCulture));
+                sb.Append(MinimumUppercaseCount.ToString("X3", CultureInfo.InvariantCulture));
+                sb.Append(MinimumDigitCount.ToString("X3", CultureInfo.InvariantCulture));
+                sb.Append(MinimumSymbolCount.ToString("X3", CultureInfo.InvariantCulture));
                 record.Text = sb.ToString();
             }
         }
@@ -56,9 +56,9 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// Used to mark document as changed.
         /// </summary>
         protected void MarkSymbolsAsChanged() {
-            if (this.Records != null) {
-                var record = this.Records[RecordType.OwnSymbolsForPassword];
-                record.Text = new string(this.GetSpecialSymbolSet());
+            if (Records != null) {
+                var record = Records[RecordType.OwnSymbolsForPassword];
+                record.Text = new string(GetSpecialSymbolSet());
             }
         }
 
@@ -69,15 +69,15 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// </summary>
         /// <exception cref="ArgumentOutOfRangeException">Value cannot be wider than 16-bit.</exception>
         public PasswordPolicyStyle Style {
-            get { return this._style; }
+            get { return _style; }
             set {
                 if (((int)value & 0xFFFF0000) != 0) { throw new ArgumentOutOfRangeException(nameof(value), "Value cannot be wider than 16-bit."); }
                 if ((value & PasswordPolicyStyle.UseHexDigits) == 0) {
-                    this._style = value;
+                    _style = value;
                 } else { //force hex values only
-                    this._style = PasswordPolicyStyle.UseHexDigits;
+                    _style = PasswordPolicyStyle.UseHexDigits;
                 }
-                this.MarkPolicyAsChanged();
+                MarkPolicyAsChanged();
             }
         }
 
@@ -87,11 +87,11 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// </summary>
         /// <exception cref="ArgumentOutOfRangeException">Count must be between 1 and 4095.</exception>
         public int TotalPasswordLength {
-            get { return this._totalPasswordLength; }
+            get { return _totalPasswordLength; }
             set {
                 if ((value < 1) || (value > 4095)) { throw new ArgumentOutOfRangeException(nameof(value), "Length must be between 1 and 4095."); }
-                this._totalPasswordLength = value;
-                this.MarkPolicyAsChanged();
+                _totalPasswordLength = value;
+                MarkPolicyAsChanged();
             }
         }
 
@@ -101,11 +101,11 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// </summary>
         /// <exception cref="ArgumentOutOfRangeException">Count must be between 0 and 4095.</exception>
         public int MinimumLowercaseCount {
-            get { return this._minimumLowercaseCount; }
+            get { return _minimumLowercaseCount; }
             set {
                 if ((value < 0) || (value > 4095)) { throw new ArgumentOutOfRangeException(nameof(value), "Count must be between 0 and 4095."); }
-                this._minimumLowercaseCount = value;
-                this.MarkPolicyAsChanged();
+                _minimumLowercaseCount = value;
+                MarkPolicyAsChanged();
             }
         }
 
@@ -115,11 +115,11 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// </summary>
         /// <exception cref="ArgumentOutOfRangeException">Count must be between 0 and 4095.</exception>
         public int MinimumUppercaseCount {
-            get { return this._minimumUppercaseCount; }
+            get { return _minimumUppercaseCount; }
             set {
                 if ((value < 0) || (value > 4095)) { throw new ArgumentOutOfRangeException(nameof(value), "Count must be between 0 and 4095."); }
-                this._minimumUppercaseCount = value;
-                this.MarkPolicyAsChanged();
+                _minimumUppercaseCount = value;
+                MarkPolicyAsChanged();
             }
         }
 
@@ -129,11 +129,11 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// </summary>
         /// <exception cref="ArgumentOutOfRangeException">Count must be between 0 and 4095.</exception>
         public int MinimumDigitCount {
-            get { return this._minimumDigitCount; }
+            get { return _minimumDigitCount; }
             set {
                 if ((value < 0) || (value > 4095)) { throw new ArgumentOutOfRangeException(nameof(value), "Count must be between 0 and 4095."); }
-                this._minimumDigitCount = value;
-                this.MarkPolicyAsChanged();
+                _minimumDigitCount = value;
+                MarkPolicyAsChanged();
             }
         }
 
@@ -143,11 +143,11 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// </summary>
         /// <exception cref="ArgumentOutOfRangeException">Count must be between 0 and 4095.</exception>
         public int MinimumSymbolCount {
-            get { return this._minimumSymbolCount; }
+            get { return _minimumSymbolCount; }
             set {
                 if ((value < 0) || (value > 4095)) { throw new ArgumentOutOfRangeException(nameof(value), "Count must be between 0 and 4095."); }
-                this._minimumSymbolCount = value;
-                this.MarkPolicyAsChanged();
+                _minimumSymbolCount = value;
+                MarkPolicyAsChanged();
             }
         }
 
@@ -157,7 +157,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// Returns special symbols that are allowed in the password.
         /// </summary>
         public char[] GetSpecialSymbolSet() {
-            return this._specialSymbolSet;
+            return _specialSymbolSet;
         }
 
         /// <summary>
@@ -183,8 +183,8 @@ namespace Medo.Security.Cryptography.PasswordSafe {
                 }
             }
 
-            this._specialSymbolSet = symbols.ToArray();
-            this.MarkSymbolsAsChanged();
+            _specialSymbolSet = symbols.ToArray();
+            MarkSymbolsAsChanged();
         }
 
 
@@ -194,7 +194,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// <param name="obj">Other object.</param>
         public override bool Equals(object obj) {
             if (obj is NamedPasswordPolicy other) {
-                return string.Equals(this.ToString(), obj.ToString(), StringComparison.Ordinal);
+                return string.Equals(ToString(), other.ToString(), StringComparison.Ordinal);
             }
             return false;
         }
@@ -203,7 +203,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// Returns hash code.
         /// </summary>
         public override int GetHashCode() {
-            return this.Style.GetHashCode();
+            return Style.GetHashCode();
         }
 
 
@@ -212,37 +212,37 @@ namespace Medo.Security.Cryptography.PasswordSafe {
                 return;
             }
             text.Remove(0, 4);
-            this.Style = (PasswordPolicyStyle)styleFlags;
+            Style = (PasswordPolicyStyle)styleFlags;
 
             if ((text.Length < 3) || !int.TryParse(text.ToString(0, 3), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out var totalPasswordLength)) {
                 return;
             }
             text.Remove(0, 3);
-            this.TotalPasswordLength = totalPasswordLength;
+            TotalPasswordLength = totalPasswordLength;
 
             if ((text.Length < 3) || !int.TryParse(text.ToString(0, 3), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out var minimumLowercase)) {
                 return;
             }
             text.Remove(0, 3);
-            this.MinimumLowercaseCount = minimumLowercase;
+            MinimumLowercaseCount = minimumLowercase;
 
             if ((text.Length < 3) || !int.TryParse(text.ToString(0, 3), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out var minimumUppercase)) {
                 return;
             }
             text.Remove(0, 3);
-            this.MinimumUppercaseCount = minimumUppercase;
+            MinimumUppercaseCount = minimumUppercase;
 
             if ((text.Length < 3) || !int.TryParse(text.ToString(0, 3), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out var minimumDigits)) {
                 return;
             }
             text.Remove(0, 3);
-            this.MinimumDigitCount = minimumDigits;
+            MinimumDigitCount = minimumDigits;
 
             if ((text.Length < 3) || !int.TryParse(text.ToString(0, 3), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out var minimumSymbols)) {
                 return;
             }
             text.Remove(0, 3);
-            this.MinimumSymbolCount = minimumSymbols;
+            MinimumSymbolCount = minimumSymbols;
         }
 
     }

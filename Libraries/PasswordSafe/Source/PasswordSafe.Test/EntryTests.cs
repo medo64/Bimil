@@ -58,7 +58,7 @@ namespace PasswordSafe.Test {
             doc.Entries.Add(new PwSafe.Entry("Test"));
             doc.Save(new MemoryStream());
 
-            var clone = doc.Entries[0].Clone();
+            doc.Entries[0].Clone();
             Assert.Equal(false, doc.HasChanged);
         }
 

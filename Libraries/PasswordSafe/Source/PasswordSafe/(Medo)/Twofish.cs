@@ -119,7 +119,7 @@ namespace Medo.Security.Cryptography {
 
         #region Private
 
-        private static Lazy<RandomNumberGenerator> Rng = new Lazy<RandomNumberGenerator>(() => RandomNumberGenerator.Create());
+        private static readonly Lazy<RandomNumberGenerator> Rng = new Lazy<RandomNumberGenerator>(() => RandomNumberGenerator.Create());
 
         private ICryptoTransform NewEncryptor(byte[] rgbKey, CipherMode mode, byte[] rgbIV, TwofishManagedTransformMode encryptMode) {
             if (rgbKey == null) {
@@ -165,7 +165,7 @@ namespace Medo.Security.Cryptography {
         private readonly TwofishManagedTransformMode TransformMode;
         private readonly PaddingMode PaddingMode;
 
-        private TwofishImplementation Implementation;
+        private readonly TwofishImplementation Implementation;
 
 
         /// <summary>
@@ -204,7 +204,7 @@ namespace Medo.Security.Cryptography {
 
 
         [ThreadStatic()]
-        private static RandomNumberGenerator Rng = RandomNumberGenerator.Create();
+        private static readonly RandomNumberGenerator Rng = RandomNumberGenerator.Create();
 
         private byte[] PaddingBuffer; //used to store last block under decrypting as to work around CryptoStream implementation details.
 
@@ -437,8 +437,8 @@ namespace Medo.Security.Cryptography {
             private const int RoundSubkeys = (OutputWhiten + BlockSize / 32);
             private const int TotalSubkeys = (RoundSubkeys + 2 * Rounds);
 
-            private DWord[] SBoxKeys = new DWord[MaxKeyBits / 64]; //key bits used for S-boxes
-            private DWord[] SubKeys = new DWord[TotalSubkeys]; //round subkeys, input/output whitening bits
+            private readonly DWord[] SBoxKeys = new DWord[MaxKeyBits / 64]; //key bits used for S-boxes
+            private readonly DWord[] SubKeys = new DWord[TotalSubkeys]; //round subkeys, input/output whitening bits
 
 
             public void Dispose() {
@@ -585,10 +585,10 @@ namespace Medo.Security.Cryptography {
                     x.B3 = (byte)(P8x8[P_33, x.B3] ^ k32[2].B3);
                 }
                 if (keyLen >= 128) {
-                    x = MdsTable[0, P8x8[P_01, P8x8[P_02, x.B0] ^ k32[1].B0] ^ k32[0].B0]
-                      ^ MdsTable[1, P8x8[P_11, P8x8[P_12, x.B1] ^ k32[1].B1] ^ k32[0].B1]
-                      ^ MdsTable[2, P8x8[P_21, P8x8[P_22, x.B2] ^ k32[1].B2] ^ k32[0].B2]
-                      ^ MdsTable[3, P8x8[P_31, P8x8[P_32, x.B3] ^ k32[1].B3] ^ k32[0].B3];
+                    x = MdsTable1[0, P8x8[P_01, P8x8[P_02, x.B0] ^ k32[1].B0] ^ k32[0].B0]
+                      ^ MdsTable1[1, P8x8[P_11, P8x8[P_12, x.B1] ^ k32[1].B1] ^ k32[0].B1]
+                      ^ MdsTable1[2, P8x8[P_21, P8x8[P_22, x.B2] ^ k32[1].B2] ^ k32[0].B2]
+                      ^ MdsTable1[3, P8x8[P_31, P8x8[P_32, x.B3] ^ k32[1].B3] ^ k32[0].B3];
                 }
 
                 return x;
@@ -604,28 +604,28 @@ namespace Medo.Security.Cryptography {
             }
 
 
-            private static uint P_01 = 0;
-            private static uint P_02 = 0;
-            private static uint P_03 = (P_01 ^ 1); //"extend" to larger key sizes
-            private static uint P_04 = 1;
+            private static readonly uint P_01 = 0;
+            private static readonly uint P_02 = 0;
+            private static readonly uint P_03 = (P_01 ^ 1); //"extend" to larger key sizes
+            private static readonly uint P_04 = 1;
 
-            private static uint P_11 = 0;
-            private static uint P_12 = 1;
-            private static uint P_13 = (P_11 ^ 1);
-            private static uint P_14 = 0;
+            private static readonly uint P_11 = 0;
+            private static readonly uint P_12 = 1;
+            private static readonly uint P_13 = (P_11 ^ 1);
+            private static readonly uint P_14 = 0;
 
-            private static uint P_21 = 1;
-            private static uint P_22 = 0;
-            private static uint P_23 = (P_21 ^ 1);
-            private static uint P_24 = 0;
+            private static readonly uint P_21 = 1;
+            private static readonly uint P_22 = 0;
+            private static readonly uint P_23 = (P_21 ^ 1);
+            private static readonly uint P_24 = 0;
 
-            private static uint P_31 = 1;
-            private static uint P_32 = 1;
-            private static uint P_33 = (P_31 ^ 1);
-            private static uint P_34 = 1;
+            private static readonly uint P_31 = 1;
+            private static readonly uint P_32 = 1;
+            private static readonly uint P_33 = (P_31 ^ 1);
+            private static readonly uint P_34 = 1;
 
             [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1814:PreferJaggedArraysOverMultidimensional", MessageId = "Member", Justification = "Multidimensional array does not waste space.")]
-            private static byte[,] P8x8 = {
+            private static readonly byte[,] P8x8 = {
                                             {
                                                 0xA9, 0x67, 0xB3, 0xE8, 0x04, 0xFD, 0xA3, 0x76,
                                                 0x9A, 0x92, 0x80, 0x78, 0xE4, 0xDD, 0xD1, 0x38,
@@ -697,7 +697,7 @@ namespace Medo.Security.Cryptography {
                                           };
 
             [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1814:PreferJaggedArraysOverMultidimensional", MessageId = "Member", Justification = "Multidimensional array does not waste space.")]
-            private static DWord[,] MdsTable = new DWord[4, 256];
+            private static readonly DWord[,] MdsTable = new DWord[4, 256];
             private static bool MdsTableBuilt = false;
             private static readonly object BuildMdsSyncLock = new object();
 
@@ -718,25 +718,25 @@ namespace Medo.Security.Cryptography {
                         mX[1] = (byte)Mul_X(m1[1]);
                         mY[1] = (byte)Mul_Y(m1[1]);
 
-                        MdsTable[0, i].B0 = m1[1];
-                        MdsTable[0, i].B1 = mX[1];
-                        MdsTable[0, i].B2 = mY[1];
-                        MdsTable[0, i].B3 = mY[1]; //SetMDS(0);
+                        MdsTable1[0, i].B0 = m1[1];
+                        MdsTable1[0, i].B1 = mX[1];
+                        MdsTable1[0, i].B2 = mY[1];
+                        MdsTable1[0, i].B3 = mY[1]; //SetMDS(0);
 
-                        MdsTable[1, i].B0 = mY[0];
-                        MdsTable[1, i].B1 = mY[0];
-                        MdsTable[1, i].B2 = mX[0];
-                        MdsTable[1, i].B3 = m1[0]; //SetMDS(1);
+                        MdsTable1[1, i].B0 = mY[0];
+                        MdsTable1[1, i].B1 = mY[0];
+                        MdsTable1[1, i].B2 = mX[0];
+                        MdsTable1[1, i].B3 = m1[0]; //SetMDS(1);
 
-                        MdsTable[2, i].B0 = mX[1];
-                        MdsTable[2, i].B1 = mY[1];
-                        MdsTable[2, i].B2 = m1[1];
-                        MdsTable[2, i].B3 = mY[1]; //SetMDS(2);
+                        MdsTable1[2, i].B0 = mX[1];
+                        MdsTable1[2, i].B1 = mY[1];
+                        MdsTable1[2, i].B2 = m1[1];
+                        MdsTable1[2, i].B3 = mY[1]; //SetMDS(2);
 
-                        MdsTable[3, i].B0 = mX[0];
-                        MdsTable[3, i].B1 = m1[0];
-                        MdsTable[3, i].B2 = mY[0];
-                        MdsTable[3, i].B3 = mX[0]; //SetMDS(3);
+                        MdsTable1[3, i].B0 = mX[0];
+                        MdsTable1[3, i].B1 = m1[0];
+                        MdsTable1[3, i].B2 = mY[0];
+                        MdsTable1[3, i].B3 = mX[0]; //SetMDS(3);
                     }
 
                     MdsTableBuilt = true;
@@ -790,6 +790,8 @@ namespace Medo.Security.Cryptography {
 
 
             private const uint MDS_GF_FDBK = 0x169; //primitive polynomial for GF(256)
+
+            private static DWord[,] MdsTable1 => MdsTable;
 
             private static uint LFSR1(uint x) {
                 return (uint)((x >> 1) ^ (((x & 0x01) > 0) ? MDS_GF_FDBK / 2 : 0));

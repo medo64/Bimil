@@ -14,9 +14,9 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// Create a new instance.
         /// </summary>
         internal EntryCollection(Document owner, params ICollection<Record>[] records) {
-            this.Owner = owner;
+            Owner = owner;
             foreach (var entry in records) {
-                this.BaseCollection.Add(new Entry(entry) { Owner = this });
+                BaseCollection.Add(new Entry(entry) { Owner = this });
             }
         }
 
@@ -24,7 +24,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         internal Document Owner { get; set; }
 
         internal void MarkAsChanged() {
-            this.Owner.MarkAsChanged();
+            Owner.MarkAsChanged();
         }
 
 
@@ -44,11 +44,11 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         public void Add(Entry item) {
             if (item == null) { throw new ArgumentNullException(nameof(item), "Item cannot be null."); }
             if (item.Owner != null) { throw new ArgumentOutOfRangeException(nameof(item), "Item cannot be in other collection."); }
-            if (this.IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
+            if (IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
 
-            this.BaseCollection.Add(item);
+            BaseCollection.Add(item);
             item.Owner = this;
-            this.MarkAsChanged();
+            MarkAsChanged();
         }
 
         /// <summary>
@@ -63,13 +63,13 @@ namespace Medo.Security.Cryptography.PasswordSafe {
             foreach (var item in items) {
                 if (item.Owner != null) { throw new ArgumentOutOfRangeException(nameof(items), "Item cannot be in other collection."); }
             }
-            if (this.IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
+            if (IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
 
-            this.BaseCollection.AddRange(items);
+            BaseCollection.AddRange(items);
             foreach (var item in items) {
                 item.Owner = this;
             }
-            this.MarkAsChanged();
+            MarkAsChanged();
         }
 
         /// <summary>
@@ -77,13 +77,13 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// </summary>
         /// <exception cref="NotSupportedException">Collection is read-only.</exception>
         public void Clear() {
-            if (this.IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
+            if (IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
 
-            foreach (var item in this.BaseCollection) {
+            foreach (var item in BaseCollection) {
                 item.Owner = null;
             }
-            this.BaseCollection.Clear();
-            this.MarkAsChanged();
+            BaseCollection.Clear();
+            MarkAsChanged();
         }
 
         /// <summary>
@@ -92,7 +92,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// <param name="item">The item to locate.</param>
         public bool Contains(Entry item) {
             if (item == null) { return false; }
-            return this.BaseCollection.Contains(item);
+            return BaseCollection.Contains(item);
         }
 
         /// <summary>
@@ -101,14 +101,14 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// <param name="array">The one-dimensional array that is the destination of the elements copied from collection.</param>
         /// <param name="arrayIndex">The zero-based index in array at which copying begins.</param>
         public void CopyTo(Entry[] array, int arrayIndex) {
-            this.BaseCollection.CopyTo(array, arrayIndex);
+            BaseCollection.CopyTo(array, arrayIndex);
         }
 
         /// <summary>
         /// Gets the number of items contained in the collection.
         /// </summary>
         public int Count {
-            get { return this.BaseCollection.Count; }
+            get { return BaseCollection.Count; }
         }
 
         /// <summary>
@@ -116,7 +116,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// </summary>
         /// <param name="item">The item to locate.</param>
         public int IndexOf(Entry item) {
-            return this.BaseCollection.IndexOf(item);
+            return BaseCollection.IndexOf(item);
         }
 
         /// <summary>
@@ -130,18 +130,18 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         public void Insert(int index, Entry item) {
             if (item == null) { throw new ArgumentNullException(nameof(item), "Item cannot be null."); }
             if (item.Owner != null) { throw new ArgumentOutOfRangeException(nameof(item), "Item cannot be in other collection."); }
-            if (this.IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
+            if (IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
 
-            this.BaseCollection.Insert(index, item);
+            BaseCollection.Insert(index, item);
             item.Owner = this;
-            this.MarkAsChanged();
+            MarkAsChanged();
         }
 
         /// <summary>
         /// Gets a value indicating whether the collection is read-only.
         /// </summary>
         public bool IsReadOnly {
-            get { return this.Owner.IsReadOnly; }
+            get { return Owner.IsReadOnly; }
         }
 
         /// <summary>
@@ -152,11 +152,11 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// <exception cref="NotSupportedException">Collection is read-only.</exception>
         public bool Remove(Entry item) {
             if (item == null) { throw new ArgumentNullException(nameof(item), "Item cannot be null."); }
-            if (this.IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
+            if (IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
 
-            if (this.BaseCollection.Remove(item)) {
+            if (BaseCollection.Remove(item)) {
                 item.Owner = null;
-                this.MarkAsChanged();
+                MarkAsChanged();
                 return true;
             } else {
                 return false;
@@ -170,19 +170,19 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// <exception cref="ArgumentOutOfRangeException">Index is less than 0. -or- Index is equal to or greater than collection count.</exception>
         /// <exception cref="NotSupportedException">Collection is read-only.</exception>
         public void RemoveAt(int index) {
-            if (this.IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
+            if (IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
 
             var item = this[index];
-            this.BaseCollection.Remove(item);
+            BaseCollection.Remove(item);
             item.Owner = null;
-            this.MarkAsChanged();
+            MarkAsChanged();
         }
 
         /// <summary>
         /// Exposes the enumerator, which supports a simple iteration over a collection of a specified type.
         /// </summary>
         public IEnumerator<Entry> GetEnumerator() {
-            var items = new List<Entry>(this.BaseCollection); //to avoid exception if collection is changed while in foreach
+            var items = new List<Entry>(BaseCollection); //to avoid exception if collection is changed while in foreach
             foreach (var item in items) {
                 yield return item;
             }
@@ -192,7 +192,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// Exposes the enumerator, which supports a simple iteration over a non-generic collection.
         /// </summary>
         IEnumerator IEnumerable.GetEnumerator() {
-            return this.GetEnumerator();
+            return GetEnumerator();
         }
 
         /// <summary>
@@ -203,19 +203,19 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// <exception cref="ArgumentOutOfRangeException">Index is less than 0. -or- Index is equal to or greater than collection count. -or- Duplicate name in collection.</exception>
         /// <exception cref="NotSupportedException">Collection is read-only.</exception>
         public Entry this[int index] {
-            get { return this.BaseCollection[index]; }
+            get { return BaseCollection[index]; }
             set {
-                if (this.IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
+                if (IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
                 if (value == null) { throw new ArgumentNullException(nameof(value), "Value cannot be null."); }
                 if (value.Owner != null) { throw new ArgumentOutOfRangeException(nameof(value), "Item cannot be in other collection."); }
-                if (this.Contains(value)) { throw new ArgumentOutOfRangeException(nameof(value), "Duplicate item in collection."); }
+                if (Contains(value)) { throw new ArgumentOutOfRangeException(nameof(value), "Duplicate item in collection."); }
 
-                var item = this.BaseCollection[index];
+                var item = BaseCollection[index];
                 item.Owner = null;
-                this.BaseCollection.RemoveAt(index);
-                this.BaseCollection.Insert(index, value);
+                BaseCollection.RemoveAt(index);
+                BaseCollection.Insert(index, value);
                 value.Owner = this;
-                this.MarkAsChanged();
+                MarkAsChanged();
             }
         }
 
@@ -230,7 +230,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// </summary>
         /// <param name="title">Title.</param>
         public bool Contains(string title) {
-            foreach (var entry in this.BaseCollection) {
+            foreach (var entry in BaseCollection) {
                 if (entry.Title.Equals(title, StringComparison.CurrentCultureIgnoreCase)) { return true; }
             }
             return false;
@@ -243,7 +243,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// <param name="group">Group.</param>
         /// <param name="title">Title.</param>
         public bool Contains(GroupPath group, string title) {
-            foreach (var entry in this.BaseCollection) {
+            foreach (var entry in BaseCollection) {
                 if (entry.Group.Equals(group) && entry.Title.Equals(title, StringComparison.CurrentCultureIgnoreCase)) { return true; }
             }
             return false;
@@ -262,31 +262,31 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// <exception cref="NotSupportedException">Collection is read-only.</exception>
         public Entry this[string title] {
             get {
-                foreach (var entry in this.BaseCollection) {
+                foreach (var entry in BaseCollection) {
                     if (entry.Title.Equals(title, StringComparison.CurrentCultureIgnoreCase)) {
                         return entry;
                     }
                 }
 
-                if (this.IsReadOnly) { return new Entry(); } //return dummy entry if collection is read-only 
+                if (IsReadOnly) { return new Entry(); } //return dummy entry if collection is read-only 
 
                 var newEntry = new Entry(title);
-                this.Add(newEntry);
+                Add(newEntry);
                 return newEntry;
             }
             set {
-                if (this.IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
+                if (IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
                 if (value != null) { throw new ArgumentOutOfRangeException(nameof(value), "Only null value is supported."); }
 
                 Entry entryToRemove = null;
-                foreach (var entry in this.BaseCollection) {
+                foreach (var entry in BaseCollection) {
                     if (entry.Title.Equals(title, StringComparison.CurrentCultureIgnoreCase)) {
                         entryToRemove = entry;
                         break;
                     }
                 }
                 if (entryToRemove != null) {
-                    this.Remove(entryToRemove);
+                    Remove(entryToRemove);
                 }
             }
         }
@@ -306,31 +306,31 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1023:IndexersShouldNotBeMultidimensional", Justification = "Done intentionally for the ease of use.")]
         public Entry this[GroupPath group, string title] {
             get {
-                foreach (var entry in this.BaseCollection) {
+                foreach (var entry in BaseCollection) {
                     if (entry.Group.Equals(group) && entry.Title.Equals(title, StringComparison.CurrentCultureIgnoreCase)) {
                         return entry;
                     }
                 }
 
-                if (this.IsReadOnly) { return new Entry(); } //return dummy entry if collection is read-only 
+                if (IsReadOnly) { return new Entry(); } //return dummy entry if collection is read-only 
 
                 var newEntry = new Entry(group, title);
-                this.Add(newEntry);
+                Add(newEntry);
                 return newEntry;
             }
             set {
-                if (this.IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
+                if (IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
                 if (value != null) { throw new ArgumentOutOfRangeException(nameof(value), "Only null value is supported."); }
 
                 Entry entryToRemove = null;
-                foreach (var entry in this.BaseCollection) {
+                foreach (var entry in BaseCollection) {
                     if (entry.Group.Equals(group) && entry.Title.Equals(title, StringComparison.CurrentCultureIgnoreCase)) {
                         entryToRemove = entry;
                         break;
                     }
                 }
                 if (entryToRemove != null) {
-                    this.Remove(entryToRemove);
+                    Remove(entryToRemove);
                 }
             }
         }
@@ -354,11 +354,11 @@ namespace Medo.Security.Cryptography.PasswordSafe {
                 return entry.Records[type];
             }
             set {
-                if (this.IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
+                if (IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
                 if (value != null) { throw new ArgumentOutOfRangeException(nameof(value), "Only null value is supported."); }
 
                 Entry entryToModify = null;
-                foreach (var entry in this.BaseCollection) {
+                foreach (var entry in BaseCollection) {
                     if (entry.Title.Equals(title, StringComparison.CurrentCultureIgnoreCase)) {
                         entryToModify = entry;
                         break;
@@ -390,11 +390,11 @@ namespace Medo.Security.Cryptography.PasswordSafe {
                 return entry.Records[type];
             }
             set {
-                if (this.IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
+                if (IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
                 if (value != null) { throw new ArgumentOutOfRangeException(nameof(value), "Only null value is supported."); }
 
                 Entry entryToModify = null;
-                foreach (var entry in this.BaseCollection) {
+                foreach (var entry in BaseCollection) {
                     if (entry.Group.Equals(group) && entry.Title.Equals(title, StringComparison.CurrentCultureIgnoreCase)) {
                         entryToModify = entry;
                         break;
@@ -411,7 +411,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// Sorts all entries according to group and title.
         /// </summary>
         public void Sort() {
-            this.BaseCollection.Sort((Entry item1, Entry item2) => {
+            BaseCollection.Sort((Entry item1, Entry item2) => {
                 var groupValue = string.Compare(item1.Group, item2.Group, StringComparison.CurrentCultureIgnoreCase);
                 if (groupValue != 0) {
                     return groupValue;

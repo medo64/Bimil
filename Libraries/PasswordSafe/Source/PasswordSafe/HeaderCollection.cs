@@ -18,21 +18,21 @@ namespace Medo.Security.Cryptography.PasswordSafe {
                 if (field.Owner != null) { throw new ArgumentOutOfRangeException(nameof(fields), "Item cannot be in other collection."); }
             }
 
-            this.Owner = owner;
-            this.BaseCollection.AddRange(fields);
+            Owner = owner;
+            BaseCollection.AddRange(fields);
             foreach (var field in fields) {
                 field.Owner = this;
             }
 
             //ensure first field is always Version
-            if (!this.Contains(HeaderType.Version)) {
-                this.BaseCollection.Insert(0, new Header(HeaderType.Version, BitConverter.GetBytes(Header.DefaultVersion)));
+            if (!Contains(HeaderType.Version)) {
+                BaseCollection.Insert(0, new Header(HeaderType.Version, BitConverter.GetBytes(Header.DefaultVersion)));
             } else {
                 var versionField = this[HeaderType.Version];
-                var versionIndex = this.IndexOf(versionField);
+                var versionIndex = IndexOf(versionField);
                 if (versionIndex > 0) {
-                    this.BaseCollection.RemoveAt(versionIndex);
-                    this.BaseCollection.Insert(0, versionField);
+                    BaseCollection.RemoveAt(versionIndex);
+                    BaseCollection.Insert(0, versionField);
                 }
             }
         }
@@ -41,7 +41,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         internal Document Owner { get; set; }
 
         internal void MarkAsChanged() {
-            this.Owner.MarkAsChanged();
+            Owner.MarkAsChanged();
         }
 
 
@@ -61,11 +61,11 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         public void Add(Header item) {
             if (item == null) { throw new ArgumentNullException(nameof(item), "Item cannot be null."); }
             if (item.Owner != null) { throw new ArgumentOutOfRangeException(nameof(item), "Item cannot be in other collection."); }
-            if (this.IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
+            if (IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
 
-            this.BaseCollection.Add(item);
+            BaseCollection.Add(item);
             item.Owner = this;
-            this.MarkAsChanged();
+            MarkAsChanged();
         }
 
         /// <summary>
@@ -80,13 +80,13 @@ namespace Medo.Security.Cryptography.PasswordSafe {
             foreach (var item in items) {
                 if (item.Owner != null) { throw new ArgumentOutOfRangeException(nameof(items), "Item cannot be in other collection."); }
             }
-            if (this.IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
+            if (IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
 
-            this.BaseCollection.AddRange(items);
+            BaseCollection.AddRange(items);
             foreach (var item in items) {
                 item.Owner = this;
             }
-            this.MarkAsChanged();
+            MarkAsChanged();
         }
 
         /// <summary>
@@ -94,13 +94,13 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// </summary>
         /// <exception cref="NotSupportedException">Collection is read-only.</exception>
         public void Clear() {
-            if (this.IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
+            if (IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
 
-            for (var i = this.BaseCollection.Count - 1; i > 0; i--) { //remove all except first field (Version)
-                this.BaseCollection[i].Owner = null;
-                this.BaseCollection.RemoveAt(i);
+            for (var i = BaseCollection.Count - 1; i > 0; i--) { //remove all except first field (Version)
+                BaseCollection[i].Owner = null;
+                BaseCollection.RemoveAt(i);
             }
-            this.MarkAsChanged();
+            MarkAsChanged();
         }
 
         /// <summary>
@@ -109,7 +109,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// <param name="item">The item to locate.</param>
         public bool Contains(Header item) {
             if (item == null) { return false; }
-            return this.BaseCollection.Contains(item);
+            return BaseCollection.Contains(item);
         }
 
         /// <summary>
@@ -118,14 +118,14 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// <param name="array">The one-dimensional array that is the destination of the elements copied from collection.</param>
         /// <param name="arrayIndex">The zero-based index in array at which copying begins.</param>
         public void CopyTo(Header[] array, int arrayIndex) {
-            this.BaseCollection.CopyTo(array, arrayIndex);
+            BaseCollection.CopyTo(array, arrayIndex);
         }
 
         /// <summary>
         /// Gets the number of items contained in the collection.
         /// </summary>
         public int Count {
-            get { return this.BaseCollection.Count; }
+            get { return BaseCollection.Count; }
         }
 
         /// <summary>
@@ -133,7 +133,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// </summary>
         /// <param name="item">The item to locate.</param>
         public int IndexOf(Header item) {
-            return this.BaseCollection.IndexOf(item);
+            return BaseCollection.IndexOf(item);
         }
 
         /// <summary>
@@ -147,19 +147,19 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         public void Insert(int index, Header item) {
             if (item == null) { throw new ArgumentNullException(nameof(item), "Item cannot be null."); }
             if (item.Owner != null) { throw new ArgumentOutOfRangeException(nameof(item), "Item cannot be in other collection."); }
-            if (this.IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
+            if (IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
             if ((index == 0) && (item.HeaderType != HeaderType.Version)) { throw new ArgumentOutOfRangeException(nameof(index), "Version must be the first field."); }
 
-            this.BaseCollection.Insert(index, item);
+            BaseCollection.Insert(index, item);
             item.Owner = this;
-            this.MarkAsChanged();
+            MarkAsChanged();
         }
 
         /// <summary>
         /// Gets a value indicating whether the collection is read-only.
         /// </summary>
         public bool IsReadOnly {
-            get { return this.Owner.IsReadOnly; }
+            get { return Owner.IsReadOnly; }
         }
 
         /// <summary>
@@ -170,12 +170,12 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// <exception cref="NotSupportedException">Collection is read-only.</exception>
         public bool Remove(Header item) {
             if (item == null) { throw new ArgumentNullException(nameof(item), "Item cannot be null."); }
-            if (this.IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
-            if ((item.HeaderType == HeaderType.Version) && this.BaseCollection.IndexOf(item) == 0) { throw new ArgumentOutOfRangeException(nameof(item), "Cannot remove the first version field."); }
+            if (IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
+            if ((item.HeaderType == HeaderType.Version) && BaseCollection.IndexOf(item) == 0) { throw new ArgumentOutOfRangeException(nameof(item), "Cannot remove the first version field."); }
 
-            if (this.BaseCollection.Remove(item)) {
+            if (BaseCollection.Remove(item)) {
                 item.Owner = null;
-                this.MarkAsChanged();
+                MarkAsChanged();
                 return true;
             } else {
                 return false;
@@ -189,20 +189,20 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// <exception cref="ArgumentOutOfRangeException">Index is less than 0. -or- Index is equal to or greater than collection count.</exception>
         /// <exception cref="NotSupportedException">Collection is read-only.</exception>
         public void RemoveAt(int index) {
-            if (this.IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
+            if (IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
             if (index == 0) { throw new ArgumentOutOfRangeException(nameof(index), "Cannot remove the first version field."); }
 
             var item = this[index];
-            this.BaseCollection.Remove(item);
+            BaseCollection.Remove(item);
             item.Owner = null;
-            this.MarkAsChanged();
+            MarkAsChanged();
         }
 
         /// <summary>
         /// Exposes the enumerator, which supports a simple iteration over a collection of a specified type.
         /// </summary>
         public IEnumerator<Header> GetEnumerator() {
-            var items = new List<Header>(this.BaseCollection); //to avoid exception if access/modification time has to be updated while in foreach
+            var items = new List<Header>(BaseCollection); //to avoid exception if access/modification time has to be updated while in foreach
             foreach (var item in items) {
                 yield return item;
             }
@@ -212,7 +212,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// Exposes the enumerator, which supports a simple iteration over a non-generic collection.
         /// </summary>
         IEnumerator IEnumerable.GetEnumerator() {
-            return this.GetEnumerator();
+            return GetEnumerator();
         }
 
         /// <summary>
@@ -223,20 +223,20 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// <exception cref="ArgumentOutOfRangeException">Index is less than 0. -or- Index is equal to or greater than collection count. -or- Duplicate name in collection.</exception>
         /// <exception cref="NotSupportedException">Collection is read-only.</exception>
         public Header this[int index] {
-            get { return this.BaseCollection[index]; }
+            get { return BaseCollection[index]; }
             set {
-                if (this.IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
+                if (IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
                 if (value == null) { throw new ArgumentNullException(nameof(value), "Value cannot be null."); }
                 if (value.Owner != null) { throw new ArgumentOutOfRangeException(nameof(value), "Item cannot be in other collection."); }
-                if (this.Contains(value)) { throw new ArgumentOutOfRangeException(nameof(value), "Duplicate item in collection."); }
+                if (Contains(value)) { throw new ArgumentOutOfRangeException(nameof(value), "Duplicate item in collection."); }
                 if ((index == 0) && (value.HeaderType != HeaderType.Version)) { throw new ArgumentOutOfRangeException(nameof(value), "Version must be the first field."); }
 
-                var item = this.BaseCollection[index];
+                var item = BaseCollection[index];
                 item.Owner = null;
-                this.BaseCollection.RemoveAt(index);
-                this.BaseCollection.Insert(index, value);
+                BaseCollection.RemoveAt(index);
+                BaseCollection.Insert(index, value);
                 value.Owner = this;
-                this.MarkAsChanged();
+                MarkAsChanged();
             }
         }
 
@@ -251,7 +251,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// </summary>
         /// <param name="type">The item type to locate.</param>
         public bool Contains(HeaderType type) {
-            foreach (var item in this.BaseCollection) {
+            foreach (var item in BaseCollection) {
                 if (item.HeaderType == type) { return true; }
             }
             return false;
@@ -269,37 +269,37 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// <exception cref="NotSupportedException">Collection is read-only.</exception>
         public Header this[HeaderType type] {
             get {
-                foreach (var field in this.BaseCollection) {
+                foreach (var field in BaseCollection) {
                     if (field.HeaderType == type) {
                         return field;
                     }
                 }
 
-                if (this.IsReadOnly) { return new Header(type); } //return dummy header if collection is read-only 
+                if (IsReadOnly) { return new Header(type); } //return dummy header if collection is read-only 
 
                 var newField = new Header(this, type); //create a new field if one cannot be found
 
-                var i = this.BaseCollection.Count;
-                for (i = 0; i < this.BaseCollection.Count; i++) {
-                    if (this.BaseCollection[i].HeaderType > type) { break; }
+                var i = BaseCollection.Count;
+                for (i = 0; i < BaseCollection.Count; i++) {
+                    if (BaseCollection[i].HeaderType > type) { break; }
                 }
-                this.BaseCollection.Insert(i, newField); //insert it in order (does not change order for existing ones)
+                BaseCollection.Insert(i, newField); //insert it in order (does not change order for existing ones)
 
                 return newField;
             }
             set {
-                if (this.IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
+                if (IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
                 if (value != null) { throw new ArgumentOutOfRangeException(nameof(value), "Only null value is supported."); }
 
                 Header fieldToRemove = null;
-                foreach (var field in this.BaseCollection) {
+                foreach (var field in BaseCollection) {
                     if (field.HeaderType == type) {
                         fieldToRemove = field;
                         break;
                     }
                 }
                 if (fieldToRemove != null) {
-                    this.Remove(fieldToRemove);
+                    Remove(fieldToRemove);
                 }
             }
         }
