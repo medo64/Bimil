@@ -186,7 +186,7 @@ namespace Bimil {
         private static class ClipboardClearThread {
 
             private static readonly object SyncRoot = new object();
-            private static Stopwatch ClearingStopatch = new Stopwatch();
+            private static readonly Stopwatch ClearingStopatch = new Stopwatch();
 
             public static void ScheduleClear() {
                 if (Settings.AutoClearClipboardTimeout == 0) { return; }

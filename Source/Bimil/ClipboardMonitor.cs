@@ -21,8 +21,7 @@ namespace Bimil {
             Dispose(disposing: false);
         }
 
-
-        IntPtr NextViewerPtr;
+        private IntPtr NextViewerPtr;
 
 
         /// <summary>

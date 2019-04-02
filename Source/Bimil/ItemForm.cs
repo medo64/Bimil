@@ -15,9 +15,9 @@ namespace Bimil {
         private readonly Document Document;
         private readonly Entry Item;
         private bool Editable;
-        private bool IsNew;
-        private static Font FixedFont = new Font(FontFamily.GenericMonospace, SystemFonts.MessageBoxFont.SizeInPoints + 0.5F, SystemFonts.MessageBoxFont.Style);
-        private static Font UnderlineFont = new Font(SystemFonts.MessageBoxFont.Name, SystemFonts.MessageBoxFont.SizeInPoints, SystemFonts.MessageBoxFont.Style | FontStyle.Underline);
+        private readonly bool IsNew;
+        private static readonly Font FixedFont = new Font(FontFamily.GenericMonospace, SystemFonts.MessageBoxFont.SizeInPoints + 0.5F, SystemFonts.MessageBoxFont.Style);
+        private static readonly Font UnderlineFont = new Font(SystemFonts.MessageBoxFont.Name, SystemFonts.MessageBoxFont.SizeInPoints, SystemFonts.MessageBoxFont.Style | FontStyle.Underline);
         private readonly IList<string> Categories;
         private readonly string DefaultCategory;
 
@@ -503,43 +503,6 @@ namespace Bimil {
             return textBox;
         }
 
-        private ComboBox NewPasswordHistoryComboBox(int x, int y, Entry entry) {
-            var padding = SystemInformation.VerticalScrollBarWidth + 1;
-
-            var control = new ComboBox() { BackColor = SystemColors.Control, Font = Font, Location = new Point(x + padding, y), DropDownStyle = ComboBoxStyle.DropDownList, Width = pnl.ClientSize.Width - x - padding, Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right };
-            control.Items.Add("Open dropdown to show password history (" + entry.PasswordHistory.Count.ToString(CultureInfo.CurrentCulture) + ")");
-            control.SelectedIndex = 0;
-
-            control.DropDownClosed += delegate {
-                control.Items.Clear();
-                control.Items.Add("Open dropdown to show password history (" + entry.PasswordHistory.Count.ToString(CultureInfo.CurrentCulture) + ")");
-                control.SelectedIndex = 0;
-            };
-
-            control.DropDown += delegate {
-                control.ForeColor = SystemColors.ControlText;
-                control.Items.Clear();
-                if (entry.PasswordHistory.Count == 0) {
-                    control.Items.Add("No passwords in history");
-                } else {
-                    foreach (var item in entry.PasswordHistory) {
-                        var timeString = item.TimeFirstUsed.ToShortDateString() + " " + item.TimeFirstUsed.ToShortTimeString();
-                        control.Items.Insert(0, timeString + ": " + item.HistoricalPassword);
-                    }
-                }
-            };
-
-            control.KeyDown += (object sender, KeyEventArgs e) => {
-                switch (e.KeyData) {
-                    case Keys.Down:
-                        control.DroppedDown = true;
-                        break;
-                }
-            };
-
-            return control;
-        }
-
         private Button NewCopyButton(TextBox parentTextBox, RecordType recordType, string tipText = null) {
             parentTextBox.Width -= parentTextBox.Height;
             var button = new Button() {
@@ -907,7 +870,7 @@ namespace Bimil {
         private void bwCheckTime_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e) {
             if (Settings.ShowNtpDriftWarning && (App.LastNtpDrift == null)) {
                 var hostName = Settings.NtpServer;
-                if (Medo.Net.TrivialNtpClient.TryRetrieveTime(Settings.NtpServer, out var time)) {
+                if (Medo.Net.TrivialNtpClient.TryRetrieveTime(hostName, out var time)) {
                     App.LastNtpDrift = DateTime.UtcNow - time;
                 }
             }

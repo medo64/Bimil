@@ -94,7 +94,6 @@ namespace Bimil {
                 sel[i] = lsvFields.SelectedItems[i];
             }
 
-            ListViewItem insertItem = null;
             for (var i = 0; i < sel.Length; i++) {
                 var dragItem = sel[i];
                 var itemIndex = dragIndex;
@@ -106,7 +105,7 @@ namespace Bimil {
                     itemIndex = dragIndex + i;
                 }
 
-                insertItem = (ListViewItem)dragItem.Clone();
+                var insertItem = (ListViewItem)dragItem.Clone();
                 lsvFields.Items.Insert(itemIndex, insertItem);
                 lsvFields.Items.Remove(dragItem);
             }
@@ -126,7 +125,7 @@ namespace Bimil {
             }
         }
 
-        private List<Record> RecordsToRemove = new List<Record>();
+        private readonly List<Record> RecordsToRemove = new List<Record>();
 
         private void btnRemove_Click(object sender, EventArgs e) {
             if (lsvFields.SelectedItems.Count == 1) {

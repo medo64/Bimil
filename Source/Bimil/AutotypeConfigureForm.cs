@@ -104,7 +104,6 @@ namespace Bimil {
                 sel[i] = lsvItems.SelectedItems[i];
             }
 
-            ListViewItem insertItem = null;
             for (var i = 0; i < sel.Length; i++) {
                 var dragItem = sel[i];
                 var itemIndex = dragIndex;
@@ -116,7 +115,7 @@ namespace Bimil {
                     itemIndex = dragIndex + i;
                 }
 
-                insertItem = (ListViewItem)dragItem.Clone();
+                var insertItem = (ListViewItem)dragItem.Clone();
                 lsvItems.Items.Insert(itemIndex, insertItem);
                 lsvItems.Items.Remove(dragItem);
             }

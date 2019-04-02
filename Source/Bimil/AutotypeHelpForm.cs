@@ -102,7 +102,7 @@ namespace Bimil {
         }
 
 
-        private Dictionary<string, ListViewGroup> Groups = new Dictionary<string, ListViewGroup>();
+        private readonly Dictionary<string, ListViewGroup> Groups = new Dictionary<string, ListViewGroup>();
 
         private void AddItem(string group, string escapeSequence, string helpText) {
             var lvi = new ListViewItem(escapeSequence);

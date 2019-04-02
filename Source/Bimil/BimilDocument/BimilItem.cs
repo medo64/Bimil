@@ -43,22 +43,6 @@ namespace Medo.Security.Cryptography.Bimil {
         }
 
 
-        private void SetSystemRecordValue(string key, string value) {
-            foreach (var record in Records) {
-                if (record.Format == BimilRecordFormat.System) {
-                    if (string.Equals(key, record.Key.Text, StringComparison.Ordinal)) {
-                        record.Value.Text = value;
-                        return;
-                    }
-                }
-            }
-            {
-                var record = new BimilRecord(Document, key, value, BimilRecordFormat.System);
-                Records.Add(record);
-            }
-        }
-
-
         /// <summary>
         /// Gets list of records.
         /// </summary>

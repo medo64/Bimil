@@ -450,7 +450,7 @@ namespace Bimil {
 
         private void lsvEntries_SelectedIndexChanged(object sender, EventArgs e) {
             if (lsvEntries.SelectedItems.Count > 0) {
-                if (!(lsvEntries.SelectedItems[0].Tag is Entry entry)) {
+                if (!(lsvEntries.SelectedItems[0].Tag is Entry)) {
                     lsvEntries.SelectedItems.Clear();
                     return;
                 }

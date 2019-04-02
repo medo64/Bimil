@@ -4,10 +4,10 @@ namespace Medo.Security.Cryptography.Bimil {
         private readonly BimilDocument Document;
 
         internal BimilRecord(BimilDocument document, string key, string value, BimilRecordFormat format) {
-            this.Document = document;
-            this.Key = new BimilValue(document) { Text = key };
-            this.Value = new BimilValue(document) { Text = value };
-            this.Format = format;
+            Document = document;
+            Key = new BimilValue(document) { Text = key };
+            Value = new BimilValue(document) { Text = value };
+            Format = format;
         }
 
 
@@ -31,7 +31,7 @@ namespace Medo.Security.Cryptography.Bimil {
         /// Returns key.
         /// </summary>
         public override string ToString() {
-            return this.Key.ToString();
+            return Key.ToString();
         }
 
     }

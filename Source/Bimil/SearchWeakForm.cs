@@ -409,7 +409,7 @@ namespace Bimil {
 
         [DebuggerDisplay("{Entries.Count} entries for {PasswordHash,nq}")]
         private class PasswordAndEntryStorage {
-            private static Random Random = new Random();
+            private static readonly Random Random = new Random();
             public PasswordAndEntryStorage(string passwordHash, List<Entry> entries) {
                 PasswordHash = passwordHash;
                 Entries = entries.AsReadOnly();

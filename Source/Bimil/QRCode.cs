@@ -215,7 +215,7 @@ namespace QRCoder {
                     if (AlignmentPatternTable == null) {
                         var table = new List<AlignmentPattern>();
 
-                        for (var i = 0; i < (7 * 40); i = i + 7) {
+                        for (var i = 0; i < (7 * 40); i += 7) {
                             var points = new List<Point>();
                             for (var x = 0; x < 7; x++) {
                                 if (AlignmentPatternBaseValues[i + x] != 0) {
@@ -246,7 +246,7 @@ namespace QRCoder {
                 lock (SyncRoot) {
                     if (CapacityTable == null) {
                         var table = new List<VersionInfo>();
-                        for (var i = 0; i < (16 * 40); i = i + 16) {
+                        for (var i = 0; i < (16 * 40); i += 16) {
                             table.Add(new VersionInfo(
                                 (i + 16) / 16,
                                 new List<VersionInfoDetails> {
@@ -298,7 +298,7 @@ namespace QRCoder {
                 lock (SyncRoot) {
                     if (CapacityECCTable == null) {
                         var table = new List<ECCInfo>();
-                        for (var i = 0; i < (4 * 6 * 40); i = i + (4 * 6)) {
+                        for (var i = 0; i < (4 * 6 * 40); i += (4 * 6)) {
                             table.AddRange(new[] {
                                 new ECCInfo(
                                     version: (i+24) / 24,
@@ -596,7 +596,7 @@ namespace QRCoder {
                     var up = true;
                     var datawords = new Queue<bool>();
                     foreach (var x in data) { datawords.Enqueue(x != '0'); }
-                    for (var x = size - 1; x >= 0; x = x - 2) {
+                    for (var x = size - 1; x >= 0; x -= 2) {
                         if (x == 6) { x = 5; }
                         for (var yMod = 1; yMod <= size; yMod++) {
                             int y;
@@ -655,7 +655,7 @@ namespace QRCoder {
                     var size = qrCode.ModuleMatrix.Count;
                     var locations = new int[] { 0, 0, size - 7, 0, 0, size - 7 };
 
-                    for (var i = 0; i < 6; i = i + 2) {
+                    for (var i = 0; i < 6; i += 2) {
                         for (var x = 0; x < 7; x++) {
                             for (var y = 0; y < 7; y++) {
                                 if (!(((x == 1 || x == 5) && (y > 0) && (y < 6)) || ((x > 0) && (x < 6) && (y == 1 || y == 5)))) {
@@ -1041,7 +1041,7 @@ namespace QRCoder {
                 return (encoding == EncodingMode.Byte) && !IsValidISO(plainText);
             }
 
-            private static Encoding Iso88591Encoding = Encoding.GetEncoding("ISO-8859-1");
+            private static readonly Encoding Iso88591Encoding = Encoding.GetEncoding("ISO-8859-1");
             private static bool IsValidISO(string input) {
                 var bytes = Iso88591Encoding.GetBytes(input);
                 var result = Iso88591Encoding.GetString(bytes);

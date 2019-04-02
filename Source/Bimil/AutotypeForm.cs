@@ -96,7 +96,7 @@ namespace Bimil {
 
 
         private readonly Entry Entry;
-        private SuffixType Suffix = SuffixType.None;
+        private readonly SuffixType Suffix = SuffixType.None;
 
 
         protected override bool ProcessDialogKey(Keys keyData) {

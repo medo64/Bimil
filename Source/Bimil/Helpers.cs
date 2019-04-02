@@ -497,12 +497,15 @@ namespace Bimil {
             var set = sizeAndSet.Value;
 
             var resources = Bimil.Properties.Resources.ResourceManager;
-            var bitmap = resources.GetObject(nameRoot + set) as Bitmap;
+            if (resources.GetObject(nameRoot + set) is Bitmap bitmap) {
+                pictureBox.Image = new Bitmap(bitmap, size, size);
+            } else {
 #if DEBUG
-            pictureBox.Image = (bitmap != null) ? new Bitmap(bitmap, size, size) : new Bitmap(size, size, System.Drawing.Imaging.PixelFormat.Format8bppIndexed);
+                pictureBox.Image = new Bitmap(size, size, System.Drawing.Imaging.PixelFormat.Format8bppIndexed);
 #else
             pictureBox.Image = (bitmap != null) ? new Bitmap(bitmap, size, size) : null;
 #endif
+            }
         }
 
         internal static ImageList GetImageList(Form form, params string[] names) {

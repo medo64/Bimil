@@ -437,7 +437,7 @@ namespace Bimil {
 
         #region Helper
 
-        private static Random Random = new Random();
+        private static readonly Random Random = new Random();
 
         private static readonly string DefaultNtpServer = Random.Next(0, 4).ToString(CultureInfo.InvariantCulture) + ".medo64.pool.ntp.org";
 
