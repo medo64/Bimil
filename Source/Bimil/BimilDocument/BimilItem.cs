@@ -11,8 +11,8 @@ namespace Medo.Security.Cryptography.Bimil {
         private readonly BimilDocument Document;
 
         internal BimilItem(BimilDocument document) {
-            this.Document = document;
-            this.Records = new List<BimilRecord>();
+            Document = document;
+            Records = new List<BimilRecord>();
         }
 
 
@@ -25,7 +25,7 @@ namespace Medo.Security.Cryptography.Bimil {
         /// Gets/sets name.
         /// </summary>
         public string Name {
-            get { return this.NameRecord.Value.Text; }
+            get { return NameRecord.Value.Text; }
         }
 
         /// <summary>
@@ -44,7 +44,7 @@ namespace Medo.Security.Cryptography.Bimil {
 
 
         private void SetSystemRecordValue(string key, string value) {
-            foreach (var record in this.Records) {
+            foreach (var record in Records) {
                 if (record.Format == BimilRecordFormat.System) {
                     if (string.Equals(key, record.Key.Text, StringComparison.Ordinal)) {
                         record.Value.Text = value;
@@ -53,8 +53,8 @@ namespace Medo.Security.Cryptography.Bimil {
                 }
             }
             {
-                var record = new BimilRecord(this.Document, key, value, BimilRecordFormat.System);
-                this.Records.Add(record);
+                var record = new BimilRecord(Document, key, value, BimilRecordFormat.System);
+                Records.Add(record);
             }
         }
 
@@ -65,9 +65,9 @@ namespace Medo.Security.Cryptography.Bimil {
         public IList<BimilRecord> Records { get; private set; }
 
         public void ClearNonSystemRecords() {
-            for (var i = this.Records.Count - 1; i >= 0; i--) {
-                if (this.Records[i].Format != BimilRecordFormat.System) {
-                    this.Records.RemoveAt(i);
+            for (var i = Records.Count - 1; i >= 0; i--) {
+                if (Records[i].Format != BimilRecordFormat.System) {
+                    Records.RemoveAt(i);
                 }
             }
         }
@@ -78,8 +78,8 @@ namespace Medo.Security.Cryptography.Bimil {
         /// <param name="key">Key.</param>
         /// <param name="value">Value.</param>
         public BimilRecord AddRecord(string key, string value, BimilRecordFormat format) {
-            var record = new BimilRecord(this.Document, key, value, format);
-            this.Records.Add(record);
+            var record = new BimilRecord(Document, key, value, format);
+            Records.Add(record);
             return record;
         }
 
@@ -131,7 +131,7 @@ namespace Medo.Security.Cryptography.Bimil {
 
         internal byte[] GetBytes() {
             var buffer = new List<byte>(2048);
-            foreach (var record in this.Records) {
+            foreach (var record in Records) {
                 buffer.AddRange(GetInt32Bytes(record.Key.Bytes.Length));
                 buffer.AddRange(GetInt32Bytes(record.Value.Bytes.Length));
                 buffer.AddRange(GetInt32Bytes((int)record.Format));
@@ -184,7 +184,7 @@ namespace Medo.Security.Cryptography.Bimil {
         }
 
         private BimilRecord GetSystemRecord(string key) {
-            foreach (var record in this.Records) {
+            foreach (var record in Records) {
                 if (record.Format == BimilRecordFormat.System) {
                     if (string.Equals(key, record.Key.Text, StringComparison.Ordinal)) {
                         return record;
@@ -192,8 +192,8 @@ namespace Medo.Security.Cryptography.Bimil {
                 }
             }
             {
-                var record = new BimilRecord(this.Document, key, "", BimilRecordFormat.System);
-                this.Records.Add(record);
+                var record = new BimilRecord(Document, key, "", BimilRecordFormat.System);
+                Records.Add(record);
                 return record;
             }
         }

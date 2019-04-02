@@ -11,8 +11,8 @@ namespace Medo.Security.Cryptography.Bimil {
         private readonly BimilDocument Document;
 
         internal BimilValue(BimilDocument document) {
-            this.Document = document;
-            this.Text = "";
+            Document = document;
+            Text = "";
         }
 
 
@@ -21,10 +21,10 @@ namespace Medo.Security.Cryptography.Bimil {
         /// </summary>
         public string Text {
             get {
-                if (this.Bytes == null) { return null; }
+                if (Bytes == null) { return null; }
                 byte[] decBuffer;
-                using (var dec = this.Document.Crypto.CreateDecryptor()) {
-                    decBuffer = dec.TransformFinalBlock(this.Bytes, 0, this.Bytes.Length);
+                using (var dec = Document.Crypto.CreateDecryptor()) {
+                    decBuffer = dec.TransformFinalBlock(Bytes, 0, Bytes.Length);
                 }
                 return UTF8Encoding.UTF8.GetString(decBuffer, 16, decBuffer.Length - 16);
             }
@@ -32,7 +32,7 @@ namespace Medo.Security.Cryptography.Bimil {
                 if (value == null) { throw new ArgumentNullException("value", "Value cannot be null."); }
 
                 var bufferSalt = new byte[16];
-                this.Document.Rng.GetBytes(bufferSalt);
+                Document.Rng.GetBytes(bufferSalt);
                 var bufferText = UTF8Encoding.UTF8.GetBytes(value);
                 var buffer = new byte[16 + bufferText.Length];
 
@@ -40,10 +40,10 @@ namespace Medo.Security.Cryptography.Bimil {
                 Buffer.BlockCopy(bufferText, 0, buffer, 16, bufferText.Length);
 
                 byte[] encBuffer;
-                using (var enc = this.Document.Crypto.CreateEncryptor()) {
+                using (var enc = Document.Crypto.CreateEncryptor()) {
                     encBuffer = enc.TransformFinalBlock(buffer, 0, buffer.Length);
                 }
-                this.Bytes = encBuffer;
+                Bytes = encBuffer;
             }
         }
 
@@ -71,7 +71,7 @@ namespace Medo.Security.Cryptography.Bimil {
         /// Returns text.
         /// </summary>
         public override string ToString() {
-            return this.Text;
+            return Text;
         }
 
     }
