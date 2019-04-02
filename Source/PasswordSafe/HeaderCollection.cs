@@ -279,11 +279,11 @@ namespace Medo.Security.Cryptography.PasswordSafe {
 
                 var newField = new Header(this, type); //create a new field if one cannot be found
 
-                var i = BaseCollection.Count;
-                for (i = 0; i < BaseCollection.Count; i++) {
-                    if (BaseCollection[i].HeaderType > type) { break; }
+                int index;
+                for (index = 0; index < BaseCollection.Count; index++) {
+                    if (BaseCollection[index].HeaderType > type) { break; }
                 }
-                BaseCollection.Insert(i, newField); //insert it in order (does not change order for existing ones)
+                BaseCollection.Insert(index, newField); //insert it in order (does not change order for existing ones)
 
                 return newField;
             }

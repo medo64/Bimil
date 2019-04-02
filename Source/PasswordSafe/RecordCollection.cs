@@ -311,11 +311,11 @@ namespace Medo.Security.Cryptography.PasswordSafe {
 
                 var newField = new Record(this, type); //create a new field if one cannot be found
 
-                var i = BaseCollection.Count;
-                for (i = 0; i < BaseCollection.Count; i++) {
-                    if (BaseCollection[i].RecordType > type) { break; }
+                int index;
+                for (index = 0; index < BaseCollection.Count; index++) {
+                    if (BaseCollection[index].RecordType > type) { break; }
                 }
-                BaseCollection.Insert(i, newField); //insert it in order (does not change order for existing ones)
+                BaseCollection.Insert(index, newField); //insert it in order (does not change order for existing ones)
 
                 return newField;
             }

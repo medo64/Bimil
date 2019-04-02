@@ -4,7 +4,7 @@ using System.IO;
 
 namespace Example {
     internal class App {
-        private static void Main(string[] args) {
+        private static void Main() {
             var existingFile = @"Resources\Simple.psafe3";
             var newFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), @"NewExample.psafe3");
 
