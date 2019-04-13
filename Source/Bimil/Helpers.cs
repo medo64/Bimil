@@ -503,7 +503,7 @@ namespace Bimil {
 #if DEBUG
                 pictureBox.Image = new Bitmap(size, size, System.Drawing.Imaging.PixelFormat.Format8bppIndexed);
 #else
-            pictureBox.Image = (bitmap != null) ? new Bitmap(bitmap, size, size) : null;
+            pictureBox.Image = null;
 #endif
             }
         }
