@@ -35,6 +35,8 @@ namespace Bimil {
 
             Medo.Windows.Forms.State.Attach(this);
 
+            lsvEntries.LabelEdit = Settings.EditableByDefault && !Helpers.IsRunningOnMono;
+
 #if DEBUG
             mnuAppDebug.Visible = true;
             mnuAppDebugRandomizeAllPasswords.Visible = true;
@@ -943,6 +945,7 @@ namespace Bimil {
             }
             UpdateMenu();
             cmbSearch.Select();
+            lsvEntries.LabelEdit = Settings.EditableByDefault && !Helpers.IsRunningOnMono;
         }
 
         private void mnuAppFeedback_Click(object sender, EventArgs e) {
