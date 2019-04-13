@@ -102,28 +102,20 @@ namespace Medo.Services {
                 request.Proxy.Credentials = CredentialCache.DefaultNetworkCredentials;
                 using (var response = (HttpWebResponse)request.GetResponse()) {
                     switch (response.StatusCode) {
-                        case HttpStatusCode.Gone:
-                            return null; //no upgrade
-                        case HttpStatusCode.MovedPermanently:
-                            return GetUpgradeFileFromURL(response.Headers["Location"]); //follow 301 redirect
-                        case HttpStatusCode.SeeOther:
-                            return new UpgradeFile(new Uri(response.Headers["Location"])); //upgrade at Location
-                        default:
-                            throw new InvalidOperationException("Unexpected answer from upgrade server (" + response.StatusCode.ToString() + " " + response.StatusDescription + ").");
+                        case HttpStatusCode.Gone: return null; //no upgrade
+                        case HttpStatusCode.MovedPermanently: return GetUpgradeFileFromURL(response.Headers["Location"]); //follow 301 redirect
+                        case HttpStatusCode.SeeOther: return new UpgradeFile(new Uri(response.Headers["Location"])); //upgrade at Location
+                        default: throw new InvalidOperationException("Unexpected answer from upgrade server (" + response.StatusCode.ToString() + " " + response.StatusDescription + ").");
                     }
                 }
             } catch (InvalidOperationException ex) {
                 if (ex is WebException webEx) {
                     if (webEx.Response is HttpWebResponse response) {
                         switch (response.StatusCode) {
-                            case HttpStatusCode.Gone:
-                                return null; //no upgrade
-                            case HttpStatusCode.Forbidden:
-                                return null; //no upgrade (old code)
-                            case HttpStatusCode.SeeOther:
-                                return new UpgradeFile(new Uri(response.Headers["Location"])); //upgrade at Location
-                            default:
-                                throw new InvalidOperationException("Unexpected answer from upgrade server (" + response.StatusCode.ToString() + " " + response.StatusDescription + ").", ex);
+                            case HttpStatusCode.Gone: return null; //no upgrade
+                            case HttpStatusCode.Forbidden: return null; //no upgrade (old code)
+                            case HttpStatusCode.SeeOther: return new UpgradeFile(new Uri(response.Headers["Location"])); //upgrade at Location
+                            default: throw new InvalidOperationException("Unexpected answer from upgrade server (" + response.StatusCode.ToString() + " " + response.StatusDescription + ").", ex);
                         }
                     }
                 }
