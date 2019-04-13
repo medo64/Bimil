@@ -5,9 +5,13 @@ using System.Windows.Forms;
 namespace Bimil {
     internal partial class NewPasswordForm : Form {
 
+        private static readonly Font FixedFont = new Font(FontFamily.GenericMonospace, SystemFonts.MessageBoxFont.SizeInPoints + 0.5F, SystemFonts.MessageBoxFont.Style);
+
         public NewPasswordForm() {
             InitializeComponent();
             Font = SystemFonts.MessageBoxFont;
+            txtPassword.Font = FixedFont;
+            txtPassword2.Font = FixedFont;
 
             erp.SetIconAlignment(txtPassword2, ErrorIconAlignment.MiddleLeft);
             erp.SetIconPadding(txtPassword2, SystemInformation.Border3DSize.Width);
