@@ -180,7 +180,10 @@ namespace Bimil {
             {
                 var record = Item[RecordType.Group];
                 categoryComboBox = new ComboBox() { Font = Font, Location = new Point(labelWidth + labelBuffer, y), Tag = record, Text = record.ToString(), Width = pnl.ClientSize.Width - labelWidth - labelBuffer, Enabled = Editable, Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right };
-                categoryComboBox.GotFocus += (object sender2, EventArgs e2) => { ((ComboBox)sender2).SelectAll(); };
+                categoryComboBox.GotFocus += (object sender2, EventArgs e2) => {
+                    var combo = (ComboBox)sender2;
+                    if (combo.Enabled) { combo.SelectAll(); }
+                };
                 foreach (var category in Categories) {
                     categoryComboBox.Items.Add(category);
                 }
