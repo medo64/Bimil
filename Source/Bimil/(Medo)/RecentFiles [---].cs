@@ -24,7 +24,6 @@ namespace Medo.Configuration {
     /// Enables loading and saving of files list.
     /// It is written in State key at HKEY_CURRENT_USER branch withing defined SubKeyPath.
     /// </summary>
-    [Obsolete("Use RecentlyUsed in combination with Config instead.")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix", Justification = "While this class offers IEnumerable interface, it is not a collection as such.")]
     public class RecentFiles : IEnumerable<RecentFile> {
 

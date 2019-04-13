@@ -47,7 +47,6 @@ namespace Medo.Configuration {
     /// Registry key contains company and (product|title|name).
     /// This class is thread-safe.
     /// </summary>
-    [Obsolete("Use Config instead.")]
     public static class Settings {
 
         private static readonly object SyncRoot = new object(); //used for every access
