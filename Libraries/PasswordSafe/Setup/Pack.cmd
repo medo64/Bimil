@@ -65,8 +65,6 @@ IF NOT [%TOOL_NUGET%]==[] (
                 MOVE .\Temp\!FILE_NAME! ..\Releases\!FILE_NAME! > NUL
             )
             RMDIR /Q /S ".\Temp" 2> NUL
-            
-            
         ) ELSE (
             ECHO "No packages found."
         )
