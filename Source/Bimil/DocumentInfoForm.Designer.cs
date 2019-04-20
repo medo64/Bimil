@@ -269,6 +269,7 @@ namespace Bimil {
             this.Controls.Add(this.btnOK);
             this.Controls.Add(this.txtDescription);
             this.Controls.Add(this.lblDescription);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MaximumSize = new System.Drawing.Size(1024, 444);
             this.MinimizeBox = false;

@@ -10,7 +10,6 @@ namespace Bimil {
         public DocumentInfoForm(Document document) {
             InitializeComponent();
             Font = SystemFonts.MessageBoxFont;
-            Medo.Windows.Forms.State.Attach(this);
 
             Document = document;
 
@@ -55,12 +54,8 @@ namespace Bimil {
 
 
         private void chbStaticKey_CheckedChanged(object sender, EventArgs e) {
-            var heightDiff = grpStaticKey.Bottom - chbStaticKey.Bottom;
-            if (chbStaticKey.Checked && !grpStaticKey.Visible) {
-                grpStaticKey.Visible = true;
-                MinimumSize = new Size(MinimumSize.Width, MinimumSize.Height + heightDiff);
-                Size = new Size(Size.Width, MinimumSize.Height);
-                MaximumSize = new Size(MaximumSize.Width, MinimumSize.Height);
+            if (chbStaticKey.Checked && !grpStaticKey.Enabled) {
+                grpStaticKey.Enabled = true;
 
                 //make a new key
                 var keyBytes = new byte[64];
@@ -71,11 +66,8 @@ namespace Bimil {
                 } finally {
                     Array.Clear(keyBytes, 0, keyBytes.Length);
                 }
-            } else if (!chbStaticKey.Checked && grpStaticKey.Visible) {
-                grpStaticKey.Visible = false;
-                MinimumSize = new Size(MinimumSize.Width, MinimumSize.Height - heightDiff);
-                Size = new Size(Size.Width, MinimumSize.Height);
-                MaximumSize = new Size(MaximumSize.Width, MinimumSize.Height);
+            } else if (!chbStaticKey.Checked && grpStaticKey.Enabled) {
+                grpStaticKey.Enabled = false;
             }
         }
 
