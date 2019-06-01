@@ -184,6 +184,10 @@ namespace Bimil {
                     var combo = (ComboBox)sender2;
                     if (combo.Enabled) { combo.SelectAll(); }
                 };
+                categoryComboBox.EnabledChanged += (object sender2, EventArgs e2) => {
+                    var combo = (ComboBox)sender2;
+                    if (!combo.Enabled) { combo.SelectionStart = 0; combo.SelectionLength = 0; } //if disabled, remove selection
+                };
                 foreach (var category in Categories) {
                     categoryComboBox.Items.Add(category);
                 }
