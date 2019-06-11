@@ -176,17 +176,14 @@ namespace Bimil {
                 y += titleTextBox.Height + (label.Height / 4);
             }
 
+
             ComboBox categoryComboBox;
             {
                 var record = Item[RecordType.Group];
-                categoryComboBox = new ComboBox() { Font = Font, Location = new Point(labelWidth + labelBuffer, y), Tag = record, Text = record.ToString(), Width = pnl.ClientSize.Width - labelWidth - labelBuffer, Enabled = Editable, Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right };
+                categoryComboBox = new ComboBox() { Font = Font, Location = new Point(labelWidth + labelBuffer, y), Tag = record, Text = record.ToString(), Width = pnl.ClientSize.Width - labelWidth - labelBuffer, Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right, Visible = Editable };
                 categoryComboBox.GotFocus += (object sender2, EventArgs e2) => {
                     var combo = (ComboBox)sender2;
-                    if (combo.Enabled) { combo.SelectAll(); }
-                };
-                categoryComboBox.EnabledChanged += (object sender2, EventArgs e2) => {
-                    var combo = (ComboBox)sender2;
-                    if (!combo.Enabled) { combo.SelectionStart = 0; combo.SelectionLength = 0; } //if disabled, remove selection
+                    combo.SelectAll();
                 };
                 foreach (var category in Categories) {
                     categoryComboBox.Items.Add(category);
@@ -212,15 +209,24 @@ namespace Bimil {
                         }
                     }, "Rename group", "btnGroupRename");
                     pnl.Controls.Add(renameButton);
-                    renameButton.Enabled = categoryComboBox.Enabled;
+                    renameButton.Enabled = Editable;
 
                     btnEdit.Click += delegate {
                         renameButton.Enabled = categoryComboBox.Enabled;
+                        categoryComboBox.Visible = true;
+
                     };
+                }
+
+                TextBox categoryTextBox; //just for use in readonly mode
+                {
+                    categoryTextBox = new TextBox() { Font = Font, Location = new Point(labelWidth + labelBuffer, y), Tag = categoryComboBox, Text = record.ToString(), Width = categoryComboBox.Width, ReadOnly = true, Visible = !Editable, Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right};
+                    pnl.Controls.Add(categoryTextBox);
                 }
 
                 y += titleTextBox.Height + (label.Height / 4);
             }
+
 
             y += unitHeight / 2;
 
@@ -404,10 +410,12 @@ namespace Bimil {
         private void btnEdit_Click(object sender, EventArgs e) {
             foreach (Control control in pnl.Controls) {
                 if (control is TextBox textBox) {
-                    textBox.ReadOnly = false;
-                }
-                if (control is ComboBox comboBox) {
-                    comboBox.Enabled = true;
+                    if (control.Tag is Record) {
+                        textBox.ReadOnly = false;
+                    } else if (control.Tag is ComboBox comboBox) { //dummy textbox for readonly mode
+                        textBox.Visible = false;
+                        comboBox.Visible = true;
+                    }
                 }
             }
             btnFields.Visible = true;
