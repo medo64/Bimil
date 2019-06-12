@@ -9,7 +9,7 @@ SET       SOURCE_INNOSETUP=".\Bimil.iss"
 SET              TOOLS_GIT="%PROGRAMFILES(X86)%\Git\mingw64\bin\git.exe" "%PROGRAMFILES%\Git\mingw64\bin\git.exe" "C:\Program Files\Git\mingw64\bin\git.exe"
 SET     TOOLS_VISUALSTUDIO="%PROGRAMFILES(X86)%\Microsoft Visual Studio\2019\Community\Common7\IDE\devenv.exe"
 SET         TOOLS_SIGNTOOL="%PROGRAMFILES(X86)%\Microsoft SDKs\ClickOnce\SignTool\signtool.exe" "%PROGRAMFILES(X86)%\Windows Kits\10\App Certification Kit\signtool.exe" "%PROGRAMFILES(X86)%\Windows Kits\10\bin\x86\signtool.exe"
-SET        TOOLS_INNOSETUP="%PROGRAMFILES(X86)%\Inno Setup 5\iscc.exe"
+SET        TOOLS_INNOSETUP="%PROGRAMFILES(X86)%\Inno Setup 6\iscc.exe" "%PROGRAMFILES(X86)%\Inno Setup 5\iscc.exe"
 SET           TOOLS_WINRAR="%PROGRAMFILES(X86)%\WinRAR\WinRAR.exe" "%PROGRAMFILES%\WinRAR\WinRAR.exe" "C:\Program Files\WinRAR\WinRAR.exe"
 SET     TOOLS_APPCONVERTER="%LOCALAPPDATA%\Microsoft\WindowsApps\DesktopAppConverter.exe"
 
@@ -64,7 +64,6 @@ ECHO Visual Studio .......: %TOOL_VISUALSTUDIO%
 FOR %%I IN (%TOOLS_APPCONVERTER%) DO (
     IF EXIST %%I IF NOT DEFINED TOOL_APPCONVERTER SET TOOL_APPCONVERTER=%%I
 )
-IF [%TOOL_APPCONVERTER%]==[] SET WARNING=1
 ECHO Desktop App Converter: %TOOL_APPCONVERTER%
 
 FOR %%I IN (%TOOLS_SIGNTOOL%) DO (
