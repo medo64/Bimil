@@ -597,11 +597,20 @@ namespace Bimil {
         }
 
         public static string GetTwoFactorCode(string text, bool space = false) {
+            var secondsSinceLastNtpCheck = Math.Abs((DateTime.UtcNow - (App.LastNtpCheck ?? DateTime.MinValue)).TotalSeconds);
+            if (Settings.AlwaysUseNtpForTwoFactor
+                && (secondsSinceLastNtpCheck > Settings.NtpDriftWarningSeconds)
+                && Medo.Net.TrivialNtpClient.TryRetrieveTime(Settings.NtpServer, out var time)) {
+                App.LastNtpCheck = DateTime.UtcNow;
+                App.LastNtpDrift = DateTime.UtcNow - time;
+            } else {
+                time = DateTime.UtcNow + (App.LastNtpDrift ?? TimeSpan.Zero); //adjust for NTP drift
+            }
+
             var key = Helpers.FilterText(text.ToUpperInvariant(), Helpers.Base32Characters);
             if (key.Length > 0) {
                 try {
                     var otp = new OneTimePassword(key);
-                    var time = (App.LastNtpDrift == null) ? DateTime.UtcNow : DateTime.UtcNow + App.LastNtpDrift.Value; //adjust for NTP drift
                     var code = otp.GetCode(time).ToString(new string('0', otp.Digits), CultureInfo.InvariantCulture);
                     if (space) {
                         var mid = code.Length / 2;

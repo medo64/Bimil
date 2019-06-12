@@ -886,6 +886,7 @@ namespace Bimil {
             if (Settings.ShowNtpDriftWarning && (App.LastNtpDrift == null)) {
                 var hostName = Settings.NtpServer;
                 if (Medo.Net.TrivialNtpClient.TryRetrieveTime(hostName, out var time)) {
+                    App.LastNtpCheck = DateTime.UtcNow;
                     App.LastNtpDrift = DateTime.UtcNow - time;
                 }
             }

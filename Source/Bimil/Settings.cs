@@ -169,11 +169,20 @@ namespace Bimil {
 
 
         [Category("Behavior")]
+        [DisplayName("Always use NTP for two-factor")]
+        [Description("If true, each time two-factor code is taken an NTP request will be sent.")]
+        [DefaultValue(true)]
+        public static bool AlwaysUseNtpForTwoFactor {
+            get { return Config.Read("AlwaysUseNtpForTwoFactor", true); }
+            set { Config.Write("AlwaysUseNtpForTwoFactor", value); }
+        }
+
+        [Category("Behavior")]
         [DisplayName("Show NTP drift warning")]
         [Description("If true, warning will be shown if system time drifts from NTP server time.")]
-        [DefaultValue(true)]
+        [DefaultValue(false)]
         public static bool ShowNtpDriftWarning {
-            get { return Config.Read("ShowNtpDriftWarning", true); }
+            get { return Config.Read("ShowNtpDriftWarning", false); }
             set { Config.Write("ShowNtpDriftWarning", value); }
         }
 
