@@ -604,7 +604,7 @@ namespace Bimil {
                 App.LastNtpCheck = DateTime.UtcNow;
                 App.LastNtpDrift = DateTime.UtcNow - time;
             } else {
-                time = DateTime.UtcNow + (App.LastNtpDrift ?? TimeSpan.Zero); //adjust for NTP drift
+                time = DateTime.UtcNow - (App.LastNtpDrift ?? TimeSpan.Zero); //adjust for NTP drift
             }
 
             var key = Helpers.FilterText(text.ToUpperInvariant(), Helpers.Base32Characters);
