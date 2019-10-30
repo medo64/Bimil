@@ -8,3 +8,4 @@ Description:    Password manager.
 Section:        misc
 Priority:       optional
 Depends:        mono-complete (>=4.2), gnupg2
+Build-Depends:  mono-complete (>=4.2)
