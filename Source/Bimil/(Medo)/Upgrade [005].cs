@@ -1,5 +1,6 @@
 /* Josip Medved <jmedved@jmedved.com> * www.medo64.com * MIT License */
 
+//2019-11-16: Allowing for TLS 1.2 and 1.3 where available.
 //2015-12-31: Allowing for 301 redirect.
 //2013-12-28: Message box adjustments.
 //2012-03-13: UI adjustments.
@@ -79,6 +80,7 @@ namespace Medo.Services {
         public static DialogResult ShowDialog(IWin32Window owner, Uri serviceUri, Assembly assembly) {
             if (serviceUri == null) { throw new ArgumentNullException("serviceUri", "Argument cannot be null."); }
             if (assembly == null) { assembly = Assembly.GetEntryAssembly(); }
+            TryProtocolUpgrade();
             using (var frm = new UpgradeForm(serviceUri, assembly)) {
                 if (owner != null) {
                     frm.ShowInTaskbar = false;
@@ -95,6 +97,7 @@ namespace Medo.Services {
 
         private static UpgradeFile GetUpgradeFileFromURL(string url) {
             try {
+                TryProtocolUpgrade();
                 var request = (HttpWebRequest)HttpWebRequest.Create(url);
                 request.AllowAutoRedirect = false;
                 request.Method = "HEAD";
@@ -135,6 +138,22 @@ namespace Medo.Services {
                     return ((AssemblyTitleAttribute)titleAttributes[titleAttributes.Length - 1]).Title;
                 } else {
                     return assembly.GetName().Name;
+                }
+            }
+        }
+
+        private static void TryProtocolUpgrade() {
+            try { //try TLS 1.3
+                ServicePointManager.SecurityProtocol = (SecurityProtocolType)12288 | (SecurityProtocolType)3072 | (SecurityProtocolType)768 | SecurityProtocolType.Tls;
+            } catch (NotSupportedException) {
+                try { //try TLS 1.2
+                    ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072 | (SecurityProtocolType)768 | SecurityProtocolType.Tls;
+                } catch (NotSupportedException) {
+                    try { //try TLS 1.1
+                        ServicePointManager.SecurityProtocol = (SecurityProtocolType)768 | SecurityProtocolType.Tls;
+                    } catch (NotSupportedException) { //TLS 1.0
+                        ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls;
+                    }
                 }
             }
         }

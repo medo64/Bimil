@@ -1373,7 +1373,7 @@ namespace Bimil {
         }
 
         private void bwUpgradeCheck_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e) {
-            if (!e.Cancelled) {
+            if (!e.Cancelled && (e.Error == null)) {
                 Helpers.ScaleToolstripItem(mnuApp, "mnuAppUpgrade");
                 mnuAppUpgrade.Text = "Upgrade is available";
 

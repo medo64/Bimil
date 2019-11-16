@@ -124,7 +124,7 @@
     <Compile Include="%28Medo%29\State [017].cs" />
     <Compile Include="%28Medo%29\TrivialNtpClient [001].cs" />
     <Compile Include="%28Medo%29\UnhandledCatch [008].cs" />
-    <Compile Include="%28Medo%29\Upgrade [004].cs" />
+    <Compile Include="%28Medo%29\Upgrade [005].cs" />
     <Compile Include="..\..\Libraries\PasswordSafe\Source\PasswordSafe\%28Medo%29\Twofish [003].cs">
       <Link>%28PasswordSafe%29\Twofish [003].cs</Link>
     </Compile>
