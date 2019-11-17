@@ -112,7 +112,7 @@
   <ItemGroup>
     <Compile Include="%28Medo%29\AboutBox [013].cs" />
     <Compile Include="%28Medo%29\Base58 [001].cs" />
-    <Compile Include="%28Medo%29\ErrorReport [019].cs" />
+    <Compile Include="%28Medo%29\ErrorReport [020].cs" />
     <Compile Include="%28Medo%29\InputBox [002].cs" />
     <Compile Include="%28Medo%29\LifetimeWatch [001].cs" />
     <Compile Include="%28Medo%29\MessageBox [007].cs" />

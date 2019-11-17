@@ -1,5 +1,6 @@
 /* Josip Medved <jmedved@jmedved.com> * www.medo64.com * MIT License */
 
+//2019-11-16: Allowing for TLS 1.2 and 1.3 where available.
 //2012-09-16: Added retry upon send failure.
 //2010-11-06: Graphical update.
 //2010-10-30: Fixed bug with sending error report.
@@ -634,8 +635,10 @@ namespace Medo.Diagnostics {
 
 
             try {
+                TryProtocolUpgrade();
 
-                var request = WebRequest.Create(address);
+                var request = (HttpWebRequest)HttpWebRequest.Create(address);
+                request.KeepAlive = false;
                 request.Method = "POST";
                 request.Proxy = HttpWebRequest.DefaultWebProxy;
                 request.Proxy.Credentials = CredentialCache.DefaultNetworkCredentials;
@@ -880,6 +883,22 @@ namespace Medo.Diagnostics {
 
                 firstChar = nextChar;
             } while (nextChar <= end);
+        }
+
+        private static void TryProtocolUpgrade() {
+            try { //try TLS 1.3
+                ServicePointManager.SecurityProtocol = (SecurityProtocolType)12288 | (SecurityProtocolType)3072 | (SecurityProtocolType)768 | SecurityProtocolType.Tls;
+            } catch (NotSupportedException) {
+                try { //try TLS 1.2
+                    ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072 | (SecurityProtocolType)768 | SecurityProtocolType.Tls;
+                } catch (NotSupportedException) {
+                    try { //try TLS 1.1
+                        ServicePointManager.SecurityProtocol = (SecurityProtocolType)768 | SecurityProtocolType.Tls;
+                    } catch (NotSupportedException) { //TLS 1.0
+                        ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls;
+                    }
+                }
+            }
         }
 
 
