@@ -346,12 +346,11 @@ namespace Bimil {
                         }
                         break;
 
+                    case Keys.Insert:
+                    case Keys.Delete:
                     case Keys.Control | Keys.X:
-                        if (cmbSearch.SelectedText.Length > 0) {
-                            ClipboardHelper.SetClipboardText(this, cmbSearch.SelectedText, sensitiveData: false);
-                            cmbSearch.SelectedText = "";
-                        }
-                        e.Handled = true;
+                    case Keys.Control | Keys.C:
+                    case Keys.Control | Keys.V:
                         break;
 
                     default:
