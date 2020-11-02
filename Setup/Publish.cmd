@@ -13,8 +13,8 @@ SET        TOOLS_INNOSETUP="%PROGRAMFILES(X86)%\Inno Setup 6\iscc.exe" "%PROGRAM
 SET           TOOLS_WINRAR="%PROGRAMFILES(X86)%\WinRAR\WinRAR.exe" "%PROGRAMFILES%\WinRAR\WinRAR.exe" "C:\Program Files\WinRAR\WinRAR.exe"
 SET     TOOLS_APPCONVERTER="%LOCALAPPDATA%\Microsoft\WindowsApps\DesktopAppConverter.exe"
 
-SET CERTIFICATE_THUMBPRINT="026184de8dbf52fdcbae75fd6b1a7d9ce4310e5d"
-SET      SIGN_TIMESTAMPURL="http://timestamp.comodoca.com/rfc3161"
+SET CERTIFICATE_THUMBPRINT="8b610af4e0eedd466144d72969d208922673ab7a"
+SET      SIGN_TIMESTAMPURL="http://timestamp.sectigo.com"
 
 
 IF NOT [%1]==[] (
@@ -140,9 +140,9 @@ IF NOT [%TOOL_SIGNTOOL%]==[] IF NOT [%CERTIFICATE_THUMBPRINT%]==[] (
     FOR %%I IN (%FILES%) DO (
         IF [%%~xI]==[.exe] (
             IF [%SIGN_TIMESTAMPURL%]==[] (
-                %TOOL_SIGNTOOL% sign /s "My" /sha1 %CERTIFICATE_THUMBPRINT% /v %%I
+                %TOOL_SIGNTOOL% sign -s "My" -sha1 %CERTIFICATE_THUMBPRINT% -v %%I
             ) ELSE (
-                %TOOL_SIGNTOOL% sign /s "My" /sha1 %CERTIFICATE_THUMBPRINT% /tr %SIGN_TIMESTAMPURL% /v %%I
+                %TOOL_SIGNTOOL% sign -s "My" -sha1 %CERTIFICATE_THUMBPRINT% -tr %SIGN_TIMESTAMPURL% -td sha256 -v %%I
             )
             IF NOT ERRORLEVEL 0 GOTO Error
         )
@@ -179,9 +179,9 @@ IF [!STORE_BUILD!]==[] (
             ECHO:
             
             IF [%SIGN_TIMESTAMPURL%]==[] (
-                %TOOL_SIGNTOOL% sign /s "My" /sha1 %CERTIFICATE_THUMBPRINT% /v ".\Temp\!SETUPEXE!"
+                %TOOL_SIGNTOOL% sign -s "My" -sha1 %CERTIFICATE_THUMBPRINT% -v ".\Temp\!SETUPEXE!"
             ) ELSE (
-                %TOOL_SIGNTOOL% sign /s "My" /sha1 %CERTIFICATE_THUMBPRINT% /tr %SIGN_TIMESTAMPURL% /v ".\Temp\!SETUPEXE!"
+                %TOOL_SIGNTOOL% sign -s "My" -sha1 %CERTIFICATE_THUMBPRINT% -tr %SIGN_TIMESTAMPURL% -td sha256 -v ".\Temp\!SETUPEXE!"
             )
             IF NOT ERRORLEVEL 0 GOTO Error
 
