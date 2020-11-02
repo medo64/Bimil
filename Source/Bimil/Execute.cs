@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Text;
 using System.Windows.Forms;
@@ -123,7 +124,11 @@ namespace Bimil {
 
         public static void StartUrl(string urlText) {
             var url = NormalizeUrl(urlText);
-            if (url != "") { Process.Start(url); }
+            if (!string.IsNullOrEmpty(url)) {
+                try {
+                    Process.Start(url);
+                } catch (Win32Exception) { } //to avoid crash on Linux
+            }
         }
 
         public static string NormalizeUrl(string urlText) {
