@@ -13,7 +13,7 @@ SET        TOOLS_INNOSETUP="%PROGRAMFILES(X86)%\Inno Setup 6\iscc.exe" "%PROGRAM
 SET           TOOLS_WINRAR="%PROGRAMFILES(X86)%\WinRAR\WinRAR.exe" "%PROGRAMFILES%\WinRAR\WinRAR.exe" "C:\Program Files\WinRAR\WinRAR.exe"
 SET     TOOLS_APPCONVERTER="%LOCALAPPDATA%\Microsoft\WindowsApps\DesktopAppConverter.exe"
 
-SET CERTIFICATE_THUMBPRINT="8b610af4e0eedd466144d72969d208922673ab7a"
+SET CERTIFICATE_THUMBPRINT="e9b444fffb1375ece027e40d8637b6da3fdaaf0e"
 SET      SIGN_TIMESTAMPURL="http://timestamp.sectigo.com"
 
 
