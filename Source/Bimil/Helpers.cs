@@ -669,6 +669,14 @@ namespace Bimil {
             get { return (Type.GetType("Mono.Runtime") != null); }
         }
 
+        public static bool IsRunningOnWindows {
+            get { return (Path.DirectorySeparatorChar == '\\'); } //not fool-proof but good enough
+        }
+
+        public static bool IsRunningOnLinux {
+            get { return (Path.DirectorySeparatorChar == '/'); } //not fool-proof but good enough
+        }
+
 
         internal enum StartAction {
             New,

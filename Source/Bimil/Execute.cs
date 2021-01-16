@@ -127,7 +127,13 @@ namespace Bimil {
             if (!string.IsNullOrEmpty(url)) {
                 try {
                     Process.Start(url);
-                } catch (Win32Exception) { } //to avoid crash on Linux
+                } catch (Win32Exception) {  // to avoid crash on Linux
+                    if (Helpers.IsRunningOnLinux) {
+                        try {
+                            Process.Start("xdg-open", url);  // try using xdg-open
+                        } catch (Win32Exception) { }  // ok, just give up
+                    }
+                }
             }
         }
 
