@@ -101,7 +101,6 @@ namespace Bimil {
         private readonly Entry Entry;
         private readonly SuffixType Suffix = SuffixType.None;
 
-
         protected override bool ProcessDialogKey(Keys keyData) {
             switch (keyData) {
                 case Keys.Escape:
@@ -161,6 +160,8 @@ namespace Bimil {
             }
         }
 
+        private static readonly Encoding Utf8Encoding = new UTF8Encoding(false);
+
         private void bwType_ProgressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e) {
             var content = (string)e.UserState;
 
@@ -177,7 +178,11 @@ namespace Bimil {
                                 isNormalKey = false;
                             } else {
                                 if (sbArgKeys.Length > 0) { sbArgKeys.Append(" "); }
-                                sbArgKeys.Append(ch);
+                                var charBytes = Utf8Encoding.GetBytes(ch.ToString(CultureInfo.InvariantCulture));
+                                sbArgKeys.Append(charBytes.Length < 2 ? "0x00" : "0x");
+                                foreach (var charByte in charBytes) {  // get hex values for each char
+                                    sbArgKeys.Append(charByte.ToString("X2", CultureInfo.InvariantCulture));
+                                }
                             }
                         } else {
                             if (ch == '}') {
