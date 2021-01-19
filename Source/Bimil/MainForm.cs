@@ -988,11 +988,6 @@ namespace Bimil {
 
 
         private void mnxEntry_Opening(object sender, System.ComponentModel.CancelEventArgs e) {
-            if (Helpers.IsRunningOnMono) {
-                mnxEntryAutotypeSeparator.Visible = false;
-                mnxEntryAutotype.Visible = false;
-            }
-
             if (Settings.EditableByDefault) {
                 mnxEntryView.Font = new Font(mnxEntryView.Font, FontStyle.Regular);
                 mnxEntryEdit.Font = new Font(mnxEntryView.Font, FontStyle.Bold);

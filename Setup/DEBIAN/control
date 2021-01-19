@@ -7,5 +7,5 @@ Description:    Password manager.
                 A small password manager compatible with Password Safe file format.
 Section:        misc
 Priority:       optional
-Depends:        mono-complete (>=4.2), gnupg2
+Depends:        mono-complete (>=4.2), gnupg2, xdotool
 Build-Depends:  mono-complete (>=4.2)

@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
+using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using Medo.Security.Cryptography;
@@ -146,7 +149,7 @@ namespace Bimil {
                             UseSendWait = !UseSendWait;
                             break;
                     }
-                } else {
+                } else { // data
                     bwType.ReportProgress(i * 100 / tokens.Count, token.Content);
                     Thread.Sleep(Delay);
                 }
@@ -161,10 +164,53 @@ namespace Bimil {
         private void bwType_ProgressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e) {
             var content = (string)e.UserState;
 
-            if (UseSendWait) {
-                SendKeys.SendWait((Control.IsKeyLocked(Keys.CapsLock) ? "{CAPSLOCK}" : "") + content);
-            } else {
-                SendKeys.Send((Control.IsKeyLocked(Keys.CapsLock) ? "{CAPSLOCK}" : "") + content);
+            if (Helpers.IsRunningOnLinux) {
+                try {  // rebuild from SendKeys string
+                    var isNormalKey = true;
+                    var sbArgKeys = new StringBuilder();
+                    var sbSpecialKey = new StringBuilder();
+                    var chars = new Queue<char>(content);
+                    while (chars.Count > 0) {
+                        var ch = chars.Dequeue();
+                        if (isNormalKey) {
+                            if (ch == '{') {
+                                isNormalKey = false;
+                            } else {
+                                if (sbArgKeys.Length > 0) { sbArgKeys.Append(" "); }
+                                sbArgKeys.Append(ch);
+                            }
+                        } else {
+                            if (ch == '}') {
+                                if (sbSpecialKey.Length > 0) {
+                                    if (sbArgKeys.Length > 0) { sbArgKeys.Append(" "); }
+                                    var specialKey = sbSpecialKey.ToString();
+                                    switch (specialKey) {
+                                        case "Enter": sbArgKeys.Append("Return"); break;
+                                        default: sbArgKeys.Append(specialKey); break;
+                                    }
+                                }
+                                sbSpecialKey.Length = 0;
+                                isNormalKey = true;
+                            } else {
+                                sbSpecialKey.Append(ch);
+                            }
+                        }
+                    }
+                    if (sbArgKeys.Length > 0) {
+                        var keys = sbArgKeys.ToString();
+                        Process.Start(
+                                "xdotool",
+                                string.Format(CultureInfo.InvariantCulture, "key --delay {0} {1}", Delay, keys)
+                            ).WaitForExit();
+                    }
+                    Thread.Sleep(Delay);
+                } catch (Win32Exception) { }
+            } else {  // assume Windows
+                if (UseSendWait) {
+                    SendKeys.SendWait((Control.IsKeyLocked(Keys.CapsLock) ? "{CAPSLOCK}" : "") + content);
+                } else {
+                    SendKeys.Send((Control.IsKeyLocked(Keys.CapsLock) ? "{CAPSLOCK}" : "") + content);
+                }
             }
 
             try {
