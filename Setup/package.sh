@@ -97,14 +97,14 @@ fi
 
 RELEASE_VERSION_MAJOR=`echo -n $RELEASE_VERSION | head -c 1`
 RELEASE_VERSION_MINOR=`echo -n $RELEASE_VERSION | tail -c 2`
-RELEASE_ARCHITECTURE=`grep "Architecture:" ./DEBIAN/control | sed "s/Architecture://" | sed "s/[^a-z]//g"`
+RELEASE_ARCHITECTURE=`grep "Architecture:" ./deb/DEBIAN/control | sed "s/Architecture://" | sed "s/[^a-z]//g"`
 
 PACKAGE_NAME="bimil_${RELEASE_VERSION_MAJOR}.${RELEASE_VERSION_MINOR}_${RELEASE_ARCHITECTURE}"
 DIRECTORY_PACKAGE="$DIRECTORY_ROOT/$PACKAGE_NAME"
 
 mkdir $DIRECTORY_PACKAGE
-cp -R ./DEBIAN $DIRECTORY_PACKAGE/
-cp -R ./usr $DIRECTORY_PACKAGE/
+cp -R ./deb/DEBIAN $DIRECTORY_PACKAGE/
+cp -R ./deb/usr $DIRECTORY_PACKAGE/
 
 find $DIRECTORY_PACKAGE -type d -exec chmod 755 {} +
 find $DIRECTORY_PACKAGE -type f -exec chmod 644 {} +
@@ -114,6 +114,9 @@ chmod 755 $DIRECTORY_PACKAGE/DEBIAN/*rm
 
 sed -i "s/MAJOR/$RELEASE_VERSION_MAJOR/" $DIRECTORY_PACKAGE/DEBIAN/control
 sed -i "s/MINOR/$RELEASE_VERSION_MINOR/" $DIRECTORY_PACKAGE/DEBIAN/control
+
+mkdir -p "$DIRECTORY_PACKAGE/usr/share/doc/bimil/"
+cp ./deb/copyright "$DIRECTORY_PACKAGE/usr/share/doc/bimil/copyright"
 
 mkdir -p "$DIRECTORY_PACKAGE/opt/bimil"
 unzip -LL "$PATH_RELEASE" -d "$DIRECTORY_PACKAGE/opt/bimil" > /dev/null
