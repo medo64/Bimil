@@ -117,6 +117,7 @@ sed -i "s/MINOR/$RELEASE_VERSION_MINOR/" $DIRECTORY_PACKAGE/DEBIAN/control
 
 mkdir -p "$DIRECTORY_PACKAGE/usr/share/doc/bimil/"
 cp ./deb/copyright "$DIRECTORY_PACKAGE/usr/share/doc/bimil/copyright"
+chmod 644 "$DIRECTORY_PACKAGE/usr/share/doc/bimil/copyright"
 
 mkdir -p "$DIRECTORY_PACKAGE/opt/bimil"
 unzip -LL "$PATH_RELEASE" -d "$DIRECTORY_PACKAGE/opt/bimil" > /dev/null
@@ -136,8 +137,7 @@ chmod 755 "$DIRECTORY_PACKAGE/opt/bimil/bimil"
 dpkg-deb --build $DIRECTORY_PACKAGE > /dev/null
 
 cp "$DIRECTORY_ROOT/$PACKAGE_NAME.deb" $DIRECTORY_RELEASE
-if [ $? -eq 0 ]
-then
+if [ $? -eq 0 ]; then
     echo "Package $DIRECTORY_RELEASE/$PACKAGE_NAME.deb successfully created." >&2
 else
     echo "Didn't find output Debian package!" >&2

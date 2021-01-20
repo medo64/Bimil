@@ -1,10 +1,10 @@
-Package:        Bimil
+Package:        bimil
 Version:        MAJOR.MINOR
 Architecture:   all
 Maintainer:     Josip Medved <jmedved@jmedved.com>
 Homepage:       https://www.medo64.com/bimil/
 Description:    Password manager.
-                A small password manager compatible with Password Safe file format.
+ A small password manager compatible with Password Safe file format.
 Section:        misc
 Priority:       optional
 Depends:        debconf, gnupg2, mono-complete (>=4.2), xdotool
