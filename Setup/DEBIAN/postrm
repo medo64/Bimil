@@ -1,16 +1,16 @@
 #!/bin/bash
+set -e
 
-if [ "$1" == "remove" ]
-then
-    if [ -f "/usr/bin/bimil" ]
-    then
+# Remove link
+if [ "$1" == "remove" ]; then
+    if [ -f "/usr/bin/bimil" ]; then
         rm "/usr/bin/bimil"
     fi
 
-    if [ -f "$HOME/.bimil" ]
-    then
+    if [ -f "$HOME/.bimil" ]; then
         rm "$HOME/.bimil"
     fi
 fi
 
+# Done
 exit 0

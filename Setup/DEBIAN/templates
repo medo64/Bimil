@@ -1,0 +1,7 @@
+Template: bimil/add_repository
+Type: boolean
+Default: true
+Description: Should the repository be added to the system?
+ If selected, a repository for the package will be added for the purpose
+ of simplifying future upgrades. If not, each update will have to be
+ manually installed.

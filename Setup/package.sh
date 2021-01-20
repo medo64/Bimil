@@ -108,6 +108,7 @@ cp -R ./usr $DIRECTORY_PACKAGE/
 
 find $DIRECTORY_PACKAGE -type d -exec chmod 755 {} +
 find $DIRECTORY_PACKAGE -type f -exec chmod 644 {} +
+chmod 755 $DIRECTORY_PACKAGE/DEBIAN/config
 chmod 755 $DIRECTORY_PACKAGE/DEBIAN/*inst
 chmod 755 $DIRECTORY_PACKAGE/DEBIAN/*rm
 
