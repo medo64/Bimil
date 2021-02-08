@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel;
+using System.Drawing;
 using System.Globalization;
 using Medo.Configuration;
 
@@ -193,6 +194,33 @@ namespace Bimil {
             set {
                 if ((value < -1) || (value > 4)) { return; }
                 Config.Write("ScaleBoost", value);
+            }
+        }
+
+        private static readonly string[] MonotypeFontDefaults = { "Bahnschrift", "Consolas" };
+        [Category("Visual")]
+        [DisplayName("Monotype font")]
+        [Description("Monotype font used for passwords.")]
+        public static Font MonotypeFont {
+            get {
+                var fontName = Config.Read("MonotypeFontName", null)?.Trim();
+                var fontSize = SystemFonts.MessageBoxFont.SizeInPoints + 0.5F;
+
+                if (!string.IsNullOrEmpty(fontName)) { // first try custom font name
+                    var newFont = new Font(fontName, fontSize, SystemFonts.MessageBoxFont.Style);
+                    if (newFont.Name.Equals(fontName, StringComparison.InvariantCultureIgnoreCase)) { return newFont; }
+                }
+
+                foreach (var defaultFontName in MonotypeFontDefaults) { // try a few others
+                    var newFont = new Font(defaultFontName, fontSize, SystemFonts.MessageBoxFont.Style);
+                    if (newFont.Name.Equals(defaultFontName, StringComparison.InvariantCultureIgnoreCase)) { return newFont; }
+                }
+
+                // give up and return generic monospace
+                return new Font(FontFamily.GenericMonospace, fontSize, SystemFonts.MessageBoxFont.Style);
+            }
+            set {
+                Config.Write("MonotypeFontName", value.Name);
             }
         }
 
@@ -430,5 +458,6 @@ namespace Bimil {
         }
 
         #endregion Helper
+
     }
 }

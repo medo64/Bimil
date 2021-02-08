@@ -5,7 +5,7 @@ using System.Windows.Forms;
 namespace Bimil {
     internal partial class PasswordForm : Form {
 
-        private static readonly Font FixedFont = new Font(FontFamily.GenericMonospace, SystemFonts.MessageBoxFont.SizeInPoints + 0.5F, SystemFonts.MessageBoxFont.Style);
+        private static readonly Font FixedFont = Settings.MonotypeFont;
 
         public PasswordForm(string extraTitle = null) {
             InitializeComponent();

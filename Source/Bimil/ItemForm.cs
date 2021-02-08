@@ -16,7 +16,7 @@ namespace Bimil {
         private readonly Entry Item;
         private bool Editable;
         private readonly bool IsNew;
-        private static readonly Font FixedFont = new Font(FontFamily.GenericMonospace, SystemFonts.MessageBoxFont.SizeInPoints + 0.5F, SystemFonts.MessageBoxFont.Style);
+        private static readonly Font FixedFont = Settings.MonotypeFont;
         private static readonly Font UnderlineFont = new Font(SystemFonts.MessageBoxFont.Name, SystemFonts.MessageBoxFont.SizeInPoints, SystemFonts.MessageBoxFont.Style | FontStyle.Underline);
         private readonly IList<string> Categories;
         private readonly string DefaultCategory;
