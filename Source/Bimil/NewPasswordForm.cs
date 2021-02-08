@@ -13,8 +13,10 @@ namespace Bimil {
             txtPassword.Font = FixedFont;
             txtPassword2.Font = FixedFont;
 
-            erp.SetIconAlignment(txtPassword2, ErrorIconAlignment.MiddleLeft);
-            erp.SetIconPadding(txtPassword2, SystemInformation.Border3DSize.Width);
+            foreach (var control in new Control[] { txtPassword, txtPassword2 }) {
+                erp.SetIconAlignment(control, ErrorIconAlignment.MiddleLeft);
+                erp.SetIconPadding(control, SystemInformation.Border3DSize.Width);
+            }
         }
 
 
@@ -54,6 +56,11 @@ namespace Bimil {
         }
 
         private void txtPassword_TextChanged(object sender, EventArgs e) {
+            if (txtPassword.TextLength <= 12) {
+                erp.SetError(txtPassword, "You should really have a longer master password.");
+            } else {
+                erp.SetError(txtPassword, null);
+            }
             if (string.Equals(txtPassword.Text, txtPassword2.Text, StringComparison.Ordinal)) {
                 btnOK.Enabled = true;
                 erp.SetError(txtPassword2, null);
