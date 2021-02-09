@@ -258,7 +258,7 @@ namespace Bimil {
 
                     case RecordType.CreditCardVerificationValue:
                     case RecordType.CreditCardPin: {
-                            var textBox = NewTextBox(labelWidth, y, record);
+                            var textBox = NewTextBox(labelWidth, y, record, font: FixedFont);
                             textBox.UseSystemPasswordChar = true;
                             pnl.Controls.Add(textBox);
 
