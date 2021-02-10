@@ -189,9 +189,17 @@ namespace Bimil {
                                 if (sbSpecialKey.Length > 0) {
                                     if (sbArgKeys.Length > 0) { sbArgKeys.Append(" "); }
                                     var specialKey = sbSpecialKey.ToString();
-                                    switch (specialKey) {
-                                        case "Enter": sbArgKeys.Append("Return"); break;
-                                        default: sbArgKeys.Append(specialKey); break;
+                                    if (specialKey.Length == 1) { // to handle +^%~(){}[]
+                                        var charBytes = Utf8Encoding.GetBytes(specialKey.ToString(CultureInfo.InvariantCulture));
+                                        sbArgKeys.Append(charBytes.Length < 2 ? "0x00" : "0x");
+                                        foreach (var charByte in charBytes) {  // get hex values for each char
+                                            sbArgKeys.Append(charByte.ToString("X2", CultureInfo.InvariantCulture));
+                                        }
+                                    } else {
+                                        switch (specialKey) {
+                                            case "Enter": sbArgKeys.Append("Return"); break;
+                                            default: sbArgKeys.Append(specialKey); break;
+                                        }
                                     }
                                 }
                                 sbSpecialKey.Length = 0;
