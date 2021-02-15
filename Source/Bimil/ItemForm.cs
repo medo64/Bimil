@@ -493,9 +493,9 @@ namespace Bimil {
 
         private TextBox NewTextBox(int x, int y, Record record, string text = null, bool urlLookAndFeel = false, bool multiline = false, Font font = null) {
             var padding = SystemInformation.VerticalScrollBarWidth + 1;
+            if (text == null) { text = record.Text; }
 
             var textBox = new TextBoxEx() { Font = font ?? Font, Location = new Point(x + padding, y), Tag = record, Width = pnl.ClientSize.Width - x - padding, ReadOnly = !Editable, Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right };
-            textBox.Text = text ?? record.Text;
 
             if (urlLookAndFeel) {
                 textBox.Font = ItemForm.UnderlineFont;
@@ -503,11 +503,15 @@ namespace Bimil {
             }
 
             if (multiline) {
+                var lines = text.Split(new string[] { "\r\n", "\n", "\r" }, StringSplitOptions.None);
+                text = string.Join(Environment.NewLine, lines);  // redo line splitting
                 textBox.Multiline = true;
                 textBox.Height *= 3;
                 textBox.AcceptsReturn = true;
                 textBox.ScrollBars = ScrollBars.Vertical;
             }
+
+            textBox.Text = text;
 
             textBox.GotFocus += (object sender, EventArgs e) => {
                 ((TextBox)sender).SelectAll();
