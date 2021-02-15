@@ -197,7 +197,7 @@ namespace Bimil {
             }
         }
 
-        private static readonly string[] MonotypeFontDefaults = { "Bahnschrift", "Consolas" };
+        private static readonly string[] MonotypeFontDefaults = { "Consolas", "Lucida Console", "Nimbus Mono L", "Ubuntu Mono", "Courier New", "Courier" };
         [Category("Visual")]
         [DisplayName("Monotype font")]
         [Description("Monotype font used for passwords.")]
