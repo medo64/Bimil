@@ -1,6 +1,13 @@
 ## Release Notes ##
 
 
+### 2.86 [2021-02-15] ###
+
+* Improved monotype font selection
+* Fixed special character handling for Linux' auto-type
+* Windows/Linux compatibility improvement for Notes field
+
+
 ### 2.85 [2021-02-07] ###
 
 * Improved monotype font selection
