@@ -21,6 +21,10 @@ so, subject to the following conditions:
     DEALINGS IN THE SOFTWARE.
 
 
+## Qt
+
+This software is compiled using [Qt under GPLv3](LICENSE-Qt.md).
+
 
 ## QR Coder (https://github.com/codebude/QRCoder)
 

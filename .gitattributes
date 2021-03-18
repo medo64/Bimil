@@ -1,8 +1,9 @@
 * text=auto eol=lf
 
-*.bat     text eol=crlf
-*.cmd     text eol=crlf
-*.cs      text diff=csharp
-*.csproj  text
+*.cpp     text
+*.h       text
 *.md      text
-*.sln     text
+*.pro     text
+*.ui      text
+Makefile  text
+src/test/Config/*  binary

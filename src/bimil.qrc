@@ -1,0 +1,22 @@
+<RCC>
+    <qresource prefix="/">
+        <file>icons/16x16/app.png</file>
+        <file>icons/24x24/app.png</file>
+        <file>icons/32x32/app.png</file>
+        <file>icons/48x48/app.png</file>
+        <file>icons/64x64/app.png</file>
+        <file>icons/96x96/app.png</file>
+        <file>icons/128x128/app.png</file>
+        <file>icons/192x192/app.png</file>
+        <file>icons/256x256/app.png</file>
+        <file>icons/16x16/appDebug.png</file>
+        <file>icons/24x24/appDebug.png</file>
+        <file>icons/32x32/appDebug.png</file>
+        <file>icons/48x48/appDebug.png</file>
+        <file>icons/64x64/appDebug.png</file>
+        <file>icons/96x96/appDebug.png</file>
+        <file>icons/128x128/appDebug.png</file>
+        <file>icons/192x192/appDebug.png</file>
+        <file>icons/256x256/appDebug.png</file>
+    </qresource>
+</RCC>

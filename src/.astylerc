@@ -1,0 +1,15 @@
+--style=attach
+--indent=spaces=4
+--indent-preproc-block
+--indent-namespaces
+--indent-classes
+--indent-switches
+--indent-cases
+--keep-one-line-blocks
+--keep-one-line-statements
+--add-one-line-braces
+--align-pointer=type
+--align-reference=type
+--pad-oper
+--pad-comma
+--pad-header

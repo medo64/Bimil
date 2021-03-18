@@ -1,8 +1,10 @@
-**/bin
-**/obj
-**/.vs
-**/*.csproj.user
+/bin
+/build
+/build-*
+/dist
 
-Binaries/**
-Releases/**
-Research/**
+**/*.pro.user
+**/*.pro.user.*
+**/*.rs.bk
+
+*.rar
