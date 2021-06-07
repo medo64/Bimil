@@ -146,7 +146,7 @@ namespace Bimil {
         [Description("If true, hashed password will be sent over TLS 1.2 to Have I been pwned? (haveibeenpwned.com) servers to verify if it is among breached passwords. This will only be done during explicit weak password search and not during the normal password entry or use.")]
         [DefaultValue(false)]
         public static bool HibpCheckWeakPassword {
-            get { return Config.Read("HibpCheckWeakPassword", false); }
+            get { return Config.Read("HibpCheckWeakPassword", true); }
             set { Config.Write("HibpCheckWeakPassword", value); }
         }
 
@@ -162,9 +162,9 @@ namespace Bimil {
         [Category("Behavior")]
         [DisplayName("Throttle interval for Have I been pwned?")]
         [Description("Milliseconds between queries toward Have I been pwned? site.")]
-        [DefaultValue(1600)]
+        [DefaultValue(100)]
         public static int HibpThrottleInterval {
-            get { return Math.Max(0, Math.Min(Config.Read("HibpThrottleInterval", 1600), 10000)); }
+            get { return Math.Max(0, Math.Min(Config.Read("HibpThrottleInterval", 10), 10000)); }
             set { Config.Write("HibpThrottleInterval", value); }
         }
 

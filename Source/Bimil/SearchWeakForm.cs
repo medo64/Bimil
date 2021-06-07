@@ -152,93 +152,9 @@ namespace Bimil {
         private void bwSearchHibp_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e) {
             bwSearchHibp.ReportProgress(0, new ProgressState("';--have i been pwned?"));
 
-            if (SearchHibpForBreaches() == false) {
-                e.Cancel = true;
-            } else if (Settings.HibpCheckWeakPassword && (SearchHibpForPasswords() == false)) {
+            if (Settings.HibpCheckWeakPassword && (SearchHibpForPasswords() == false)) {
                 e.Cancel = true;
             }
-        }
-
-        private bool SearchHibpForBreaches() {
-            //collect all user-names
-            var sw = Stopwatch.StartNew();
-            var userEntryDictionary = new Dictionary<string, List<Entry>>();
-            foreach (var entry in Document.Entries) {
-                if (entry.Records.Contains(RecordType.Password)) {
-                    foreach (var record in entry.Records) {
-                        if ((record.RecordType == RecordType.EmailAddress) || (record.RecordType == RecordType.UserName)) {
-                            var text = record.Text;
-                            if (!string.IsNullOrWhiteSpace(text)) {
-                                if (!userEntryDictionary.TryGetValue(text, out var entries)) {
-                                    entries = new List<Entry>();
-                                    userEntryDictionary.Add(text, entries);
-                                }
-                                if (!entries.Contains(entry)) { entries.Add(entry); }
-                            }
-                        }
-                    }
-                }
-                if (bwSearchHibp.CancellationPending) { return false; }
-            }
-
-            Debug.WriteLine(string.Format(CultureInfo.InvariantCulture, "User names cached at {0:0.0} ms", sw.ElapsedMilliseconds));
-
-            //move dictionary to list so it gets sorted based on frequency
-            var userEntryList = new List<AccountAndEntryStorage>();
-            foreach (var kvp in userEntryDictionary) {
-                userEntryList.Add(new AccountAndEntryStorage(kvp.Key, kvp.Value));
-            }
-            userEntryList.Sort((item1, item2) => {
-                var count1 = item1.Entries.Count;
-                var count2 = item2.Entries.Count;
-                return (count1 > count2) ? -1
-                     : (count1 < count2) ? +1
-                     : string.CompareOrdinal(item1.Account, item2.Account);
-            });
-
-            Debug.WriteLine(string.Format(CultureInfo.InvariantCulture, "User names sorted at {0:0.0} ms", sw.ElapsedMilliseconds));
-
-            //Search all accounts for breaches
-            var userEntryCount = userEntryList.Count;
-            for (var i = 0; i < userEntryCount; i++) {
-                var userEntry = userEntryList[i];
-                var percentage = i * 100 / userEntryCount;
-                try {
-                    var breaches = Hibp.GetAllBreaches(userEntry.Account);
-                    ReportWebStatus(percentage, HttpStatusCode.OK, null, userEntry.Account, (userEntryCount - i) * Settings.HibpThrottleInterval);
-                    foreach (var entry in userEntry.Entries) {
-                        var modified = entry.PasswordModificationTime;
-                        foreach (var record in entry.Records) {
-                            if (record.RecordType == RecordType.Url) {
-                                var url = record.Text;
-                                foreach (var breach in breaches) {
-                                    if (breach.IsApplicable(url, modified, entry.Title)) { //check only if we know the domain
-                                        var lvi = new ListViewItem(entry.Title) {
-                                            Tag = entry,
-                                            ImageIndex = 1,
-                                            ToolTipText = $"Account is present in {breach.Title} breach:\n{FilterHtml(breach.Description)}"
-                                        };
-                                        bwSearchHibp.ReportProgress(percentage, new ProgressState(lvi));
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                } catch (WebException ex) {
-                    if (ex.Response is HttpWebResponse response) {
-                        ReportWebStatus(percentage, response.StatusCode, response.StatusDescription, userEntry.Account, (userEntryCount - i) * Settings.HibpThrottleInterval);
-                    } else {
-                        ReportWebStatus(percentage, null, ex.Message, userEntry.Account, (userEntryCount - i) * Settings.HibpThrottleInterval);
-                    }
-                }
-
-                Debug.WriteLine(string.Format(CultureInfo.InvariantCulture, "Account {1} searched at {0:0.0} ms (followed by {2} ms throttling)", sw.ElapsedMilliseconds, userEntry.Account, Settings.HibpThrottleInterval));
-                Thread.Sleep(Settings.HibpThrottleInterval);
-            }
-
-            Debug.WriteLine(string.Format(CultureInfo.InvariantCulture, "{1} accounts searched in {0:0.0} ms (albeit with {2} ms throttling)", sw.ElapsedMilliseconds, userEntryList.Count, Settings.HibpThrottleInterval));
-            return true;
         }
 
         private bool SearchHibpForPasswords() {
