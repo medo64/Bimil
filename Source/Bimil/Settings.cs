@@ -142,6 +142,34 @@ namespace Bimil {
 
 
         [Category("Behavior")]
+        [DisplayName("Check password at Have I been pwned?")]
+        [Description("If true, hashed password will be sent over TLS 1.2 to Have I been pwned? (haveibeenpwned.com) servers to verify if it is among breached passwords. This will only be done during explicit weak password search and not during the normal password entry or use.")]
+        [DefaultValue(false)]
+        public static bool HibpCheckWeakPassword {
+            get { return Config.Read("HibpCheckWeakPassword", false); }
+            set { Config.Write("HibpCheckWeakPassword", value); }
+        }
+
+        [Category("Behavior")]
+        [DisplayName("Randomize password query order at Have I been pwned?")]
+        [Description("If true, hashed password will be queried in random order.")]
+        [DefaultValue(false)]
+        public static bool HibpCheckWeakPasswordInRandomOrder {
+            get { return Config.Read("HibpCheckWeakPasswordInRandomOrder", false); }
+            set { Config.Write("HibpCheckWeakPasswordInRandomOrder", value); }
+        }
+
+        [Category("Behavior")]
+        [DisplayName("Throttle interval for Have I been pwned?")]
+        [Description("Milliseconds between queries toward Have I been pwned? site.")]
+        [DefaultValue(1600)]
+        public static int HibpThrottleInterval {
+            get { return Math.Max(0, Math.Min(Config.Read("HibpThrottleInterval", 1600), 10000)); }
+            set { Config.Write("HibpThrottleInterval", value); }
+        }
+
+
+        [Category("Behavior")]
         [DisplayName("Always use NTP for two-factor")]
         [Description("If true, each time two-factor code is taken an NTP request will be sent.")]
         [DefaultValue(true)]

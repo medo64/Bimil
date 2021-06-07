@@ -17,6 +17,7 @@ namespace Bimil {
             chbEditableByDefault.Checked = Settings.EditableByDefault;
             chbShowCommonPasswordWarnings.Checked = Settings.ShowCommonPasswordWarnings;
             chbPasswordSafeWarnings.Checked = Settings.ShowPasswordSafeWarnings;
+            chbCheckWeakPasswordAtHibp.Checked = Settings.HibpCheckWeakPassword;
             chbSavePasswordHistoryByDefault.Checked = Settings.SavePasswordHistoryByDefault;
 
             chbClearClipboardTimeout.Checked = (Settings.AutoClearClipboardTimeout > 0);
@@ -40,6 +41,7 @@ namespace Bimil {
             Settings.EditableByDefault = chbEditableByDefault.Checked;
             Settings.ShowCommonPasswordWarnings = chbShowCommonPasswordWarnings.Checked;
             Settings.ShowPasswordSafeWarnings = chbPasswordSafeWarnings.Checked;
+            Settings.HibpCheckWeakPassword = chbCheckWeakPasswordAtHibp.Checked;
             Settings.SavePasswordHistoryByDefault = chbSavePasswordHistoryByDefault.Checked;
 
             if (chbClearClipboardTimeout.Checked) {

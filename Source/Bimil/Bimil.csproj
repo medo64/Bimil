@@ -225,6 +225,7 @@
       <DependentUpon>AutotypeForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Execute.cs" />
+    <Compile Include="Hibp.cs" />
     <Compile Include="ItemForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -364,7 +365,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="SearchWeakForm.resx">
       <DependentUpon>SearchWeakForm.cs</DependentUpon>
-      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="SelectTemplateForm.resx">
       <DependentUpon>SelectTemplateForm.cs</DependentUpon>
