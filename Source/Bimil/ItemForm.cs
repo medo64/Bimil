@@ -218,7 +218,7 @@ namespace Bimil {
 
                 TextBox categoryTextBox; //just for use in readonly mode
                 {
-                    categoryTextBox = new TextBox() { Font = Font, Location = new Point(labelWidth + labelBuffer, y), Tag = categoryComboBox, Text = record.ToString(), Width = categoryComboBox.Width, ReadOnly = true, Visible = !Editable, Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right};
+                    categoryTextBox = new TextBox() { Font = Font, Location = new Point(labelWidth + labelBuffer, y), Tag = categoryComboBox, Text = record.ToString(), Width = categoryComboBox.Width, ReadOnly = true, Visible = !Editable, Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right };
                     pnl.Controls.Add(categoryTextBox);
                 }
 
@@ -493,7 +493,7 @@ namespace Bimil {
 
         private TextBox NewTextBox(int x, int y, Record record, string text = null, bool urlLookAndFeel = false, bool multiline = false, Font font = null) {
             var padding = SystemInformation.VerticalScrollBarWidth + 1;
-            if (text == null) { text = record.Text; }
+            if (text == null) { text = record.Text ?? ""; }
 
             var textBox = new TextBoxEx() { Font = font ?? Font, Location = new Point(x + padding, y), Tag = record, Width = pnl.ClientSize.Width - x - padding, ReadOnly = !Editable, Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right };
 
