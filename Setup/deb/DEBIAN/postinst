@@ -2,7 +2,7 @@
 set -e
 
 chmod +x /opt/bimil/bimil
-rm "/usr/bin/bimil" >/dev/null || true
+rm "/usr/bin/bimil" 2>/dev/null || true
 ln -s /opt/bimil/bimil /usr/bin/bimil
 
 # Just loading to suppress warning
