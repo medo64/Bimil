@@ -24,8 +24,29 @@ if ! [ -f "$SOURCE_FILE" ] && [ "$DEBIAN_FRONTEND" != "noninteractive" ]; then
 fi
 
 if [ "$DO_ADD_REPO" -ne 0 ]; then
-    echo "deb https://medo64.com/repositories/deb stable main" > "$SOURCE_FILE"
-    echo "-----BEGIN PGP PUBLIC KEY BLOCK-----
+    echo "deb http://packages.medo64.com/deb stable main" > "$SOURCE_FILE"
+    if [ -d "/etc/apt/trusted.gpg.d/" ]; then
+        echo "-----BEGIN PGP PUBLIC KEY BLOCK-----
+Version: GnuPG v1
+
+mQENBFqxbGoBCACnavHwueNmk947TOkLDsnay/4uQIan79YFyHnv2zTFRuszuwFw
+65sbflaBTjR57CZRzNyXHEcPb/NrxxuhXKHOXzbURy6FBv0CQZVjf9bm0Lroq5Ab
+oZ9v0UZukpLoAyHkNca/zyHJoHtAq2Deq5X44dPRsCALn2zWJKya+hyA8ZYnGlcG
+hERdnR8mMB+i0xb44rnDNY7GwdRykSialn3WopSFBrHv9pYOd2wtnrb3H9pFjT3H
+jNp1+3/4mW6WDdVzC7mkJk9ia8mHqAw0IgtE7fP7HYcJnmdqCqgI3sZBR+D1VpyM
+CgNGK6DrGD5IUp1ktZe2wAL8Jig2/Xmk02g7ABEBAAG0L0pvc2lwIE1lZHZlZCAo
+UmVwb3NpdG9yeSkgPGptZWR2ZWRAam1lZHZlZC5jb20+iQE4BBMBCAAiBQJasWxq
+AhsDBgsJCAcDAgYVCAIJCgsEFgIDAQIeAQIXgAAKCRA4LnS5Ecf8hgj0B/0XeXn8
+aPkDLwHJzLbily9SUxn3WYcZhXEE1JSXtDHWI1owS/TT7kZxswHRh1DyZDQJSK0B
+LCsHx1zoIVIvlkGz8PNfN+G/E+2CAI8/cdDBa5z8DM+w8wpQ02NZjWnS5pmpr3MT
+sP7hLlyEeq/ErtKmZMlquDtTR7lUjundgtUIgofiSDiri/1xNynUmPgykkKR/vR2
+mrPHCxIqiEEq5RkFvIDpH6zltld97AeNP2vEcmkpyS9npFRkHgPNjxZhvHhhjbHP
+pXF542bTCX+bXOfPWbdl/mnIBRKdsNGNu/FbXTQ4gEmXQwmki5YL8kRwbBloxuH2
+5VcfjRkkgrnxUy4S
+=gY4j
+-----END PGP PUBLIC KEY BLOCK-----" > /etc/apt/trusted.gpg.d/medo64.asc
+    else  # add it using deprecated apt-key
+        echo "-----BEGIN PGP PUBLIC KEY BLOCK-----
 Version: GnuPG v1
 
 mQENBFqxbGoBCACnavHwueNmk947TOkLDsnay/4uQIan79YFyHnv2zTFRuszuwFw
@@ -44,6 +65,7 @@ pXF542bTCX+bXOfPWbdl/mnIBRKdsNGNu/FbXTQ4gEmXQwmki5YL8kRwbBloxuH2
 5VcfjRkkgrnxUy4S
 =gY4j
 -----END PGP PUBLIC KEY BLOCK-----" | apt-key add -
+    fi
 fi
 
 # Done
