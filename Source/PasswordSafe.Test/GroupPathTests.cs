@@ -11,7 +11,7 @@ namespace PasswordSafe.Test {
             Assert.Equal("A", path.ToString());
 
             var segments = path.GetSegments();
-            Assert.Equal(1, segments.Length);
+            Assert.Single(segments);
             Assert.Equal("A", segments[0]);
         }
 
@@ -54,7 +54,7 @@ namespace PasswordSafe.Test {
             Assert.Equal("", path.ToString());
 
             var segments = path.GetSegments();
-            Assert.Equal(1, segments.Length);
+            Assert.Single(segments);
             Assert.Equal("", segments[0]);
         }
 
@@ -99,11 +99,11 @@ namespace PasswordSafe.Test {
         public void GroupPath_Indexed() {
             PwSafe.GroupPath path = @"A.B.C\.d";
 
-            Assert.Equal(null, path[-1]);
+            Assert.Null(path[-1]);
             Assert.Equal("A", path[0]);
             Assert.Equal("B", path[1]);
             Assert.Equal("C.d", path[2]);
-            Assert.Equal(null, path[3]);
+            Assert.Null(path[3]);
         }
 
     }

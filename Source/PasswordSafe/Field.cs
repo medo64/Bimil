@@ -24,7 +24,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// </summary>
         public int Version {
             get {
-                if ((DataType == PasswordSafeFieldDataType.Version) || (DataType == PasswordSafeFieldDataType.Unknown)) {
+                if (DataType is PasswordSafeFieldDataType.Version or PasswordSafeFieldDataType.Unknown) {
                     var data = RawData;
                     try {
                         if (data.Length == 2) {
@@ -37,8 +37,8 @@ namespace Medo.Security.Cryptography.PasswordSafe {
                 return -1; //unknown version
             }
             set {
-                if ((DataType != PasswordSafeFieldDataType.Version) && (DataType != PasswordSafeFieldDataType.Unknown)) { throw new FormatException("Field type mismatch."); }
-                if ((value < 0) || (value > ushort.MaxValue)) { throw new ArgumentOutOfRangeException(nameof(value), "Value outside of range."); }
+                if (DataType is not PasswordSafeFieldDataType.Version and not PasswordSafeFieldDataType.Unknown) { throw new FormatException("Field type mismatch."); }
+                if (value is < 0 or > ushort.MaxValue) { throw new ArgumentOutOfRangeException(nameof(value), "Value outside of range."); }
                 RawData = BitConverter.GetBytes((ushort)value);
             }
         }
@@ -50,7 +50,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// </summary>
         public Guid Uuid {
             get {
-                if ((DataType == PasswordSafeFieldDataType.Uuid) || (DataType == PasswordSafeFieldDataType.Unknown)) {
+                if (DataType is PasswordSafeFieldDataType.Uuid or PasswordSafeFieldDataType.Unknown) {
                     var data = RawData;
                     try {
                         if (data.Length == 16) {
@@ -63,7 +63,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
                 return Guid.Empty; //unknown guid
             }
             set {
-                if ((DataType != PasswordSafeFieldDataType.Uuid) && (DataType != PasswordSafeFieldDataType.Unknown)) { throw new FormatException("Field type mismatch."); }
+                if (DataType is not PasswordSafeFieldDataType.Uuid and not PasswordSafeFieldDataType.Unknown) { throw new FormatException("Field type mismatch."); }
                 RawData = value.ToByteArray();
             }
         }
@@ -76,9 +76,9 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// Null will be returned if conversion cannot be performed.
         /// For unknown field types, conversion will always be attempted.
         /// </summary>
-        public virtual string Text {
+        public virtual string? Text {
             get {
-                if ((DataType == PasswordSafeFieldDataType.Text) || (DataType == PasswordSafeFieldDataType.Unknown)) {
+                if (DataType is PasswordSafeFieldDataType.Text or PasswordSafeFieldDataType.Unknown) {
                     var data = RawData;
                     try {
                         return Utf8Encoding.GetString(data);
@@ -89,14 +89,14 @@ namespace Medo.Security.Cryptography.PasswordSafe {
                 return null;
             }
             set {
-                if ((DataType != PasswordSafeFieldDataType.Text) && (DataType != PasswordSafeFieldDataType.Unknown)) { throw new FormatException("Field type mismatch."); }
+                if (DataType is not PasswordSafeFieldDataType.Text and not PasswordSafeFieldDataType.Unknown) { throw new FormatException("Field type mismatch."); }
                 if (value == null) { throw new ArgumentNullException(nameof(value), "Value cannot be null."); }
                 RawData = Utf8Encoding.GetBytes(value);
             }
         }
 
 
-        private static readonly DateTime TimeMin = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+        private static readonly DateTime TimeMin = new(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         private static readonly DateTime TimeMax = TimeMin.AddSeconds(uint.MaxValue);
 
         /// <summary>
@@ -106,7 +106,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// </summary>
         public DateTime Time {
             get {
-                if ((DataType == PasswordSafeFieldDataType.Time) || (DataType == PasswordSafeFieldDataType.Unknown)) {
+                if (DataType is PasswordSafeFieldDataType.Time or PasswordSafeFieldDataType.Unknown) {
                     var data = RawData;
                     try {
                         if (data.Length == 4) {
@@ -126,7 +126,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
                 return DateTime.MinValue;
             }
             set {
-                if ((DataType != PasswordSafeFieldDataType.Time) && (DataType != PasswordSafeFieldDataType.Unknown)) { throw new FormatException("Field type mismatch."); }
+                if (DataType is not PasswordSafeFieldDataType.Time and not PasswordSafeFieldDataType.Unknown) { throw new FormatException("Field type mismatch."); }
                 if ((value < TimeMin) || (value > TimeMax)) { throw new ArgumentNullException(nameof(value), "Time outside of allowable range."); }
                 var seconds = (uint)((value.ToUniversalTime() - TimeMin).TotalSeconds);
                 RawData = BitConverter.GetBytes(seconds);
@@ -151,8 +151,16 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// <summary>
         /// Returns data as bytes without marking the field as accessed.
         /// </summary>
-        internal byte[] GetBytesSilently() {
-            return RawDataDirect;
+        public byte[] GetBytesSilently() {
+            //return RawDataDirect;
+            var data = RawDataDirect;
+            try {
+                var dataCopy = new byte[data.Length];
+                Buffer.BlockCopy(data, 0, dataCopy, 0, dataCopy.Length);
+                return dataCopy;
+            } finally {
+                Array.Clear(data, 0, data.Length);
+            }
         }
 
         /// <summary>
@@ -176,7 +184,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         private readonly byte[] RawDataEntropy = new byte[16];
 
 
-        private byte[] _rawData = null;
+        private byte[]? _rawData = null;
         /// <summary>
         /// Gets/sets raw data.
         /// Bytes are kept encrypted in memory until accessed.
@@ -218,7 +226,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// </summary>
         protected byte[] RawDataDirect {
             get {
-                if (_rawData == null) { return new byte[0]; } //return empty array if no value has been set so far
+                if (_rawData == null) { return Array.Empty<byte>(); } //return empty array if no value has been set so far
                 return UnprotectData(_rawData, RawDataEntropy);
             }
         }
@@ -279,13 +287,13 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// Returns a string representation of an object.
         /// </summary>
         public override string ToString() {
-            switch (DataType) {
-                case PasswordSafeFieldDataType.Version: return Version.ToString("X4", CultureInfo.InvariantCulture);
-                case PasswordSafeFieldDataType.Uuid: return Uuid.ToString();
-                case PasswordSafeFieldDataType.Text: return Text;
-                case PasswordSafeFieldDataType.Time: return Time.ToLocalTime().ToString("yyyy'-'MM'-'dd HH':'mm':'ss K", CultureInfo.InvariantCulture);
-                default: return "0x" + BitConverter.ToString(RawData).Replace("-", "");
-            }
+            return DataType switch {
+                PasswordSafeFieldDataType.Version => Version.ToString("X4", CultureInfo.InvariantCulture),
+                PasswordSafeFieldDataType.Uuid => Uuid.ToString(),
+                PasswordSafeFieldDataType.Text => Text ?? String.Empty,
+                PasswordSafeFieldDataType.Time => Time.ToLocalTime().ToString("yyyy'-'MM'-'dd HH':'mm':'ss K", CultureInfo.InvariantCulture),
+                _ => "0x" + BitConverter.ToString(RawData).Replace("-", ""),
+            };
         }
 
     }

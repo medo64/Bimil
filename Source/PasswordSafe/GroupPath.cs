@@ -19,7 +19,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
             if (segments != null) {
                 foreach (var component in segments) {
                     if (!string.IsNullOrEmpty(component)) {
-                        if (sb.Length > 0) { sb.Append("."); }
+                        if (sb.Length > 0) { sb.Append('.'); }
                         sb.Append(component.Replace(".", @"\."));
                     }
                 }
@@ -45,7 +45,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
             foreach (var ch in Group) {
                 if (ch == '.') {
                     if (escaped) {
-                        segment[segment.Length - 1] = '.';
+                        segment[^1] = '.';
                         escaped = false;
                     } else {
                         segmentList.Add(segment.ToString());
@@ -72,7 +72,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
             var segments = GetSegments();
             var newSegments = new string[segments.Length + 1];
             Array.Copy(segments, 0, newSegments, 0, segments.Length);
-            newSegments[newSegments.Length - 1] = segment;
+            newSegments[^1] = segment;
             return new GroupPath(newSegments);
         }
 
@@ -93,7 +93,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// Gets a segment of the path or null if segment doesn't exist.
         /// </summary>
         /// <param name="index">The zero-based index of the element to get.</param>
-        public string this[int index] {
+        public string? this[int index] {
             get {
                 var segements = GetSegments();
                 if ((index < 0) || (index >= segements.Length)) { return null; }
@@ -108,7 +108,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// Determines whether the specified object is equal to the current object.
         /// </summary>
         /// <param name="obj">The object to compare with the current object.</param>
-        public override bool Equals(object obj) {
+        public override bool Equals(object? obj) {
             if (obj is GroupPath path) { return Group.Equals(path.Group, StringComparison.OrdinalIgnoreCase); }
 
             var group = obj as string;

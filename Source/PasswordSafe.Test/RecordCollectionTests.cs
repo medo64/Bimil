@@ -39,7 +39,7 @@ namespace PasswordSafe.Test {
                 var doc = new PwSafe.Document("Password");
                 doc.Entries.Add(new PwSafe.Entry());
                 doc.IsReadOnly = true;
-                doc.Entries[0].Records[PwSafe.RecordType.Title] = null;
+                doc.Entries[0].Records.Remove(PwSafe.RecordType.Title);
             });
         }
 

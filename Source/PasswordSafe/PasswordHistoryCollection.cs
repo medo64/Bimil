@@ -17,18 +17,18 @@ namespace Medo.Security.Cryptography.PasswordSafe {
 
             if (Records.Contains(RecordType.PasswordHistory)) {
                 var text = Records[RecordType.PasswordHistory].Text;
-                if (text.Length >= 5) {
-                    _enabled = text[0] == '0' ? false : true;
-                    if (!int.TryParse(text.Substring(1, 2), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out _maximumCount)) {
+                if ((text != null) && (text.Length >= 5)) {
+                    _enabled = (text[0] != '0');
+                    if (!int.TryParse(text.AsSpan(1, 2), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out _maximumCount)) {
                         _maximumCount = DefaultMaximumCount;
                     }
 
-                    if (int.TryParse(text.Substring(3, 2), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out var count)) {
+                    if (int.TryParse(text.AsSpan(3, 2), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out var count)) {
                         var j = 5; //where parsing starts
                         for (var i = 0; i < count; i++) {
                             if (text.Length >= j + 12) {
-                                if (int.TryParse(text.Substring(j, 8), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out var time)
-                                    && int.TryParse(text.Substring(j + 8, 4), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out var length)) {
+                                if (int.TryParse(text.AsSpan(j, 8), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out var time)
+                                    && int.TryParse(text.AsSpan(j + 8, 4), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out var length)) {
                                     j += 12; //skip time and length
                                     if (text.Length >= j + length) {
                                         var item = new PasswordHistoryItem(this, UnixEpoch.AddSeconds(time), text.Substring(j, length));
@@ -106,7 +106,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
                 return _maximumCount;
             }
             set {
-                if ((value < 1) || (value > 255)) { throw new ArgumentOutOfRangeException("value", "Value must be between 1 and 255."); }
+                if (value is < 1 or > 255) { throw new ArgumentOutOfRangeException(nameof(value), "Value must be between 1 and 255."); }
                 if (_maximumCount != value) {
                     _maximumCount = value;
                     MarkAsChanged();
@@ -135,7 +135,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         }
 
 
-        private readonly List<PasswordHistoryItem> BaseCollection = new List<PasswordHistoryItem>();
+        private readonly List<PasswordHistoryItem> BaseCollection = new();
 
 
         /// <summary>
@@ -168,7 +168,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
 
 
         private const int DefaultMaximumCount = 3;
-        private static readonly DateTime UnixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+        private static readonly DateTime UnixEpoch = new(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
     }
 }

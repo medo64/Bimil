@@ -83,7 +83,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
 
 
         [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
-        private readonly List<Record> BaseCollection = new List<Record>();
+        private readonly List<Record> BaseCollection = new();
 
 
         #region ICollection
@@ -293,8 +293,6 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// Gets field based on a type.
         /// If multiple elements exist with the same field type, the first one is returned.
         /// If type does not exist, it is created.
-        /// 
-        /// If value is set to null, field is removed.
         /// </summary>
         /// <param name="type">Type.</param>
         /// <exception cref="ArgumentOutOfRangeException">Only null value is supported.</exception>
@@ -319,21 +317,30 @@ namespace Medo.Security.Cryptography.PasswordSafe {
 
                 return newField;
             }
-            set {
-                if (IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
-                if (value != null) { throw new ArgumentOutOfRangeException(nameof(value), "Only null value is supported."); }
+            [Obsolete("Use Remove(type) instead.", error: true)]
+            set { }
+        }
 
-                Record fieldToRemove = null;
-                foreach (var field in BaseCollection) {
-                    if (field.RecordType == type) {
-                        fieldToRemove = field;
-                        break;
-                    }
-                }
-                if (fieldToRemove != null) {
-                    Remove(fieldToRemove);
+        /// <summary>
+        /// Removes the item from the collection.
+        /// If multiple elements exist with the same field type, the first one is returned.
+        /// </summary>
+        /// <param name="type">Type.</param>
+        /// <exception cref="NotSupportedException">Collection is read-only.</exception>
+        public bool Remove(RecordType type) {
+            if (IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
+
+            Record? fieldToRemove = null;
+            foreach (var field in BaseCollection) {
+                if (field.RecordType == type) {
+                    fieldToRemove = field;
+                    break;
                 }
             }
+            if (fieldToRemove != null) {
+                return Remove(fieldToRemove);
+            }
+            return false;  // not found
         }
 
         #endregion

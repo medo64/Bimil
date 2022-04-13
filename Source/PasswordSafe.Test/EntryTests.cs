@@ -59,7 +59,7 @@ namespace PasswordSafe.Test {
             doc.Save(new MemoryStream());
 
             doc.Entries[0].Clone();
-            Assert.Equal(false, doc.HasChanged);
+            Assert.False(doc.HasChanged);
         }
 
 

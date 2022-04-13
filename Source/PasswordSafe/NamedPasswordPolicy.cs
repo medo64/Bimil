@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
-using System.Text;
 
 namespace Medo.Security.Cryptography.PasswordSafe {
     /// <summary>
@@ -16,6 +14,8 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// </summary>
         /// <param name="name">Policy name.</param>
         /// <param name="passwordLength">Password length.</param>
+        /// <exception cref="ArgumentNullException">Name cannot be null.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">Name cannot be empty. -or- Name cannot be longer than 255 characters.</exception>
         public NamedPasswordPolicy(string name, int passwordLength) {
             Name = name;
             TotalPasswordLength = passwordLength;
@@ -33,7 +33,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
             Owner = owner;
         }
 
-        private readonly NamedPasswordPolicyCollection Owner;
+        private readonly NamedPasswordPolicyCollection? Owner;
 
 
         /// <summary>
@@ -88,7 +88,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         public int TotalPasswordLength {
             get { return _totalPasswordLength; }
             set {
-                if ((value < 1) || (value > 4095)) { throw new ArgumentOutOfRangeException(nameof(value), "Length must be between 1 and 4095."); }
+                if (value is < 1 or > 4095) { throw new ArgumentOutOfRangeException(nameof(value), "Length must be between 1 and 4095."); }
                 _totalPasswordLength = value;
                 MarkAsChanged();
             }
@@ -102,7 +102,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         public int MinimumLowercaseCount {
             get { return _minimumLowercaseCount; }
             set {
-                if ((value < 0) || (value > 4095)) { throw new ArgumentOutOfRangeException(nameof(value), "Count must be between 0 and 4095."); }
+                if (value is < 0 or > 4095) { throw new ArgumentOutOfRangeException(nameof(value), "Count must be between 0 and 4095."); }
                 _minimumLowercaseCount = value;
                 MarkAsChanged();
             }
@@ -116,7 +116,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         public int MinimumUppercaseCount {
             get { return _minimumUppercaseCount; }
             set {
-                if ((value < 0) || (value > 4095)) { throw new ArgumentOutOfRangeException(nameof(value), "Count must be between 0 and 4095."); }
+                if (value is < 0 or > 4095) { throw new ArgumentOutOfRangeException(nameof(value), "Count must be between 0 and 4095."); }
                 _minimumUppercaseCount = value;
                 MarkAsChanged();
             }
@@ -130,7 +130,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         public int MinimumDigitCount {
             get { return _minimumDigitCount; }
             set {
-                if ((value < 0) || (value > 4095)) { throw new ArgumentOutOfRangeException(nameof(value), "Count must be between 0 and 4095."); }
+                if (value is < 0 or > 4095) { throw new ArgumentOutOfRangeException(nameof(value), "Count must be between 0 and 4095."); }
                 _minimumDigitCount = value;
                 MarkAsChanged();
             }
@@ -144,14 +144,14 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         public int MinimumSymbolCount {
             get { return _minimumSymbolCount; }
             set {
-                if ((value < 0) || (value > 4095)) { throw new ArgumentOutOfRangeException(nameof(value), "Count must be between 0 and 4095."); }
+                if (value is < 0 or > 4095) { throw new ArgumentOutOfRangeException(nameof(value), "Count must be between 0 and 4095."); }
                 _minimumSymbolCount = value;
                 MarkAsChanged();
             }
         }
 
 
-        private char[] _specialSymbolSet = new char[] { };
+        private char[] _specialSymbolSet = Array.Empty<char>();
         /// <summary>
         /// Returns special symbols that are allowed in the password.
         /// </summary>
@@ -171,7 +171,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
             var symbols = new List<char>(specialSymbols);
             if (symbols.Count > 1) {
                 symbols.Sort();
-                var prevCh = symbols[symbols.Count - 1];
+                var prevCh = symbols[^1];
                 for (var i = symbols.Count - 2; i >= 0; i--) {
                     var currCh = symbols[i];
                     if (currCh == prevCh) {
@@ -191,7 +191,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// Returns true if objects are equal.
         /// </summary>
         /// <param name="obj">Other object.</param>
-        public override bool Equals(object obj) {
+        public override bool Equals(object? obj) {
             if (obj is NamedPasswordPolicy other) {
                 return string.Equals(ToString(), other.ToString(), StringComparison.Ordinal);
             }
