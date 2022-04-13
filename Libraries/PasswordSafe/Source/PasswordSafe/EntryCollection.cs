@@ -29,7 +29,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
 
 
         [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
-        private readonly List<Entry> BaseCollection = new List<Entry>();
+        private readonly List<Entry> BaseCollection = new();
 
 
         #region ICollection
@@ -254,11 +254,8 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// If multiple elements exist with the same title, the first one is returned.
         /// If type does not exist, it is created.
         /// Search is case-insensitive.
-        /// 
-        /// If value is set to null, entry is removed.
         /// </summary>
         /// <param name="title">Title.</param>
-        /// <exception cref="ArgumentOutOfRangeException">Only null value is supported.</exception>
         /// <exception cref="NotSupportedException">Collection is read-only.</exception>
         public Entry this[string title] {
             get {
@@ -274,21 +271,8 @@ namespace Medo.Security.Cryptography.PasswordSafe {
                 Add(newEntry);
                 return newEntry;
             }
-            set {
-                if (IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
-                if (value != null) { throw new ArgumentOutOfRangeException(nameof(value), "Only null value is supported."); }
-
-                Entry entryToRemove = null;
-                foreach (var entry in BaseCollection) {
-                    if (entry.Title.Equals(title, StringComparison.CurrentCultureIgnoreCase)) {
-                        entryToRemove = entry;
-                        break;
-                    }
-                }
-                if (entryToRemove != null) {
-                    Remove(entryToRemove);
-                }
-            }
+            [Obsolete("Use Remove(title) instead.", error: true)]
+            set { }
         }
 
         /// <summary>
@@ -296,14 +280,9 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// If multiple elements exist with the same title, the first one is returned.
         /// If type does not exist, it is created.
         /// Search is case-insensitive.
-        /// 
-        /// If value is set to null, entry is removed.
         /// </summary>
         /// <param name="group">Group.</param>
         /// <param name="title">Title.</param>
-        /// <exception cref="ArgumentOutOfRangeException">Only null value is supported.</exception>
-        /// <exception cref="NotSupportedException">Collection is read-only.</exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1023:IndexersShouldNotBeMultidimensional", Justification = "Done intentionally for the ease of use.")]
         public Entry this[GroupPath group, string title] {
             get {
                 foreach (var entry in BaseCollection) {
@@ -318,21 +297,8 @@ namespace Medo.Security.Cryptography.PasswordSafe {
                 Add(newEntry);
                 return newEntry;
             }
-            set {
-                if (IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
-                if (value != null) { throw new ArgumentOutOfRangeException(nameof(value), "Only null value is supported."); }
-
-                Entry entryToRemove = null;
-                foreach (var entry in BaseCollection) {
-                    if (entry.Group.Equals(group) && entry.Title.Equals(title, StringComparison.CurrentCultureIgnoreCase)) {
-                        entryToRemove = entry;
-                        break;
-                    }
-                }
-                if (entryToRemove != null) {
-                    Remove(entryToRemove);
-                }
-            }
+            [Obsolete("Use Remove(group, title) instead.", error: true)]
+            set { }
         }
 
         /// <summary>
@@ -340,34 +306,16 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// If multiple elements exist with the same title, the first one is returned.
         /// If type does not exist, it is created.
         /// Search is case-insensitive.
-        ///
-        /// If value is set to null, record field is removed.
         /// </summary>
         /// <param name="title">Title.</param>
         /// <param name="type">Record type.</param>
-        /// <exception cref="ArgumentOutOfRangeException">Only null value is supported.</exception>
-        /// <exception cref="NotSupportedException">Collection is read-only.</exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1023:IndexersShouldNotBeMultidimensional", Justification = "Type represents a logical data store.")]
         public Record this[string title, RecordType type] {
             get {
                 var entry = this[title];
                 return entry.Records[type];
             }
-            set {
-                if (IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
-                if (value != null) { throw new ArgumentOutOfRangeException(nameof(value), "Only null value is supported."); }
-
-                Entry entryToModify = null;
-                foreach (var entry in BaseCollection) {
-                    if (entry.Title.Equals(title, StringComparison.CurrentCultureIgnoreCase)) {
-                        entryToModify = entry;
-                        break;
-                    }
-                }
-                if (entryToModify != null) { //to avoid creating entry
-                    entryToModify.Records[type] = null;
-                }
-            }
+            [Obsolete("Use Remove(title, type) instead.", error: true)]
+            set { }
         }
 
         /// <summary>
@@ -375,35 +323,18 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// If multiple elements exist with the same title, the first one is returned.
         /// If type does not exist, it is created.
         /// Search is case-insensitive.
-        ///
-        /// If value is set to null, record field is removed.
         /// </summary>
         /// <param name="group">Group.</param>
         /// <param name="title">Title.</param>
         /// <param name="type">Record type.</param>
-        /// <exception cref="ArgumentOutOfRangeException">Only null value is supported.</exception>
         /// <exception cref="NotSupportedException">Collection is read-only.</exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1023:IndexersShouldNotBeMultidimensional", Justification = "Type represents a logical data store.")]
         public Record this[GroupPath group, string title, RecordType type] {
             get {
                 var entry = this[group, title];
                 return entry.Records[type];
             }
-            set {
-                if (IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
-                if (value != null) { throw new ArgumentOutOfRangeException(nameof(value), "Only null value is supported."); }
-
-                Entry entryToModify = null;
-                foreach (var entry in BaseCollection) {
-                    if (entry.Group.Equals(group) && entry.Title.Equals(title, StringComparison.CurrentCultureIgnoreCase)) {
-                        entryToModify = entry;
-                        break;
-                    }
-                }
-                if (entryToModify != null) { //to avoid creating entry
-                    entryToModify.Records[type] = null;
-                }
-            }
+            [Obsolete("Use Remove(group, title, type) instead.", error: true)]
+            set { }
         }
 
 
@@ -419,6 +350,112 @@ namespace Medo.Security.Cryptography.PasswordSafe {
                     return string.Compare(item1.Title, item2.Title, StringComparison.CurrentCultureIgnoreCase);
                 }
             });
+        }
+
+
+        /// <summary>
+        /// Removes the item from the collection.
+        /// If multiple elements exist with the same title, the first one is returned.
+        /// Search is case-insensitive.
+        /// </summary>
+        /// <param name="title">Title of the item to be removed to remove.</param>
+        /// <exception cref="ArgumentNullException">Title cannot be null.</exception>
+        /// <exception cref="NotSupportedException">Collection is read-only.</exception>
+        public bool Remove(string title) {
+            if (title == null) { throw new ArgumentNullException(nameof(title), "Title cannot be null."); }
+            if (IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
+
+            Entry? entryToRemove = null;
+            foreach (var entry in BaseCollection) {
+                if (entry.Title.Equals(title, StringComparison.CurrentCultureIgnoreCase)) {
+                    entryToRemove = entry;
+                    break;
+                }
+            }
+            if (entryToRemove != null) {
+                return Remove(entryToRemove);
+            }
+            return false;  // not found
+        }
+
+        /// <summary>
+        /// Removes the item from the collection.
+        /// If multiple elements exist with the same title, the first one is returned.
+        /// Search is case-insensitive.
+        /// </summary>
+        /// <param name="group">Group.</param>
+        /// <param name="title">Title of the item to be removed to remove.</param>
+        /// <exception cref="ArgumentNullException">Title cannot be null.</exception>
+        /// <exception cref="NotSupportedException">Collection is read-only.</exception>
+        public bool Remove(GroupPath group, string title) {
+            if (title == null) { throw new ArgumentNullException(nameof(title), "Title cannot be null."); }
+            if (IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
+
+            Entry? entryToRemove = null;
+            foreach (var entry in BaseCollection) {
+                if (entry.Group.Equals(group) && entry.Title.Equals(title, StringComparison.CurrentCultureIgnoreCase)) {
+                    entryToRemove = entry;
+                    break;
+                }
+            }
+            if (entryToRemove != null) {
+                return Remove(entryToRemove);
+            }
+            return false;  // not found
+        }
+
+        /// <summary>
+        /// Removes the item from the collection.
+        /// If multiple elements exist with the same title, the first one is returned.
+        /// Search is case-insensitive.
+        /// </summary>
+        /// <param name="title">Title of the item to be removed to remove.</param>
+        /// <param name="type">Record type.</param>
+        /// <exception cref="ArgumentNullException">Title cannot be null.</exception>
+        /// <exception cref="NotSupportedException">Collection is read-only.</exception>
+        public bool Remove(string title, RecordType type) {
+            if (title == null) { throw new ArgumentNullException(nameof(title), "Title cannot be null."); }
+            if (IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
+
+            Entry? entryToModify = null;
+            foreach (var entry in BaseCollection) {
+                if (entry.Title.Equals(title, StringComparison.CurrentCultureIgnoreCase)) {
+                    entryToModify = entry;
+                    break;
+                }
+            }
+            if (entryToModify != null) {  // to avoid creating entry
+                return entryToModify.Records.Remove(type);
+            }
+            return false;  // not found
+        }
+
+        /// <summary>
+        /// Removes the item from the collection.
+        /// If multiple elements exist with the same title, the first one is returned.
+        /// Search is case-insensitive.
+        /// </summary>
+        /// <param name="group">Group.</param>
+        /// <param name="title">Title.</param>
+        /// <param name="type">Record type.</param>
+        /// <exception cref="ArgumentNullException">Group cannot be null. -or- Title cannot be null.</exception>
+        /// <exception cref="NotSupportedException">Collection is read-only.</exception>
+        public bool Remove(GroupPath group, string title, RecordType type) {
+            if (group == null) { throw new ArgumentNullException(nameof(group), "Group cannot be null."); }
+            if (title == null) { throw new ArgumentNullException(nameof(title), "Title cannot be null."); }
+            if (IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
+
+            Entry? entryToModify = null;
+            foreach (var entry in BaseCollection) {
+                if (entry.Group.Equals(group) && entry.Title.Equals(title, StringComparison.CurrentCultureIgnoreCase)) {
+                    entryToModify = entry;
+                    break;
+                }
+            }
+            if (entryToModify != null) {  // to avoid creating entry
+                return entryToModify.Records.Remove(type);
+            }
+            return false;  // not found
         }
 
         #endregion

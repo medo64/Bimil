@@ -47,7 +47,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// If given auto-type text is null or empty, default is returned (UserName {Tab} Password {Tab} Enter).
         /// </summary>
         /// <param name="autotypeText">Auto-type text.</param>
-        internal static IEnumerable<AutotypeToken> GetUnexpandedAutotypeTokens(string autotypeText) {
+        public static IEnumerable<AutotypeToken> GetUnexpandedAutotypeTokens(string autotypeText) {
             if (string.IsNullOrEmpty(autotypeText)) {
                 yield return new AutotypeToken("UserName", AutotypeTokenKind.Command);
                 yield return new AutotypeToken("{Tab}");
@@ -55,7 +55,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
                 yield return new AutotypeToken("{Enter}");
             } else {
                 var state = AutoTypeState.Default;
-                string command = null;
+                string? command = null;
                 var sbCommandArguments = new StringBuilder();
                 foreach (var ch in autotypeText) {
                     switch (state) {
@@ -161,7 +161,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
                             if (char.IsDigit(ch) && (sbCommandArguments.Length < 3)) {
                                 sbCommandArguments.Append(ch);
                             } else {
-                                yield return GetCommandToken(command, sbCommandArguments.ToString());
+                                yield return GetCommandToken(command!, sbCommandArguments.ToString());
                                 command = null; sbCommandArguments.Length = 0;
                                 if (ch == '\\') {
                                     state = AutoTypeState.Escape;
@@ -202,8 +202,8 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// <param name="entry">Entry to base fill-in on.</param>
         /// <exception cref="ArgumentNullException">Tokens cannot be null. -or- Entry cannot be null.</exception>
         internal static IEnumerable<AutotypeToken> GetAutotypeTokens(IEnumerable<AutotypeToken> tokens, Entry entry) {
-            if (tokens == null) { throw new ArgumentNullException("tokens", "Tokens cannot be null."); }
-            if (entry == null) { throw new ArgumentNullException("entry", "Entry cannot be null."); }
+            if (tokens == null) { throw new ArgumentNullException(nameof(tokens), "Tokens cannot be null."); }
+            if (entry == null) { throw new ArgumentNullException(nameof(entry), "Entry cannot be null."); }
 
             foreach (var token in tokens) {
                 if (token.Kind == AutotypeTokenKind.Command) {
@@ -268,7 +268,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// <param name="entry">Entry to base fill-in on.</param>
         /// <exception cref="ArgumentNullException">Entry cannot be null.</exception>
         internal static IEnumerable<AutotypeToken> GetAutotypeTokens(string autotypeText, Entry entry) {
-            if (entry == null) { throw new ArgumentNullException("entry", "Entry cannot be null."); }
+            if (entry == null) { throw new ArgumentNullException(nameof(entry), "Entry cannot be null."); }
 
             var tokens = GetUnexpandedAutotypeTokens(autotypeText);
             return GetAutotypeTokens(tokens, entry);
@@ -310,28 +310,27 @@ namespace Medo.Security.Cryptography.PasswordSafe {
             EscapeNumber,
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity", Justification = "Code is straightforward list of returns.")]
-        private static AutotypeToken GetCommandToken(string command, string argument) {
-            switch (command) {
-                case "u": return new AutotypeToken("UserName", AutotypeTokenKind.Command);
-                case "p": return new AutotypeToken("Password", AutotypeTokenKind.Command);
-                case "2": return new AutotypeToken("TwoFactorCode", AutotypeTokenKind.Command);
-                case "cn": return new AutotypeToken("CreditCardNumber", AutotypeTokenKind.Command);
-                case "ct": return new AutotypeToken("CreditCardNumberTabbed", AutotypeTokenKind.Command);
-                case "ce": return new AutotypeToken("CreditCardExpiration", AutotypeTokenKind.Command);
-                case "cv": return new AutotypeToken("CreditCardVerificationValue", AutotypeTokenKind.Command);
-                case "cp": return new AutotypeToken("CreditCardPin", AutotypeTokenKind.Command);
-                case "g": return new AutotypeToken("Group", AutotypeTokenKind.Command);
-                case "i": return new AutotypeToken("Title", AutotypeTokenKind.Command);
-                case "l": return new AutotypeToken("Url", AutotypeTokenKind.Command);
-                case "m": return new AutotypeToken("Email", AutotypeTokenKind.Command);
-                case "o": return new AutotypeToken("Notes" + (string.IsNullOrEmpty(argument) ? "" : ":" + argument), AutotypeTokenKind.Command);
-                case "d": return new AutotypeToken("Delay" + (string.IsNullOrEmpty(argument) ? "" : ":" + argument), AutotypeTokenKind.Command);
-                case "w": return new AutotypeToken("Wait" + (string.IsNullOrEmpty(argument) ? "" : ":" + argument), AutotypeTokenKind.Command);
-                case "W": return new AutotypeToken("Wait" + (string.IsNullOrEmpty(argument) ? "" : ":" + argument + "000"), AutotypeTokenKind.Command);
-                case "z": return new AutotypeToken("Legacy", AutotypeTokenKind.Command);
-                default: return new AutotypeToken(command);
-            }
+        private static AutotypeToken GetCommandToken(string command, string? argument) {
+            return command switch {
+                "u" => new AutotypeToken("UserName", AutotypeTokenKind.Command),
+                "p" => new AutotypeToken("Password", AutotypeTokenKind.Command),
+                "2" => new AutotypeToken("TwoFactorCode", AutotypeTokenKind.Command),
+                "cn" => new AutotypeToken("CreditCardNumber", AutotypeTokenKind.Command),
+                "ct" => new AutotypeToken("CreditCardNumberTabbed", AutotypeTokenKind.Command),
+                "ce" => new AutotypeToken("CreditCardExpiration", AutotypeTokenKind.Command),
+                "cv" => new AutotypeToken("CreditCardVerificationValue", AutotypeTokenKind.Command),
+                "cp" => new AutotypeToken("CreditCardPin", AutotypeTokenKind.Command),
+                "g" => new AutotypeToken("Group", AutotypeTokenKind.Command),
+                "i" => new AutotypeToken("Title", AutotypeTokenKind.Command),
+                "l" => new AutotypeToken("Url", AutotypeTokenKind.Command),
+                "m" => new AutotypeToken("Email", AutotypeTokenKind.Command),
+                "o" => new AutotypeToken("Notes" + (string.IsNullOrEmpty(argument) ? "" : ":" + argument), AutotypeTokenKind.Command),
+                "d" => new AutotypeToken("Delay" + (string.IsNullOrEmpty(argument) ? "" : ":" + argument), AutotypeTokenKind.Command),
+                "w" => new AutotypeToken("Wait" + (string.IsNullOrEmpty(argument) ? "" : ":" + argument), AutotypeTokenKind.Command),
+                "W" => new AutotypeToken("Wait" + (string.IsNullOrEmpty(argument) ? "" : ":" + argument + "000"), AutotypeTokenKind.Command),
+                "z" => new AutotypeToken("Legacy", AutotypeTokenKind.Command),
+                _ => new AutotypeToken(command),
+            };
         }
 
         private static string TrimCreditCardNumber(string creditCardNumber, bool isTabbed = false) {

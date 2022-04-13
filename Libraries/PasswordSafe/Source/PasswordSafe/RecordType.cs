@@ -4,7 +4,6 @@ namespace Medo.Security.Cryptography.PasswordSafe {
     /// <summary>
     /// Record field types.
     /// </summary>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1008:EnumsShouldHaveZeroValue", Justification = "This values map directly into the Password Safe type and there is no record type with value 0.")]
     public enum RecordType {
         /// <summary>
         /// UUID.

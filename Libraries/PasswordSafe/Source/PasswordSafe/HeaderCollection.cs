@@ -46,7 +46,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
 
 
         [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
-        private readonly List<Header> BaseCollection = new List<Header>();
+        private readonly List<Header> BaseCollection = new();
 
 
         #region ICollection
@@ -259,13 +259,10 @@ namespace Medo.Security.Cryptography.PasswordSafe {
 
         /// <summary>
         /// Gets field based on a type.
-        /// If multiple elements exist with the same field type, the first one is returned.
+        /// If multiple elements exist with the same header type, the first one is returned.
         /// If type does not exist, it is created.
-        /// 
-        /// If value is set to null, field is removed.
         /// </summary>
-        /// <param name="type">Type.</param>
-        /// <exception cref="ArgumentOutOfRangeException">Only null value is supported.</exception>
+        /// <param name="type">Header type.</param>
         /// <exception cref="NotSupportedException">Collection is read-only.</exception>
         public Header this[HeaderType type] {
             get {
@@ -287,21 +284,32 @@ namespace Medo.Security.Cryptography.PasswordSafe {
 
                 return newField;
             }
+            [Obsolete("Use Remove(type) instead.", error: true)]
             set {
-                if (IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
-                if (value != null) { throw new ArgumentOutOfRangeException(nameof(value), "Only null value is supported."); }
+            }
+        }
 
-                Header fieldToRemove = null;
-                foreach (var field in BaseCollection) {
-                    if (field.HeaderType == type) {
-                        fieldToRemove = field;
-                        break;
-                    }
-                }
-                if (fieldToRemove != null) {
-                    Remove(fieldToRemove);
+        /// <summary>
+        /// Removes the item from the collection.
+        /// If multiple elements exist with the same header type, the first one is returned.
+        /// If type does not exist, it is created.
+        /// </summary>
+        /// <param name="type">Header type.</param>
+        /// <exception cref="NotSupportedException">Collection is read-only.</exception>
+        public bool Remove(HeaderType type) {
+            if (IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
+
+            Header? fieldToRemove = null;
+            foreach (var field in BaseCollection) {
+                if (field.HeaderType == type) {
+                    fieldToRemove = field;
+                    break;
                 }
             }
+            if (fieldToRemove != null) {
+                return Remove(fieldToRemove);
+            }
+            return false;  // not found
         }
 
         #endregion

@@ -19,7 +19,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         }
 
         internal Record(RecordType type, byte[] rawData) : base() {
-            if ((type < 0) || (type >= RecordType.EndOfEntry)) { throw new ArgumentOutOfRangeException(nameof(type), "Type not supported."); }
+            if (type is < 0 or >= RecordType.EndOfEntry) { throw new ArgumentOutOfRangeException(nameof(type), "Type not supported."); }
             RecordType = type;
             RawData = rawData;
         }
@@ -30,7 +30,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         }
 
 
-        internal RecordCollection Owner { get; set; }
+        internal RecordCollection? Owner { get; set; }
 
 
         /// <summary>
@@ -43,13 +43,13 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// Null will be returned if conversion cannot be performed.
         /// For unknown field types, conversion will always be attempted.
         /// </summary>
-        public override string Text {
+        public override string? Text {
             get { return base.Text; }
             set {
                 if (RecordType == RecordType.Password) { //only for password change update history
                     if ((Owner != null) && Owner.Contains(RecordType.PasswordHistory) && Owner.Contains(RecordType.Password)) {
                         var history = new PasswordHistoryCollection(Owner);
-                        if (history.Enabled) {
+                        if (history.Enabled && (Text != null)) {
                             var time = Owner.Contains(RecordType.PasswordModificationTime) ? Owner[RecordType.PasswordModificationTime].Time : DateTime.UtcNow;
                             history.AddPasswordToHistory(time, Text); //save current password
                         }
@@ -87,42 +87,34 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// </summary>
         protected override PasswordSafeFieldDataType DataType {
             get {
-                switch (RecordType) {
-                    case RecordType.Uuid:
-                        return PasswordSafeFieldDataType.Uuid;
-
-                    case RecordType.Group:
-                    case RecordType.Title:
-                    case RecordType.UserName:
-                    case RecordType.Notes:
-                    case RecordType.Password:
-                    case RecordType.Url:
-                    case RecordType.Autotype:
-                    case RecordType.PasswordHistory:
-                    case RecordType.PasswordPolicy:
-                    case RecordType.RunCommand:
-                    case RecordType.EmailAddress:
-                    case RecordType.OwnSymbolsForPassword:
-                    case RecordType.PasswordPolicyName:
-                    case RecordType.CreditCardNumber:
-                    case RecordType.CreditCardExpiration:
-                    case RecordType.CreditCardVerificationValue:
-                    case RecordType.CreditCardPin:
-                    case RecordType.QRCode:
-                        return PasswordSafeFieldDataType.Text;
-
-                    case RecordType.CreationTime:
-                    case RecordType.PasswordModificationTime:
-                    case RecordType.LastAccessTime:
-                    case RecordType.PasswordExpiryTime:
-                    case RecordType.LastModificationTime:
-                        return PasswordSafeFieldDataType.Time;
-
-                    case RecordType.TwoFactorKey:
-                        return PasswordSafeFieldDataType.Binary;
-
-                    default: return PasswordSafeFieldDataType.Unknown;
-                }
+                return RecordType switch {
+                    RecordType.Uuid => PasswordSafeFieldDataType.Uuid,
+                    RecordType.Group => PasswordSafeFieldDataType.Text,
+                    RecordType.Title => PasswordSafeFieldDataType.Text,
+                    RecordType.UserName => PasswordSafeFieldDataType.Text,
+                    RecordType.Notes => PasswordSafeFieldDataType.Text,
+                    RecordType.Password => PasswordSafeFieldDataType.Text,
+                    RecordType.Url => PasswordSafeFieldDataType.Text,
+                    RecordType.Autotype => PasswordSafeFieldDataType.Text,
+                    RecordType.PasswordHistory => PasswordSafeFieldDataType.Text,
+                    RecordType.PasswordPolicy => PasswordSafeFieldDataType.Text,
+                    RecordType.RunCommand => PasswordSafeFieldDataType.Text,
+                    RecordType.EmailAddress => PasswordSafeFieldDataType.Text,
+                    RecordType.OwnSymbolsForPassword => PasswordSafeFieldDataType.Text,
+                    RecordType.PasswordPolicyName => PasswordSafeFieldDataType.Text,
+                    RecordType.CreditCardNumber => PasswordSafeFieldDataType.Text,
+                    RecordType.CreditCardExpiration => PasswordSafeFieldDataType.Text,
+                    RecordType.CreditCardVerificationValue => PasswordSafeFieldDataType.Text,
+                    RecordType.CreditCardPin => PasswordSafeFieldDataType.Text,
+                    RecordType.QRCode => PasswordSafeFieldDataType.Text,
+                    RecordType.CreationTime => PasswordSafeFieldDataType.Time,
+                    RecordType.PasswordModificationTime => PasswordSafeFieldDataType.Time,
+                    RecordType.LastAccessTime => PasswordSafeFieldDataType.Time,
+                    RecordType.PasswordExpiryTime => PasswordSafeFieldDataType.Time,
+                    RecordType.LastModificationTime => PasswordSafeFieldDataType.Time,
+                    RecordType.TwoFactorKey => PasswordSafeFieldDataType.Binary,
+                    _ => PasswordSafeFieldDataType.Unknown,
+                };
             }
         }
 

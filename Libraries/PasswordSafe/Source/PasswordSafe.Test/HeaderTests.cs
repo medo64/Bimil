@@ -41,7 +41,7 @@ namespace PasswordSafe.Test {
         public void Header_ReadOnly_IndexerWrite() {
             Assert.Throws<NotSupportedException>(() => {
                 var doc = new PwSafe.Document("Password") { IsReadOnly = true };
-                doc.Headers[PwSafe.HeaderType.DatabaseName] = null;
+                doc.Headers.Remove(PwSafe.HeaderType.DatabaseName);
             });
         }
 

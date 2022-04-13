@@ -25,13 +25,13 @@ namespace Medo.Security.Cryptography.PasswordSafe {
 
         internal Header(HeaderType type, byte[] rawData)
             : base() {
-            if ((type < 0) || (type >= HeaderType.EndOfEntry)) { throw new ArgumentOutOfRangeException(nameof(type), "Type not supported."); }
+            if (type is < 0 or >= HeaderType.EndOfEntry) { throw new ArgumentOutOfRangeException(nameof(type), "Type not supported."); }
             HeaderType = type;
             RawData = rawData;
         }
 
 
-        internal HeaderCollection Owner { get; set; }
+        internal HeaderCollection? Owner { get; set; }
 
 
         /// <summary>
@@ -65,33 +65,25 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         /// </summary>
         protected override PasswordSafeFieldDataType DataType {
             get {
-                switch (HeaderType) {
-                    case HeaderType.Version:
-                        return PasswordSafeFieldDataType.Version;
-
-                    case HeaderType.Uuid:
-                        return PasswordSafeFieldDataType.Uuid;
-
-                    case HeaderType.NonDefaultPreferences:
-                    case HeaderType.TreeDisplayStatus:
-                    case HeaderType.WhoPerformedLastSave:
-                    case HeaderType.WhatPerformedLastSave:
-                    case HeaderType.LastSavedByUser:
-                    case HeaderType.LastSavedOnHost:
-                    case HeaderType.DatabaseName:
-                    case HeaderType.DatabaseDescription:
-                    case HeaderType.DatabaseFilters:
-                    case HeaderType.RecentlyUsedEntries:
-                    case HeaderType.NamedPasswordPolicies:
-                    case HeaderType.EmptyGroups:
-                    case HeaderType.Yubico:
-                        return PasswordSafeFieldDataType.Text;
-
-                    case HeaderType.TimestampOfLastSave:
-                        return PasswordSafeFieldDataType.Time;
-
-                    default: return PasswordSafeFieldDataType.Unknown;
-                }
+                return HeaderType switch {
+                    HeaderType.Version => PasswordSafeFieldDataType.Version,
+                    HeaderType.Uuid => PasswordSafeFieldDataType.Uuid,
+                    HeaderType.NonDefaultPreferences => PasswordSafeFieldDataType.Text,
+                    HeaderType.TreeDisplayStatus => PasswordSafeFieldDataType.Text,
+                    HeaderType.WhoPerformedLastSave => PasswordSafeFieldDataType.Text,
+                    HeaderType.WhatPerformedLastSave => PasswordSafeFieldDataType.Text,
+                    HeaderType.LastSavedByUser => PasswordSafeFieldDataType.Text,
+                    HeaderType.LastSavedOnHost => PasswordSafeFieldDataType.Text,
+                    HeaderType.DatabaseName => PasswordSafeFieldDataType.Text,
+                    HeaderType.DatabaseDescription => PasswordSafeFieldDataType.Text,
+                    HeaderType.DatabaseFilters => PasswordSafeFieldDataType.Text,
+                    HeaderType.RecentlyUsedEntries => PasswordSafeFieldDataType.Text,
+                    HeaderType.NamedPasswordPolicies => PasswordSafeFieldDataType.Text,
+                    HeaderType.EmptyGroups => PasswordSafeFieldDataType.Text,
+                    HeaderType.Yubico => PasswordSafeFieldDataType.Text,
+                    HeaderType.TimestampOfLastSave => PasswordSafeFieldDataType.Time,
+                    _ => PasswordSafeFieldDataType.Unknown,
+                };
             }
         }
 

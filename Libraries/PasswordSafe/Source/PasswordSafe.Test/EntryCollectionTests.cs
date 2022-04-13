@@ -31,21 +31,13 @@ namespace PasswordSafe.Test {
             Assert.Equal("", doc.Entries["Test", PwSafe.RecordType.Title].Text);
         }
 
-        [Fact(DisplayName = "PasswordSafe: EntryCollection: Indexer Set (read-only document)")]
-        public void EntryCollection_ReadOnly_IndexerWrite() {
-            Assert.Throws<NotSupportedException>(() => {
-                var doc = new PwSafe.Document("Password") { IsReadOnly = true };
-                doc.Entries["A"] = new PwSafe.Entry();
-            });
-        }
-
         [Fact(DisplayName = "PasswordSafe: EntryCollection: Indexer Set 2 (read-only document)")]
         public void EntryCollection_ReadOnly_IndexerWrite2() {
             Assert.Throws<NotSupportedException>(() => {
                 var doc = new PwSafe.Document("Password");
                 doc.Entries.Add(new PwSafe.Entry("A"));
                 doc.IsReadOnly = true;
-                doc.Entries["A"][PwSafe.RecordType.EmailAddress] = null;
+                doc.Entries.Remove("A", PwSafe.RecordType.EmailAddress);
             });
         }
 
@@ -55,7 +47,7 @@ namespace PasswordSafe.Test {
                 var doc = new PwSafe.Document("Password");
                 doc.Entries.Add(new PwSafe.Entry("A"));
                 doc.IsReadOnly = true;
-                doc.Entries["A", PwSafe.RecordType.EmailAddress] = null;
+                doc.Entries.Remove("A", PwSafe.RecordType.EmailAddress);
             });
         }
 
@@ -65,7 +57,7 @@ namespace PasswordSafe.Test {
                 var doc = new PwSafe.Document("Password");
                 doc.Entries.Add(new PwSafe.Entry("X.Y", "A"));
                 doc.IsReadOnly = true;
-                doc.Entries["X.Y", "A", PwSafe.RecordType.EmailAddress] = null;
+                doc.Entries.Remove("X.Y", "A", PwSafe.RecordType.EmailAddress);
             });
         }
 

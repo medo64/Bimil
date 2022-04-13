@@ -17,8 +17,10 @@ namespace Medo.Security.Cryptography.PasswordSafe {
 
             if (owner.Headers.Contains(HeaderType.NamedPasswordPolicies)) {
                 var text = owner.Headers[HeaderType.NamedPasswordPolicies].Text;
-                foreach (var item in ParseMultiple(text)) {
-                    BaseCollection.Add(item);
+                if (text != null) {
+                    foreach (var item in ParseMultiple(text)) {
+                        BaseCollection.Add(item);
+                    }
                 }
             }
         }
@@ -65,7 +67,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
         }
 
 
-        private readonly List<NamedPasswordPolicy> BaseCollection = new List<NamedPasswordPolicy>();
+        private readonly List<NamedPasswordPolicy> BaseCollection = new();
 
 
         /// <summary>
@@ -113,7 +115,7 @@ namespace Medo.Security.Cryptography.PasswordSafe {
             }
         }
 
-        private NamedPasswordPolicy ParseSingle(StringBuilder text) {
+        private NamedPasswordPolicy? ParseSingle(StringBuilder text) {
             if ((text.Length < 2) || !int.TryParse(text.ToString(0, 2), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out var nameLength)) {
                 return null;
             }

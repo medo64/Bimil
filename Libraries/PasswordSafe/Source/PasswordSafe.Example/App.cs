@@ -17,13 +17,13 @@ namespace Example {
             doc.Entries["Ax"].Password = "A123x";
 
             //remove
-            doc.Entries["B"] = null;
+            doc.Entries.Remove("B");
 
             //create new
             doc.Entries["C"].UserName = "Cuser";
             doc.Entries["C"].Password = "C123";
             doc.Entries["C"].Group = "Test";
-            doc.Entries["C", PwSafe.RecordType.Group] = null;
+            doc.Entries.Remove("C", PwSafe.RecordType.Group);
 
             Show(doc, ConsoleColor.White);
 
