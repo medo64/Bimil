@@ -1,1 +1,0 @@
-git subtree pull --prefix Libraries/PasswordSafe https://github.com/medo64/PasswordSafe.git main --squash -m"PasswordSafe: Pull latest"

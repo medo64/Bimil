@@ -1,0 +1,148 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="640" d:DesignHeight="480"
+        x:Class="Bimil.Desktop.MainWindow"
+        Width="640" Height="480"
+        Icon="/Assets/App.ico"
+        Title="Bimil">
+
+    <DockPanel>
+        <!-- Toolbar -->
+        <Grid DockPanel.Dock="Top" ColumnDefinitions="Auto, Auto, Auto, *, Auto">
+            <Grid.Styles>
+                <Style Selector="Button">
+                    <Setter Property="Background" Value="Transparent" />
+                    <Setter Property="CornerRadius" Value="0" />
+                    <Setter Property="Height" Value="24" />
+                    <Setter Property="Padding" Value="2" />
+                </Style>
+                <Style Selector="Button /template/ ContentPresenter">
+                    <Setter Property="Transitions">
+                        <Transitions>
+                            <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.07"></TransformOperationsTransition>
+                        </Transitions>
+                    </Setter>
+                </Style>
+                <Style Selector="Button:pointerover /template/ ContentPresenter">
+                    <Setter Property="Background" Value="{StaticResource SystemAltHighColor}" />
+                    <Setter Property="BorderBrush" Value="{StaticResource SystemBaseHighColor}" />
+                    <Setter Property="BorderThickness" Value="1" />
+                </Style>
+                <Style Selector="MenuItem.DropDown">
+                    <Setter Property="FontSize" Value="8" />
+                    <Setter Property="Margin" Value="0" />
+                    <Setter Property="Padding" Value="0" />
+                </Style>
+                <Style Selector="Button:pressed /template/ ContentPresenter">
+                    <Setter Property="Padding" Value="3 3 1 1" />
+                </Style>
+                <Style Selector="Label">
+                    <Setter Property="Height" Value="24" />
+                    <Setter Property="VerticalContentAlignment" Value="Center" />
+                </Style>
+            </Grid.Styles>
+
+            <StackPanel Grid.Column="0" Orientation="Horizontal" Margin="2">
+                <Button Click="OnMenuFileNewClick" ToolTip.Tip="New file (Ctrl+N)">
+                    <Image Source="/Assets/Toolbar/FileNew_24.png" />
+                </Button>
+                <Button Click="OnMenuFileOpenClick" ToolTip.Tip="Open file (Ctrl+O)">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="/Assets/Toolbar/FileOpen_24.png" />
+                        <Menu>
+                            <MenuItem Header="▼" Classes="DropDown">
+                                <MenuItem Header="Open…" Click="OnMenuFileOpenClick" />
+                                <MenuItem Header="-" />
+                            </MenuItem>
+                        </Menu>
+                    </StackPanel>
+                </Button>
+                <Button Click="OnMenuFileSaveClick" ToolTip.Tip="Save file (Ctrl+S)">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="/Assets/Toolbar/FileSave_24.png" />
+                        <Menu>
+                            <MenuItem Header="▼" Classes="DropDown">
+                                <MenuItem Header="Save" Click="OnMenuFileSaveClick" />
+                                <MenuItem Header="Save As…" Click="OnMenuFileSaveAsClick" />
+                            </MenuItem>
+                        </Menu>
+                    </StackPanel>
+                </Button>
+                <Button Click="OnMenuFilePropertiesClick" ToolTip.Tip="File properties (Alt+Enter)">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="/Assets/Toolbar/FileEdit_24.png" />
+                        <Menu>
+                            <MenuItem Header="▼" Classes="DropDown">
+                                <MenuItem Header="Properties…" HotKey="Alt+Enter" Click="OnMenuFilePropertiesClick" ToolTip.Tip="Edit file properties" />
+                                <MenuItem Header="-" />
+                                <MenuItem Header="Change Password…" Click="OnMenuFileChangePasswordClick" ToolTip.Tip="Change file's password" />
+                                <MenuItem Header="Read-only" Click="OnMenuFileReadonlyClick" ToolTip.Tip="Controls if file is read-only or not" />
+                            </MenuItem>
+                        </Menu>
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+
+            <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="8 0 0 0">
+                <Button Click="OnMenuItemAddClick">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="/Assets/Toolbar/ItemAdd_24.png" />
+                        <Label>Add</Label>
+                    </StackPanel>
+                </Button>
+                <Button Click="OnMenuItemEditClick">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="/Assets/Toolbar/ItemEdit_24.png" />
+                        <Label>Edit</Label>
+                    </StackPanel>
+                </Button>
+                <Button Click="OnMenuItemRemoveClick">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="/Assets/Toolbar/ItemRemove_24.png" />
+                        <Label>Remove</Label>
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+
+            <StackPanel Grid.Column="2" Orientation="Horizontal" Margin="8 0 0 0">
+                <Button Click="OnMenuEditFindClick">
+                    <Image Source="/Assets/Toolbar/Find_24.png" />
+                </Button>
+                <Button Click="OnMenuEditPasswordGenerateClick">
+                    <Image Source="/Assets/Toolbar/PasswordGenerate_24.png" />
+                </Button>
+            </StackPanel>
+
+            <StackPanel Grid.Column="4" Orientation="Horizontal" Margin="2">
+                <Button Click="OnMenuAppOptionsClick">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="/Assets/Toolbar/App_24.png" />
+                        <Menu>
+                            <MenuItem Header="▼" Classes="DropDown">
+                                <MenuItem Header="Options…" Click="OnMenuAppOptionsClick" />
+                                <MenuItem Header="-" />
+                                <MenuItem Header="Send Feedback…" Click="OnMenuAppFeedbackClick" />
+                                <MenuItem Header="Check for Upgrade…" Click="OnMenuAppUpgradeClick" />
+                                <MenuItem Header="-" />
+                                <MenuItem Header="About…" Click="OnMenuAppAboutClick" />
+                            </MenuItem>
+                        </Menu>
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+        </Grid>
+
+        <!-- Statusbar -->
+        <Grid DockPanel.Dock="Bottom" ColumnDefinitions="Auto, *">
+            <Label Grid.Column="0">File name</Label>
+        </Grid>
+
+        <!-- Main -->
+        <Grid ColumnDefinitions="Auto, Auto, *, Auto" Background="Aquamarine">
+        </Grid>
+
+    </DockPanel>
+
+</Window>
