@@ -1,5 +1,6 @@
 /* Josip Medved <jmedved@jmedved.com> * www.medo64.com * MIT License */
 
+//2023-12-20: Cleaned up a bit
 //2023-03-12: Initial version
 
 namespace Medo.Avalonia;
@@ -35,13 +36,13 @@ public static class AboutBox {
     /// <param name="owner">Window that owns this window.</param>
     /// <param name="webpage">URI of program's web page.</param>
     public static void ShowDialog(Window owner, Uri? webpage) {
-        var window = new Window() { MinWidth = 200, MaxWidth = 540 };
+        var window = new Window() { MinWidth = 200, MaxWidth = 600 };
         if (owner != null) {
             window.Icon = owner.Icon;
             window.ShowInTaskbar = false;
             if (owner.Topmost) { window.Topmost = true; }
             window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-        } else {
+        } else {  // just in case null is passed, not ideal
             window.ShowInTaskbar = true;
             window.WindowStartupLocation = WindowStartupLocation.CenterScreen;
         }
@@ -153,6 +154,7 @@ public static class AboutBox {
             IsCancel = true,
             HorizontalAlignment = HorizontalAlignment.Right,
             HorizontalContentAlignment = HorizontalAlignment.Center,
+            Margin = new Thickness(21, 0, 0, 0),
             Tag = window,
         };
         closeButton.Click += CloseClick;
@@ -172,7 +174,11 @@ public static class AboutBox {
         };
 
         window.Content = windowBorder;
-        window.ShowDialog(owner);
+        if (owner != null) {
+            window.ShowDialog(owner);
+        } else {
+            window.Show();
+        }
     }
 
 
@@ -244,14 +250,16 @@ public static class AboutBox {
         return null;
     }
 
+    private static readonly string[] NewLineArray = new string[] { "\n\r", "\n", "\r" };
+
     private static string? GetOSPrettyName() {
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) {
             try {
-                var osReleaseLines = File.ReadAllText("/etc/os-release").Split(new string[] { "\n\r", "\n", "\r" }, StringSplitOptions.RemoveEmptyEntries);
+                var osReleaseLines = File.ReadAllText("/etc/os-release").Split(NewLineArray, StringSplitOptions.RemoveEmptyEntries);
                 foreach (var line in osReleaseLines) {
                     if (line.StartsWith("PRETTY_NAME=", StringComparison.OrdinalIgnoreCase)) {
                         var text = line[12..].Trim();
-                        if (text.StartsWith("\"") && text.EndsWith("\"")) {
+                        if (text.StartsWith('"') && text.EndsWith('"')) {
                             return text[1..^1];
                         }
                     }
