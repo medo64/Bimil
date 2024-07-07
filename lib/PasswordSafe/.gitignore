@@ -1,0 +1,11 @@
+/bin/
+/build/
+/dist/
+/research/
+
+**/bin
+**/obj
+**/.vs
+**/*.csproj.user
+
+.nuget.key
