@@ -1,7 +1,6 @@
+namespace Bimil.Desktop;
 using System;
 using Avalonia;
-
-namespace Bimil.Desktop;
 
 internal class App {
 

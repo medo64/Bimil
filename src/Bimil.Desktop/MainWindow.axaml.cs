@@ -8,76 +8,78 @@ internal partial class MainWindow : Window {
 
     public MainWindow() {
         InitializeComponent();
-        //Avalonia.Themes.Fluent.FluentTheme.ModeProperty =
+        ThemeToolbarImageResources.Setup(this);
+        //if (AppAvalonia.Current != null) { AppAvalonia.Current.RequestedThemeVariant = ThemeVariant.Dark; }
     }
+
 
     #region Menu
 
     public void OnMenuFileNewClick(object sender, RoutedEventArgs e) {
-        Title = DateTime.Now.ToString();
+
     }
 
     public void OnMenuFileOpenClick(object sender, RoutedEventArgs e) {
-        Title = DateTime.Now.ToString();
+
     }
 
     public void OnMenuFileSaveClick(object sender, RoutedEventArgs e) {
-        Title = DateTime.Now.ToString();
+
     }
 
     public void OnMenuFileSaveAsClick(object sender, RoutedEventArgs e) {
-        Title = DateTime.Now.ToString();
+
     }
 
     public void OnMenuFilePropertiesClick(object sender, RoutedEventArgs e) {
-        Title = DateTime.Now.ToString();
+
     }
 
     public void OnMenuFileChangePasswordClick(object sender, RoutedEventArgs e) {
-        Title = DateTime.Now.ToString();
+
     }
 
     public void OnMenuFileReadonlyClick(object sender, RoutedEventArgs e) {
-        Title = DateTime.Now.ToString();
+
     }
 
 
     public void OnMenuItemAddClick(object sender, RoutedEventArgs e) {
-        Title = DateTime.Now.ToString();
+
     }
 
     public void OnMenuItemEditClick(object sender, RoutedEventArgs e) {
-        Title = DateTime.Now.ToString();
+
     }
 
     public void OnMenuItemViewClick(object sender, RoutedEventArgs e) {
-        Title = DateTime.Now.ToString();
+
     }
 
     public void OnMenuItemRemoveClick(object sender, RoutedEventArgs e) {
-        Title = DateTime.Now.ToString();
+
     }
 
 
     public void OnMenuEditFindClick(object sender, RoutedEventArgs e) {
-        Title = DateTime.Now.ToString();
+
     }
 
     public void OnMenuEditPasswordGenerateClick(object sender, RoutedEventArgs e) {
-        Title = DateTime.Now.ToString();
+
     }
 
 
     public void OnMenuAppOptionsClick(object sender, RoutedEventArgs e) {
-        Title = DateTime.Now.ToString();
+
     }
 
     public void OnMenuAppFeedbackClick(object sender, RoutedEventArgs e) {
-        Title = DateTime.Now.ToString();
+
     }
 
     public void OnMenuAppUpgradeClick(object sender, RoutedEventArgs e) {
-        Title = DateTime.Now.ToString();
+
     }
 
     public void OnMenuAppAboutClick(object sender, RoutedEventArgs e) {
