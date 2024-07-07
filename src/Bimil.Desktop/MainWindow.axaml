@@ -143,8 +143,10 @@
                 <Button Click="OnMenuAppOptionsClick">
                     <StackPanel Orientation="Horizontal">
                         <Image Source="{Binding App}" />
-                        <Menu>
+                        <Menu Opened="OnMenuAppOpened" >
                             <MenuItem Header="▼" Classes="DropDown">
+                                <MenuItem Header="Switch to Dark Mode" Click="OnMenuAppDarkModeClick" Name="MenuAppDarkMode" IsVisible="false" />
+                                <MenuItem Header="Switch to Light Mode" Click="OnMenuAppLightModeClick" Name="MenuAppLightMode" IsVisible="false" />
                                 <MenuItem Header="Options…" Click="OnMenuAppOptionsClick" />
                                 <MenuItem Header="-" />
                                 <MenuItem Header="Send Feedback…" Click="OnMenuAppFeedbackClick" />

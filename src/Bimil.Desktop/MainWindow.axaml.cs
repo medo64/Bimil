@@ -1,7 +1,7 @@
 using System;
-using System.Diagnostics;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using Avalonia.Styling;
 
 namespace Bimil.Desktop;
 
@@ -10,7 +10,6 @@ internal partial class MainWindow : Window {
     public MainWindow() {
         InitializeComponent();
         ThemeToolbarImageResources.Setup(this);
-        //if (AppAvalonia.Current != null) { AppAvalonia.Current.RequestedThemeVariant = ThemeVariant.Dark; }
     }
 
 
@@ -70,6 +69,28 @@ internal partial class MainWindow : Window {
 
     }
 
+
+    public void OnMenuAppOpened(object sender, RoutedEventArgs e) {
+        var app = AppAvalonia.Current!;
+        var menuItemDark = this.FindControl<MenuItem>("MenuAppDarkMode") ?? throw new InvalidOperationException("Cannot find menu item.");
+        var menuItemLight = this.FindControl<MenuItem>("MenuAppLightMode") ?? throw new InvalidOperationException("Cannot find menu item.");
+
+        if ((app.ActualThemeVariant ?? ThemeVariant.Light) == ThemeVariant.Light) {
+            menuItemDark.IsVisible = true;
+            menuItemLight.IsVisible = false;
+        } else {
+            menuItemDark.IsVisible = false;
+            menuItemLight.IsVisible = true;
+        }
+    }
+
+    public void OnMenuAppDarkModeClick(object sender, RoutedEventArgs e) {
+        AppAvalonia.Current!.RequestedThemeVariant = ThemeVariant.Dark;
+    }
+
+    public void OnMenuAppLightModeClick(object sender, RoutedEventArgs e) {
+        AppAvalonia.Current!.RequestedThemeVariant = ThemeVariant.Light;
+    }
 
     public void OnMenuAppOptionsClick(object sender, RoutedEventArgs e) {
 
