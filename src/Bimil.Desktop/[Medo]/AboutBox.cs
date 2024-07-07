@@ -1,5 +1,6 @@
 /* Josip Medved <jmedved@jmedved.com> * www.medo64.com * MIT License */
 
+//2024-07-07: Adjusted border color
 //2023-12-20: Cleaned up a bit
 //2023-03-12: Initial version
 
@@ -271,11 +272,11 @@ public static class AboutBox {
 
 
     private static ISolidColorBrush GetWindowBorderBrush() {
-        // if (Application.Current?.Styles[0] is IResourceProvider provider && provider.TryGetResource("SystemBaseHighColor", out var resource)) {
-        //     if (resource is SolidColorBrush brush) {
-        //         return brush;
-        //     }
-        // }
+        if (Application.Current?.Styles[0] is IResourceProvider provider && provider.TryGetResource("SystemBaseHighColor", Application.Current.ActualThemeVariant, out var resource)) {
+            if (resource is Color color) {
+                return new SolidColorBrush(color);
+            }
+        }
         return Brushes.Black;
     }
 

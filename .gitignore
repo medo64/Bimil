@@ -4,5 +4,6 @@
 **/*.csproj.user
 
 bin/**
+build/**
 dist/**
 research/**
