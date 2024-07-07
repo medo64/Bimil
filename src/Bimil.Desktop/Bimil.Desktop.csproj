@@ -9,6 +9,8 @@
   <PropertyGroup>
     <AssemblyName>Bimil</AssemblyName>
     <RootNamespace>Bimil.Desktop</RootNamespace>
+    <Product>Bimil</Product>
+    <Version>0.0.0</Version>
   </PropertyGroup>
 
   <PropertyGroup>

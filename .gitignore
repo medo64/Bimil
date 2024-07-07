@@ -3,6 +3,6 @@
 **/.vs
 **/*.csproj.user
 
-Binaries/**
-Releases/**
-Research/**
+bin/**
+dist/**
+research/**
