@@ -1,4 +1,5 @@
 #!/bin/bash
+#2024-07-07
 BASE_DIRECTORY="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 
 PACKAGE_CONTENT_FILES="Makefile Make.sh CHANGELOG.md ICON.png LICENSE.md README.md .editorconfig"
@@ -50,7 +51,17 @@ if ! command -v dotnet >/dev/null; then
     echo "${ANSI_RED}No dotnet found!${ANSI_RESET}" >&2
     exit 1
 fi
-echo ".NET `dotnet --version`"
+
+case `uname` in
+    Linux)        RUNTIME="linux-x64" ;;
+    MINGW64_NT-*) RUNTIME="win-x64"   ;;
+    *)
+        echo "${ANSI_RED}Unsupported runtime (`uname`)!${ANSI_RESET}" >&2
+        exit 1
+esac
+
+echo ".NET `dotnet --version` ($RUNTIME)"
+
 
 for PROJECT_FILE in $(find $BASE_DIRECTORY/src/ -name "*.csproj" | sort); do
     if [[ "$PROJECT_NAME" == "" ]]; then
@@ -69,15 +80,6 @@ if [[ "$PROJECT_NAME" == "" ]] || [[ "$PROJECT_ASSEMBLY" == "" ]] || [[ "$PROJEC
     echo "${ANSI_RED}Cannot determine project data!${ANSI_RESET}" >&2
     exit 1
 fi
-
-
-case `uname` in
-    Linux)         PROJECT_RUNTIME="linux-x64";;
-    MINGW64_NT-*)  PROJECT_RUNTIME="win-x64" ;;
-    *)
-        echo "${ANSI_RED}Unsupported runtime (`uname`)!${ANSI_RESET}" >&2
-        exit 1
-esac
 
 
 function clean() {
@@ -143,37 +145,44 @@ function build() {
 
     BASE_NAME=$(basename "$PROJECT_FILE" | sed 's/.csproj$//')
     BASE_DIR=$(dirname "$PROJECT_FILE")
-    mkdir -p "$BASE_DIRECTORY/build/bin/$BUILD_CONFIG/"
 
-	dotnet publish                        \
-        "$BASE_DIR"                       \
-        --configuration $BUILD_CONFIG     \
-        --output build/bin/$BUILD_CONFIG/ \
-        --self-contained true             \
-        -r $PROJECT_RUNTIME               \
-        -p:DebugType=embedded             \
-        -p:PublishReadyToRun=true         \
-        -p:PublishSingleFile=true         \
+    mkdir -p "$BASE_DIRECTORY/build/$RUNTIME/$BUILD_CONFIG/"
+    find "$BASE_DIRECTORY/build/$RUNTIME/$BUILD_CONFIG/" -mindepth 1 -delete
+
+	dotnet publish                             \
+        "$BASE_DIR"                            \
+        --configuration $BUILD_CONFIG          \
+        --output build/$RUNTIME/$BUILD_CONFIG/ \
+        --self-contained true                  \
+        -r $RUNTIME                            \
+        -p:DebugType=embedded                  \
+        -p:PublishReadyToRun=true              \
+        -p:PublishSingleFile=true              \
         || return 1
 
-    mkdir -p "$BASE_DIRECTORY/bin/$PROJECT_RUNTIME/"
-    find "$BASE_DIRECTORY/build/bin/$BUILD_CONFIG/" -type f -exec cp {} "$BASE_DIRECTORY/bin/$PROJECT_RUNTIME/" \; 2>/dev/null
+    mkdir -p "$BASE_DIRECTORY/bin/$RUNTIME/"
+    find "$BASE_DIRECTORY/bin/$RUNTIME/" -mindepth 1 -delete
+    find "$BASE_DIRECTORY/build/$RUNTIME/$BUILD_CONFIG/" -type f -exec cp {} "$BASE_DIRECTORY/bin/$RUNTIME/" \; 2>/dev/null
+    if [[ "$RUNTIME" == "linux-x64" ]]; then
+        mv "$BASE_DIRECTORY/bin/$RUNTIME/$PROJECT_ASSEMBLY" "$BASE_DIRECTORY/bin/$RUNTIME/${PROJECT_ASSEMBLY,,}"
+        PROJECT_ASSEMBLY="${PROJECT_ASSEMBLY,,}"
+    fi
 
     echo
-    echo "${ANSI_GREEN}Output in ${ANSI_CYAN}$BASE_DIRECTORY/bin/$PROJECT_RUNTIME/${ANSI_RESET}"
+    echo "${ANSI_GREEN}Output in ${ANSI_CYAN}$BASE_DIRECTORY/bin/$RUNTIME/${ANSI_RESET}"
 
     if [[ "$PROJECT_OUTPUTTYPE" == "WinExe" ]]; then
         EXECUTABLE=
-        if [[ -e "$BASE_DIRECTORY/bin/$PROJECT_RUNTIME/$PROJECT_ASSEMBLY" ]]; then
-            EXECUTABLE="$BASE_DIRECTORY/bin/$PROJECT_RUNTIME/$PROJECT_ASSEMBLY"
-        elif [[ -e "$BASE_DIRECTORY/bin/$PROJECT_RUNTIME/$PROJECT_ASSEMBLY.exe" ]]; then
-            EXECUTABLE="$BASE_DIRECTORY/bin/$PROJECT_RUNTIME/$PROJECT_ASSEMBLY.exe"
+        if [[ -e "$BASE_DIRECTORY/bin/$RUNTIME/$PROJECT_ASSEMBLY.exe" ]]; then
+            EXECUTABLE="$BASE_DIRECTORY/bin/$RUNTIME/$PROJECT_ASSEMBLY.exe"
+        elif [[ -e "$BASE_DIRECTORY/bin/$RUNTIME/$PROJECT_ASSEMBLY" ]]; then
+            EXECUTABLE="$BASE_DIRECTORY/bin/$RUNTIME/$PROJECT_ASSEMBLY"
         else
             echo "${ANSI_RED}Executable not found!${ANSI_RESET}" >&2
             return 1
         fi
         echo "${ANSI_GREEN}Executing ${ANSI_CYAN}$EXECUTABLE${ANSI_RESET}"
-        $EXECUTABLE
+        "$EXECUTABLE"
     fi
 }
 
@@ -191,12 +200,12 @@ function run() {
 while [ $# -gt 0 ]; do
     OPERATION="$1"
     case "$OPERATION" in
-        clean)      clean                      || break ;;
-        distclean)  clean && distclean         || break ;;
-        dist)       clean && distclean && dist || break ;;
-        debug)      clean && build "debug"     || break ;;
-        release)    clean && build "release"   || break ;;
-        run)        run                        || break ;;
+        clean)      clean               || break ;;
+        distclean)  clean && distclean  || break ;;
+        dist)       dist                || break ;;
+        debug)      build "debug"       || break ;;
+        release)    build "release"     || break ;;
+        run)        run                 || break ;;
 
         *)  echo "${ANSI_RED}Unknown operation '$OPERATION'!${ANSI_RESET}" >&2 ; exit 1 ;;
     esac
