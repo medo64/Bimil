@@ -22,6 +22,7 @@ internal class ThemeToolbarImageResources {
     public Bitmap? ItemRemove => GetAssetBitmap("ItemRemove");
 
     public Bitmap? Find => GetAssetBitmap("Find");
+    public Bitmap? PasswordGenerate => GetAssetBitmap("PasswordGenerate");
 
     public Bitmap? App => GetAssetBitmap("App");
 
