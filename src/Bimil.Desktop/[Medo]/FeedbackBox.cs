@@ -23,7 +23,7 @@ using global::Avalonia.Styling;
 using global::Avalonia.Threading;
 
 /// <summary>
-/// Simple about dialog.
+/// Simple feedback dialog.
 /// </summary>
 public static class FeedbackBox {
 
@@ -31,19 +31,19 @@ public static class FeedbackBox {
     /// Opens a window and gives opportunity to send feedback.
     /// </summary>
     /// <param name="owner">Window that owns this window.</param>
-    /// <param name="feedbackUri">Address of form which will receive data.</param>
-    public static void ShowDialog(Window owner, Uri feedbackUri) {
-        ShowDialogInternal(owner, feedbackUri, exception: null);
+    /// <param name="serviceUri">Service URI (e.g. https://medo64.com/feedback/).</param>
+    public static void ShowDialog(Window owner, Uri serviceUri) {
+        ShowDialogInternal(owner, serviceUri, exception: null);
     }
 
     /// <summary>
     /// Opens a window and gives opportunity to send exception.
     /// </summary>
     /// <param name="owner">Window that owns this window.</param>
-    /// <param name="feedbackUri">Address of form which will receive data.</param>
+    /// <param name="serviceUri">Service URI (e.g. https://medo64.com/feedback/).</param>
     /// <param name="exception">Exception to send.</param>
-    public static void ShowDialog(Window owner, Uri feedbackUri, Exception exception) {
-        ShowDialogInternal(owner, feedbackUri, exception);
+    public static void ShowDialog(Window owner, Uri serviceUri, Exception exception) {
+        ShowDialogInternal(owner, serviceUri, exception);
     }
 
     /// <summary>
@@ -52,15 +52,10 @@ public static class FeedbackBox {
     /// <param name="owner">Window that owns this window.</param>
     /// <param name="exception">Exception to show.</param>
     public static void ShowDialog(Window owner, Exception exception) {
-        ShowDialogInternal(owner, feedbackUri: null, exception);
+        ShowDialogInternal(owner, serviceUri: null, exception);
     }
 
-    /// <summary>
-    /// Opens a window and gives opportunity to send feedback.
-    /// </summary>
-    /// <param name="owner">Window that owns this window.</param>
-    /// <param name="feedbackUri">Address of form which will receive data.</param>
-    private static void ShowDialogInternal(Window owner, Uri? feedbackUri, Exception? exception) {
+    private static void ShowDialogInternal(Window owner, Uri? serviceUri, Exception? exception) {
         var window = new Window() { MinWidth = 800, MaxWidth = 1200 };
         if (owner != null) {
             window.Icon = owner.Icon;
@@ -147,7 +142,7 @@ public static class FeedbackBox {
         };
 
         var mainStack = new StackPanel() { Margin = new Thickness(11) };
-        if (feedbackUri != null) { mainStack.Children.Add(privacyTextBlock); }
+        if (serviceUri != null) { mainStack.Children.Add(privacyTextBlock); }
         mainStack.Children.Add(messageTextBlock);
         mainStack.Children.Add(messageTextBox);
         mainStack.Children.Add(gridContact);
@@ -166,7 +161,7 @@ public static class FeedbackBox {
         };
         sendButton.Click += SendClick;
         buttonPanelLeft.Children.Add(sendButton);
-        if (feedbackUri == null) { sendButton.IsVisible = false; }
+        if (serviceUri == null) { sendButton.IsVisible = false; }
         var closeButton = new Button() {
             Content = "Close",
             IsDefault = true,
@@ -200,7 +195,7 @@ public static class FeedbackBox {
             Child = windowStack
         };
 
-        var bag = new Bag(feedbackUri!,  // send not visible when null
+        var bag = new Bag(serviceUri!,  // send not visible when null
                           messageTextBox,
                           displayNameTextBox,
                           emailTextBox,
@@ -246,7 +241,7 @@ public static class FeedbackBox {
 
             // send it
             try {
-                using var request = new HttpRequestMessage(HttpMethod.Post, bag.FeedbackUri);
+                using var request = new HttpRequestMessage(HttpMethod.Post, bag.ServiceUri);
                 request.Content = new StringContent(sbPostData.ToString(), Encoding.UTF8, "application/x-www-form-urlencoded");
 
                 var responseTask = HttpClient.SendAsync(request);
@@ -512,8 +507,8 @@ public static class FeedbackBox {
     }
 
     private record Bag {
-        public Bag(Uri feedbackUri, TextBox messageBox, TextBox displayNameBox, TextBox emailBox, TextBox detailsBox, Window window, TextBlock statusBlock) {
-            FeedbackUri = feedbackUri;
+        public Bag(Uri serviceUri, TextBox messageBox, TextBox displayNameBox, TextBox emailBox, TextBox detailsBox, Window window, TextBlock statusBlock) {
+            ServiceUri = serviceUri;
             MessageBox = messageBox;
             DisplayNameBox = displayNameBox;
             EmailBox = emailBox;
@@ -528,7 +523,7 @@ public static class FeedbackBox {
         private readonly TextBox EmailBox;
         private readonly TextBox DetailsBox;
 
-        public Uri FeedbackUri { get; }
+        public Uri ServiceUri { get; }
         public string Message => GetText(MessageBox).Trim();
         public string DisplayName => GetText(DisplayNameBox).Trim();
         public string Email => GetText(EmailBox).Trim();
