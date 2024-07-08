@@ -1,12 +1,23 @@
 namespace Bimil.Desktop;
+
 using System;
 using Medo.Configuration;
 
 internal static class Settings {
 
     /// <summary>
+    /// Gets/sets if main window should be closed when Escape key is pressed.
+    /// Default value is false.
+    /// </summary>
+    public static bool CloseOnEscape {
+        get { return Config.Read("CloseOnEscape", false); }
+        set { Config.Write("CloseOnEscape", value); }
+    }
+
+    /// <summary>
     /// Gets/sets theme.
     /// Value can be either "Default", "Light", or "Dark".
+    /// Default value is "Default" (auto-detect).
     /// </summary>
     public static ThemeVariant Theme {
         get {
@@ -18,15 +29,6 @@ internal static class Settings {
         set { Config.Write("Theme", value.ToString()); }
     }
 
-
-    // [Category("Behavior")]
-    // [DisplayName("Close on escape")]
-    // [Description("If true, escape will close application.")]
-    // [DefaultValue(false)]
-    // public static bool CloseOnEscape {
-    //     get { return Config.Read("CloseOnEscape", false); }
-    //     set { Config.Write("CloseOnEscape", value); }
-    // }
 
     // [Category("Behavior")]
     // [DisplayName("Show start")]

@@ -1,9 +1,10 @@
+namespace Bimil.Desktop;
+
 using System;
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Styling;
-
-namespace Bimil.Desktop;
 
 internal partial class MainWindow : Window {
 
@@ -16,6 +17,16 @@ internal partial class MainWindow : Window {
             case Settings.ThemeVariant.Light: AppAvalonia.Current!.RequestedThemeVariant = ThemeVariant.Light; break;
             case Settings.ThemeVariant.Dark: AppAvalonia.Current!.RequestedThemeVariant = ThemeVariant.Dark; break;
             default: break;
+        }
+    }
+
+    protected override void OnKeyDown(KeyEventArgs e) {
+        switch (e.Key) {
+            case Key.Escape:
+                if (Settings.CloseOnEscape) { Close(); }
+                break;
+
+            default: base.OnKeyDown(e); break;
         }
     }
 

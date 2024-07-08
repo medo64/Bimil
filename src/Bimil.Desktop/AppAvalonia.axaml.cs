@@ -1,8 +1,8 @@
+namespace Bimil.Desktop;
+
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
-
-namespace Bimil.Desktop;
 
 internal partial class AppAvalonia : Application {
 
