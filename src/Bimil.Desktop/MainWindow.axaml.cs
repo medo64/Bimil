@@ -10,6 +10,13 @@ internal partial class MainWindow : Window {
     public MainWindow() {
         InitializeComponent();
         ThemeToolbarImageResources.Setup(this);
+
+        // ThemeVariant
+        switch (Settings.Theme) {
+            case Settings.ThemeVariant.Light: AppAvalonia.Current!.RequestedThemeVariant = ThemeVariant.Light; break;
+            case Settings.ThemeVariant.Dark: AppAvalonia.Current!.RequestedThemeVariant = ThemeVariant.Dark; break;
+            default: break;
+        }
     }
 
 
@@ -86,10 +93,12 @@ internal partial class MainWindow : Window {
 
     public void OnMenuAppDarkModeClick(object sender, RoutedEventArgs e) {
         AppAvalonia.Current!.RequestedThemeVariant = ThemeVariant.Dark;
+        Settings.Theme = Settings.ThemeVariant.Dark;
     }
 
     public void OnMenuAppLightModeClick(object sender, RoutedEventArgs e) {
         AppAvalonia.Current!.RequestedThemeVariant = ThemeVariant.Light;
+        Settings.Theme = Settings.ThemeVariant.Light;
     }
 
     public void OnMenuAppOptionsClick(object sender, RoutedEventArgs e) {
@@ -101,7 +110,7 @@ internal partial class MainWindow : Window {
     }
 
     public void OnMenuAppUpgradeClick(object sender, RoutedEventArgs e) {
-
+        Medo.Avalonia.FeedbackBox.ShowDialog(this, new Uri("https://medo64.com/upgrade/"));
     }
 
     public void OnMenuAppAboutClick(object sender, RoutedEventArgs e) {
