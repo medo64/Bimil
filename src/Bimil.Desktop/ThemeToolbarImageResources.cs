@@ -34,11 +34,10 @@ internal class ThemeToolbarImageResources {
         var menuPanel = mainWindow.FindControl<DockPanel>("Menu") ?? throw new InvalidOperationException("Cannot find menu.");
         menuPanel.DataContext = new ThemeToolbarImageResources();
         var scale = mainWindow?.Screens?.ScreenFromWindow(mainWindow)?.Scaling ?? 1;
-        AssetSize = (int)(scale * 24) switch {
-            >= 64 => 64,
-            >= 48 => 48,
-            >= 32 => 32,
-            >= 24 => 24,
+        AssetSize = (scale * 24) switch {
+            >= 64.0 => 64,
+            >= 48.0 => 48,
+            >= 32.0 => 32,
             _ => 24
         };
         Debug.WriteLine($"Assets are {AssetSize}x{AssetSize} pixels");

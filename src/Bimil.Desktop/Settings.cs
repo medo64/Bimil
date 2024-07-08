@@ -227,18 +227,6 @@ internal static class Settings {
     // }
 
 
-    // [Category("Visual")]
-    // [DisplayName("Scale boost")]
-    // [Description("Additional value to determine toolbar scaling.")]
-    // [DefaultValue(0)]
-    // public static double ScaleBoost {
-    //     get { return Config.Read("ScaleBoost", 0.00); }
-    //     set {
-    //         if ((value < -1) || (value > 4)) { return; }
-    //         Config.Write("ScaleBoost", value);
-    //     }
-    // }
-
     // private static readonly string[] MonotypeFontDefaults = { "Consolas", "Lucida Console", "Nimbus Mono L", "Ubuntu Mono", "Courier New", "Courier" };
     // [Category("Visual")]
     // [DisplayName("Monotype font")]
