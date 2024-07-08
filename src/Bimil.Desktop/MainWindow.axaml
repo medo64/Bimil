@@ -166,7 +166,7 @@
         </Grid>
 
         <!-- Main -->
-        <Grid ColumnDefinitions="Auto, Auto, *, Auto" Background="Aquamarine">
+        <Grid ColumnDefinitions="Auto, Auto, *, Auto">
         </Grid>
 
     </DockPanel>

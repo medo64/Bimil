@@ -17,6 +17,7 @@ using global::Avalonia.Interactivity;
 using global::Avalonia.Layout;
 using global::Avalonia.Media;
 using global::Avalonia.Media.Imaging;
+using global::Avalonia.Styling;
 
 /// <summary>
 /// Simple about dialog.
@@ -47,6 +48,7 @@ public static class AboutBox {
             window.ShowInTaskbar = true;
             window.WindowStartupLocation = WindowStartupLocation.CenterScreen;
         }
+        window.Background = GetBrush("SystemChromeLowColor", Brushes.White, Brushes.Black);
         window.CanResize = false;
         window.ShowActivated = true;
         window.SizeToContent = SizeToContent.WidthAndHeight;
@@ -170,7 +172,7 @@ public static class AboutBox {
 
         var windowBorder = new Border {
             BorderThickness = new Thickness(1),
-            BorderBrush = GetWindowBorderBrush(),
+            BorderBrush = GetBrush("SystemChromeHighColor", Brushes.Black, Brushes.White),
             Child = windowStack
         };
 
@@ -271,13 +273,15 @@ public static class AboutBox {
     }
 
 
-    private static ISolidColorBrush GetWindowBorderBrush() {
-        if (Application.Current?.Styles[0] is IResourceProvider provider && provider.TryGetResource("SystemBaseHighColor", Application.Current.ActualThemeVariant, out var resource)) {
+    private static ISolidColorBrush GetBrush(string name, ISolidColorBrush lightDefault, ISolidColorBrush darkDefault) {
+        var variant = Application.Current?.ActualThemeVariant ?? ThemeVariant.Light;
+        if (Application.Current?.Styles[0] is IResourceProvider provider && provider.TryGetResource(name, variant, out var resource)) {
             if (resource is Color color) {
                 return new SolidColorBrush(color);
             }
         }
-        return Brushes.Black;
+        Debug.WriteLine("Cannot find brush " + name);
+        return (variant == ThemeVariant.Light) ? lightDefault : darkDefault;
     }
 
 }

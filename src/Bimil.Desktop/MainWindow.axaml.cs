@@ -97,7 +97,7 @@ internal partial class MainWindow : Window {
     }
 
     public void OnMenuAppFeedbackClick(object sender, RoutedEventArgs e) {
-
+        Medo.Avalonia.FeedbackBox.ShowDialog(this, new Uri("https://medo64.com/feedback/"));
     }
 
     public void OnMenuAppUpgradeClick(object sender, RoutedEventArgs e) {
