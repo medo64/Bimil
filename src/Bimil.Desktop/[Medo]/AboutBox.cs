@@ -253,7 +253,7 @@ public static class AboutBox {
         return null;
     }
 
-    private static readonly string[] NewLineArray = new string[] { "\n\r", "\n", "\r" };
+    private static readonly string[] NewLineArray = ["\n\r", "\n", "\r"];
 
     private static string? GetOSPrettyName() {
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) {
@@ -283,5 +283,4 @@ public static class AboutBox {
         Debug.WriteLine("[AboutBox] Cannot find brush " + name);
         return (variant == ThemeVariant.Light) ? lightDefault : darkDefault;
     }
-
 }

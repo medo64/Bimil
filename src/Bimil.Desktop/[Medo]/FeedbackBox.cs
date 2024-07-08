@@ -229,7 +229,7 @@ public static class FeedbackBox {
             Dispatcher.UIThread.Invoke(delegate { bag.StatusBlock.Text = "Sending…"; });
 
             // prepare data
-            var assembly = Assembly.GetEntryAssembly()!;
+            var assembly = Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly();
             var allFormParameters = new NameValueCollection {
                 { "Product", GetAppProduct(assembly) },
                 { "Version", GetAppVersion(assembly) },
@@ -304,10 +304,10 @@ public static class FeedbackBox {
 
     private static string GetAdditionalDetails(Exception? exception) {
         var logBuilder = new StringBuilder();
-        var assembly = Assembly.GetEntryAssembly();
+        var assembly = Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly();
 
         AppendLine("Environment:", logBuilder);
-        if (assembly != null) { AppendLine(GetAppProduct(assembly) + " " + GetAppVersion(assembly), logBuilder, 0, true); }
+        AppendLine(GetAppProduct(assembly) + " " + GetAppVersion(assembly), logBuilder, 0, true);
         AppendLine($".NET Framework {Environment.Version}", logBuilder, 0, true);
         var osPrettyName = GetOSPrettyName();
         if (osPrettyName != null) {
@@ -338,13 +338,11 @@ public static class FeedbackBox {
                 if (exLevel > 3) { break; }  // even this is too much
             }
 
-            if (assembly != null) {
-                AppendLine("", logBuilder);
-                AppendLine("Referenced assemblies:", logBuilder);
-                if (assembly.FullName != null) { AppendLine(assembly.FullName, logBuilder, 0, true); }
-                foreach (var iRefAss in assembly.GetReferencedAssemblies()) {
-                    AppendLine(iRefAss.ToString(), logBuilder, 0, true);
-                }
+            AppendLine("", logBuilder);
+            AppendLine("Referenced assemblies:", logBuilder);
+            if (assembly.FullName != null) { AppendLine(assembly.FullName, logBuilder, 0, true); }
+            foreach (var iRefAss in assembly.GetReferencedAssemblies()) {
+                AppendLine(iRefAss.ToString(), logBuilder, 0, true);
             }
         }
 
