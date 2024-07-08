@@ -280,7 +280,7 @@ public static class AboutBox {
                 return new SolidColorBrush(color);
             }
         }
-        Debug.WriteLine("Cannot find brush " + name);
+        Debug.WriteLine("[AboutBox] Cannot find brush " + name);
         return (variant == ThemeVariant.Light) ? lightDefault : darkDefault;
     }
 

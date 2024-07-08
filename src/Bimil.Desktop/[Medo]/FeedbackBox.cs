@@ -509,7 +509,7 @@ public static class FeedbackBox {
                 return new SolidColorBrush(color);
             }
         }
-        Debug.WriteLine("Cannot find brush " + name);
+        Debug.WriteLine("[FeedbackBox] Cannot find brush " + name);
         return (variant == ThemeVariant.Light) ? lightDefault : darkDefault;
     }
 
