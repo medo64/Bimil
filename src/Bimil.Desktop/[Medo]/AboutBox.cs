@@ -38,7 +38,7 @@ public static class AboutBox {
     /// <param name="owner">Window that owns this window.</param>
     /// <param name="webpage">URI of program's web page.</param>
     public static void ShowDialog(Window owner, Uri? webpage) {
-        var window = new Window() { MinWidth = 200, MaxWidth = 600 };
+        var window = new Window() { MinWidth = 300 };
         if (owner != null) {
             window.Icon = owner.Icon;
             window.ShowInTaskbar = false;

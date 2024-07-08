@@ -56,7 +56,7 @@ public static class FeedbackBox {
     }
 
     private static void ShowDialogInternal(Window owner, Uri? serviceUri, Exception? exception) {
-        var window = new Window() { MinWidth = 800, MaxWidth = 1200 };
+        var window = new Window() { MinWidth = 800 };
         if (owner != null) {
             window.Icon = owner.Icon;
             window.ShowInTaskbar = false;
@@ -196,11 +196,11 @@ public static class FeedbackBox {
         };
 
         var bag = new Bag(serviceUri!,  // send not visible when null
+                          window,
                           messageTextBox,
                           displayNameTextBox,
                           emailTextBox,
                           detailsTextBox,
-                          window,
                           statusTextBlock);
         closeButton.Tag = bag;
         sendButton.Tag = bag;
@@ -221,7 +221,7 @@ public static class FeedbackBox {
 
         var bag = (Bag)button.Tag!;
         ThreadPool.QueueUserWorkItem(delegate {
-            Dispatcher.UIThread.Invoke(delegate { bag.StatusBlock.Text = "Sending…"; });
+            bag.SetStatusText("Sending…");
 
             // prepare data
             var assembly = Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly();
@@ -253,21 +253,21 @@ public static class FeedbackBox {
                     responseContentTask.Wait();
                     var responseContent = responseContentTask.Result;
                     if (string.IsNullOrEmpty(responseContent)) {
-                        Dispatcher.UIThread.Invoke(delegate { bag.StatusBlock.Text = "Sent!"; });
+                        bag.SetStatusText("Sent!");
                         Thread.Sleep(500);
                         Dispatcher.UIThread.Invoke(delegate { bag.Window.Close(); });
                         return;
                     } else {
-                        Dispatcher.UIThread.Invoke(delegate { bag.StatusBlock.Text = "Error response from server"; });
+                        bag.SetStatusText("Error response from server");
                     }
                 } else {
-                    Dispatcher.UIThread.Invoke(delegate { bag.StatusBlock.Text = "Error response from server: " + ((int)response.StatusCode).ToString(CultureInfo.InvariantCulture) + " " + response.ReasonPhrase; });
+                    bag.SetStatusText("Error response from server: " + ((int)response.StatusCode).ToString(CultureInfo.InvariantCulture) + " " + response.ReasonPhrase);
                 }
             } catch (AggregateException aggEx) {
                 if (aggEx.InnerException != null) {
-                    Dispatcher.UIThread.Invoke(delegate { bag.StatusBlock.Text = "Error sending request: " + aggEx.InnerException.Message; });
+                    bag.SetStatusText("Error sending request: " + aggEx.InnerException.Message);
                 } else {
-                    Dispatcher.UIThread.Invoke(delegate { bag.StatusBlock.Text = "Error sending request"; });
+                    bag.SetStatusText("Error sending request");
                 }
             }
 
@@ -495,6 +495,45 @@ public static class FeedbackBox {
     }
 
 
+    private record Bag {
+        public Bag(Uri serviceUri, Window window, TextBox messageBox, TextBox displayNameBox, TextBox emailBox, TextBox detailsBox, TextBlock statusBlock) {
+            ServiceUri = serviceUri;
+            Window = window;
+            MessageBox = messageBox;
+            DisplayNameBox = displayNameBox;
+            EmailBox = emailBox;
+            DetailsBox = detailsBox;
+            StatusBlock = statusBlock;
+            CancelSource = new CancellationTokenSource();
+        }
+
+        private readonly TextBox MessageBox;
+        private readonly TextBox DisplayNameBox;
+        private readonly TextBox EmailBox;
+        private readonly TextBox DetailsBox;
+        private readonly TextBlock StatusBlock;
+
+        public Uri ServiceUri { get; }
+        public string Message => GetText(MessageBox).Trim();
+        public string DisplayName => GetText(DisplayNameBox).Trim();
+        public string Email => GetText(EmailBox).Trim();
+        public string Details => GetText(DetailsBox).Trim();
+        public Window Window { get; }
+        public CancellationTokenSource CancelSource { get; }
+
+        public void SetStatusText(string text) {
+            Dispatcher.UIThread.Invoke(delegate {
+                StatusBlock.Text = text;
+            });
+        }
+
+        private static string GetText(TextBox box) {
+            return Dispatcher.UIThread.Invoke<string>(delegate {
+                return box.Text ?? "";
+            });
+        }
+    }
+
     private static ISolidColorBrush GetBrush(string name, ISolidColorBrush lightDefault, ISolidColorBrush darkDefault) {
         var variant = Application.Current?.ActualThemeVariant ?? ThemeVariant.Light;
         if (Application.Current?.Styles[0] is IResourceProvider provider && provider.TryGetResource(name, variant, out var resource)) {
@@ -504,38 +543,5 @@ public static class FeedbackBox {
         }
         Debug.WriteLine("[FeedbackBox] Cannot find brush " + name);
         return (variant == ThemeVariant.Light) ? lightDefault : darkDefault;
-    }
-
-    private record Bag {
-        public Bag(Uri serviceUri, TextBox messageBox, TextBox displayNameBox, TextBox emailBox, TextBox detailsBox, Window window, TextBlock statusBlock) {
-            ServiceUri = serviceUri;
-            MessageBox = messageBox;
-            DisplayNameBox = displayNameBox;
-            EmailBox = emailBox;
-            DetailsBox = detailsBox;
-            Window = window;
-            StatusBlock = statusBlock;
-            CancelSource = new CancellationTokenSource();
-        }
-
-        private readonly TextBox MessageBox;
-        private readonly TextBox DisplayNameBox;
-        private readonly TextBox EmailBox;
-        private readonly TextBox DetailsBox;
-
-        public Uri ServiceUri { get; }
-        public string Message => GetText(MessageBox).Trim();
-        public string DisplayName => GetText(DisplayNameBox).Trim();
-        public string Email => GetText(EmailBox).Trim();
-        public string Details => GetText(DetailsBox).Trim();
-        public Window Window { get; }
-        public TextBlock StatusBlock { get; }
-        public CancellationTokenSource CancelSource { get; }
-
-        private static string GetText(TextBox box) {
-            return Dispatcher.UIThread.Invoke<string>(delegate {
-                return box.Text ?? "";
-            });
-        }
     }
 }

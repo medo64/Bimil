@@ -121,7 +121,7 @@ internal partial class MainWindow : Window {
     }
 
     public void OnMenuAppUpgradeClick(object sender, RoutedEventArgs e) {
-        Medo.Avalonia.FeedbackBox.ShowDialog(this, new Uri("https://medo64.com/upgrade/"));
+        Medo.Avalonia.UpgradeBox.ShowDialog(this, new Uri("https://medo64.com/upgrade/"));
     }
 
     public void OnMenuAppAboutClick(object sender, RoutedEventArgs e) {
