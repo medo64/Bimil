@@ -1,5 +1,6 @@
 /* Josip Medved <jmedved@jmedved.com> * www.medo64.com * MIT License */
 
+//2024-07-08: Changed Debug.WriteLine prefix
 //2022-12-20: Renamed Write with IEnumerable<string> parameter to WriteAll so it matches ReadAll
 //2022-12-18: Replaced Environment.Version.Major check with conditional compilation to avoid compile warnings
 //2021-11-25: Refactored to use pattern matching
@@ -391,9 +392,9 @@ public static class Config {
                 return DefaultPropertiesFile.FileExists;
             }
         } finally {
-            Debug.WriteLine("[Settings] Primary: " + FileName);
-            Debug.WriteLine("[Settings] Override: " + OverrideFileName);
-            Debug.WriteLine("[Settings] Load completed in " + sw.ElapsedMilliseconds.ToString(CultureInfo.InvariantCulture) + " milliseconds.");
+            Debug.WriteLine("[Config] Primary: " + FileName);
+            Debug.WriteLine("[Config] Override: " + OverrideFileName);
+            Debug.WriteLine("[Config] Load completed in " + sw.ElapsedMilliseconds.ToString(CultureInfo.InvariantCulture) + " milliseconds.");
         }
     }
 
@@ -409,7 +410,7 @@ public static class Config {
                 return DefaultPropertiesFile?.Save() ?? false;
             }
         } finally {
-            Debug.WriteLine("[Settings] Save completed in " + sw.ElapsedMilliseconds.ToString(CultureInfo.InvariantCulture) + " milliseconds.");
+            Debug.WriteLine("[Config] Save completed in " + sw.ElapsedMilliseconds.ToString(CultureInfo.InvariantCulture) + " milliseconds.");
         }
     }
 
@@ -423,7 +424,7 @@ public static class Config {
             DefaultPropertiesFile?.DeleteAll();
             if (ImmediateSave) { Save(); }
         }
-        Debug.WriteLine("[Settings] Settings deleted.");
+        Debug.WriteLine("[Config] Settings deleted.");
     }
 
 
@@ -769,7 +770,7 @@ public static class Config {
 #if DEBUG
             foreach (var line in Lines) {
                 if (!string.IsNullOrEmpty(line.Key)) {
-                    Debug.WriteLine(string.Format(CultureInfo.InvariantCulture, "[Settings] {0}{2}: {1}", line.Key, line.Value, (isOverride ? "*" : "")));
+                    Debug.WriteLine(string.Format(CultureInfo.InvariantCulture, "[Config] {0}{2}: {1}", line.Key, line.Value, (isOverride ? "*" : "")));
                 }
             }
 #endif
