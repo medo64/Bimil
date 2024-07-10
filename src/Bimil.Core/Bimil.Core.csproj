@@ -18,4 +18,12 @@
     <AnalysisLevel>latest</AnalysisLevel>
   </PropertyGroup>
 
+  <ItemGroup>
+    <EmbeddedResource Include="_Resources/*" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Bimil.Core.Tests" />
+  </ItemGroup>
+
 </Project>

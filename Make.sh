@@ -186,6 +186,37 @@ function build() {
     fi
 }
 
+function test() {
+    echo
+    echo "${ANSI_MAGENTA}test${ANSI_RESET}"
+
+    mkdir -p "$BASE_DIRECTORY/build/test/"
+    find "$BASE_DIRECTORY/build/test/" -mindepth 1 -delete
+
+    FOUND_TEST_PROJECTS=0
+    for TEST_PROJECT_FILE in $(find $BASE_DIRECTORY/test/ -name "*.csproj" | sort); do
+        FOUND_TEST_PROJECTS=1
+        echo ; echo "${ANSI_MAGENTA}$TEST_PROJECT_FILE${ANSI_RESET}"
+
+        BASE_NAME=$(basename "$TEST_PROJECT_FILE" | sed 's/.csproj$//')
+        mkdir -p "$BASE_DIRECTORY/build/test/$BASE_NAME/"
+
+        rm -r $BASE_DIRECTORY/src/bin 2>/dev/null
+        dotnet test "$TEST_PROJECT_FILE" \
+                    --configuration "Debug" \
+                    --verbosity "minimal" \
+                    || return 1
+    done
+
+    if [[ $FOUND_TEST_PROJECTS -eq 0 ]]; then
+        echo "${ANSI_RED}No test project file found!${ANSI_RESET}" >&2
+        return 1
+    fi
+
+    echo
+    echo "${ANSI_GREEN}Testing completed${ANSI_RESET}"
+}
+
 function run() {
     echo
     echo "${ANSI_MAGENTA}run${ANSI_RESET}"
@@ -206,6 +237,7 @@ while [ $# -gt 0 ]; do
         debug)      build "debug"       || break ;;
         release)    build "release"     || break ;;
         run)        run                 || break ;;
+        test)       test                || break ;;
 
         *)  echo "${ANSI_RED}Unknown operation '$OPERATION'!${ANSI_RESET}" >&2 ; exit 1 ;;
     esac
