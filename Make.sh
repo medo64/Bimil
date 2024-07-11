@@ -89,6 +89,7 @@ function clean() {
     find "$BASE_DIRECTORY/bin/" -mindepth 1 -delete
     find "$BASE_DIRECTORY/build/" -mindepth 1 -delete
     find "$BASE_DIRECTORY/src" -type d \( -name "bin" -o -name "obj" \) -exec rm -rf {} + 2>/dev/null
+    find "$BASE_DIRECTORY/test" -type d \( -name "bin" -o -name "obj" -o -name "TestResults" \) -exec rm -rf {} + 2>/dev/null
 
     echo "${ANSI_CYAN}Done${ANSI_RESET}"
     return 0
