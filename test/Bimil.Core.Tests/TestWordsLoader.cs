@@ -1,13 +1,13 @@
 namespace Tests;
 
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Bimil.Core;
-using System.Collections.Generic;
-using System;
 
 [TestClass]
-public class WordLoader {
+public class TestWordsLoader {
 
     [TestMethod]
     public void All() {
