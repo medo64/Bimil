@@ -1,8 +1,6 @@
 namespace Tests;
 
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Bimil.Core;
 
@@ -10,28 +8,8 @@ using Bimil.Core;
 public class TestPasswordGenerator {
 
     [TestMethod]
-    public void GetNumberOfCombinations() {
-        var combinations = PasswordGenerator.GetNumberOfCombinations((2, 8));
-        Assert.AreEqual(256.0, combinations);
-    }
-
-    [TestMethod]
-    public void GetNumberOfCombinationsMany() {
-        var combinations = PasswordGenerator.GetNumberOfCombinations((2, 8), (2, 8));
-        Assert.AreEqual(Math.Pow(2, 16), combinations);
-    }
-
-    [TestMethod]
-    public void GetNumberOfCombinations10LettersAndNumbers() {
-        var combinations = PasswordGenerator.GetNumberOfCombinations((26, 10), (26, 10), (10, 10));
-        Assert.AreEqual(1.992814889520941E+38, combinations);
-    }
-
-
-
-    [TestMethod]
     public void CalculateCombinationStats() {
-        PasswordGenerator.CalculateCombinationStats(1_000_000_000_000_000, out var crackDuration, out var securityLevel, out var entropyBits, new DateTimeOffset(2016, 1, 1, 0, 0, 0, TimeSpan.Zero));
+        PasswordGenerator.EstimateStats(1_000_000_000_000_000, out var crackDuration, out var securityLevel, out var entropyBits, new DateTimeOffset(2016, 1, 1, 0, 0, 0, TimeSpan.Zero));
         Assert.AreEqual(10, crackDuration.TotalSeconds);
         Assert.AreEqual(PasswordSecurityLevel.Low, securityLevel);
         Assert.AreEqual(49, entropyBits);
@@ -39,7 +17,7 @@ public class TestPasswordGenerator {
 
     [TestMethod]
     public void CalculateCombinationStats2015() {
-        PasswordGenerator.CalculateCombinationStats(1_000_000_000_000_000, out var crackDuration, out var securityLevel, out var entropyBits, new DateTimeOffset(2015, 1, 1, 0, 0, 0, TimeSpan.Zero));
+        PasswordGenerator.EstimateStats(1_000_000_000_000_000, out var crackDuration, out var securityLevel, out var entropyBits, new DateTimeOffset(2015, 1, 1, 0, 0, 0, TimeSpan.Zero));
         Assert.AreEqual(10, crackDuration.TotalSeconds);
         Assert.AreEqual(PasswordSecurityLevel.Low, securityLevel);
         Assert.AreEqual(49, entropyBits);
@@ -47,7 +25,7 @@ public class TestPasswordGenerator {
 
     [TestMethod]
     public void CalculateCombinationStats2016() {
-        PasswordGenerator.CalculateCombinationStats(1_000_000_000_000_000, out var crackDuration, out var securityLevel, out var entropyBits, new DateTimeOffset(2016, 1, 1, 0, 0, 0, TimeSpan.Zero));
+        PasswordGenerator.EstimateStats(1_000_000_000_000_000, out var crackDuration, out var securityLevel, out var entropyBits, new DateTimeOffset(2016, 1, 1, 0, 0, 0, TimeSpan.Zero));
         Assert.AreEqual(10, crackDuration.TotalSeconds);
         Assert.AreEqual(PasswordSecurityLevel.Low, securityLevel);
         Assert.AreEqual(49, entropyBits);
@@ -55,24 +33,24 @@ public class TestPasswordGenerator {
 
     [TestMethod]
     public void CalculateCombinationStats2017() {
-        PasswordGenerator.CalculateCombinationStats(1_000_000_000_000_000, out var crackDuration, out var securityLevel, out var entropyBits, new DateTimeOffset(2017, 1, 1, 0, 0, 0, TimeSpan.Zero));
-        Assert.AreEqual(7.06, crackDuration.TotalSeconds, 0.01);
+        PasswordGenerator.EstimateStats(1_000_000_000_000_000, out var crackDuration, out var securityLevel, out var entropyBits, new DateTimeOffset(2017, 1, 1, 0, 0, 0, TimeSpan.Zero));
+        Assert.AreEqual(7, crackDuration.TotalSeconds, 0.01);
         Assert.AreEqual(PasswordSecurityLevel.Low, securityLevel);
         Assert.AreEqual(49, entropyBits);
     }
 
     [TestMethod]
     public void CalculateCombinationStats2024() {
-        PasswordGenerator.CalculateCombinationStats(1_000_000_000_000_000, out var crackDuration, out var securityLevel, out var entropyBits, new DateTimeOffset(2024, 1, 1, 0, 0, 0, TimeSpan.Zero));
-        Assert.AreEqual(0.62, crackDuration.TotalSeconds, 0.01);
+        PasswordGenerator.EstimateStats(1_000_000_000_000_000, out var crackDuration, out var securityLevel, out var entropyBits, new DateTimeOffset(2024, 1, 1, 0, 0, 0, TimeSpan.Zero));
+        Assert.AreEqual(0, crackDuration.TotalSeconds, 0.01);
         Assert.AreEqual(PasswordSecurityLevel.Low, securityLevel);
         Assert.AreEqual(49, entropyBits);
     }
 
     [TestMethod]
     public void CalculateCombinationStats2024Extra() {
-        PasswordGenerator.CalculateCombinationStats(123_456_789_000_000_000, out var crackDuration, out var securityLevel, out var entropyBits, new DateTimeOffset(2024, 1, 1, 0, 0, 0, TimeSpan.Zero));
-        Assert.AreEqual(77.01, crackDuration.TotalSeconds, 0.01);
+        PasswordGenerator.EstimateStats(123_456_789_000_000_000, out var crackDuration, out var securityLevel, out var entropyBits, new DateTimeOffset(2024, 1, 1, 0, 0, 0, TimeSpan.Zero));
+        Assert.AreEqual(77, crackDuration.TotalSeconds, 0.01);
         Assert.AreEqual(PasswordSecurityLevel.Low, securityLevel);
         Assert.AreEqual(56, entropyBits);
     }

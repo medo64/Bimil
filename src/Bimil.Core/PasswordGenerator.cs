@@ -1,59 +1,51 @@
 namespace Bimil.Core;
 
 using System;
+using System.Security.Cryptography;
 
 /// <summary>
 /// Base class for password generation.
 /// </summary>
 public abstract class PasswordGenerator {
 
+    /// <summary>
+    /// Returns newly generated password.
+    /// </summary>
+    public abstract string GetNewPassword();
 
     /// <summary>
-    /// Gets number of combinations based on the current settings.
+    /// REturns number of combinations based on the current settings.
     /// Assumption is made that the potential attacker knows exactly which
     /// method and dictionary were used to generate password (i.e. the worst
     /// case scenario).
     /// </summary>
-    public virtual double Combinations { get; }
+    public abstract double GetEstimatedCombinationCount();
 
 
     /// <summary>
-    /// Returns total number of combinations for the given character count and password length.
+    /// Returns estimated time to crack the password assuming all the best for attacker.
     /// </summary>
-    /// <param name="entries">Character count and password length tuple.</param>
-    public static double GetNumberOfCombinations(params (int characterCount, int passwordLength)[] entries) {
-        var total = 1.0;
-        foreach (var (characterCount, passwordLength) in entries) {
-            total *= Math.Pow(characterCount, passwordLength);
-        }
-        return total;
-    }
-
-    /// <summary>
-    /// Returns duration for cracking the given password.
-    /// </summary>
-    /// <param name="combinations">Number of combinations for a password.</param>
-    public static TimeSpan GetCrackDuration(double combinations) {
-        CalculateCombinationStats(combinations, out var crackDuration, out _, out _, DateTimeOffset.UtcNow);
+    public TimeSpan GetEstimatedCrackDuration() {
+        EstimateStats(GetEstimatedCombinationCount(), out var crackDuration, out _, out _, DateTimeOffset.UtcNow);
         return crackDuration;
     }
 
     /// <summary>
-    /// Returns the suggested password security level for the given password.
+    /// Returns estimated security level for the password assuming all the best for attacker.
     /// </summary>
-    /// <param name="combinations">Number of combinations for a password.</param>
-    public static PasswordSecurityLevel GetSecurityLeve(double combinations) {
-        CalculateCombinationStats(combinations, out _, out var securityLevel, out _, DateTimeOffset.UtcNow);
+    /// <returns></returns>
+    public PasswordSecurityLevel GetEstimatedSecurityLevel() {
+        EstimateStats(GetEstimatedCombinationCount(), out _, out var securityLevel, out _, DateTimeOffset.UtcNow);
         return securityLevel;
     }
-
 
     /// <summary>
     /// Returns how many bits of entropy this number of combinations translates to.
     /// </summary>
-    /// <param name="combinations">Number of combinations for a password.</param>
-    public static int GetEntropyInBits(double combinations) {
-        CalculateCombinationStats(combinations, out _, out _, out var entropyBits, DateTimeOffset.UtcNow);
+    public int GetEstimatedEntropyInBits() {
+        var combinations = GetEstimatedCombinationCount();
+        if (combinations == 0) { return 0; }
+        EstimateStats(combinations, out _, out _, out var entropyBits, DateTimeOffset.UtcNow);
         return entropyBits;
     }
 
@@ -63,7 +55,7 @@ public abstract class PasswordGenerator {
     private static readonly DateTimeOffset CracksPerSecondEpoch = new(2016, 1, 1, 0, 0, 0, TimeSpan.Zero);
     private const double CracksPerSecond = 100_000_000_000_000;  //1000 trillion is as good guess as any
 
-    internal static void CalculateCombinationStats(double combinations, out TimeSpan crackDuration, out PasswordSecurityLevel securityLevel, out int entropyBits, DateTimeOffset testTime) {  // internal so that it can be tested
+    internal static void EstimateStats(double combinations, out TimeSpan crackDuration, out PasswordSecurityLevel securityLevel, out int entropyBits, DateTimeOffset testTime) {  // internal so that it can be tested
         crackDuration = GetCrackDuration(combinations, testTime);
         securityLevel = crackDuration.TotalDays switch {
             > 365 => PasswordSecurityLevel.High,
@@ -80,9 +72,9 @@ public abstract class PasswordGenerator {
 
     private static TimeSpan GetCrackDuration(double combinations, DateTimeOffset testTime) {
         var cps = GetCracksPerSecond(testTime);
-        var seconds = combinations / cps;
-        return TimeSpan.FromSeconds(seconds);
+        var seconds = Math.Round(combinations / cps, 0, MidpointRounding.ToZero);
+        return (seconds > TimeSpan.MaxValue.TotalSeconds) ? TimeSpan.MaxValue : TimeSpan.FromSeconds(seconds);
     }
 
-    #endregion
+    #endregion Helpers
 }
