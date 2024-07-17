@@ -1,6 +1,8 @@
 /* Josip Medved <jmedved@jmedved.com> * www.medo64.com * MIT License */
 
 //2024-07-16: Waiting for dialog close
+//            Move window outside of bounds
+//            Red title if exception
 //2024-07-07: Initial Avalonia version
 
 namespace Medo.Avalonia;
@@ -75,6 +77,22 @@ public static class FeedbackBox {
         window.SystemDecorations = SystemDecorations.BorderOnly;
         window.ExtendClientAreaToDecorationsHint = true;
         window.Title = (exception == null) ? "Feedback" : "Error Report";
+
+        window.Opened += (sender, e) => {  // adjust position as needed
+            var screen = window.Screens.ScreenFromWindow(window);
+            if ((screen == null) || (window.FrameSize == null)) { return; }
+
+            var pos = window.Position;
+            var size = PixelSize.FromSize(window.FrameSize.Value, screen.Scaling);
+            var rect = new PixelRect(pos, size);
+            Debug.WriteLine(rect);
+
+            if (rect.Right > screen.Bounds.Right) { rect = rect.WithX(screen.Bounds.Right - rect.Width); }
+            if (rect.X < screen.Bounds.X) { rect = rect.WithX(screen.Bounds.X); }
+            if (rect.Bottom > screen.Bounds.Bottom) { rect = rect.WithY(screen.Bounds.Bottom - rect.Height); }
+            if (rect.Y < screen.Bounds.Y) { rect = rect.WithY(screen.Bounds.Y); }
+            if (window.Position != rect.Position) { window.Position = rect.Position; }
+        };
 
         var privacyTextBlock = new TextBlock() {
             Foreground = GetBrush("SystemAccentColor", Brushes.DarkBlue, Brushes.LightBlue),
@@ -180,7 +198,9 @@ public static class FeedbackBox {
 
         var windowStack = new StackPanel();
         windowStack.Children.Add(new TextBlock {
-            Background = GetBrush("SystemBaseHighColor", Brushes.DarkGray, Brushes.LightGray),
+            Background = (exception == null)
+                       ? GetBrush("SystemBaseHighColor", Brushes.DarkGray, Brushes.LightGray)
+                       : GetRedBrush("SystemBaseHighColor", Brushes.DarkRed, Brushes.Red),
             Foreground = GetBrush("SystemAltHighColor", Brushes.White, Brushes.Black),
             FontSize = window.FontSize * 1.25,
             FontWeight = FontWeight.SemiBold,
@@ -539,6 +559,7 @@ public static class FeedbackBox {
         }
     }
 
+
     private static ISolidColorBrush GetBrush(string name, ISolidColorBrush lightDefault, ISolidColorBrush darkDefault) {
         var variant = Application.Current?.ActualThemeVariant ?? ThemeVariant.Light;
         if (Application.Current?.Styles[0] is IResourceProvider provider && provider.TryGetResource(name, variant, out var resource)) {
@@ -549,4 +570,23 @@ public static class FeedbackBox {
         Debug.WriteLine("[FeedbackBox] Cannot find brush " + name);
         return (variant == ThemeVariant.Light) ? lightDefault : darkDefault;
     }
+
+    private static ISolidColorBrush GetRedBrush(string name, ISolidColorBrush lightDefault, ISolidColorBrush darkDefault) {
+        var variant = Application.Current?.ActualThemeVariant ?? ThemeVariant.Light;
+        if (Application.Current?.Styles[0] is IResourceProvider provider && provider.TryGetResource(name, variant, out var resource)) {
+            if (resource is Color color) {
+                var hslColor = color.ToHsl();
+                if (hslColor.L < 0.4) {
+                    return new SolidColorBrush(HslColor.FromHsl(0, 1, 0.25).ToRgb());
+                } else if (hslColor.L > 0.6) {
+                    return new SolidColorBrush(HslColor.FromHsl(0, 1, 0.75).ToRgb());
+                } else {
+                    return new SolidColorBrush(HslColor.FromHsl(0, 1, 0.50).ToRgb());
+                }
+            }
+        }
+        Debug.WriteLine("[FeedbackBox] Cannot find brush " + name);
+        return (variant == ThemeVariant.Light) ? lightDefault : darkDefault;
+    }
+
 }
