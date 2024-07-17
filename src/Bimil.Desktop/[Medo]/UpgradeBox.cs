@@ -1,5 +1,6 @@
 /* Josip Medved <jmedved@jmedved.com> * www.medo64.com * MIT License */
 
+//2024-07-16: Waiting for dialog close
 //2024-07-09: Initial Avalonia version
 
 namespace Medo.Avalonia;
@@ -10,6 +11,7 @@ using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Threading;
+using System.Threading.Tasks;
 using global::Avalonia;
 using global::Avalonia.Controls;
 using global::Avalonia.Interactivity;
@@ -129,7 +131,10 @@ public static class UpgradeBox {
 
         window.Content = windowBorder;
         if (owner != null) {
-            window.ShowDialog(owner);
+            using var source = new CancellationTokenSource();
+            window.ShowDialog(owner)  // trickery to await for dialog from non-async method
+                .ContinueWith(t => source.Cancel(), TaskScheduler.FromCurrentSynchronizationContext());
+            Dispatcher.UIThread.MainLoop(source.Token);
         } else {
             window.Show();
         }
@@ -139,7 +144,7 @@ public static class UpgradeBox {
         bag.SetStatusText("Checking for upgrade…");
 
         try {
-            var file = Upgrade.GetUpgradeFile(bag.ServiceUri);
+            var file = Upgrade.GetUpgradeFile(bag.ServiceUri, assembly);
             if (file != null) {
                 bag.SetStatusText("Upgrade is available.");
                 bag.EnableDownload(file);

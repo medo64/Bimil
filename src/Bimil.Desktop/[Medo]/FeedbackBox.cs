@@ -1,5 +1,6 @@
 /* Josip Medved <jmedved@jmedved.com> * www.medo64.com * MIT License */
 
+//2024-07-16: Waiting for dialog close
 //2024-07-07: Initial Avalonia version
 
 namespace Medo.Avalonia;
@@ -14,6 +15,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using global::Avalonia;
 using global::Avalonia.Controls;
 using global::Avalonia.Interactivity;
@@ -209,7 +211,10 @@ public static class FeedbackBox {
 
         window.Content = windowBorder;
         if (owner != null) {
-            window.ShowDialog(owner);
+            using var source = new CancellationTokenSource();
+            window.ShowDialog(owner)  // trickery to await for dialog from non-async method
+                .ContinueWith(t => source.Cancel(), TaskScheduler.FromCurrentSynchronizationContext());
+            Dispatcher.UIThread.MainLoop(source.Token);
         } else {
             window.Show();
         }

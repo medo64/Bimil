@@ -1,5 +1,6 @@
 /* Josip Medved <jmedved@jmedved.com> * www.medo64.com * MIT License */
 
+//2024-07-16: Waiting for dialog close
 //2024-07-07: Adjusted border color
 //2023-12-20: Cleaned up a bit
 //2023-03-12: Initial version
@@ -11,6 +12,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Threading;
+using System.Threading.Tasks;
 using global::Avalonia;
 using global::Avalonia.Controls;
 using global::Avalonia.Interactivity;
@@ -18,6 +21,7 @@ using global::Avalonia.Layout;
 using global::Avalonia.Media;
 using global::Avalonia.Media.Imaging;
 using global::Avalonia.Styling;
+using global::Avalonia.Threading;
 
 /// <summary>
 /// Simple about dialog.
@@ -178,7 +182,10 @@ public static class AboutBox {
 
         window.Content = windowBorder;
         if (owner != null) {
-            window.ShowDialog(owner);
+            using var source = new CancellationTokenSource();
+            window.ShowDialog(owner)  // trickery to await for dialog from non-async method
+                .ContinueWith(t => source.Cancel(), TaskScheduler.FromCurrentSynchronizationContext());
+            Dispatcher.UIThread.MainLoop(source.Token);
         } else {
             window.Show();
         }
