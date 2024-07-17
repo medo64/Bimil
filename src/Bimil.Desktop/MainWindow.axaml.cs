@@ -1,10 +1,13 @@
 namespace Bimil.Desktop;
 
 using System;
+using System.Diagnostics;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Styling;
+using Avalonia.Threading;
+using Medo.Diagnostics;
 
 internal partial class MainWindow : Window {
 
@@ -18,6 +21,18 @@ internal partial class MainWindow : Window {
             case Settings.ThemeVariant.Dark: AppAvalonia.Current!.RequestedThemeVariant = ThemeVariant.Dark; break;
             default: break;
         }
+
+        // Centralized log handler
+        UnhandledCatch.Attach();
+        UnhandledCatch.UnhandledException += (sender, e) => {
+            if (e.Exception != null) {
+                Trace.WriteLine(e.Exception.Message);
+                Trace.WriteLine(e.Exception.StackTrace);
+                Dispatcher.UIThread.Invoke(delegate {
+                    Medo.Avalonia.FeedbackBox.ShowDialog(this, new Uri("https://medo64.com/feedback/"), e.Exception);
+                });
+            }
+        };
     }
 
     protected override void OnKeyDown(KeyEventArgs e) {
