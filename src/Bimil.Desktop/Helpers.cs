@@ -6,13 +6,24 @@ using System.Globalization;
 using System.Reflection;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Media;
 using Avalonia.Styling;
+using Avalonia.VisualTree;
 
 internal static class Helpers {
 
-    public static T GetControl<T>(Window window, string name) where T : Control {  // ignore possibility of the non-existent name
+    public static T GetControl<T>(Window window, string name) where T : Control {
         return window.FindControl<T>(name) ?? throw new ArgumentNullException(nameof(name), "Control not found.");
+    }
+
+    public static void FocusControl(Window window, string name) {
+        var control = window.FindControl<Control>(name) ?? throw new ArgumentNullException(nameof(name), "Control not found.");
+        if (control.IsAttachedToVisualTree()) {
+            control.Focus(NavigationMethod.Tab);
+        } else {
+            control.AttachedToVisualTree += (sender, e) => { control.Focus(NavigationMethod.Tab); };
+        }
     }
 
 

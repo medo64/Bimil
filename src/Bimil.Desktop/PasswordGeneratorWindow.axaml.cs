@@ -2,6 +2,7 @@ namespace Bimil.Desktop;
 
 using System.Globalization;
 using Avalonia.Controls;
+using Avalonia.Input;
 
 internal partial class PasswordGeneratorWindow : Window {
     public PasswordGeneratorWindow() {
@@ -37,6 +38,8 @@ internal partial class PasswordGeneratorWindow : Window {
         Helpers.ControlSetup.SetupCheckBox(this, "chbExcludeUnpronounceable", "Settings.PasswordGenerator.Classic.ExcludeUnpronounceable", classicPassword);
         Helpers.ControlSetup.SetupCheckBox(this, "chbExcludeRepeatedCharacters", "Settings.PasswordGenerator.Classic.ExcludeRepeatedCharacters", classicPassword);
         Helpers.ControlSetup.SetupTextBoxFromInt32(this, "txtPasswordLength", "Settings.PasswordGenerator.Classic.PasswordLength", 6, 99, classicPassword);
+
+        Helpers.FocusControl(this, "btnCopy");
     }
 
     protected override void OnKeyDown(KeyEventArgs e) {
