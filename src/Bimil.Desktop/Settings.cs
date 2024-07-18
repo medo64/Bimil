@@ -274,63 +274,59 @@ internal static class Settings {
     //     set { Config.Write("PasswordGeneratorUseWord", value); }
     // }
 
-    // #region Classic
 
-    // [Browsable(false)]
-    // public static bool PasswordGeneratorIncludeUpperCase {
-    //     get { return Config.Read("PasswordGeneratorIncludeUpperCase", true); }
-    //     set { Config.Write("PasswordGeneratorIncludeUpperCase", value); }
-    // }
+    internal static class PasswordGenerator {
 
-    // [Browsable(false)]
-    // public static bool PasswordGeneratorIncludeLowerCase {
-    //     get { return Config.Read("PasswordGeneratorIncludeLowerCase", true); }
-    //     set { Config.Write("PasswordGeneratorIncludeLowerCase", value); }
-    // }
+        internal static class Classic {
 
-    // [Browsable(false)]
-    // public static bool PasswordGeneratorIncludeNumbers {
-    //     get { return Config.Read("PasswordGeneratorIncludeNumbers", true); }
-    //     set { Config.Write("PasswordGeneratorIncludeNumbers", value); }
-    // }
+            public static bool IncludeLowercaseLetters {
+                get { return Config.Read("PasswordGenerator/Classic/IncludeLowercaseLetters", true); }
+                set { Config.Write("PasswordGenerator/Classic/IncludeLowercaseLetters", value); }
+            }
 
-    // [Browsable(false)]
-    // public static bool PasswordGeneratorIncludeSpecialCharacters {
-    //     get { return Config.Read("PasswordGeneratorIncludeSpecialCharacters", true); }
-    //     set { Config.Write("PasswordGeneratorIncludeSpecialCharacters", value); }
-    // }
+            public static bool IncludeUppercaseLetters {
+                get { return Config.Read("PasswordGenerator/Classic/IncludeUppercaseLetters", true); }
+                set { Config.Write("PasswordGenerator/Classic/IncludeUppercaseLetters", value); }
+            }
 
-    // [Browsable(false)]
-    // public static bool PasswordGeneratorRestrictSimilar {
-    //     get { return Config.Read("PasswordGeneratorRestrictSimilar", false); }
-    //     set { Config.Write("PasswordGeneratorRestrictSimilar", value); }
-    // }
+            public static bool IncludeDigits {
+                get { return Config.Read("PasswordGenerator/Classic/IncludeDigits", true); }
+                set { Config.Write("PasswordGenerator/Classic/IncludeDigits", value); }
+            }
 
-    // [Browsable(false)]
-    // public static bool PasswordGeneratorRestrictMovable {
-    //     get { return Config.Read("PasswordGeneratorRestrictMovable", false); }
-    //     set { Config.Write("PasswordGeneratorRestrictMovable", value); }
-    // }
+            public static bool IncludeSpecialCharacters {
+                get { return Config.Read("PasswordGenerator/Classic/IncludeSpecialCharacters", true); }
+                set { Config.Write("PasswordGenerator/Classic/IncludeSpecialCharacters", value); }
+            }
 
-    // [Browsable(false)]
-    // public static bool PasswordGeneratorRestrictPronounceable {
-    //     get { return Config.Read("PasswordGeneratorRestrictPronounceable", false); }
-    //     set { Config.Write("PasswordGeneratorRestrictPronounceable", value); }
-    // }
+            public static bool ExcludeSimilarCharacters {
+                get { return Config.Read("PasswordGenerator/Classic/ExcludeSimilarCharacters", false); }
+                set { Config.Write("PasswordGenerator/Classic/ExcludeSimilarCharacters", value); }
+            }
 
-    // [Browsable(false)]
-    // public static bool PasswordGeneratorRestrictRepeated {
-    //     get { return Config.Read("PasswordGeneratorRestrictRepeated", false); }
-    //     set { Config.Write("PasswordGeneratorRestrictRepeated", value); }
-    // }
+            public static bool ExcludeMovableCharacters {
+                get { return Config.Read("PasswordGenerator/Classic/ExcludeMovableCharacters", false); }
+                set { Config.Write("PasswordGenerator/Classic/ExcludeMovableCharacters", value); }
+            }
 
-    // [Browsable(false)]
-    // public static int PasswordGeneratorLength {
-    //     get { return LimitBetween(Config.Read("PasswordGeneratorLength", 14), minValue: 4, maxValue: 99, allowZero: false); }
-    //     set { Config.Write("PasswordGeneratorLength", LimitBetween(value, minValue: 1, maxValue: 99, allowZero: false)); }
-    // }
+            public static bool ExcludeUnpronounceable {
+                get { return Config.Read("PasswordGenerator/Classic/ExcludeUnpronounceable", false); }
+                set { Config.Write("PasswordGenerator/Classic/ExcludeUnpronounceable", value); }
+            }
 
-    // #endregion Classic
+            public static bool ExcludeRepeatedCharacters {
+                get { return Config.Read("PasswordGenerator/Classic/ExcludeRepeatedCharacters", false); }
+                set { Config.Write("PasswordGenerator/Classic/ExcludeRepeatedCharacters", value); }
+            }
+
+            public static int PasswordLength {
+                get { return LimitBetween(Config.Read("PasswordGenerator/Classic/PasswordLength", 14), minValue: 6, maxValue: 99, allowZero: false); }
+                set { Config.Write("PasswordGenerator/Classic/PasswordLength", LimitBetween(value, minValue: 6, maxValue: 99, allowZero: false)); }
+            }
+        }
+
+    }
+
 
     // #region Word
 
@@ -484,12 +480,12 @@ internal static class Settings {
 
     //private static readonly string DefaultNtpServer = Random.Shared.Next(0, 4).ToString(CultureInfo.InvariantCulture) + ".medo64.pool.ntp.org";
 
-    // private static int LimitBetween(int value, int minValue, int maxValue, bool allowZero = false) {
-    //     if (allowZero && (value == 0)) { return 0; }
-    //     if (value < minValue) { return minValue; }
-    //     if (value > maxValue) { return maxValue; }
-    //     return value;
-    // }
+     private static int LimitBetween(int value, int minValue, int maxValue, bool allowZero = false) {
+        if (allowZero && (value == 0)) { return 0; }
+        if (value < minValue) { return minValue; }
+        if (value > maxValue) { return maxValue; }
+        return value;
+    }
 
     #endregion Helper
 }

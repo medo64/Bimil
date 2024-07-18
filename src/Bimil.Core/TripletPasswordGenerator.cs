@@ -77,7 +77,6 @@ public sealed class TripletPasswordGenerator : PasswordGenerator {
 
     /// <summary>
     /// Get/sets if words will be made to use title case.
-    /// Ambiguous characters are: I O Q l 0 ` - _ ; : , .
     /// </summary>
     public bool UseTitlecase { get; set; } = false;
 

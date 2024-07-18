@@ -4,7 +4,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d" d:DesignWidth="640" d:DesignHeight="480"
     x:Class="Bimil.Desktop.MainWindow"
-    Width="640" Height="480"
+    Width="800" Height="600"
     Icon="/Assets/App.ico"
     Title="Bimil">
 

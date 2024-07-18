@@ -98,8 +98,9 @@ internal partial class MainWindow : Window {
 
     }
 
-    public void OnMenuEditPasswordGenerateClick(object sender, RoutedEventArgs e) {
-
+    public async void OnMenuEditPasswordGenerateClick(object sender, RoutedEventArgs e) {
+        var frm = new PasswordGeneratorWindow();
+        await frm.ShowDialog(this);
     }
 
 

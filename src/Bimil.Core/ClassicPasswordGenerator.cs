@@ -45,11 +45,12 @@ public sealed class ClassicPasswordGenerator : PasswordGenerator {
     private int _passwordLength = 14;
     /// <summary>
     /// Gets/sets password length.
+    /// Must be between 6 and 99.
     /// </summary>
     public int PasswordLength {
         get { return _passwordLength; }
         set {
-            if (value is < 8 or > 128) { throw new ArgumentOutOfRangeException(nameof(value), "Password length must be between 8 and 128 characters."); }
+            if (value is < 6 or > 99) { throw new ArgumentOutOfRangeException(nameof(value), "Password length must be between 6 and 99 characters."); }
             _passwordLength = value;
         }
     }
@@ -123,19 +124,19 @@ public sealed class ClassicPasswordGenerator : PasswordGenerator {
                 var sixteenth = RandomNumberGenerator.GetInt32(16);
 
                 var characters = new List<char>();
-                if (IncludeUppercaseLetters && (sixteenth >= 0) && (sixteenth <= 5)) { //Uppercase: 6/16th ~ 37.5%
-                    if (ExcludeUnpronounceable) {
-                        AddCharactersToList(characters, useVowelNext ? UppercaseVowels : UppercaseConsonants);
-                        useVowelNext = !useVowelNext;
-                    } else {
-                        AddCharactersToList(characters, UppercaseVowels, UppercaseConsonants);
-                    }
-                } else if (IncludeLowercaseLetters && (sixteenth >= 6) && (sixteenth <= 11)) { //Lowercase: 6/16th ~ 37.5%
+                if (IncludeLowercaseLetters && (sixteenth >= 0) && (sixteenth <= 5)) { //Uppercase: 6/16th ~ 37.5%
                     if (ExcludeUnpronounceable) {
                         AddCharactersToList(characters, useVowelNext ? LowercaseVowels : LowercaseConsonants);
                         useVowelNext = !useVowelNext;
                     } else {
                         AddCharactersToList(characters, LowercaseVowels, LowercaseConsonants);
+                    }
+                } else if (IncludeUppercaseLetters && (sixteenth >= 6) && (sixteenth <= 11)) { //Lowercase: 6/16th ~ 37.5%
+                    if (ExcludeUnpronounceable) {
+                        AddCharactersToList(characters, useVowelNext ? UppercaseVowels : UppercaseConsonants);
+                        useVowelNext = !useVowelNext;
+                    } else {
+                        AddCharactersToList(characters, UppercaseVowels, UppercaseConsonants);
                     }
                 } else if (IncludeDigits && (sixteenth >= 12) && (sixteenth <= 13)) { //Number: 2/16th ~ 12.5%
                     if (ExcludeUnpronounceable && !useVowelNext) { continue; } //treat numbers as vowels

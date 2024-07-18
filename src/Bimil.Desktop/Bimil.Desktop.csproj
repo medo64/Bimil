@@ -23,6 +23,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="../Bimil.Core/Bimil.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <TrimmerRootDescriptor Include="Roots.xml" />
   </ItemGroup>
 
