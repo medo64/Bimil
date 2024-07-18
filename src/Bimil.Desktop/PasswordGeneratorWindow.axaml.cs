@@ -38,4 +38,10 @@ internal partial class PasswordGeneratorWindow : Window {
         Helpers.ControlSetup.SetupCheckBox(this, "chbExcludeRepeatedCharacters", "Settings.PasswordGenerator.Classic.ExcludeRepeatedCharacters", classicPassword);
         Helpers.ControlSetup.SetupTextBoxFromInt32(this, "txtPasswordLength", "Settings.PasswordGenerator.Classic.PasswordLength", 6, 99, classicPassword);
     }
+
+    protected override void OnKeyDown(KeyEventArgs e) {
+        if (e.Key == Key.Escape) { this.Close(); }
+        base.OnKeyDown(e);
+    }
+
 }
