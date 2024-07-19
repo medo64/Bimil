@@ -1,5 +1,6 @@
 namespace Bimil.Desktop;
 
+using System;
 using System.Globalization;
 using Avalonia.Controls;
 using Avalonia.Input;
@@ -87,6 +88,29 @@ internal partial class PasswordGeneratorWindow : Window {
         Helpers.ControlSetup.SetupCheckBox(this, "chbTripletRestrictAdjustmentsToSuffix", "Settings.PasswordGenerator.Triplet.RestrictAdjustmentsToSuffix", tripletPassword);
         Helpers.ControlSetup.SetupCheckBox(this, "chbTripletUseSpacesSeparator", "Settings.PasswordGenerator.Triplet.UseSpacesSeparator", tripletPassword);
         Helpers.ControlSetup.SetupTextBoxFromInt32(this, "txtTripletCount", "Settings.PasswordGenerator.Triplet.TripletCount", 2, 16, tripletPassword);
+
+        var fillPassword = (Settings.PasswordGenerator.GeneratorKind kind) => {
+            switch (kind) {
+                case Settings.PasswordGenerator.GeneratorKind.Triplet: tripletPassword.Invoke(); break;
+                case Settings.PasswordGenerator.GeneratorKind.Word: wordPassword.Invoke(); break;
+                default: classicPassword.Invoke(); break;
+            }
+            Settings.PasswordGenerator.Kind = kind;
+        };
+        var tabKind = Helpers.GetControl<TabControl>(this, "tabKind");
+        switch (Settings.PasswordGenerator.Kind) {
+            case Settings.PasswordGenerator.GeneratorKind.Triplet: tabKind.SelectedIndex = 2; break;
+            case Settings.PasswordGenerator.GeneratorKind.Word: tabKind.SelectedIndex = 1; break;
+            default: tabKind.SelectedIndex = 0; break;
+        }
+        tabKind.SelectionChanged += (sender, e) => {
+            switch (tabKind.SelectedIndex) {
+                case 2: fillPassword.Invoke(Settings.PasswordGenerator.GeneratorKind.Triplet); break;
+                case 1: fillPassword.Invoke(Settings.PasswordGenerator.GeneratorKind.Word); break;
+                default: fillPassword.Invoke(Settings.PasswordGenerator.GeneratorKind.Classic); break;
+            }
+        };
+        fillPassword.Invoke(Settings.PasswordGenerator.Kind);  // for first run
 
         Helpers.FocusControl(this, "btnCopy");
     }

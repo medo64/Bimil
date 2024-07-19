@@ -277,6 +277,23 @@ internal static class Settings {
 
     internal static class PasswordGenerator {
 
+        public enum GeneratorKind {
+            Classic, Word, Triplet
+        }
+
+        public static GeneratorKind Kind {  // maybe change to proper enum later
+            get {
+                var configValue = Config.Read("PasswordGenerator/Kind", "Classic");
+                if (Enum.TryParse<GeneratorKind>(configValue, ignoreCase: true, out var kind)) {
+                    return kind;
+                } else {
+                    return GeneratorKind.Classic;
+                }
+            }
+            set { Config.Write("PasswordGenerator/Kind", value.ToString()); }
+        }
+
+
         internal static class Classic {
 
             public static bool IncludeLowercaseLetters {
@@ -458,7 +475,7 @@ internal static class Settings {
 
     //private static readonly string DefaultNtpServer = Random.Shared.Next(0, 4).ToString(CultureInfo.InvariantCulture) + ".medo64.pool.ntp.org";
 
-     private static int LimitBetween(int value, int minValue, int maxValue, bool allowZero = false) {
+    private static int LimitBetween(int value, int minValue, int maxValue, bool allowZero = false) {
         if (allowZero && (value == 0)) { return 0; }
         if (value < minValue) { return minValue; }
         if (value > maxValue) { return maxValue; }

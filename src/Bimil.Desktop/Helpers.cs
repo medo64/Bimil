@@ -36,24 +36,27 @@ internal static class Helpers {
             return control;
         }
 
-        public static void SetupCheckBox(Window window, string name, string propertyPath, Delegate? runOnUpdate = null) {  // ignore possibility of the non-existent name
+        public static void SetupCheckBox(Window window, string name, string propertyPath, Action? runOnUpdate = null) {  // ignore possibility of the non-existent name
             var control = GetControlEtc<CheckBox>(window, name, propertyPath, out var propertyInfo);
             control.IsChecked = (bool)propertyInfo.GetValue(null)!;
             control.IsCheckedChanged += (sender, e) => {
                 propertyInfo.SetValue(null, control.IsChecked);
-                runOnUpdate?.DynamicInvoke();
+                runOnUpdate?.Invoke();
             };
         }
 
-        public static void SetupTextBoxFromInt32(Window window, string name, string propertyPath, int minValue, int maxValue, Delegate? runOnUpdate = null) {  // ignore possibility of the non-existent name
+        public static void SetupTextBoxFromInt32(Window window, string name, string propertyPath, int minValue, int maxValue, Action? runOnUpdate = null) {  // ignore possibility of the non-existent name
             var control = GetControlEtc<TextBox>(window, name, propertyPath, out var propertyInfo);
             control.Text = ((int)propertyInfo.GetValue(null)!).ToString(CultureInfo.CurrentUICulture);
             control.TextChanged += (sender, e) => {
-                if (int.TryParse(control.Text, NumberStyles.Integer, CultureInfo.CurrentUICulture, out var result) && (result >= minValue) && (result <= maxValue)) {
-                    propertyInfo.SetValue(null, result);
-                    runOnUpdate?.DynamicInvoke();
-                    control.Background = GetBrush("SystemAltMediumLowColor");  // doesn't change brush immediatelly :(
-                    control.InvalidateMeasure();
+                if (int.TryParse(control.Text, NumberStyles.Integer, CultureInfo.CurrentUICulture, out var newValue) && (newValue >= minValue) && (newValue <= maxValue)) {
+                    var oldValue = (int)propertyInfo.GetValue(null)!;
+                    if (oldValue != newValue) {  // change only if different
+                        propertyInfo.SetValue(null, newValue);
+                        runOnUpdate?.Invoke();
+                        control.Background = GetBrush("SystemAltMediumLowColor");  // doesn't change brush immediatelly :(
+                        control.InvalidateMeasure();
+                    }
                 } else {
                     control.Background = GetRedBrush("SystemAltMediumLowColor");  // doesn't change brush immediatelly :(
                     control.InvalidateMeasure();
