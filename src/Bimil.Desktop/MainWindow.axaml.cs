@@ -13,7 +13,7 @@ internal partial class MainWindow : Window {
 
     public MainWindow() {
         InitializeComponent();
-        ThemeToolbarImageResources.Setup(this);
+        ThemeImageResources.Setup(this);
 
         // ThemeVariant
         switch (Settings.Theme) {

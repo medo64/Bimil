@@ -8,7 +8,7 @@ using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Avalonia.Styling;
 
-internal class ThemeToolbarImageResources {
+internal class ThemeImageResources {
 
 #pragma warning disable CA1822 // Mark members as static
 
@@ -32,7 +32,7 @@ internal class ThemeToolbarImageResources {
 
     internal static void Setup(MainWindow mainWindow) {
         var menuPanel = mainWindow.FindControl<DockPanel>("Menu") ?? throw new InvalidOperationException("Cannot find menu.");
-        menuPanel.DataContext = new ThemeToolbarImageResources();
+        menuPanel.DataContext = new ThemeImageResources();
         var scale = mainWindow?.Screens?.ScreenFromWindow(mainWindow)?.Scaling ?? 1;
         AssetSize = (scale * 24) switch {
             >= 64.0 => 64,
@@ -45,7 +45,7 @@ internal class ThemeToolbarImageResources {
         var app = AppAvalonia.Current;
         if (app != null) {
             app.ActualThemeVariantChanged += (object? sender, EventArgs e) => {
-                menuPanel.DataContext = new ThemeToolbarImageResources();  // force refresh
+                menuPanel.DataContext = new ThemeImageResources();  // force refresh
             };
         }
     }
@@ -59,6 +59,6 @@ internal class ThemeToolbarImageResources {
 
     private static Uri GetAssetUri(string baseName, int size) {
         var suffix = ((AppAvalonia.Current?.ActualThemeVariant ?? ThemeVariant.Light) == ThemeVariant.Light) ? "L" : "D";
-        return new Uri("avares://Bimil/Assets/Toolbar/" + baseName + "_" + size.ToString(CultureInfo.InvariantCulture) + suffix + ".png");
+        return new Uri("avares://Bimil/Assets/Images/" + baseName + "_" + size.ToString(CultureInfo.InvariantCulture) + suffix + ".png");
     }
 }
