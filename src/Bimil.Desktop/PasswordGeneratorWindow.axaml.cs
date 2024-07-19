@@ -10,6 +10,37 @@ internal partial class PasswordGeneratorWindow : Window {
     public PasswordGeneratorWindow() {
         InitializeComponent();
 
+        var generateNewPassword = (PasswordGenerator generator) => {
+            Helpers.GetControl<TextBox>(this, "txtPassword").Text = generator.GetNewPassword();
+
+            //Helpers.GetControl<Image>(this, "imgGeneratorLevel")
+
+            var duration = generator.GetEstimatedCrackDuration();
+            var totalDays = (long)duration.TotalDays;
+            var totalHours = (long)duration.TotalHours;
+            var totalMinutes = (long)duration.TotalMinutes;
+            var totalSeconds = (long)duration.TotalSeconds;
+            var durationText = totalDays switch {
+                > 3650000 => "An eternity to crack",
+                > 36500 => "About " + (totalDays / 36500).ToString(CultureInfo.CurrentUICulture) + " centuries to crack",
+                > 365 => "About " + (totalDays / 365).ToString(CultureInfo.CurrentUICulture) + " years to crack",
+                > 31 => "About " + (totalDays / 31).ToString(CultureInfo.CurrentUICulture) + " months to crack",
+                > 7 => "About " + (totalDays / 7).ToString(CultureInfo.CurrentUICulture) + " weeks to crack",
+                > 1 => "About " + (totalDays / 7).ToString(CultureInfo.CurrentUICulture) + " days to crack",
+                _ => totalHours switch {
+                    > 1 => "About " + totalHours.ToString(CultureInfo.CurrentUICulture) + " hours to crack",
+                    _ => totalMinutes switch {
+                        > 1 => "About " + totalMinutes.ToString(CultureInfo.CurrentUICulture) + " minutes to crack",
+                        _ => totalSeconds switch {
+                            > 1 => totalSeconds.ToString(CultureInfo.CurrentUICulture) + " seconds to crack",
+                            _ => "Less then a second to crack",
+                        },
+                    },
+                },
+            };
+            Helpers.GetControl<Label>(this, "lblGeneratorStats").Content = durationText;
+        };
+
         var classicPassword = () => {
             if (!Settings.PasswordGenerator.Classic.IncludeLowercaseLetters
                 && !Settings.PasswordGenerator.Classic.IncludeUppercaseLetters
@@ -29,7 +60,7 @@ internal partial class PasswordGeneratorWindow : Window {
                 ExcludeRepeatedCharacters = Settings.PasswordGenerator.Classic.ExcludeRepeatedCharacters,
                 PasswordLength = Settings.PasswordGenerator.Classic.PasswordLength,
             };
-            Helpers.GetControl<TextBox>(this, "txtPassword").Text = generator.GetNewPassword();
+            generateNewPassword.Invoke(generator);
         };
         Helpers.ControlSetup.SetupCheckBox(this, "chbClassicIncludeLowercaseLetters", "Settings.PasswordGenerator.Classic.IncludeLowercaseLetters", classicPassword);
         Helpers.ControlSetup.SetupCheckBox(this, "chbClassicIncludeUppercaseLetters", "Settings.PasswordGenerator.Classic.IncludeUppercaseLetters", classicPassword);
@@ -53,7 +84,7 @@ internal partial class PasswordGeneratorWindow : Window {
                 UseSpacesSeparator = Settings.PasswordGenerator.Word.UseSpacesSeparator,
                 WordCount = Settings.PasswordGenerator.Word.WordCount,
             };
-            Helpers.GetControl<TextBox>(this, "txtPassword").Text = generator.GetNewPassword();
+            generateNewPassword.Invoke(generator);
         };
         Helpers.ControlSetup.SetupCheckBox(this, "chbWordIncludeNumber", "Settings.PasswordGenerator.Word.IncludeNumber", wordPassword);
         Helpers.ControlSetup.SetupCheckBox(this, "chbWordIncludeSpecialCharacters", "Settings.PasswordGenerator.Word.IncludeSpecialCharacters", wordPassword);
@@ -77,7 +108,7 @@ internal partial class PasswordGeneratorWindow : Window {
                 UseSpacesSeparator = Settings.PasswordGenerator.Triplet.UseSpacesSeparator,
                 TripletCount = Settings.PasswordGenerator.Triplet.TripletCount,
             };
-            Helpers.GetControl<TextBox>(this, "txtPassword").Text = generator.GetNewPassword();
+            generateNewPassword.Invoke(generator);
         };
         Helpers.ControlSetup.SetupCheckBox(this, "chbTripletIncludeNumber", "Settings.PasswordGenerator.Triplet.IncludeNumber", tripletPassword);
         Helpers.ControlSetup.SetupCheckBox(this, "chbTripletIncludeSpecialCharacters", "Settings.PasswordGenerator.Triplet.IncludeSpecialCharacters", tripletPassword);
