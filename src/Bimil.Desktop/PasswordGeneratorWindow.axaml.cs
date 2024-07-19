@@ -10,7 +10,7 @@ internal partial class PasswordGeneratorWindow : Window {
     public PasswordGeneratorWindow() {
         InitializeComponent();
 
-        var generateNewPassword = (PasswordGenerator generator) => {
+        void generateNewPassword(PasswordGenerator generator) {
             Helpers.GetControl<TextBox>(this, "txtPassword").Text = generator.GetNewPassword();
 
             //Helpers.GetControl<Image>(this, "imgGeneratorLevel")
@@ -39,9 +39,9 @@ internal partial class PasswordGeneratorWindow : Window {
                 },
             };
             Helpers.GetControl<Label>(this, "lblGeneratorStats").Content = durationText;
-        };
+        }
 
-        var classicPassword = () => {
+        void classicPassword() {
             if (!Settings.PasswordGenerator.Classic.IncludeLowercaseLetters
                 && !Settings.PasswordGenerator.Classic.IncludeUppercaseLetters
                 && !Settings.PasswordGenerator.Classic.IncludeDigits
@@ -60,8 +60,8 @@ internal partial class PasswordGeneratorWindow : Window {
                 ExcludeRepeatedCharacters = Settings.PasswordGenerator.Classic.ExcludeRepeatedCharacters,
                 PasswordLength = Settings.PasswordGenerator.Classic.PasswordLength,
             };
-            generateNewPassword.Invoke(generator);
-        };
+            generateNewPassword(generator);
+        }
         Helpers.ControlSetup.SetupCheckBox(this, "chbClassicIncludeLowercaseLetters", "Settings.PasswordGenerator.Classic.IncludeLowercaseLetters", classicPassword);
         Helpers.ControlSetup.SetupCheckBox(this, "chbClassicIncludeUppercaseLetters", "Settings.PasswordGenerator.Classic.IncludeUppercaseLetters", classicPassword);
         Helpers.ControlSetup.SetupCheckBox(this, "chbClassicIncludeDigits", "Settings.PasswordGenerator.Classic.IncludeDigits", classicPassword);
@@ -72,7 +72,7 @@ internal partial class PasswordGeneratorWindow : Window {
         Helpers.ControlSetup.SetupCheckBox(this, "chbClassicExcludeRepeatedCharacters", "Settings.PasswordGenerator.Classic.ExcludeRepeatedCharacters", classicPassword);
         Helpers.ControlSetup.SetupTextBoxFromInt32(this, "txtClassicLength", "Settings.PasswordGenerator.Classic.PasswordLength", 6, 99, classicPassword);
 
-        var wordPassword = () => {
+        void wordPassword() {
             var generator = new WordPasswordGenerator() {
                 IncludeNumber = Settings.PasswordGenerator.Word.IncludeNumber,
                 IncludeSpecialCharacters = Settings.PasswordGenerator.Word.IncludeSpecialCharacters,
@@ -84,8 +84,8 @@ internal partial class PasswordGeneratorWindow : Window {
                 UseSpacesSeparator = Settings.PasswordGenerator.Word.UseSpacesSeparator,
                 WordCount = Settings.PasswordGenerator.Word.WordCount,
             };
-            generateNewPassword.Invoke(generator);
-        };
+            generateNewPassword(generator);
+        }
         Helpers.ControlSetup.SetupCheckBox(this, "chbWordIncludeNumber", "Settings.PasswordGenerator.Word.IncludeNumber", wordPassword);
         Helpers.ControlSetup.SetupCheckBox(this, "chbWordIncludeSpecialCharacters", "Settings.PasswordGenerator.Word.IncludeSpecialCharacters", wordPassword);
         Helpers.ControlSetup.SetupCheckBox(this, "chbWordIncludeSwappedCase", "Settings.PasswordGenerator.Word.IncludeSwappedCase", wordPassword);
@@ -96,7 +96,7 @@ internal partial class PasswordGeneratorWindow : Window {
         Helpers.ControlSetup.SetupCheckBox(this, "chbWordUseSpacesSeparator", "Settings.PasswordGenerator.Word.UseSpacesSeparator", wordPassword);
         Helpers.ControlSetup.SetupTextBoxFromInt32(this, "txtWordCount", "Settings.PasswordGenerator.Word.WordCount", 2, 16, wordPassword);
 
-        var tripletPassword = () => {
+        void tripletPassword() {
             var generator = new TripletPasswordGenerator() {
                 IncludeNumber = Settings.PasswordGenerator.Triplet.IncludeNumber,
                 IncludeSpecialCharacters = Settings.PasswordGenerator.Triplet.IncludeSpecialCharacters,
@@ -108,8 +108,8 @@ internal partial class PasswordGeneratorWindow : Window {
                 UseSpacesSeparator = Settings.PasswordGenerator.Triplet.UseSpacesSeparator,
                 TripletCount = Settings.PasswordGenerator.Triplet.TripletCount,
             };
-            generateNewPassword.Invoke(generator);
-        };
+            generateNewPassword(generator);
+        }
         Helpers.ControlSetup.SetupCheckBox(this, "chbTripletIncludeNumber", "Settings.PasswordGenerator.Triplet.IncludeNumber", tripletPassword);
         Helpers.ControlSetup.SetupCheckBox(this, "chbTripletIncludeSpecialCharacters", "Settings.PasswordGenerator.Triplet.IncludeSpecialCharacters", tripletPassword);
         Helpers.ControlSetup.SetupCheckBox(this, "chbTripletIncludeSwappedCase", "Settings.PasswordGenerator.Triplet.IncludeSwappedCase", tripletPassword);
@@ -120,34 +120,34 @@ internal partial class PasswordGeneratorWindow : Window {
         Helpers.ControlSetup.SetupCheckBox(this, "chbTripletUseSpacesSeparator", "Settings.PasswordGenerator.Triplet.UseSpacesSeparator", tripletPassword);
         Helpers.ControlSetup.SetupTextBoxFromInt32(this, "txtTripletCount", "Settings.PasswordGenerator.Triplet.TripletCount", 2, 16, tripletPassword);
 
-        var fillPassword = (Settings.PasswordGenerator.GeneratorKind kind) => {
+        void fillPassword(Settings.PasswordGenerator.GeneratorKind kind) {
             switch (kind) {
-                case Settings.PasswordGenerator.GeneratorKind.Triplet: tripletPassword.Invoke(); break;
-                case Settings.PasswordGenerator.GeneratorKind.Word: wordPassword.Invoke(); break;
-                default: classicPassword.Invoke(); break;
+                case Settings.PasswordGenerator.GeneratorKind.Triplet: tripletPassword(); break;
+                case Settings.PasswordGenerator.GeneratorKind.Word: wordPassword(); break;
+                default: classicPassword(); break;
             }
             Settings.PasswordGenerator.Kind = kind;
-        };
-        var tabKind = Helpers.GetControl<TabControl>(this, "tabKind");
-        switch (Settings.PasswordGenerator.Kind) {
-            case Settings.PasswordGenerator.GeneratorKind.Triplet: tabKind.SelectedIndex = 2; break;
-            case Settings.PasswordGenerator.GeneratorKind.Word: tabKind.SelectedIndex = 1; break;
-            default: tabKind.SelectedIndex = 0; break;
         }
+        var tabKind = Helpers.GetControl<TabControl>(this, "tabKind");
+        tabKind.SelectedIndex = Settings.PasswordGenerator.Kind switch {
+            Settings.PasswordGenerator.GeneratorKind.Triplet => 2,
+            Settings.PasswordGenerator.GeneratorKind.Word => 1,
+            _ => 0,
+        };
         tabKind.SelectionChanged += (sender, e) => {
             switch (tabKind.SelectedIndex) {
-                case 2: fillPassword.Invoke(Settings.PasswordGenerator.GeneratorKind.Triplet); break;
-                case 1: fillPassword.Invoke(Settings.PasswordGenerator.GeneratorKind.Word); break;
-                default: fillPassword.Invoke(Settings.PasswordGenerator.GeneratorKind.Classic); break;
+                case 2: fillPassword(Settings.PasswordGenerator.GeneratorKind.Triplet); break;
+                case 1: fillPassword(Settings.PasswordGenerator.GeneratorKind.Word); break;
+                default: fillPassword(Settings.PasswordGenerator.GeneratorKind.Classic); break;
             }
         };
-        fillPassword.Invoke(Settings.PasswordGenerator.Kind);  // for first run
+        fillPassword(Settings.PasswordGenerator.Kind);  // for first run
 
         Helpers.FocusControl(this, "btnCopy");
     }
 
     protected override void OnKeyDown(KeyEventArgs e) {
-        if (e.Key == Key.Escape) { this.Close(); }
+        if (e.Key == Key.Escape) { Close(); }
         base.OnKeyDown(e);
     }
 
