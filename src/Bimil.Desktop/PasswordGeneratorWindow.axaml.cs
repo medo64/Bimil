@@ -13,7 +13,11 @@ internal partial class PasswordGeneratorWindow : Window {
         void generateNewPassword(PasswordGenerator generator) {
             Helpers.GetControl<TextBox>(this, "txtPassword").Text = generator.GetNewPassword();
 
-            //Helpers.GetControl<Image>(this, "imgGeneratorLevel")
+            Helpers.GetControl<Image>(this, "imgGeneratorLevel").Source = generator.GetEstimatedSecurityLevel() switch {
+                PasswordSecurityLevel.High => ThemeImageResources.Default.SecurityLevelHighX2,
+                PasswordSecurityLevel.Medium => ThemeImageResources.Default.SecurityLevelMediumX2,
+                _ => ThemeImageResources.Default.SecurityLevelLowX2,
+            };
 
             var duration = generator.GetEstimatedCrackDuration();
             var totalDays = (long)duration.TotalDays;
@@ -38,7 +42,9 @@ internal partial class PasswordGeneratorWindow : Window {
                     },
                 },
             };
-            Helpers.GetControl<Label>(this, "lblGeneratorStats").Content = durationText;
+            var generatorStatsLabel = Helpers.GetControl<Label>(this, "lblGeneratorStats");
+            generatorStatsLabel.Content = durationText;
+            ToolTip.SetTip(generatorStatsLabel, generator.GetEstimatedCombinationCount().ToString("0.00E0", CultureInfo.CurrentUICulture) + "\n" + generator.GetEstimatedEntropyInBits().ToString(CultureInfo.CurrentUICulture) + " bits of entropy");
         }
 
         void classicPassword() {
