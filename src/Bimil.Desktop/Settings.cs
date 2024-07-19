@@ -325,126 +325,104 @@ internal static class Settings {
             }
         }
 
+        internal static class Word {
+
+            public static bool IncludeNumber {
+                get { return Config.Read("PasswordGenerator/Word/IncludeNumber", true); }
+                set { Config.Write("PasswordGenerator/Word/IncludeNumber", value); }
+            }
+
+            public static bool IncludeSpecialCharacters {
+                get { return Config.Read("PasswordGenerator/Word/IncludeSpecialCharacters", true); }
+                set { Config.Write("PasswordGenerator/Word/IncludeSpecialCharacters", value); }
+            }
+
+            public static bool IncludeSwappedCase {
+                get { return Config.Read("PasswordGenerator/Word/IncludeSwappedCase", true); }
+                set { Config.Write("PasswordGenerator/Word/IncludeSwappedCase", value); }
+            }
+
+            public static bool DropOneCharacter {
+                get { return Config.Read("PasswordGenerator/Word/DropOneCharacter", true); }
+                set { Config.Write("PasswordGenerator/Word/DropOneCharacter", value); }
+            }
+
+            public static bool UseTitlecase {
+                get { return Config.Read("PasswordGenerator/Word/UseTitlecase", false); }
+                set { Config.Write("PasswordGenerator/Word/UseTitlecase", value); }
+            }
+
+            public static bool RestrictWordBreakup {
+                get { return Config.Read("PasswordGenerator/Word/RestrictWordBreakup", false); }
+                set { Config.Write("PasswordGenerator/Word/RestrictWordBreakup", value); }
+            }
+
+            public static bool RestrictAdjustmentsToSuffix {
+                get { return Config.Read("PasswordGenerator/Word/RestrictAdjustmentsToSuffix", false); }
+                set { Config.Write("PasswordGenerator/Word/RestrictAdjustmentsToSuffix", value); }
+            }
+
+            public static bool UseSpacesSeparator {
+                get { return Config.Read("PasswordGenerator/Word/UseSpacesSeparator", false); }
+                set { Config.Write("PasswordGenerator/Word/UseSpacesSeparator", value); }
+            }
+
+            public static int WordCount {
+                get { return LimitBetween(Config.Read("PasswordGenerator/Word/WordCount", 5), minValue: 2, maxValue: 16, allowZero: false); }
+                set { Config.Write("PasswordGenerator/Word/WordCount", LimitBetween(value, minValue: 2, maxValue: 16, allowZero: false)); }
+            }
+        }
+
+        internal static class Triplet {
+
+            public static bool IncludeNumber {
+                get { return Config.Read("PasswordGenerator/Triplet/IncludeNumber", true); }
+                set { Config.Write("PasswordGenerator/Triplet/IncludeNumber", value); }
+            }
+
+            public static bool IncludeSpecialCharacters {
+                get { return Config.Read("PasswordGenerator/Triplet/IncludeSpecialCharacters", true); }
+                set { Config.Write("PasswordGenerator/Triplet/IncludeSpecialCharacters", value); }
+            }
+
+            public static bool IncludeSwappedCase {
+                get { return Config.Read("PasswordGenerator/Triplet/IncludeSwappedCase", true); }
+                set { Config.Write("PasswordGenerator/Triplet/IncludeSwappedCase", value); }
+            }
+
+            public static bool DropOneCharacter {
+                get { return Config.Read("PasswordGenerator/Triplet/DropOneCharacter", true); }
+                set { Config.Write("PasswordGenerator/Triplet/DropOneCharacter", value); }
+            }
+
+            public static bool UseTitlecase {
+                get { return Config.Read("PasswordGenerator/Triplet/UseTitlecase", false); }
+                set { Config.Write("PasswordGenerator/Triplet/UseTitlecase", value); }
+            }
+
+            public static bool RestrictWordBreakup {
+                get { return Config.Read("PasswordGenerator/Triplet/RestrictWordBreakup", false); }
+                set { Config.Write("PasswordGenerator/Triplet/RestrictWordBreakup", value); }
+            }
+
+            public static bool RestrictAdjustmentsToSuffix {
+                get { return Config.Read("PasswordGenerator/Triplet/RestrictAdjustmentsToSuffix", false); }
+                set { Config.Write("PasswordGenerator/Triplet/RestrictAdjustmentsToSuffix", value); }
+            }
+
+            public static bool UseSpacesSeparator {
+                get { return Config.Read("PasswordGenerator/Triplet/UseSpacesSeparator", false); }
+                set { Config.Write("PasswordGenerator/Triplet/UseSpacesSeparator", value); }
+            }
+
+            public static int TripletCount {
+                get { return LimitBetween(Config.Read("PasswordGenerator/Triplet/TripletCount", 6), minValue: 2, maxValue: 32, allowZero: false); }
+                set { Config.Write("PasswordGenerator/Triplet/TripletCount", LimitBetween(value, minValue: 2, maxValue: 32, allowZero: false)); }
+            }
+        }
+
     }
 
-
-    // #region Word
-
-    // [Browsable(false)]
-    // public static bool PasswordGeneratorWordIncludeUpperCase {
-    //     get { return Config.Read("PasswordGeneratorWordIncludeUpperCase", false); }
-    //     set { Config.Write("PasswordGeneratorWordIncludeUpperCase", value); }
-    // }
-
-    // [Browsable(false)]
-    // public static bool PasswordGeneratorWordIncludeNumber {
-    //     get { return Config.Read("PasswordGeneratorWordIncludeNumber", true); }
-    //     set { Config.Write("PasswordGeneratorWordIncludeNumber", value); }
-    // }
-
-    // [Browsable(false)]
-    // public static bool PasswordGeneratorWordIncludeSpecialCharacter {
-    //     get { return Config.Read("PasswordGeneratorWordIncludeSpecialCharacter", true); }
-    //     set { Config.Write("PasswordGeneratorWordIncludeSpecialCharacter", value); }
-    // }
-
-    // [Browsable(false)]
-    // public static bool PasswordGeneratorWordIncludeIncomplete {
-    //     get { return Config.Read("PasswordGeneratorWordIncludeIncomplete", false); }
-    //     set { Config.Write("PasswordGeneratorWordIncludeIncomplete", value); }
-    // }
-
-    // [Browsable(false)]
-    // public static bool PasswordGeneratorWordRestrictAddSpace {
-    //     get { return Config.Read("PasswordGeneratorWordRestrictAddSpace", false); }
-    //     set { Config.Write("PasswordGeneratorWordRestrictAddSpace", value); }
-    // }
-
-    // [Browsable(false)]
-    // public static bool PasswordGeneratorWordRestrictBreak {
-    //     get { return Config.Read("PasswordGeneratorWordRestrictBreak", true); }
-    //     set { Config.Write("PasswordGeneratorWordRestrictBreak", value); }
-    // }
-
-    // [Browsable(false)]
-    // public static bool PasswordGeneratorWordRestrictTitleCase {
-    //     get { return Config.Read("PasswordGeneratorWordRestrictTitleCase", true); }
-    //     set { Config.Write("PasswordGeneratorWordRestrictTitleCase", value); }
-    // }
-
-    // [Browsable(false)]
-    // public static bool PasswordGeneratorWordRestrictSuffixOnly {
-    //     get { return Config.Read("PasswordGeneratorWordRestrictSuffixOnly", false); }
-    //     set { Config.Write("PasswordGeneratorWordRestrictSuffixOnly", value); }
-    // }
-
-    // [Browsable(false)]
-    // public static int PasswordGeneratorWordCount {
-    //     get { return LimitBetween(Config.Read("PasswordGeneratorWordCount", 5), minValue: 1, maxValue: 9, allowZero: false); }
-    //     set { Config.Write("PasswordGeneratorWordCount", LimitBetween(value, minValue: 1, maxValue: 9, allowZero: false)); }
-    // }
-
-    // #endregion Word
-
-    // #region Triplet
-
-    // [Browsable(false)]
-    // public static bool PasswordGeneratorTripletIncludeNumber {
-    //     get { return Config.Read("PasswordGeneratorTripletIncludeNumber", true); }
-    //     set { Config.Write("PasswordGeneratorTripletIncludeNumber", value); }
-    // }
-
-    // [Browsable(false)]
-    // public static bool PasswordGeneratorTripletIncludeSpecialCharacter {
-    //     get { return Config.Read("PasswordGeneratorTripletIncludeSpecialCharacter", true); }
-    //     set { Config.Write("PasswordGeneratorTripletIncludeSpecialCharacter", value); }
-    // }
-
-    // [Browsable(false)]
-    // public static bool PasswordGeneratorTripletRandomUpperCase {
-    //     get { return Config.Read("PasswordGeneratorTripletRandomUpperCase", false); }
-    //     set { Config.Write("PasswordGeneratorTripletRandomUpperCase", value); }
-    // }
-
-    // [Browsable(false)]
-    // public static bool PasswordGeneratorTripletRandomLetterDrop {
-    //     get { return Config.Read("PasswordGeneratorTripletRandomLetterDrop", false); }
-    //     set { Config.Write("PasswordGeneratorTripletRandomLetterDrop", value); }
-    // }
-
-    // [Browsable(false)]
-    // public static bool PasswordGeneratorTripletRestrictTitleCase {
-    //     get { return Config.Read("PasswordGeneratorTripletRestrictTitleCase", true); }
-    //     set { Config.Write("PasswordGeneratorTripletRestrictTitleCase", value); }
-    // }
-
-    // [Browsable(false)]
-    // public static bool PasswordGeneratorTripletRestrictBreak {
-    //     get { return Config.Read("PasswordGeneratorTripletRestrictBreak", true); }
-    //     set { Config.Write("PasswordGeneratorTripletRestrictBreak", value); }
-    // }
-
-    // [Browsable(false)]
-    // public static bool PasswordGeneratorTripletRestrictSuffixOnly {
-    //     get { return Config.Read("PasswordGeneratorTripletRestrictSuffixOnly", true); }
-    //     set { Config.Write("PasswordGeneratorTripletRestrictSuffixOnly", value); }
-    // }
-
-    // [Browsable(false)]
-    // public static bool PasswordGeneratorTripletRestrictAddSpace {
-    //     get { return Config.Read("PasswordGeneratorTripletRestrictAddSpace", false); }
-    //     set { Config.Write("PasswordGeneratorTripletRestrictAddSpace", value); }
-    // }
-
-    // [Browsable(false)]
-    // public static int PasswordGeneratorTripletCount {
-    //     get { return LimitBetween(Config.Read("PasswordGeneratorTripletCount", 6), minValue: 1, maxValue: 9, allowZero: false); }
-    //     set { Config.Write("PasswordGeneratorTripletCount", LimitBetween(value, minValue: 1, maxValue: 9, allowZero: false)); }
-    // }
-
-    // #endregion Triplet
-
-    // #endregion PasswordGenerator
 
 
     // #region Autotype
