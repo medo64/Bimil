@@ -2,7 +2,7 @@ namespace Bimil.Desktop;
 
 using System.Diagnostics;
 using System.Globalization;
-using Avalonia;
+using System.Runtime.InteropServices;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
@@ -176,7 +176,9 @@ internal partial class PasswordGeneratorWindow : Window {
 
     public async void btnCopy_Click(object sender, RoutedEventArgs e) {
         if (Clipboard != null) {
-            await Clipboard.ClearAsync();
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) {
+                X11Clipboard.Primary.Clear();  // workaround for primary keyboard having a different selection
+            }
             await Clipboard.SetTextAsync(Helpers.GetControl<TextBox>(this, "txtPassword").Text);
         } else {
             Debug.WriteLine("Clipboard is not available.");
