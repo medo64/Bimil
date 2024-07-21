@@ -5,6 +5,8 @@ using Medo.Configuration;
 
 internal static class Settings {
 
+    #region Behavior
+
     /// <summary>
     /// Gets/sets if main window should be closed when Escape key is pressed.
     /// Default value is false.
@@ -13,6 +15,21 @@ internal static class Settings {
         get { return Config.Read("CloseOnEscape", false); }
         set { Config.Write("CloseOnEscape", value); }
     }
+
+    #endregion Behavior
+
+    #region Special
+
+    /// <summary>
+    /// Gets/sets if X11 primary keyboard should be .
+    /// Default value is true.
+    /// </summary>
+    public static bool SyncX11PrimaryClipboard {
+        get { return Config.Read("SyncX11PrimaryClipboard", true); }
+        set { Config.Write("SyncX11PrimaryClipboard", value); }
+    }
+
+    #endregion Special
 
     /// <summary>
     /// Gets/sets theme.

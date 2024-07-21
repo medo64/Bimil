@@ -179,7 +179,7 @@ internal partial class PasswordGeneratorWindow : Window {
         if (Clipboard != null) {
             var text = Helpers.GetControl<TextBox>(this, "txtPassword").Text!;
 
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) {  // set both primary and clipboard on X11
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) && Settings.SyncX11PrimaryClipboard) {  // set both primary and clipboard on X11
                 X11Clipboard.Primary.SetText(text);  // no fallback
                 if (X11Clipboard.Clipboard.IsAvailable) {
                     X11Clipboard.Clipboard.SetText(text);
