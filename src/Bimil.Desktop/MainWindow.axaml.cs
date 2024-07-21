@@ -128,8 +128,9 @@ internal partial class MainWindow : Window {
         Settings.Theme = Settings.ThemeVariant.Light;
     }
 
-    public void OnMenuAppOptionsClick(object sender, RoutedEventArgs e) {
-
+    public async void OnMenuAppOptionsClick(object sender, RoutedEventArgs e) {
+        var frm = new OptionsWindow();
+        await frm.ShowDialog(this);
     }
 
     public void OnMenuAppFeedbackClick(object sender, RoutedEventArgs e) {

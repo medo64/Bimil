@@ -1,0 +1,86 @@
+<Window xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+    x:Class="Bimil.Desktop.OptionsWindow"
+    Width="500" Height="300"
+    WindowStartupLocation="CenterOwner"
+    CanResize="false"
+    Title="Options">
+
+    <DockPanel Margin="7">
+
+        <TabControl DockPanel.Dock="Top">
+
+            <TabItem Header="Behavior">
+                <Grid Margin="0 7 0 0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0" Grid.Row="0">
+                        <CheckBox Content="Close on escape" Name="chbCloseOnEscape" ToolTip.Tip="If set, escape key can be used to close application's main window." />
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1" Grid.Row="0">
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Security">
+                <Grid Margin="0 7 0 0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0" Grid.Row="0">
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1" Grid.Row="0">
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Special">
+                <Grid Margin="0 7 0 0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0" Grid.Row="0">
+                        <CheckBox Content="Sync X111 primary clipboard" Name="chbSyncX11PrimaryClipboard" ToolTip.Tip="If set, both normal and primary (aka, middle-click) clipboard will be used when copying data." />
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+        </TabControl>
+
+        <DockPanel Margin="0 11 0 0" DockPanel.Dock="Bottom" VerticalAlignment="Bottom" LastChildFill="true">
+            <DockPanel.Styles>
+                <Style Selector="Button">
+                    <Setter Property="HorizontalContentAlignment" Value="Center" />
+                </Style>
+            </DockPanel.Styles>
+            <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
+                <Button Content="_Defaults" Click="btnDefaults_Click"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" HorizontalAlignment="Right" Spacing="7">
+                <Button Content="_Save" Click="btnSave_Click" />
+                <Button Content="_Cancel" Click="btnClose_Click" Name="btnClose" />
+            </StackPanel>
+        </DockPanel>
+    </DockPanel>
+
+</Window>
