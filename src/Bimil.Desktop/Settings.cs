@@ -21,6 +21,14 @@ internal static class Settings {
     #region Special
 
     /// <summary>
+    /// Gets/sets if warnings will be shown upon adding fields not compatible with PasswordSafe.
+    /// </summary>
+    public static bool ShowPasswordSafeCompatibilityWarnings {
+        get { return Config.Read("ShowPasswordSafeWarnings", false); }
+        set { Config.Write("ShowPasswordSafeWarnings", value); }
+    }
+
+    /// <summary>
     /// Gets/sets if X11 primary keyboard should be .
     /// Default value is true.
     /// </summary>
@@ -159,16 +167,6 @@ internal static class Settings {
     // public static int SavePasswordHistoryDefaultCount {
     //     get { return Config.Read("SavePasswordHistoryDefaultCount", 5); }
     //     set { Config.Write("SavePasswordHistoryDefaultCount", value); }
-    // }
-
-
-    // [Category("Compatibility")]
-    // [DisplayName("Show PasswordSafe warnings")]
-    // [Description("If true, warning will be shown upon adding fields not compatible with PasswordSafe.")]
-    // [DefaultValue(false)]
-    // public static bool ShowPasswordSafeWarnings {
-    //     get { return Config.Read("ShowPasswordSafeWarnings", false); }
-    //     set { Config.Write("ShowPasswordSafeWarnings", value); }
     // }
 
 

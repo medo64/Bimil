@@ -4,7 +4,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
     x:Class="Bimil.Desktop.OptionsWindow"
-    Width="500" Height="300"
+    Width="400" Height="300"
     WindowStartupLocation="CenterOwner"
     CanResize="false"
     Title="Options">
@@ -14,56 +14,21 @@
         <TabControl DockPanel.Dock="Top">
 
             <TabItem Header="Behavior">
-                <Grid Margin="0 7 0 0">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-
-                    <StackPanel Grid.Column="0" Grid.Row="0">
-                        <CheckBox Content="Close on escape" Name="chbCloseOnEscape" ToolTip.Tip="If set, escape key can be used to close application's main window." />
-                    </StackPanel>
-
-                    <StackPanel Grid.Column="1" Grid.Row="0">
-                    </StackPanel>
-                </Grid>
+                <StackPanel Margin="0 7 0 0" Spacing="3">
+                    <CheckBox Content="Close on escape" Name="chbCloseOnEscape" ToolTip.Tip="If set, escape key can be used to close application's main window." />
+                </StackPanel>
             </TabItem>
 
             <TabItem Header="Security">
-                <Grid Margin="0 7 0 0">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-
-                    <StackPanel Grid.Column="0" Grid.Row="0">
-                    </StackPanel>
-
-                    <StackPanel Grid.Column="1" Grid.Row="0">
-                    </StackPanel>
-                </Grid>
+                <StackPanel Margin="0 7 0 0" Spacing="3">
+                </StackPanel>
             </TabItem>
 
             <TabItem Header="Special">
-                <Grid Margin="0 7 0 0">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-
-                    <StackPanel Grid.Column="0" Grid.Row="0">
-                        <CheckBox Content="Sync X111 primary clipboard" Name="chbSyncX11PrimaryClipboard" ToolTip.Tip="If set, both normal and primary (aka, middle-click) clipboard will be used when copying data." />
-                    </StackPanel>
-                </Grid>
+                <StackPanel Margin="0 7 0 0" Spacing="3">
+                    <CheckBox Content="Sync X11 primary clipboard" Name="chbSyncX11PrimaryClipboard" ToolTip.Tip="If set, both normal and primary (aka, middle-click) clipboard will be used when copying data." />
+                    <CheckBox Content="Show PasswordSafe compatibility warnings" Name="chbShowPasswordSafeCompatibilityWarnings" ToolTip.Tip="If set, warnings will be shown upon adding fields not compatible with PasswordSafe." />
+                </StackPanel>
             </TabItem>
         </TabControl>
 
@@ -74,7 +39,7 @@
                 </Style>
             </DockPanel.Styles>
             <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
-                <Button Content="_Defaults" Click="btnDefaults_Click"/>
+                <Button Content="_Defaults" Click="btnDefaults_Click" />
             </StackPanel>
             <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" HorizontalAlignment="Right" Spacing="7">
                 <Button Content="_Save" Click="btnSave_Click" />
