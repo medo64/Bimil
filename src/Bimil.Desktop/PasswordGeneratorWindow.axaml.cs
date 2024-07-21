@@ -7,6 +7,7 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Bimil.Core;
+using Medo.X11;
 
 internal partial class PasswordGeneratorWindow : Window {
     public PasswordGeneratorWindow() {
@@ -176,10 +177,17 @@ internal partial class PasswordGeneratorWindow : Window {
 
     public async void btnCopy_Click(object sender, RoutedEventArgs e) {
         if (Clipboard != null) {
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) {
-                X11Clipboard.Primary.Clear();  // workaround for primary keyboard having a different selection
+            var text = Helpers.GetControl<TextBox>(this, "txtPassword").Text!;
+
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) {  // set both primary and clipboard on X11
+                X11Clipboard.Primary.SetText(text);  // no fallback
+                if (X11Clipboard.Clipboard.IsAvailable) {
+                    X11Clipboard.Clipboard.SetText(text);
+                    return;  // skip call to Avalonia clipboard
+                }
             }
-            await Clipboard.SetTextAsync(Helpers.GetControl<TextBox>(this, "txtPassword").Text);
+
+            await Clipboard.SetTextAsync(text);
         } else {
             Debug.WriteLine("Clipboard is not available.");
         }
