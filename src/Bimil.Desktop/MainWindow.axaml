@@ -162,7 +162,7 @@
 
         <!-- Statusbar -->
         <Grid DockPanel.Dock="Bottom" ColumnDefinitions="Auto, *">
-            <Label Grid.Column="0">File name</Label>
+            <Label Name="lblFileName" Grid.Column="0">File name</Label>
         </Grid>
 
         <!-- Main -->

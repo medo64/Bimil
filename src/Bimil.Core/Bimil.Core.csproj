@@ -26,4 +26,8 @@
     <InternalsVisibleTo Include="Bimil.Core.Tests" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="../../lib/PasswordSafe/src/Medo.PasswordSafe/Medo.PasswordSafe.csproj" />
+  </ItemGroup>
+
 </Project>

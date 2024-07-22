@@ -5,9 +5,12 @@ using System.Diagnostics;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.Platform.Storage;
 using Avalonia.Styling;
 using Avalonia.Threading;
 using Medo.Diagnostics;
+using Bimil.Core;
+using System.IO;
 
 internal partial class MainWindow : Window {
 
@@ -33,6 +36,13 @@ internal partial class MainWindow : Window {
                 });
             }
         };
+
+        // State update
+        State.StateChanged += (sender, e) => {
+            var file = State.File;
+            Title = (file != null) ? file.Name : "Bimil";
+            Helpers.GetControl<Label>(this, "lblFileName").Content = (file != null) ? file.FullName : "";
+        };
     }
 
     protected override void OnKeyDown(KeyEventArgs e) {
@@ -49,11 +59,24 @@ internal partial class MainWindow : Window {
     #region Menu
 
     public void OnMenuFileNewClick(object sender, RoutedEventArgs e) {
-
+        State.NewFile("");  //TODO: passphrase
     }
 
-    public void OnMenuFileOpenClick(object sender, RoutedEventArgs e) {
-
+    public async void OnMenuFileOpenClick(object sender, RoutedEventArgs e) {
+        var files = await StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions {
+            Title = "Open Text File",
+            FileTypeFilter = new FilePickerFileType[] {
+                new("Bimil and PasswordSafe") { Patterns = [ "*.bimil", "*.passwordsafe" ], MimeTypes = [ "/*" ] },
+                new("Bimil") { Patterns = [ "*.bimil" ], MimeTypes = [ "/*" ] },
+                new("PasswordSafe") { Patterns = [ "*.passwordsafe" ], MimeTypes = [ "/*" ] },
+                FilePickerFileTypes.All
+            },
+            AllowMultiple = false
+        });
+        if (files.Count > 0) {
+            var fileInfo = new FileInfo(files[0].Path.AbsolutePath);
+            State.OpenFile(fileInfo, "");  //TODO: passphrase
+        }
     }
 
     public void OnMenuFileSaveClick(object sender, RoutedEventArgs e) {
