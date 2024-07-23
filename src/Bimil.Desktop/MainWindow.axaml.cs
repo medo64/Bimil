@@ -43,6 +43,9 @@ internal partial class MainWindow : Window {
             var file = State.File;
             Title = (file != null) ? file.Name : "Bimil";
             Helpers.GetControl<Label>(this, "lblFileName").Content = (file != null) ? file.FullName : "";
+            Helpers.GetControl<Label>(this, "lblLastSave").Content = ((file != null) && (file.LastWriteTime != DateTime.MinValue))
+                                                                   ? file.LastWriteTime.ToShortDateString() + " " + file.LastWriteTime.ToLongTimeString()
+                                                                   : "";
         };
     }
 
@@ -59,8 +62,12 @@ internal partial class MainWindow : Window {
 
     #region Menu
 
-    public void OnMenuFileNewClick(object sender, RoutedEventArgs e) {
-        State.NewFile("");  //TODO: ask for passphrase
+    public async void OnMenuFileNewClick(object sender, RoutedEventArgs e) {
+        var frm = PasswordWindow.GetNewPasswordWindow();
+        await frm.ShowDialog(this);
+        if (frm.Password != null) {
+            State.NewFile(frm.Password);
+        }
     }
 
     public async void OnMenuFileOpenClick(object sender, RoutedEventArgs e) {
@@ -77,7 +84,11 @@ internal partial class MainWindow : Window {
         if (files.Count > 0) {
             var fileInfo = new FileInfo(Uri.UnescapeDataString(files[0].Path.AbsolutePath));
             try {
-                State.OpenFile(fileInfo, "");  //TODO: ask for passphrase
+                var frm = PasswordWindow.GetEnterPasswordWindow();
+                await frm.ShowDialog(this);
+                if (frm.Password != null) {
+                    State.OpenFile(fileInfo, frm.Password);
+                }
             } catch (Exception ex) {
                 MessageBox.ShowErrorDialog(this, "Error opening file", ex.Message);
             }

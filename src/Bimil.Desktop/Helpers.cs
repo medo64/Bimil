@@ -29,6 +29,39 @@ internal static class Helpers {
     }
 
 
+
+    private static readonly Dictionary<string, ISolidColorBrush> BrushCache = [];
+    public static ISolidColorBrush GetBrush(string name) {
+        if (!BrushCache.TryGetValue(name, out var brush)) {
+            var variant = Application.Current?.ActualThemeVariant ?? ThemeVariant.Light;
+            if (Application.Current?.Styles[0] is IResourceProvider provider && provider.TryGetResource(name, variant, out var resource)) {
+                if (resource is Color color) {
+                    brush = new SolidColorBrush(color);
+                    BrushCache.Add(name, brush);
+                }
+            }
+        }
+        return brush ?? throw new ArgumentOutOfRangeException(nameof(name), "Brush not found");
+    }
+
+    private static readonly Dictionary<string, ISolidColorBrush> RedBrushCache = [];
+    public static ISolidColorBrush GetRedBrush(string name) {
+        if (!RedBrushCache.TryGetValue(name, out var redBrush)) {
+            var brush = GetBrush(name);
+            var hslColor = brush.Color.ToHsl();
+            if (hslColor.L < 0.4) {
+                redBrush = new SolidColorBrush(HslColor.FromHsl(0, 1, 0.25).ToRgb());
+            } else if (hslColor.L > 0.6) {
+                redBrush = new SolidColorBrush(HslColor.FromHsl(0, 1, 0.75).ToRgb());
+            } else {
+                redBrush = new SolidColorBrush(HslColor.FromHsl(0, 1, 0.50).ToRgb());
+            }
+            RedBrushCache.Add(name, redBrush);
+        }
+        return redBrush ?? throw new ArgumentOutOfRangeException(nameof(name), "Brush not found");
+    }
+
+
     internal static class ControlSetup {
 
         private static T GetControlEtc<T>(Window window, string name, string propertyPath, out PropertyInfo propertyInfo) where T : Control {  // ignore possibility of the non-existent name
@@ -67,38 +100,6 @@ internal static class Helpers {
             control.LostFocus += (sender, e) => {
                 control.Text = ((int)propertyInfo.GetValue(null)!).ToString(CultureInfo.CurrentUICulture);
             };
-        }
-
-
-        private static readonly Dictionary<string, ISolidColorBrush> BrushCache = [];
-        private static ISolidColorBrush GetBrush(string name) {
-            if (!BrushCache.TryGetValue(name, out var brush)) {
-                var variant = Application.Current?.ActualThemeVariant ?? ThemeVariant.Light;
-                if (Application.Current?.Styles[0] is IResourceProvider provider && provider.TryGetResource(name, variant, out var resource)) {
-                    if (resource is Color color) {
-                        brush = new SolidColorBrush(color);
-                        BrushCache.Add(name, brush);
-                    }
-                }
-            }
-            return brush ?? throw new ArgumentOutOfRangeException(nameof(name), "Brush not found");
-        }
-
-        private static readonly Dictionary<string, ISolidColorBrush> RedBrushCache = [];
-        private static ISolidColorBrush GetRedBrush(string name) {
-            if (!RedBrushCache.TryGetValue(name, out var redBrush)) {
-                var brush = GetBrush(name);
-                var hslColor = brush.Color.ToHsl();
-                if (hslColor.L < 0.4) {
-                    redBrush = new SolidColorBrush(HslColor.FromHsl(0, 1, 0.25).ToRgb());
-                } else if (hslColor.L > 0.6) {
-                    redBrush = new SolidColorBrush(HslColor.FromHsl(0, 1, 0.75).ToRgb());
-                } else {
-                    redBrush = new SolidColorBrush(HslColor.FromHsl(0, 1, 0.50).ToRgb());
-                }
-                RedBrushCache.Add(name, redBrush);
-            }
-            return redBrush ?? throw new ArgumentOutOfRangeException(nameof(name), "Brush not found");
         }
 
     }

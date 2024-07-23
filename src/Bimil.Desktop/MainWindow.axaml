@@ -53,6 +53,9 @@
                 <Style Selector="MenuItem">
                     <Setter Property="Foreground" Value="{DynamicResource IconForeground}"  />
                 </Style>
+                <Style Selector="MenuItem">
+                    <Setter Property="FontSize" Value="12" />
+                </Style>
                 <Style Selector="MenuItem.DropDown">
                     <Setter Property="FontSize" Value="8" />
                     <Setter Property="Margin" Value="0" />
@@ -161,8 +164,9 @@
         </Grid>
 
         <!-- Statusbar -->
-        <Grid DockPanel.Dock="Bottom" ColumnDefinitions="Auto, *">
-            <Label Name="lblFileName" Grid.Column="0">File name</Label>
+        <Grid DockPanel.Dock="Bottom" ColumnDefinitions="Auto, *, Auto">
+            <Label Name="lblFileName" Grid.Column="0"></Label>
+            <Label Name="lblLastSave" Grid.Column="2"></Label>
         </Grid>
 
         <!-- Main -->
