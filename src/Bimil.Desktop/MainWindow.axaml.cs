@@ -11,6 +11,7 @@ using Avalonia.Threading;
 using Medo.Diagnostics;
 using Bimil.Core;
 using System.IO;
+using Medo.Avalonia;
 
 internal partial class MainWindow : Window {
 
@@ -59,7 +60,7 @@ internal partial class MainWindow : Window {
     #region Menu
 
     public void OnMenuFileNewClick(object sender, RoutedEventArgs e) {
-        State.NewFile("");  //TODO: passphrase
+        State.NewFile("");  //TODO: ask for passphrase
     }
 
     public async void OnMenuFileOpenClick(object sender, RoutedEventArgs e) {
@@ -74,8 +75,12 @@ internal partial class MainWindow : Window {
             AllowMultiple = false
         });
         if (files.Count > 0) {
-            var fileInfo = new FileInfo(files[0].Path.AbsolutePath);
-            State.OpenFile(fileInfo, "");  //TODO: passphrase
+            var fileInfo = new FileInfo(Uri.UnescapeDataString(files[0].Path.AbsolutePath));
+            try {
+                State.OpenFile(fileInfo, "");  //TODO: ask for passphrase
+            } catch (Exception ex) {
+                MessageBox.ShowErrorDialog(this, "Error opening file", ex.Message);
+            }
         }
     }
 

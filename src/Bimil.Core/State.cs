@@ -2,7 +2,6 @@ namespace Bimil.Core;
 
 using System;
 using System.IO;
-using System.Runtime.InteropServices.Marshalling;
 using Medo.Security.Cryptography.PasswordSafe;
 
 /// <summary>
@@ -41,14 +40,8 @@ public static class State {
     /// <param name="file">File.</param>
     /// <param name="passphrase">Passphrase.</param>
     public static bool OpenFile(FileInfo file, string passphrase) {
-        if (!file.Exists) { return false; }
-
-        try {
-            Document = Document.Load(file.FullName, passphrase);
-            File = file;
-        } catch (Exception) {
-            return false;
-        }
+        Document = Document.Load(file.FullName, passphrase);
+        File = file;
 
         StateChanged?.Invoke(null, EventArgs.Empty);
         return true;
