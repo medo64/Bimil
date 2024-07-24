@@ -21,13 +21,16 @@ internal static class Helpers {
 
     public static void FocusControl(Window window, string name) {
         var control = window.FindControl<Control>(name) ?? throw new ArgumentNullException(nameof(name), "Control not found.");
+        FocusControl(control);
+    }
+
+    public static void FocusControl(Control control) {
         if (control.IsAttachedToVisualTree()) {
             control.Focus(NavigationMethod.Tab);
         } else {
             control.AttachedToVisualTree += (sender, e) => { control.Focus(NavigationMethod.Tab); };
         }
     }
-
 
 
     private static readonly Dictionary<string, ISolidColorBrush> BrushCache = [];

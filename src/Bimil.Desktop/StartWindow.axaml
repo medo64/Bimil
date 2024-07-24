@@ -1,0 +1,36 @@
+<Window xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+    x:Class="Bimil.Desktop.StartWindow"
+    Width="600" Height="500"
+    WindowStartupLocation="CenterOwner"
+    CanResize="false"
+    Title="Select File">
+
+    <DockPanel Margin="7" VerticalAlignment="Stretch">
+
+        <DockPanel Margin="0 11 0 0" DockPanel.Dock="Bottom">
+            <StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom" Orientation="Horizontal" Spacing="7">
+                <Button Content="_Open" Name="btnOpen" Click="btnOpen_Click" IsEnabled="false" HorizontalContentAlignment="Center" />
+                <Button Content="Open _Read-only" Name="btnOpenReadonly" Click="btnOpenReadonly_Click" IsEnabled="false" HorizontalContentAlignment="Center" />
+            </StackPanel>
+            <StackPanel HorizontalAlignment="Right" VerticalAlignment="Bottom" Orientation="Horizontal" Spacing="7">
+                <Button Content="_Close" Name="btnClose" Click="btnClose_Click" HorizontalContentAlignment="Center" />
+            </StackPanel>
+        </DockPanel>
+
+        <ListBox Name="lsbFiles" DockPanel.Dock="Top">
+            <ListBox.Template>
+                <ControlTemplate>
+                    <ScrollViewer>
+                        <ItemsPresenter />
+                    </ScrollViewer>
+                </ControlTemplate>
+            </ListBox.Template>
+        </ListBox>
+
+    </DockPanel>
+
+</Window>

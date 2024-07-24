@@ -58,6 +58,16 @@ internal partial class MainWindow : Window {
                 lblLastSave.Content = "";
             }
         };
+
+        Opened += async (sender, e) => {
+            if (RecentFiles.GetFiles().Count > 0) {
+                var frm = new StartWindow();
+                await frm.ShowDialog(this);
+                if (frm.SelectedFile != null) {
+                    OpenFile(frm.SelectedFile);
+                }
+            }
+        };
     }
 
     protected override void OnKeyDown(KeyEventArgs e) {
