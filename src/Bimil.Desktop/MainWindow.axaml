@@ -78,10 +78,10 @@
                 <Button Click="OnMenuFileOpenClick" ToolTip.Tip="Open file (Ctrl+O)">
                     <StackPanel Orientation="Horizontal">
                         <Image Source="{Binding FileOpen}" />
-                        <Menu>
+                        <Menu Opened="OnMenuFileOpen_Opened">
                             <MenuItem Header="▼" Classes="DropDown">
                                 <MenuItem Header="Open…" Click="OnMenuFileOpenClick" />
-                                <MenuItem Header="-" />
+                                <MenuItem Header="-" IsVisible="false" />
                             </MenuItem>
                         </Menu>
                     </StackPanel>

@@ -12,6 +12,7 @@ using Medo.Diagnostics;
 using Bimil.Core;
 using System.IO;
 using Medo.Avalonia;
+using Medo.Configuration;
 
 internal partial class MainWindow : Window {
 
@@ -41,11 +42,21 @@ internal partial class MainWindow : Window {
         // State update
         State.StateChanged += (sender, e) => {
             var file = State.File;
-            Title = (file != null) ? file.Name : "Bimil";
-            Helpers.GetControl<Label>(this, "lblFileName").Content = (file != null) ? file.FullName : "";
-            Helpers.GetControl<Label>(this, "lblLastSave").Content = ((file != null) && (file.LastWriteTime != DateTime.MinValue))
-                                                                   ? file.LastWriteTime.ToShortDateString() + " " + file.LastWriteTime.ToLongTimeString()
-                                                                   : "";
+            var lblFileName = Helpers.GetControl<Label>(this, "lblFileName");
+            var lblLastSave = Helpers.GetControl<Label>(this, "lblLastSave");
+
+            if (file != null) {
+                Title = file.Name;
+                lblFileName.Content = file.FullName;
+                lblLastSave.Content = (file.LastWriteTime != DateTime.MinValue)
+                                    ? file.LastWriteTime.ToShortDateString() + " " + file.LastWriteTime.ToLongTimeString()
+                                    : "";
+                RecentFiles.Add(file);
+            } else {
+                Title = "Bimil";
+                lblFileName.Content = "";
+                lblLastSave.Content = "";
+            }
         };
     }
 
@@ -60,6 +71,22 @@ internal partial class MainWindow : Window {
     }
 
 
+    private async void OpenFile(FileInfo file) {
+        while (true) {  // repeat until successful or given up
+            try {
+                var frm = PasswordWindow.GetEnterPasswordWindow();
+                await frm.ShowDialog(this);
+                if (frm.Password != null) {
+                    State.OpenFile(file, frm.Password);
+                }
+                break;
+            } catch (Exception ex) {
+                MessageBox.ShowErrorDialog(this, "Error opening file", ex.Message);
+            }
+        }
+    }
+
+
     #region Menu
 
     public async void OnMenuFileNewClick(object sender, RoutedEventArgs e) {
@@ -67,6 +94,26 @@ internal partial class MainWindow : Window {
         await frm.ShowDialog(this);
         if (frm.Password != null) {
             State.NewFile(frm.Password);
+        }
+    }
+
+    public void OnMenuFileOpen_Opened(object sender, RoutedEventArgs e) {
+        var root = (Menu)sender!;
+        var menu = (MenuItem)root.Items[0]!;
+        for (var i = menu.Items.Count - 1; i > 1; i--) {
+            menu.Items.RemoveAt(i);
+        }
+
+        var files = RecentFiles.GetFiles();
+        var separatorMenuItem = (MenuItem)menu.Items[1]!;
+        separatorMenuItem.IsVisible = (files.Count > 0);
+
+        foreach (var file in files) {
+            var menuItem = new MenuItem { Header = file.Name, Tag = file };
+            menuItem.Click += (s, e) => {
+                OpenFile((FileInfo)((MenuItem)s!).Tag!);
+            };
+            menu.Items.Add(menuItem);
         }
     }
 
@@ -83,15 +130,7 @@ internal partial class MainWindow : Window {
         });
         if (files.Count > 0) {
             var fileInfo = new FileInfo(Uri.UnescapeDataString(files[0].Path.AbsolutePath));
-            try {
-                var frm = PasswordWindow.GetEnterPasswordWindow();
-                await frm.ShowDialog(this);
-                if (frm.Password != null) {
-                    State.OpenFile(fileInfo, frm.Password);
-                }
-            } catch (Exception ex) {
-                MessageBox.ShowErrorDialog(this, "Error opening file", ex.Message);
-            }
+            OpenFile(fileInfo);
         }
     }
 
