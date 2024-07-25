@@ -6,6 +6,7 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
+using Medo.Avalonia;
 using Medo.Configuration;
 
 internal partial class StartWindow : Window {
@@ -62,6 +63,7 @@ internal partial class StartWindow : Window {
         switch (e.Key) {
             case Key.Escape: Close(); break;
             case Key.Enter: btnOpen_Click(this, e); break;
+
             case Key.Up: if (lsbFiles.SelectedIndex > 0) { lsbFiles.SelectedIndex -= 1; } break;
             case Key.Down: if (lsbFiles.SelectedIndex < lsbFiles.Items.Count - 1) { lsbFiles.SelectedIndex += 1; } break;
             case Key.Left: {
@@ -84,6 +86,20 @@ internal partial class StartWindow : Window {
                     }
                 }
                 break;
+
+            case Key.Delete:
+                if (lsbFiles.SelectedItem is StackPanel stack) {
+                    if (MessageBox.ShowQuestionDialog(this,
+                                                     "Remove from recent files",
+                                                     "Do you really want to remove file from the most-recent list?",
+                                                     "Yes", "No") == 0) {
+                        var file = (FileInfo)stack.Tag!;
+                        RecentFiles.Remove(file);
+                        lsbFiles.Items.Remove(stack);
+                    }
+                }
+                break;
+
             default: base.OnKeyDown(e); break;
         }
     }
