@@ -95,7 +95,7 @@ internal partial class MainWindow : Window {
     private async void OpenFile(FileInfo file, bool @readonly) {
         while (true) {  // repeat until successful or given up
             try {
-                var frm = PasswordWindow.GetEnterPasswordWindow();
+                var frm = PasswordWindow.GetEnterPasswordWindow(file.Name);
                 await frm.ShowDialog(this);
                 if (frm.Password != null) {
                     State.OpenFile(file, frm.Password, @readonly);
@@ -111,7 +111,7 @@ internal partial class MainWindow : Window {
     #region Menu
 
     public async void OnMenuFileNewClick(object sender, RoutedEventArgs e) {
-        var frm = PasswordWindow.GetNewPasswordWindow();
+        var frm = PasswordWindow.GetNewPasswordWindow("Select password");
         await frm.ShowDialog(this);
         if (frm.Password != null) {
             State.NewFile(frm.Password);

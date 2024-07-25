@@ -1,42 +1,28 @@
 namespace Bimil.Desktop;
 
 using System;
-using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
-using System.Runtime.InteropServices;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using Bimil.Core;
-using Medo.X11;
 
 internal partial class PasswordWindow : Window {
     private enum PasswordWindowType { New, Enter, Change }
 
-    public static PasswordWindow GetNewPasswordWindow() {
-        return new PasswordWindow(PasswordWindowType.New);
+    public static PasswordWindow GetNewPasswordWindow(string title) {
+        return new PasswordWindow(title, PasswordWindowType.New);
     }
 
-    public static PasswordWindow GetEnterPasswordWindow() {
-        return new PasswordWindow(PasswordWindowType.Enter);
+    public static PasswordWindow GetEnterPasswordWindow(string title) {
+        return new PasswordWindow(title, PasswordWindowType.Enter);
     }
 
-    public static PasswordWindow GetChangePasswordWindow() {
-        return new PasswordWindow(PasswordWindowType.Change);
+    public static PasswordWindow GetChangePasswordWindow(string title) {
+        return new PasswordWindow(title, PasswordWindowType.Change);
     }
 
-    private PasswordWindow(PasswordWindowType type) {
+    private PasswordWindow(string title, PasswordWindowType type) {
         InitializeComponent();
-
-        var lblPasswordExisting = Helpers.GetControl<Label>(this, "lblPasswordExisting");
-        var txtPasswordExisting = Helpers.GetControl<TextBox>(this, "txtPasswordExisting");
-        var lblPasswordNew = Helpers.GetControl<Label>(this, "lblPasswordNew");
-        var txtPasswordNew = Helpers.GetControl<TextBox>(this, "txtPasswordNew");
-        var lblPasswordCompare = Helpers.GetControl<Label>(this, "lblPasswordCompare");
-        var txtPasswordCompare = Helpers.GetControl<TextBox>(this, "txtPasswordCompare");
-        var lblPasswordMismatch = Helpers.GetControl<Label>(this, "lblPasswordMismatch");
-        var btnOK = Helpers.GetControl<Button>(this, "btnOK");
+        Title = title;
 
         switch (type) {
             case PasswordWindowType.New:
@@ -47,14 +33,14 @@ internal partial class PasswordWindow : Window {
                 txtPasswordNew.TextChanged += (sender, e) => { CheckPasswordsAreSame(btnOK, txtPasswordNew, txtPasswordCompare, lblPasswordMismatch); };
                 txtPasswordCompare.TextChanged += (sender, e) => { CheckPasswordsAreSame(btnOK, txtPasswordNew, txtPasswordCompare, lblPasswordMismatch); };
                 btnOK.Click += (sender, e) => { Password = txtPasswordNew.Text; Close(); };
-                Helpers.FocusControl(this, "txtPasswordNew");  // FocusFirstControl(this);
+                Helpers.FocusControl(txtPasswordNew);  // FocusFirstControl(this);
                 break;
 
             case PasswordWindowType.Enter:
                 lblPasswordExisting.IsVisible = true;
                 txtPasswordExisting.IsVisible = true;
                 btnOK.Click += (sender, e) => { Password = txtPasswordExisting.Text; Close(); };
-                Helpers.FocusControl(this, "txtPasswordExisting");  // FocusFirstControl(this);
+                Helpers.FocusControl(txtPasswordExisting);  // FocusFirstControl(this);
                 break;
 
             case PasswordWindowType.Change:
