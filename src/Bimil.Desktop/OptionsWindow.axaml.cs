@@ -9,18 +9,11 @@ internal partial class OptionsWindow : Window {
     public OptionsWindow() {
         InitializeComponent();
 
-        // Behavior
-        Helpers.GetControl<CheckBox>(this, "chbCloseOnEscape").IsChecked = Settings.CloseOnEscape;
+        LoadState();
+        chbLoadLast.IsCheckedChanged += (sender, e) => { if (chbLoadLast.IsChecked == true) { chbShowStart.IsChecked = false; } };
+        chbShowStart.IsCheckedChanged += (sender, e) => { if (chbShowStart.IsChecked == true) { chbLoadLast.IsChecked = false; } };
 
-        // Special
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) {
-            Helpers.GetControl<CheckBox>(this, "chbSyncX11PrimaryClipboard").IsChecked = Settings.SyncX11PrimaryClipboard;
-        } else {
-            Helpers.GetControl<CheckBox>(this, "chbSyncX11PrimaryClipboard").IsVisible = false;
-        }
-        Helpers.GetControl<CheckBox>(this, "chbShowPasswordSafeCompatibilityWarnings").IsChecked = Settings.ShowPasswordSafeCompatibilityWarnings;
-
-        Helpers.FocusControl(this, "btnClose");
+        Helpers.FocusControl(btnClose);
     }
 
     protected override void OnKeyDown(KeyEventArgs e) {
@@ -29,22 +22,41 @@ internal partial class OptionsWindow : Window {
     }
 
 
-    public void btnDefaults_Click(object sender, RoutedEventArgs e) {
+    private void LoadState() {
         // Behavior
-        Helpers.GetControl<CheckBox>(this, "chbCloseOnEscape").IsChecked = false;
+        chbCloseOnEscape.IsChecked = Settings.CloseOnEscape;
+        chbLoadLast.IsChecked = Settings.LoadLast;
+        chbShowStart.IsChecked = Settings.ShowStart;
 
         // Special
-        Helpers.GetControl<CheckBox>(this, "chbSyncX11PrimaryClipboard").IsChecked = true;
-        Helpers.GetControl<CheckBox>(this, "chbShowPasswordSafeCompatibilityWarnings").IsChecked = false;
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) {
+            chbSyncX11PrimaryClipboard.IsChecked = Settings.SyncX11PrimaryClipboard;
+        } else {
+            chbSyncX11PrimaryClipboard.IsVisible = false;
+        }
+        chbShowPasswordSafeCompatibilityWarnings.IsChecked = Settings.ShowPasswordSafeCompatibilityWarnings;
+    }
+
+    public void btnDefaults_Click(object sender, RoutedEventArgs e) {
+        // Behavior
+        chbCloseOnEscape.IsChecked = false;
+        chbLoadLast.IsChecked = false;
+        chbShowStart.IsChecked = true;
+
+        // Special
+        chbSyncX11PrimaryClipboard.IsChecked = true;
+        chbShowPasswordSafeCompatibilityWarnings.IsChecked = false;
     }
 
     public void btnSave_Click(object sender, RoutedEventArgs e) {
         // Behavior
-        Settings.CloseOnEscape = Helpers.GetControl<CheckBox>(this, "chbCloseOnEscape").IsChecked!.Value;
+        Settings.CloseOnEscape = chbCloseOnEscape.IsChecked!.Value;
+        Settings.LoadLast = chbLoadLast.IsChecked!.Value;
+        Settings.ShowStart = chbShowStart.IsChecked!.Value;
 
         // Special
-        Settings.SyncX11PrimaryClipboard = Helpers.GetControl<CheckBox>(this, "chbSyncX11PrimaryClipboard").IsChecked!.Value;
-        Settings.ShowPasswordSafeCompatibilityWarnings = Helpers.GetControl<CheckBox>(this, "chbShowPasswordSafeCompatibilityWarnings").IsChecked!.Value;
+        Settings.SyncX11PrimaryClipboard = chbSyncX11PrimaryClipboard.IsChecked!.Value;
+        Settings.ShowPasswordSafeCompatibilityWarnings = chbShowPasswordSafeCompatibilityWarnings.IsChecked!.Value;
 
         Close();
     }

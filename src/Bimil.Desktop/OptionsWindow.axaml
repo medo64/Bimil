@@ -16,6 +16,8 @@
             <TabItem Header="Behavior">
                 <StackPanel Margin="0 7 0 0" Spacing="3">
                     <CheckBox Content="Close on escape" Name="chbCloseOnEscape" ToolTip.Tip="If set, escape key can be used to close application's main window." />
+                    <CheckBox Content="Load last" Name="chbLoadLast" ToolTip.Tip="If set, last file will be loaded." />
+                    <CheckBox Content="Show start window" Name="chbShowStart" ToolTip.Tip="If set, start dialog will be shown." />
                 </StackPanel>
             </TabItem>
 

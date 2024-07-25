@@ -64,12 +64,14 @@ internal partial class MainWindow : Window {
 
     protected override async void OnOpened(EventArgs e) {
         base.OnOpened(e);
-        while (!IsActive) { await Task.Delay(10); }  // wait for window to be fully initialized; otherwise it doesn't center right
-        if (RecentFiles.GetFiles().Count > 0) {
-            var frm = new StartWindow();
-            await frm.ShowDialog(this);
-            if (frm.SelectedFile != null) {
-                OpenFile(frm.SelectedFile, frm.SelectedReadonly);
+        if (Settings.ShowStart) {
+            while (!IsActive) { await Task.Delay(10); }  // wait for window to be fully initialized; otherwise it doesn't center right
+            if (RecentFiles.GetFiles().Count > 0) {
+                var frm = new StartWindow();
+                await frm.ShowDialog(this);
+                if (frm.SelectedFile != null) {
+                    OpenFile(frm.SelectedFile, frm.SelectedReadonly);
+                }
             }
         }
     }

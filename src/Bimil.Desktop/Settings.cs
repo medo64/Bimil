@@ -16,6 +16,28 @@ internal static class Settings {
         set { Config.Write("CloseOnEscape", value); }
     }
 
+    /// <summary>
+    /// Gets/sets if the last file will be automatically loaded.
+    /// </summary>
+    public static bool LoadLast {
+        get { return Config.Read("LoadLast", false) && !ShowStart; }
+        set {
+            Config.Write("LoadLast", value);
+            if ((value == true) && ShowStart) { ShowStart = false; }
+        }
+    }
+
+    /// <summary>
+    /// Gets/sets if start window will be shown.
+    /// </summary>
+    public static bool ShowStart {
+        get { return Config.Read("ShowStart", true); }
+        set {
+            Config.Write("ShowStart", value);
+            if ((value == true) && LoadLast) { LoadLast = false; }
+        }
+    }
+
     #endregion Behavior
 
     #region Special
@@ -55,29 +77,6 @@ internal static class Settings {
     }
 
 
-    // [Category("Behavior")]
-    // [DisplayName("Show start")]
-    // [Description("If true, Start window will be shown.")]
-    // [DefaultValue(true)]
-    // public static bool ShowStart {
-    //     get { return Config.Read("ShowStart", true); }
-    //     set {
-    //         Config.Write("ShowStart", value);
-    //         if ((value == true) && LoadLast) { LoadLast = false; }
-    //     }
-    // }
-
-    // [Category("Behavior")]
-    // [DisplayName("Load last")]
-    // [Description("If true, the last used file will be loaded.")]
-    // [DefaultValue(false)]
-    // public static bool LoadLast {
-    //     get { return Config.Read("LoadLast", false) && !ShowStart; }
-    //     set {
-    //         Config.Write("LoadLast", value);
-    //         if ((value == true) && ShowStart) { ShowStart = false; }
-    //     }
-    // }
 
     // [Category("Behavior")]
     // [DisplayName("Auto-close application timeout")]
