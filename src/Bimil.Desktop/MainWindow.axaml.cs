@@ -13,6 +13,7 @@ using Bimil.Core;
 using System.IO;
 using Medo.Avalonia;
 using Medo.Configuration;
+using System.Threading.Tasks;
 
 internal partial class MainWindow : Window {
 
@@ -58,16 +59,19 @@ internal partial class MainWindow : Window {
                 lblLastSave.Content = "";
             }
         };
+    }
 
-        Opened += async (sender, e) => {
-            if (RecentFiles.GetFiles().Count > 0) {
-                var frm = new StartWindow();
-                await frm.ShowDialog(this);
-                if (frm.SelectedFile != null) {
-                    OpenFile(frm.SelectedFile);
-                }
+
+    protected override async void OnOpened(EventArgs e) {
+        base.OnOpened(e);
+        while (!IsActive) { await Task.Delay(10); }  // wait for window to be fully initialized; otherwise it doesn't center right
+        if (RecentFiles.GetFiles().Count > 0) {
+            var frm = new StartWindow();
+            await frm.ShowDialog(this);
+            if (frm.SelectedFile != null) {
+                OpenFile(frm.SelectedFile, frm.SelectedReadonly);
             }
-        };
+        }
     }
 
     protected override void OnKeyDown(KeyEventArgs e) {
@@ -81,13 +85,13 @@ internal partial class MainWindow : Window {
     }
 
 
-    private async void OpenFile(FileInfo file) {
+    private async void OpenFile(FileInfo file, bool @readonly) {
         while (true) {  // repeat until successful or given up
             try {
                 var frm = PasswordWindow.GetEnterPasswordWindow();
                 await frm.ShowDialog(this);
                 if (frm.Password != null) {
-                    State.OpenFile(file, frm.Password);
+                    State.OpenFile(file, frm.Password, @readonly);
                 }
                 break;
             } catch (Exception ex) {
@@ -121,7 +125,7 @@ internal partial class MainWindow : Window {
         foreach (var file in files) {
             var menuItem = new MenuItem { Header = file.Name, Tag = file };
             menuItem.Click += (s, e) => {
-                OpenFile((FileInfo)((MenuItem)s!).Tag!);
+                OpenFile((FileInfo)((MenuItem)s!).Tag!, @readonly: false);
             };
             menu.Items.Add(menuItem);
         }
@@ -140,7 +144,7 @@ internal partial class MainWindow : Window {
         });
         if (files.Count > 0) {
             var fileInfo = new FileInfo(Uri.UnescapeDataString(files[0].Path.AbsolutePath));
-            OpenFile(fileInfo);
+            OpenFile(fileInfo, @readonly: false);
         }
     }
 

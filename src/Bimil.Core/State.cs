@@ -39,8 +39,9 @@ public static class State {
     /// </summary>
     /// <param name="file">File.</param>
     /// <param name="passphrase">Passphrase.</param>
-    public static bool OpenFile(FileInfo file, string passphrase) {
+    public static bool OpenFile(FileInfo file, string passphrase, bool @readonly) {
         Document = Document.Load(file.FullName, passphrase);
+        Document.IsReadOnly = @readonly;
         File = file;
 
         StateChanged?.Invoke(null, EventArgs.Empty);

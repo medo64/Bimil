@@ -7,7 +7,6 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 using Medo.Configuration;
-using Metsys.Bson;
 
 internal partial class StartWindow : Window {
 
@@ -60,8 +59,33 @@ internal partial class StartWindow : Window {
     }
 
     protected override void OnKeyDown(KeyEventArgs e) {
-        if (e.Key == Key.Escape) { Close(); }
-        base.OnKeyDown(e);
+        switch (e.Key) {
+            case Key.Escape: Close(); break;
+            case Key.Enter: btnOpen_Click(this, e); break;
+            case Key.Up: if (lsbFiles.SelectedIndex > 0) { lsbFiles.SelectedIndex -= 1; } break;
+            case Key.Down: if (lsbFiles.SelectedIndex < lsbFiles.Items.Count - 1) { lsbFiles.SelectedIndex += 1; } break;
+            case Key.Left: {
+                    if (btnOpen.IsFocused) {
+                        Helpers.FocusControl(btnClose);
+                    } else if (btnOpenReadonly.IsFocused) {
+                        Helpers.FocusControl(btnOpen);
+                    } else if (btnClose.IsFocused) {
+                        Helpers.FocusControl(btnOpenReadonly);
+                    }
+                }
+                break;
+            case Key.Right: {
+                    if (btnOpen.IsFocused) {
+                        Helpers.FocusControl(btnOpenReadonly);
+                    } else if (btnOpenReadonly.IsFocused) {
+                        Helpers.FocusControl(btnClose);
+                    } else if (btnClose.IsFocused) {
+                        Helpers.FocusControl(btnOpen);
+                    }
+                }
+                break;
+            default: base.OnKeyDown(e); break;
+        }
     }
 
 
