@@ -1,0 +1,67 @@
+<Window xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+    x:Class="Bimil.Desktop.PropertiesWindow"
+    Width="600"
+    WindowStartupLocation="CenterOwner"
+    CanResize="false"
+    SizeToContent="Height"
+    Title="Properties">
+
+    <StackPanel Margin="7">
+
+        <Grid ColumnDefinitions="Auto, 5, *" RowDefinitions="Auto, 5, Auto, 5, Auto,  11,  Auto, 5, Auto, 5, Auto, 5, Auto, 5, Auto,  11,  Auto, 5, Auto, 5, Auto">
+            <Grid.Styles>
+                <Style Selector="TextBox[IsReadOnly=True]:focus /template/ Border">
+                    <Setter Property="Background" Value="{DynamicResource SystemChromeLowColor}" />
+                </Style>
+                <Style Selector="TextBox[IsReadOnly=True] /template/ Border">
+                    <Setter Property="Background" Value="{DynamicResource SystemChromeLowColor}" />
+                </Style>
+            </Grid.Styles>
+            <Label Content="ID:" Grid.Column="0" Grid.Row="0" VerticalAlignment="Center" />
+            <TextBox Name="txtID" Grid.Column="2" Grid.Row="0" VerticalAlignment="Center" IsReadOnly="true" />
+
+            <Label Content="Name:" Grid.Column="0" Grid.Row="2" VerticalAlignment="Center" />
+            <TextBox Name="txtName" Grid.Column="2" Grid.Row="2" VerticalAlignment="Center" />
+
+            <Label Content="Description:" Grid.Column="0" Grid.Row="4" VerticalAlignment="Top" />
+            <TextBox Name="txtDescription" Grid.Column="2" Grid.Row="4" VerticalAlignment="Center" Height="84" AcceptsReturn="true" TextWrapping="Wrap" />
+
+
+            <Label Content="Last save" Grid.Column="0" Grid.Row="6" Margin="0 11 0 0" VerticalAlignment="Center" />
+
+            <Label Content="Application:" Grid.Column="0" Grid.Row="8" Margin="11 0 0 0" VerticalAlignment="Center" />
+            <TextBox Name="txtSaveApplication" Grid.Column="2" Grid.Row="8" VerticalAlignment="Center" IsReadOnly="true" />
+
+            <Label Content="User:" Grid.Column="0" Grid.Row="10" Margin="11 0 0 0" VerticalAlignment="Center" />
+            <TextBox Name="txtSaveUser" Grid.Column="2" Grid.Row="10" VerticalAlignment="Center" IsReadOnly="true" />
+
+            <Label Content="Host:" Grid.Column="0" Grid.Row="12" Margin="11 0 0 0" VerticalAlignment="Center" />
+            <TextBox Name="txtSaveHost" Grid.Column="2" Grid.Row="12" VerticalAlignment="Center" IsReadOnly="true" />
+
+            <Label Content="Time:" Grid.Column="0" Grid.Row="14" Margin="11 0 0 0" VerticalAlignment="Center" />
+            <TextBox Name="txtSaveTime" Grid.Column="2" Grid.Row="14" VerticalAlignment="Center" IsReadOnly="true" />
+
+
+            <Label Content="Static key" Grid.Column="0" Grid.Row="16" Margin="0 11 0 0" VerticalAlignment="Center" />
+
+            <Label Content="Use:" Grid.Column="0" Grid.Row="18" Margin="11 0 0 0" VerticalAlignment="Center" />
+            <CheckBox Name="chbStaticKeyUse" Grid.Column="2" Grid.Row="18" VerticalAlignment="Center" />
+
+            <Label Content="Static key:" Grid.Column="0" Grid.Row="20" Margin="11 0 0 0" VerticalAlignment="Center" />
+            <TextBox Name="txtStaticKey" Grid.Column="2" Grid.Row="20" VerticalAlignment="Center" IsReadOnly="true" />
+
+        </Grid>
+
+        <DockPanel Margin="0 11 0 0">
+            <StackPanel HorizontalAlignment="Right" VerticalAlignment="Bottom" Orientation="Horizontal" Spacing="7">
+                <Button Content="_Close" Name="btnClose" Click="btnClose_Click" HorizontalContentAlignment="Center" />
+            </StackPanel>
+        </DockPanel>
+
+    </StackPanel>
+
+</Window>

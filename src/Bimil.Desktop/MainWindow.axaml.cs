@@ -196,8 +196,11 @@ internal partial class MainWindow : Window {
                                          : "Make read-only";
     }
 
-    public void mnuFileProperties_Click(object sender, RoutedEventArgs e) {
-
+    public async void mnuFileProperties_Click(object sender, RoutedEventArgs e) {
+        if (State.Document != null) {
+            var frm = new PropertiesWindow();
+            await frm.ShowDialog(this);
+        }
     }
 
     public async void mnuFilePropertiesPassword_Click(object sender, RoutedEventArgs e) {
