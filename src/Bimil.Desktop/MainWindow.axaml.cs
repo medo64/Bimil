@@ -57,9 +57,6 @@ internal partial class MainWindow : Window {
         // State update
         State.StateChanged += (sender, e) => {
             var file = State.File;
-            var lblFileName = Helpers.GetControl<Label>(this, "lblFileName");
-            var lblLastSave = Helpers.GetControl<Label>(this, "lblLastSave");
-
             if (file != null) {
                 Title = file.Name;
                 lblFileName.Content = file.FullName;

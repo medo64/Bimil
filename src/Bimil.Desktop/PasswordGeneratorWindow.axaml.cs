@@ -13,37 +13,36 @@ internal partial class PasswordGeneratorWindow : Window {
     public PasswordGeneratorWindow() {
         InitializeComponent();
 
-        Helpers.ControlSetup.SetupCheckBox(this, "chbClassicIncludeLowercaseLetters", "Settings.PasswordGenerator.Classic.IncludeLowercaseLetters", GenerateNewClassicPassword);
-        Helpers.ControlSetup.SetupCheckBox(this, "chbClassicIncludeUppercaseLetters", "Settings.PasswordGenerator.Classic.IncludeUppercaseLetters", GenerateNewClassicPassword);
-        Helpers.ControlSetup.SetupCheckBox(this, "chbClassicIncludeDigits", "Settings.PasswordGenerator.Classic.IncludeDigits", GenerateNewClassicPassword);
-        Helpers.ControlSetup.SetupCheckBox(this, "chbClassicIncludeSpecialCharacters", "Settings.PasswordGenerator.Classic.IncludeSpecialCharacters", GenerateNewClassicPassword);
-        Helpers.ControlSetup.SetupCheckBox(this, "chbClassicExcludeSimilarCharacters", "Settings.PasswordGenerator.Classic.ExcludeSimilarCharacters", GenerateNewClassicPassword);
-        Helpers.ControlSetup.SetupCheckBox(this, "chbClassicExcludeMovableCharacters", "Settings.PasswordGenerator.Classic.ExcludeMovableCharacters", GenerateNewClassicPassword);
-        Helpers.ControlSetup.SetupCheckBox(this, "chbClassicExcludeUnpronounceable", "Settings.PasswordGenerator.Classic.ExcludeUnpronounceable", GenerateNewClassicPassword);
-        Helpers.ControlSetup.SetupCheckBox(this, "chbClassicExcludeRepeatedCharacters", "Settings.PasswordGenerator.Classic.ExcludeRepeatedCharacters", GenerateNewClassicPassword);
-        Helpers.ControlSetup.SetupTextBoxFromInt32(this, "txtClassicLength", "Settings.PasswordGenerator.Classic.PasswordLength", 6, 99, GenerateNewClassicPassword);
+        Helpers.ControlSetup.SetupCheckBox(chbClassicIncludeLowercaseLetters, "Settings.PasswordGenerator.Classic.IncludeLowercaseLetters", GenerateNewClassicPassword);
+        Helpers.ControlSetup.SetupCheckBox(chbClassicIncludeUppercaseLetters, "Settings.PasswordGenerator.Classic.IncludeUppercaseLetters", GenerateNewClassicPassword);
+        Helpers.ControlSetup.SetupCheckBox(chbClassicIncludeDigits, "Settings.PasswordGenerator.Classic.IncludeDigits", GenerateNewClassicPassword);
+        Helpers.ControlSetup.SetupCheckBox(chbClassicIncludeSpecialCharacters, "Settings.PasswordGenerator.Classic.IncludeSpecialCharacters", GenerateNewClassicPassword);
+        Helpers.ControlSetup.SetupCheckBox(chbClassicExcludeSimilarCharacters, "Settings.PasswordGenerator.Classic.ExcludeSimilarCharacters", GenerateNewClassicPassword);
+        Helpers.ControlSetup.SetupCheckBox(chbClassicExcludeMovableCharacters, "Settings.PasswordGenerator.Classic.ExcludeMovableCharacters", GenerateNewClassicPassword);
+        Helpers.ControlSetup.SetupCheckBox(chbClassicExcludeUnpronounceable, "Settings.PasswordGenerator.Classic.ExcludeUnpronounceable", GenerateNewClassicPassword);
+        Helpers.ControlSetup.SetupCheckBox(chbClassicExcludeRepeatedCharacters, "Settings.PasswordGenerator.Classic.ExcludeRepeatedCharacters", GenerateNewClassicPassword);
+        Helpers.ControlSetup.SetupTextBoxFromInt32(txtClassicLength, "Settings.PasswordGenerator.Classic.PasswordLength", 6, 99, GenerateNewClassicPassword);
 
-        Helpers.ControlSetup.SetupCheckBox(this, "chbWordIncludeNumber", "Settings.PasswordGenerator.Word.IncludeNumber", GenerateNewWordPassword);
-        Helpers.ControlSetup.SetupCheckBox(this, "chbWordIncludeSpecialCharacters", "Settings.PasswordGenerator.Word.IncludeSpecialCharacters", GenerateNewWordPassword);
-        Helpers.ControlSetup.SetupCheckBox(this, "chbWordIncludeSwappedCase", "Settings.PasswordGenerator.Word.IncludeSwappedCase", GenerateNewWordPassword);
-        Helpers.ControlSetup.SetupCheckBox(this, "chbWordDropOneCharacter", "Settings.PasswordGenerator.Word.DropOneCharacter", GenerateNewWordPassword);
-        Helpers.ControlSetup.SetupCheckBox(this, "chbWordUseTitlecase", "Settings.PasswordGenerator.Word.UseTitlecase", GenerateNewWordPassword);
-        Helpers.ControlSetup.SetupCheckBox(this, "chbWordRestrictWordBreakup", "Settings.PasswordGenerator.Word.RestrictWordBreakup", GenerateNewWordPassword);
-        Helpers.ControlSetup.SetupCheckBox(this, "chbWordRestrictAdjustmentsToSuffix", "Settings.PasswordGenerator.Word.RestrictAdjustmentsToSuffix", GenerateNewWordPassword);
-        Helpers.ControlSetup.SetupCheckBox(this, "chbWordUseSpacesSeparator", "Settings.PasswordGenerator.Word.UseSpacesSeparator", GenerateNewWordPassword);
-        Helpers.ControlSetup.SetupTextBoxFromInt32(this, "txtWordCount", "Settings.PasswordGenerator.Word.WordCount", 2, 16, GenerateNewWordPassword);
+        Helpers.ControlSetup.SetupCheckBox(chbWordIncludeNumber, "Settings.PasswordGenerator.Word.IncludeNumber", GenerateNewWordPassword);
+        Helpers.ControlSetup.SetupCheckBox(chbWordIncludeSpecialCharacters, "Settings.PasswordGenerator.Word.IncludeSpecialCharacters", GenerateNewWordPassword);
+        Helpers.ControlSetup.SetupCheckBox(chbWordIncludeSwappedCase, "Settings.PasswordGenerator.Word.IncludeSwappedCase", GenerateNewWordPassword);
+        Helpers.ControlSetup.SetupCheckBox(chbWordDropOneCharacter, "Settings.PasswordGenerator.Word.DropOneCharacter", GenerateNewWordPassword);
+        Helpers.ControlSetup.SetupCheckBox(chbWordUseTitlecase, "Settings.PasswordGenerator.Word.UseTitlecase", GenerateNewWordPassword);
+        Helpers.ControlSetup.SetupCheckBox(chbWordRestrictWordBreakup, "Settings.PasswordGenerator.Word.RestrictWordBreakup", GenerateNewWordPassword);
+        Helpers.ControlSetup.SetupCheckBox(chbWordRestrictAdjustmentsToSuffix, "Settings.PasswordGenerator.Word.RestrictAdjustmentsToSuffix", GenerateNewWordPassword);
+        Helpers.ControlSetup.SetupCheckBox(chbWordUseSpacesSeparator, "Settings.PasswordGenerator.Word.UseSpacesSeparator", GenerateNewWordPassword);
+        Helpers.ControlSetup.SetupTextBoxFromInt32(txtWordCount, "Settings.PasswordGenerator.Word.WordCount", 2, 16, GenerateNewWordPassword);
 
-        Helpers.ControlSetup.SetupCheckBox(this, "chbTripletIncludeNumber", "Settings.PasswordGenerator.Triplet.IncludeNumber", GenerateNewTripletPassword);
-        Helpers.ControlSetup.SetupCheckBox(this, "chbTripletIncludeSpecialCharacters", "Settings.PasswordGenerator.Triplet.IncludeSpecialCharacters", GenerateNewTripletPassword);
-        Helpers.ControlSetup.SetupCheckBox(this, "chbTripletIncludeSwappedCase", "Settings.PasswordGenerator.Triplet.IncludeSwappedCase", GenerateNewTripletPassword);
-        Helpers.ControlSetup.SetupCheckBox(this, "chbTripletDropOneCharacter", "Settings.PasswordGenerator.Triplet.DropOneCharacter", GenerateNewTripletPassword);
-        Helpers.ControlSetup.SetupCheckBox(this, "chbTripletUseTitlecase", "Settings.PasswordGenerator.Triplet.UseTitlecase", GenerateNewTripletPassword);
-        Helpers.ControlSetup.SetupCheckBox(this, "chbTripletRestrictWordBreakup", "Settings.PasswordGenerator.Triplet.RestrictWordBreakup", GenerateNewTripletPassword);
-        Helpers.ControlSetup.SetupCheckBox(this, "chbTripletRestrictAdjustmentsToSuffix", "Settings.PasswordGenerator.Triplet.RestrictAdjustmentsToSuffix", GenerateNewTripletPassword);
-        Helpers.ControlSetup.SetupCheckBox(this, "chbTripletUseSpacesSeparator", "Settings.PasswordGenerator.Triplet.UseSpacesSeparator", GenerateNewTripletPassword);
-        Helpers.ControlSetup.SetupTextBoxFromInt32(this, "txtTripletCount", "Settings.PasswordGenerator.Triplet.TripletCount", 2, 16, GenerateNewTripletPassword);
+        Helpers.ControlSetup.SetupCheckBox(chbTripletIncludeNumber, "Settings.PasswordGenerator.Triplet.IncludeNumber", GenerateNewTripletPassword);
+        Helpers.ControlSetup.SetupCheckBox(chbTripletIncludeSpecialCharacters, "Settings.PasswordGenerator.Triplet.IncludeSpecialCharacters", GenerateNewTripletPassword);
+        Helpers.ControlSetup.SetupCheckBox(chbTripletIncludeSwappedCase, "Settings.PasswordGenerator.Triplet.IncludeSwappedCase", GenerateNewTripletPassword);
+        Helpers.ControlSetup.SetupCheckBox(chbTripletDropOneCharacter, "Settings.PasswordGenerator.Triplet.DropOneCharacter", GenerateNewTripletPassword);
+        Helpers.ControlSetup.SetupCheckBox(chbTripletUseTitlecase, "Settings.PasswordGenerator.Triplet.UseTitlecase", GenerateNewTripletPassword);
+        Helpers.ControlSetup.SetupCheckBox(chbTripletRestrictWordBreakup, "Settings.PasswordGenerator.Triplet.RestrictWordBreakup", GenerateNewTripletPassword);
+        Helpers.ControlSetup.SetupCheckBox(chbTripletRestrictAdjustmentsToSuffix, "Settings.PasswordGenerator.Triplet.RestrictAdjustmentsToSuffix", GenerateNewTripletPassword);
+        Helpers.ControlSetup.SetupCheckBox(chbTripletUseSpacesSeparator, "Settings.PasswordGenerator.Triplet.UseSpacesSeparator", GenerateNewTripletPassword);
+        Helpers.ControlSetup.SetupTextBoxFromInt32(txtTripletCount, "Settings.PasswordGenerator.Triplet.TripletCount", 2, 16, GenerateNewTripletPassword);
 
-        var tabKind = Helpers.GetControl<TabControl>(this, "tabKind");
         tabKind.SelectedIndex = Settings.PasswordGenerator.Kind switch {
             Settings.PasswordGenerator.GeneratorKind.Triplet => 2,
             Settings.PasswordGenerator.GeneratorKind.Word => 1,
@@ -58,7 +57,7 @@ internal partial class PasswordGeneratorWindow : Window {
         };
         GenerateNewPassword(Settings.PasswordGenerator.Kind);  // for first run
 
-        Helpers.FocusControl(this, "btnCopy");
+        Helpers.FocusControl(btnCopy);
     }
 
     protected override void OnKeyDown(KeyEventArgs e) {
@@ -83,7 +82,7 @@ internal partial class PasswordGeneratorWindow : Window {
             && !Settings.PasswordGenerator.Classic.IncludeUppercaseLetters
             && !Settings.PasswordGenerator.Classic.IncludeDigits
             && !Settings.PasswordGenerator.Classic.IncludeSpecialCharacters) {
-            Helpers.GetControl<CheckBox>(this, "chbIncludeLowercaseLetters").IsChecked = true;
+            chbClassicIncludeLowercaseLetters.IsChecked = true;
             Settings.PasswordGenerator.Classic.IncludeLowercaseLetters = true;
         }
         var generator = new ClassicPasswordGenerator() {
@@ -131,9 +130,9 @@ internal partial class PasswordGeneratorWindow : Window {
     }
 
     private void GenerateNewPassword(PasswordGenerator generator) {
-        Helpers.GetControl<TextBox>(this, "txtPassword").Text = generator.GetNewPassword();
+        txtPassword.Text = generator.GetNewPassword();
 
-        Helpers.GetControl<Image>(this, "imgGeneratorLevel").Source = generator.GetEstimatedSecurityLevel() switch {
+        imgGeneratorLevel.Source = generator.GetEstimatedSecurityLevel() switch {
             PasswordSecurityLevel.High => ThemeImageResources.Enabled!.SecurityLevelHighX2,
             PasswordSecurityLevel.Medium => ThemeImageResources.Enabled!.SecurityLevelMediumX2,
             _ => ThemeImageResources.Enabled!.SecurityLevelLowX2,
@@ -162,9 +161,8 @@ internal partial class PasswordGeneratorWindow : Window {
                 },
             },
         };
-        var generatorStatsLabel = Helpers.GetControl<Label>(this, "lblGeneratorStats");
-        generatorStatsLabel.Content = durationText;
-        ToolTip.SetTip(generatorStatsLabel, generator.GetEstimatedCombinationCount().ToString("0.00E0", CultureInfo.CurrentUICulture) + "\n" + generator.GetEstimatedEntropyInBits().ToString(CultureInfo.CurrentUICulture) + " bits of entropy");
+        lblGeneratorStats.Content = durationText;
+        ToolTip.SetTip(lblGeneratorStats, generator.GetEstimatedCombinationCount().ToString("0.00E0", CultureInfo.CurrentUICulture) + "\n" + generator.GetEstimatedEntropyInBits().ToString(CultureInfo.CurrentUICulture) + " bits of entropy");
     }
 
     #endregion Password
@@ -177,7 +175,7 @@ internal partial class PasswordGeneratorWindow : Window {
 
     public async void btnCopy_Click(object sender, RoutedEventArgs e) {
         if (Clipboard != null) {
-            var text = Helpers.GetControl<TextBox>(this, "txtPassword").Text!;
+            var text = txtPassword.Text!;
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) && Settings.SyncX11PrimaryClipboard) {  // set both primary and clipboard on X11
                 X11Clipboard.Primary.SetText(text);  // no fallback

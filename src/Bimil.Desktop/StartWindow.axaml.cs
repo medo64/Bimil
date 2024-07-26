@@ -13,11 +13,6 @@ internal partial class StartWindow : Window {
 
     public StartWindow() {
         InitializeComponent();
-        var lsbFiles = Helpers.GetControl<ListBox>(this, "lsbFiles");
-        var btnOpen = Helpers.GetControl<Button>(this, "btnOpen");
-        var btnOpenReadonly = Helpers.GetControl<Button>(this, "btnOpenReadonly");
-        var btnClose = Helpers.GetControl<Button>(this, "btnClose");
-
         lsbFiles.SelectionChanged += (sender, e) => {
             var hasSelection = (lsbFiles.SelectedItem != null);
             btnOpen.IsEnabled = hasSelection;

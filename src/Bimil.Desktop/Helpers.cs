@@ -13,15 +13,6 @@ using Avalonia.VisualTree;
 
 internal static class Helpers {
 
-    public static T GetControl<T>(Window window, string name) where T : Control {
-        return window.FindControl<T>(name) ?? throw new ArgumentNullException(nameof(name), "Control not found.");
-    }
-
-    public static void FocusControl(Window window, string name) {
-        var control = window.FindControl<Control>(name) ?? throw new ArgumentNullException(nameof(name), "Control not found.");
-        FocusControl(control);
-    }
-
     public static void FocusControl(Control control) {
         if (control.IsAttachedToVisualTree()) {
             control.Focus(NavigationMethod.Tab);
@@ -78,15 +69,13 @@ internal static class Helpers {
 
     internal static class ControlSetup {
 
-        private static T GetControlEtc<T>(Window window, string name, string propertyPath, out PropertyInfo propertyInfo) where T : Control {  // ignore possibility of the non-existent name
-            var control = window.FindControl<T>(name)!;
+        private static PropertyInfo GetControlPropertyInfo(Control control, string propertyPath) {  // ignore possibility of the non-existent name
             var type = Assembly.GetExecutingAssembly().GetType("Bimil.Desktop." + propertyPath[0..propertyPath.LastIndexOf('.')].Replace('.', '+'))!;
-            propertyInfo = type.GetProperty(propertyPath[(propertyPath.LastIndexOf('.') + 1)..])!;
-            return control;
+            return type.GetProperty(propertyPath[(propertyPath.LastIndexOf('.') + 1)..])!;
         }
 
-        public static void SetupCheckBox(Window window, string name, string propertyPath, Action? runOnUpdate = null) {  // ignore possibility of the non-existent name
-            var control = GetControlEtc<CheckBox>(window, name, propertyPath, out var propertyInfo);
+        public static void SetupCheckBox(CheckBox control, string propertyPath, Action? runOnUpdate = null) {  // ignore possibility of the non-existent name
+            var propertyInfo = GetControlPropertyInfo(control, propertyPath);
             control.IsChecked = (bool)propertyInfo.GetValue(null)!;
             control.IsCheckedChanged += (sender, e) => {
                 propertyInfo.SetValue(null, control.IsChecked);
@@ -94,8 +83,8 @@ internal static class Helpers {
             };
         }
 
-        public static void SetupTextBoxFromInt32(Window window, string name, string propertyPath, int minValue, int maxValue, Action? runOnUpdate = null) {  // ignore possibility of the non-existent name
-            var control = GetControlEtc<TextBox>(window, name, propertyPath, out var propertyInfo);
+        public static void SetupTextBoxFromInt32(TextBox control, string propertyPath, int minValue, int maxValue, Action? runOnUpdate = null) {  // ignore possibility of the non-existent name
+            var propertyInfo = GetControlPropertyInfo(control, propertyPath);
             control.Text = ((int)propertyInfo.GetValue(null)!).ToString(CultureInfo.CurrentUICulture);
             control.TextChanged += (sender, e) => {
                 if (int.TryParse(control.Text, NumberStyles.Integer, CultureInfo.CurrentUICulture, out var newValue) && (newValue >= minValue) && (newValue <= maxValue)) {
