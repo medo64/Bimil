@@ -19,7 +19,7 @@ internal partial class MainWindow : Window {
 
     public MainWindow() {
         InitializeComponent();
-        ThemeImageResources.Setup(this);
+        ThemeImageResources.Setup(this, mnu);
 
         // ThemeVariant
         switch (Settings.Theme) {
@@ -58,6 +58,15 @@ internal partial class MainWindow : Window {
                 lblFileName.Content = "";
                 lblLastSave.Content = "";
             }
+
+            var hasDocument = (State.Document != null);
+            mnuFileSave.IsEnabled = hasDocument;
+            mnuFileProperties.IsEnabled = hasDocument;
+            mnuItemAdd.IsEnabled = hasDocument;
+            mnuItemView.IsEnabled = false;  // will enable when item is selected
+            mnuItemEdit.IsEnabled = false;
+            mnuItemRemove.IsEnabled = false;
+            mnuFind.IsEnabled = hasDocument;
         };
     }
 
@@ -110,7 +119,7 @@ internal partial class MainWindow : Window {
 
     #region Menu
 
-    public async void OnMenuFileNewClick(object sender, RoutedEventArgs e) {
+    public async void nnuFileNew_Click(object sender, RoutedEventArgs e) {
         var frm = PasswordWindow.GetNewPasswordWindow("Select password");
         await frm.ShowDialog(this);
         if (frm.Password != null) {
@@ -118,7 +127,7 @@ internal partial class MainWindow : Window {
         }
     }
 
-    public void OnMenuFileOpen_Opened(object sender, RoutedEventArgs e) {
+    public void mnuFileOpen_Opened(object sender, RoutedEventArgs e) {
         var root = (Menu)sender!;
         var menu = (MenuItem)root.Items[0]!;
         for (var i = menu.Items.Count - 1; i > 1; i--) {
@@ -138,7 +147,7 @@ internal partial class MainWindow : Window {
         }
     }
 
-    public async void OnMenuFileOpenClick(object sender, RoutedEventArgs e) {
+    public async void mnuFileOpen_Click(object sender, RoutedEventArgs e) {
         var files = await StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions {
             Title = "Open Text File",
             FileTypeFilter = new FilePickerFileType[] {
@@ -155,49 +164,49 @@ internal partial class MainWindow : Window {
         }
     }
 
-    public void OnMenuFileSaveClick(object sender, RoutedEventArgs e) {
+    public void mnuFileSave_Click(object sender, RoutedEventArgs e) {
 
     }
 
-    public void OnMenuFileSaveAsClick(object sender, RoutedEventArgs e) {
+    public void mnuFileSaveAs_Click(object sender, RoutedEventArgs e) {
 
     }
 
-    public void OnMenuFilePropertiesClick(object sender, RoutedEventArgs e) {
+    public void mnuFileProperties_Click(object sender, RoutedEventArgs e) {
 
     }
 
-    public void OnMenuFileChangePasswordClick(object sender, RoutedEventArgs e) {
+    public void mnuFilePropertiesPassword_Click(object sender, RoutedEventArgs e) {
 
     }
 
-    public void OnMenuFileReadonlyClick(object sender, RoutedEventArgs e) {
-
-    }
-
-
-    public void OnMenuItemAddClick(object sender, RoutedEventArgs e) {
-
-    }
-
-    public void OnMenuItemEditClick(object sender, RoutedEventArgs e) {
-
-    }
-
-    public void OnMenuItemViewClick(object sender, RoutedEventArgs e) {
-
-    }
-
-    public void OnMenuItemRemoveClick(object sender, RoutedEventArgs e) {
+    public void mnuFilePropertiesReadonly_Click(object sender, RoutedEventArgs e) {
 
     }
 
 
-    public void OnMenuEditFindClick(object sender, RoutedEventArgs e) {
+    public void mnuItemAdd_Click(object sender, RoutedEventArgs e) {
 
     }
 
-    public async void OnMenuEditPasswordGenerateClick(object sender, RoutedEventArgs e) {
+    public void mnuItemEdit_Click(object sender, RoutedEventArgs e) {
+
+    }
+
+    public void mnuItemView_Click(object sender, RoutedEventArgs e) {
+
+    }
+
+    public void mnuItemRemove_Click(object sender, RoutedEventArgs e) {
+
+    }
+
+
+    public void mnuFind_Click(object sender, RoutedEventArgs e) {
+
+    }
+
+    public async void mnuPasswordGenerator_Click(object sender, RoutedEventArgs e) {
         var frm = new PasswordGeneratorWindow();
         await frm.ShowDialog(this);
     }
@@ -227,20 +236,20 @@ internal partial class MainWindow : Window {
         Settings.Theme = Settings.ThemeVariant.Light;
     }
 
-    public async void OnMenuAppOptionsClick(object sender, RoutedEventArgs e) {
+    public async void mnuAppOptions_Click(object sender, RoutedEventArgs e) {
         var frm = new OptionsWindow();
         await frm.ShowDialog(this);
     }
 
-    public void OnMenuAppFeedbackClick(object sender, RoutedEventArgs e) {
+    public void mnuAppFeedback_Click(object sender, RoutedEventArgs e) {
         Medo.Avalonia.FeedbackBox.ShowDialog(this, new Uri("https://medo64.com/feedback/"));
     }
 
-    public void OnMenuAppUpgradeClick(object sender, RoutedEventArgs e) {
+    public void mnuAppUpgrade_Click(object sender, RoutedEventArgs e) {
         Medo.Avalonia.UpgradeBox.ShowDialog(this, new Uri("https://medo64.com/upgrade/"));
     }
 
-    public void OnMenuAppAboutClick(object sender, RoutedEventArgs e) {
+    public void mnuAppAbout_Click(object sender, RoutedEventArgs e) {
         Medo.Avalonia.AboutBox.ShowDialog(this, new Uri("https://medo64.com/bimil/"));
     }
 

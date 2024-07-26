@@ -20,6 +20,11 @@ public static class State {
     public static FileInfo? File { get; private set; }
 
     /// <summary>
+    /// Gets if current file is readonly.
+    /// </summary>
+    public static bool IsReadonly { get; private set; }
+
+    /// <summary>
     /// Raised whenever state needs an update.
     /// </summary>
     public static event EventHandler<EventArgs>? StateChanged;
@@ -31,6 +36,7 @@ public static class State {
     public static void NewFile(string passphrase) {
         Document = new Document(passphrase);
         File = null;
+        IsReadonly = false;
         StateChanged?.Invoke(null, EventArgs.Empty);
     }
 
@@ -43,6 +49,7 @@ public static class State {
         Document = Document.Load(file.FullName, passphrase);
         Document.IsReadOnly = @readonly;
         File = file;
+        IsReadonly = @readonly;
 
         StateChanged?.Invoke(null, EventArgs.Empty);
         return true;

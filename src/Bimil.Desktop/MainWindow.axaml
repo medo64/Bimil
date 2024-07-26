@@ -21,7 +21,7 @@
         </ResourceDictionary>
     </Window.Resources>
 
-    <DockPanel Name="Menu">
+    <DockPanel Name="mnu">
         <!-- Toolbar -->
         <Grid DockPanel.Dock="Top" ColumnDefinitions="Auto, Auto, Auto, *, Auto">
             <Grid.Styles>
@@ -72,40 +72,40 @@
             </Grid.Styles>
 
             <StackPanel Grid.Column="0" Orientation="Horizontal" Margin="2">
-                <Button Name="btnMenuFileOpen" Click="OnMenuFileNewClick" ToolTip.Tip="New file (Ctrl+N)">
+                <Button Click="nnuFileNew_Click" ToolTip.Tip="New file (Ctrl+N)">
                     <Image Name="imgMenuFileNew" Source="{Binding FileNew}" />
                 </Button>
-                <Button Click="OnMenuFileOpenClick" ToolTip.Tip="Open file (Ctrl+O)">
+                <Button Click="mnuFileOpen_Click" ToolTip.Tip="Open file (Ctrl+O)">
                     <StackPanel Orientation="Horizontal">
                         <Image Source="{Binding FileOpen}" />
-                        <Menu Opened="OnMenuFileOpen_Opened">
+                        <Menu Opened="mnuFileOpen_Opened">
                             <MenuItem Header="▼" Classes="DropDown">
-                                <MenuItem Header="Open…" Click="OnMenuFileOpenClick" />
+                                <MenuItem Header="Open…" Click="mnuFileOpen_Click" />
                                 <MenuItem Header="-" IsVisible="false" />
                             </MenuItem>
                         </Menu>
                     </StackPanel>
                 </Button>
-                <Button Click="OnMenuFileSaveClick" ToolTip.Tip="Save file (Ctrl+S)">
+                <Button Click="mnuFileSave_Click" Name="mnuFileSave" IsEnabled="false" ToolTip.Tip="Save file (Ctrl+S)">
                     <StackPanel Orientation="Horizontal">
                         <Image Source="{Binding FileSave}" />
                         <Menu>
                             <MenuItem Header="▼" Classes="DropDown">
-                                <MenuItem Header="Save" Click="OnMenuFileSaveClick" />
-                                <MenuItem Header="Save As…" Click="OnMenuFileSaveAsClick" />
+                                <MenuItem Header="Save" Click="mnuFileSave_Click" />
+                                <MenuItem Header="Save As…" Click="mnuFileSaveAs_Click" />
                             </MenuItem>
                         </Menu>
                     </StackPanel>
                 </Button>
-                <Button Click="OnMenuFilePropertiesClick" ToolTip.Tip="File properties (Alt+Enter)">
+                <Button Click="mnuFileProperties_Click" Name="mnuFileProperties" IsEnabled="false" ToolTip.Tip="File properties (Alt+Enter)">
                     <StackPanel Orientation="Horizontal">
                         <Image Source="{Binding FileEdit}" />
                         <Menu>
                             <MenuItem Header="▼" Classes="DropDown">
-                                <MenuItem Header="Properties…" HotKey="Alt+Enter" Click="OnMenuFilePropertiesClick" ToolTip.Tip="Edit file properties" />
+                                <MenuItem Header="Properties…" HotKey="Alt+Enter" Click="mnuFileProperties_Click" ToolTip.Tip="Edit file properties" />
                                 <MenuItem Header="-" />
-                                <MenuItem Header="Change Password…" Click="OnMenuFileChangePasswordClick" ToolTip.Tip="Change file's password" />
-                                <MenuItem Header="Read-only" Click="OnMenuFileReadonlyClick" ToolTip.Tip="Controls if file is read-only or not" />
+                                <MenuItem Header="Change Password…" Click="mnuFilePropertiesPassword_Click" ToolTip.Tip="Change file's password" />
+                                <MenuItem Header="Read-only" Click="mnuFilePropertiesReadonly_Click" ToolTip.Tip="Controls if file is read-only or not" />
                             </MenuItem>
                         </Menu>
                     </StackPanel>
@@ -113,19 +113,25 @@
             </StackPanel>
 
             <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="8 0 0 0">
-                <Button Click="OnMenuItemAddClick">
+                <Button Click="mnuItemAdd_Click" Name="mnuItemAdd" IsEnabled="false">
                     <StackPanel Orientation="Horizontal">
                         <Image Source="{Binding ItemAdd}" />
                         <Label>Add</Label>
                     </StackPanel>
                 </Button>
-                <Button Click="OnMenuItemEditClick">
+                <Button Click="mnuItemView_Click" Name="mnuItemView" IsVisible="false">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="{Binding ItemView}" />
+                        <Label>View</Label>
+                    </StackPanel>
+                </Button>
+                <Button Click="mnuItemEdit_Click" Name="mnuItemEdit" IsEnabled="false">
                     <StackPanel Orientation="Horizontal">
                         <Image Source="{Binding ItemEdit}" />
                         <Label>Edit</Label>
                     </StackPanel>
                 </Button>
-                <Button Click="OnMenuItemRemoveClick">
+                <Button Click="mnuItemRemove_Click" Name="mnuItemRemove" IsEnabled="false">
                     <StackPanel Orientation="Horizontal">
                         <Image Source="{Binding ItemRemove}" />
                         <Label>Remove</Label>
@@ -134,28 +140,28 @@
             </StackPanel>
 
             <StackPanel Grid.Column="2" Orientation="Horizontal" Margin="8 0 0 0">
-                <Button Click="OnMenuEditFindClick">
+                <Button Click="mnuFind_Click" Name="mnuFind" IsEnabled="false">
                     <Image Source="{Binding Find}" />
                 </Button>
-                <Button Click="OnMenuEditPasswordGenerateClick">
+                <Button Click="mnuPasswordGenerator_Click">
                     <Image Source="{Binding PasswordGenerate}" />
                 </Button>
             </StackPanel>
 
             <StackPanel Grid.Column="4" Orientation="Horizontal" Margin="2">
-                <Button Click="OnMenuAppOptionsClick">
+                <Button Click="mnuAppOptions_Click">
                     <StackPanel Orientation="Horizontal">
                         <Image Source="{Binding App}" />
                         <Menu Opened="OnMenuAppOpened" >
                             <MenuItem Header="▼" Classes="DropDown">
                                 <MenuItem Header="Switch to Dark Mode" Click="OnMenuAppDarkModeClick" Name="MenuAppDarkMode" IsVisible="false" />
                                 <MenuItem Header="Switch to Light Mode" Click="OnMenuAppLightModeClick" Name="MenuAppLightMode" IsVisible="false" />
-                                <MenuItem Header="Options…" Click="OnMenuAppOptionsClick" />
+                                <MenuItem Header="Options…" Click="mnuAppOptions_Click" />
                                 <MenuItem Header="-" />
-                                <MenuItem Header="Send Feedback…" Click="OnMenuAppFeedbackClick" />
-                                <MenuItem Header="Check for Upgrade…" Click="OnMenuAppUpgradeClick" />
+                                <MenuItem Header="Send Feedback…" Click="mnuAppFeedback_Click" />
+                                <MenuItem Header="Check for Upgrade…" Click="mnuAppUpgrade_Click" />
                                 <MenuItem Header="-" />
-                                <MenuItem Header="About…" Click="OnMenuAppAboutClick" />
+                                <MenuItem Header="About…" Click="mnuAppAbout_Click" />
                             </MenuItem>
                         </Menu>
                     </StackPanel>
