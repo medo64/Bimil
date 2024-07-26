@@ -12,10 +12,12 @@
         <ResourceDictionary>
             <ResourceDictionary.ThemeDictionaries>
                 <ResourceDictionary x:Key="Light">
-                    <SolidColorBrush x:Key="IconForeground">#2D4772</SolidColorBrush>
+                    <SolidColorBrush x:Key="MenuTextEnabledForeground">#2D4772</SolidColorBrush>
+                    <SolidColorBrush x:Key="MenuTextDisabledForeground">#444444</SolidColorBrush>
                 </ResourceDictionary>
                 <ResourceDictionary x:Key="Dark">
-                    <SolidColorBrush x:Key="IconForeground">#90AFE1</SolidColorBrush>
+                    <SolidColorBrush x:Key="MenuTextEnabledForeground">#90AFE1</SolidColorBrush>
+                    <SolidColorBrush x:Key="MenuTextDisabledForeground">#ABABAB</SolidColorBrush>
                 </ResourceDictionary>
             </ResourceDictionary.ThemeDictionaries>
         </ResourceDictionary>
@@ -38,6 +40,9 @@
                         </Transitions>
                     </Setter>
                 </Style>
+                <Style Selector="Button:disabled /template/ ContentPresenter">
+                    <Setter Property="Background" Value="Transparent" />
+                </Style>
                 <Style Selector="Button:pointerover /template/ ContentPresenter">
                     <Setter Property="Background" Value="{DynamicResource SystemChromeMediumColor}" />
                     <Setter Property="BorderBrush" Value="{DynamicResource SystemChromeHighColor}" />
@@ -48,10 +53,10 @@
                     <Setter Property="Background" Value="Transparent" />
                 </Style>
                 <Style Selector="MenuItem.DropDown:pointerover">
-                    <Setter Property="Foreground" Value="{DynamicResource IconForeground}"  />
+                    <Setter Property="Foreground" Value="{DynamicResource MenuTextEnabledForeground}"  />
                 </Style>
                 <Style Selector="MenuItem">
-                    <Setter Property="Foreground" Value="{DynamicResource IconForeground}"  />
+                    <Setter Property="Foreground" Value="{DynamicResource MenuTextEnabledForeground}"  />
                 </Style>
                 <Style Selector="MenuItem">
                     <Setter Property="FontSize" Value="12" />
@@ -62,20 +67,23 @@
                     <Setter Property="Padding" Value="0" />
                 </Style>
                 <Style Selector="MenuItem.DropDown:pointerover">
-                    <Setter Property="Foreground" Value="{DynamicResource IconForeground}"  />
+                    <Setter Property="Foreground" Value="{DynamicResource MenuTextEnabledForeground}"  />
                 </Style>
                 <Style Selector="Label">
                     <Setter Property="Height" Value="24" />
                     <Setter Property="VerticalContentAlignment" Value="Center" />
-                    <Setter Property="Foreground" Value="{DynamicResource IconForeground}"  />
+                    <Setter Property="Foreground" Value="{DynamicResource MenuTextEnabledForeground}"  />
                 </Style>
-            </Grid.Styles>
+                <Style Selector="Label:disabled">
+                    <Setter Property="Foreground" Value="{DynamicResource MenuTextDisabledForeground}"/>
+                </Style>
+        </Grid.Styles>
 
             <StackPanel Grid.Column="0" Orientation="Horizontal" Margin="2">
-                <Button Click="nnuFileNew_Click" ToolTip.Tip="New file (Ctrl+N)">
+                <Button Click="nnuFileNew_Click" Name="mnuFileNew" ToolTip.Tip="New file (Ctrl+N)">
                     <Image Name="imgMenuFileNew" Source="{Binding FileNew}" />
                 </Button>
-                <Button Click="mnuFileOpen_Click" ToolTip.Tip="Open file (Ctrl+O)">
+                <Button Click="mnuFileOpen_Click" Name="mnuFileOpen" ToolTip.Tip="Open file (Ctrl+O)">
                     <StackPanel Orientation="Horizontal">
                         <Image Source="{Binding FileOpen}" />
                         <Menu Opened="mnuFileOpen_Opened">
@@ -143,13 +151,13 @@
                 <Button Click="mnuFind_Click" Name="mnuFind" IsEnabled="false">
                     <Image Source="{Binding Find}" />
                 </Button>
-                <Button Click="mnuPasswordGenerator_Click">
+                <Button Click="mnuPasswordGenerator_Click" Name="mnuPasswordGenerator">
                     <Image Source="{Binding PasswordGenerate}" />
                 </Button>
             </StackPanel>
 
             <StackPanel Grid.Column="4" Orientation="Horizontal" Margin="2">
-                <Button Click="mnuAppOptions_Click">
+                <Button Click="mnuAppOptions_Click" Name="mnuApp">
                     <StackPanel Orientation="Horizontal">
                         <Image Source="{Binding App}" />
                         <Menu Opened="OnMenuAppOpened" >

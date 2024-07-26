@@ -19,7 +19,21 @@ internal partial class MainWindow : Window {
 
     public MainWindow() {
         InitializeComponent();
-        ThemeImageResources.Setup(this, mnu);
+
+        ThemeImageResources.Updated += (s, e) => {
+            Helpers.FindChild<Image>(mnuFileNew)!.Source = ThemeImageResources.Enabled!.FileNew;
+            Helpers.FindChild<Image>(mnuFileOpen)!.Source = ThemeImageResources.Enabled!.FileOpen;
+            Helpers.FindChild<Image>(mnuFileSave)!.Source = mnuFileSave.IsEnabled ? ThemeImageResources.Enabled!.FileSave : ThemeImageResources.Disabled!.FileSave;
+            Helpers.FindChild<Image>(mnuFileProperties)!.Source = mnuFileProperties.IsEnabled ? ThemeImageResources.Enabled!.FileProperties : ThemeImageResources.Disabled!.FileProperties;
+            Helpers.FindChild<Image>(mnuItemAdd)!.Source = mnuItemAdd.IsEnabled ? ThemeImageResources.Enabled!.ItemAdd : ThemeImageResources.Disabled!.ItemAdd;
+            Helpers.FindChild<Image>(mnuItemView)!.Source = mnuItemView.IsEnabled ? ThemeImageResources.Enabled!.ItemView : ThemeImageResources.Disabled!.ItemView;
+            Helpers.FindChild<Image>(mnuItemEdit)!.Source = mnuItemEdit.IsEnabled ? ThemeImageResources.Enabled!.ItemEdit : ThemeImageResources.Disabled!.ItemEdit;
+            Helpers.FindChild<Image>(mnuItemRemove)!.Source = mnuItemRemove.IsEnabled ? ThemeImageResources.Enabled!.ItemRemove : ThemeImageResources.Disabled!.ItemRemove;
+            Helpers.FindChild<Image>(mnuFind)!.Source = mnuFind.IsEnabled ? ThemeImageResources.Enabled!.Find : ThemeImageResources.Disabled!.Find;
+            Helpers.FindChild<Image>(mnuPasswordGenerator)!.Source = mnuPasswordGenerator.IsEnabled ? ThemeImageResources.Enabled!.PasswordGenerator : ThemeImageResources.Disabled!.PasswordGenerator;
+            Helpers.FindChild<Image>(mnuApp)!.Source = mnuApp.IsEnabled ? ThemeImageResources.Enabled!.App : ThemeImageResources.Disabled!.App;
+        };
+        ThemeImageResources.Setup(this);
 
         // ThemeVariant
         switch (Settings.Theme) {
@@ -67,6 +81,8 @@ internal partial class MainWindow : Window {
             mnuItemEdit.IsEnabled = false;
             mnuItemRemove.IsEnabled = false;
             mnuFind.IsEnabled = hasDocument;
+
+            ThemeImageResources.Update();  // enable/disable buttons
         };
     }
 

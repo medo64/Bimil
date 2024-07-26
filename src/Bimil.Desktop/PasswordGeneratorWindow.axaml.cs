@@ -134,9 +134,9 @@ internal partial class PasswordGeneratorWindow : Window {
         Helpers.GetControl<TextBox>(this, "txtPassword").Text = generator.GetNewPassword();
 
         Helpers.GetControl<Image>(this, "imgGeneratorLevel").Source = generator.GetEstimatedSecurityLevel() switch {
-            PasswordSecurityLevel.High => ThemeImageResources.Default.SecurityLevelHighX2,
-            PasswordSecurityLevel.Medium => ThemeImageResources.Default.SecurityLevelMediumX2,
-            _ => ThemeImageResources.Default.SecurityLevelLowX2,
+            PasswordSecurityLevel.High => ThemeImageResources.Enabled!.SecurityLevelHighX2,
+            PasswordSecurityLevel.Medium => ThemeImageResources.Enabled!.SecurityLevelMediumX2,
+            _ => ThemeImageResources.Enabled!.SecurityLevelLowX2,
         };
 
         var duration = generator.GetEstimatedCrackDuration();

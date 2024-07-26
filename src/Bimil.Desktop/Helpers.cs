@@ -30,6 +30,19 @@ internal static class Helpers {
         }
     }
 
+    public static T? FindChild<T>(ContentControl control) {
+        if (control.Content is T childT) {
+            return childT;
+        } else if (control.Content is Panel panel) {
+            foreach (var childControl in panel.Children) {
+                if (childControl is T childControlT) {
+                    return childControlT;
+                }
+            }
+        }
+        return default;
+    }
+
 
     private static readonly Dictionary<string, ISolidColorBrush> BrushCache = [];
     public static ISolidColorBrush GetBrush(string name) {

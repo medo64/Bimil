@@ -1,51 +1,70 @@
 namespace Bimil.Desktop;
 
 using System;
+using System.Data;
 using System.Diagnostics;
 using System.Globalization;
 using System.Runtime.InteropServices;
 using Avalonia;
-using Avalonia.Controls;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Avalonia.Styling;
 
 internal class ThemeImageResources {
 
-#pragma warning disable CA1822 // Mark members as static
+    private ThemeImageResources(bool isDarkThemeVariant, bool isEnabled) {
+        FileNew = GetAssetBitmap("FileNew", isDarkThemeVariant, grayscale: !isEnabled);
+        FileOpen = GetAssetBitmap("FileOpen", isDarkThemeVariant, grayscale: !isEnabled);
+        FileSave = GetAssetBitmap("FileSave", isDarkThemeVariant, grayscale: !isEnabled);
+        FileProperties = GetAssetBitmap("FileEdit", isDarkThemeVariant, grayscale: !isEnabled);
+        ItemAdd = GetAssetBitmap("ItemAdd", isDarkThemeVariant, grayscale: !isEnabled);
+        ItemEdit = GetAssetBitmap("ItemEdit", isDarkThemeVariant, grayscale: !isEnabled);
+        ItemView = GetAssetBitmap("ItemView", isDarkThemeVariant, grayscale: !isEnabled);
+        ItemRemove = GetAssetBitmap("ItemRemove", isDarkThemeVariant, grayscale: !isEnabled);
+        Find = GetAssetBitmap("Find", isDarkThemeVariant, grayscale: !isEnabled);
+        PasswordGenerator = GetAssetBitmap("PasswordGenerate", isDarkThemeVariant, grayscale: !isEnabled);
+        App = GetAssetBitmap("App", isDarkThemeVariant, grayscale: !isEnabled);
+        AppHasUpgrade = GetAssetBitmap("AppHasUpgrade", isDarkThemeVariant, grayscale: !isEnabled);
+
+        SecurityLevelLowX2 = GetAssetBitmapX2("SecurityLow", isDarkThemeVariant);
+        SecurityLevelMediumX2 = GetAssetBitmapX2("SecurityMedium", isDarkThemeVariant);
+        SecurityLevelHighX2 = GetAssetBitmapX2("SecurityHigh", isDarkThemeVariant);
+    }
 
     #region Toolbar
 
-    public Bitmap? FileNew => GetAssetBitmap("FileNew");
-    public Bitmap? FileOpen => GetAssetBitmap("FileOpen");
-    public Bitmap? FileSave => GetAssetBitmap("FileSave");
-    public Bitmap? FileEdit => GetAssetBitmap("FileEdit");
+    public Bitmap FileNew { get; private init; }
+    public Bitmap FileOpen { get; private init; }
+    public Bitmap FileSave { get; private init; }
+    public Bitmap FileProperties { get; private init; }
 
-    public Bitmap? ItemAdd => GetAssetBitmap("ItemAdd");
-    public Bitmap? ItemEdit => GetAssetBitmap("ItemEdit");
-    public Bitmap? ItemView => GetAssetBitmap("ItemView");
-    public Bitmap? ItemRemove => GetAssetBitmap("ItemRemove");
+    public Bitmap ItemAdd { get; private init; }
+    public Bitmap ItemEdit { get; private init; }
+    public Bitmap ItemView { get; private init; }
+    public Bitmap ItemRemove { get; private init; }
 
-    public Bitmap? Find => GetAssetBitmap("Find");
-    public Bitmap? PasswordGenerate => GetAssetBitmap("PasswordGenerate");
+    public Bitmap Find { get; private init; }
+    public Bitmap PasswordGenerator { get; private init; }
 
-    public Bitmap? App => GetAssetBitmap("App");
+    public Bitmap App { get; private init; }
+    public Bitmap AppHasUpgrade { get; private init; }
 
     #endregion Toolbar
 
     #region SecurityLevel
 
-    public Bitmap? SecurityLevelLowX2 => GetAssetBitmapX2("SecurityLow");
-    public Bitmap? SecurityLevelMediumX2 => GetAssetBitmapX2("SecurityMedium");
-    public Bitmap? SecurityLevelHighX2 => GetAssetBitmapX2("SecurityHigh");
+    public Bitmap SecurityLevelLowX2 { get; private init; }
+    public Bitmap SecurityLevelMediumX2 { get; private init; }
+    public Bitmap SecurityLevelHighX2 { get; private init; }
 
     #endregion SecurityLevel
 
-#pragma warning restore CA1822 // Mark members as static
 
+    public static ThemeImageResources? Enabled { get; private set; }
+    public static ThemeImageResources? Disabled { get; private set; }
+    public static event EventHandler<EventArgs>? Updated;
 
-    internal static void Setup(MainWindow mainWindow, DockPanel menu) {
-        menu.DataContext = new ThemeImageResources();
+    internal static void Setup(MainWindow mainWindow) {
         var scale = mainWindow?.Screens?.ScreenFromWindow(mainWindow)?.Scaling ?? 1;
         AssetSize = (scale * 24) switch {
             >= 64.0 => 64,
@@ -55,27 +74,31 @@ internal class ThemeImageResources {
         };
         Debug.WriteLine($"Assets are {AssetSize}x{AssetSize} pixels");
 
+        var isDarkThemeVariant = !((AppAvalonia.Current?.ActualThemeVariant ?? ThemeVariant.Light) == ThemeVariant.Light);
+        Enabled = new ThemeImageResources(isDarkThemeVariant, isEnabled: true);
+        Disabled = new ThemeImageResources(isDarkThemeVariant, isEnabled: false);
+        Updated?.Invoke(null, EventArgs.Empty);
+
         var app = AppAvalonia.Current;
         if (app != null) {
             app.ActualThemeVariantChanged += (object? sender, EventArgs e) => {
-                menu.DataContext = new ThemeImageResources();  // force refresh
+                var isDarkThemeVariant = !((AppAvalonia.Current?.ActualThemeVariant ?? ThemeVariant.Light) == ThemeVariant.Light);
+                Enabled = new ThemeImageResources(isDarkThemeVariant, isEnabled: true);
+                Disabled = new ThemeImageResources(isDarkThemeVariant, isEnabled: false);
+                Updated?.Invoke(null, EventArgs.Empty);
             };
         }
     }
 
-    private static readonly Lazy<ThemeImageResources> _default = new(() => new ThemeImageResources());
-    internal static ThemeImageResources Default {
-        get {
-            if (AssetSize == 0) { throw new InvalidOperationException(); }  // only works after SetupMenu is already called (so that AssetSize is set)
-            return _default.Value;
-        }
+    public static void Update() {
+        Updated?.Invoke(null, EventArgs.Empty);
     }
 
 
     private static int AssetSize = 24;
 
-    private static Bitmap GetAssetBitmap(string baseName, bool grayscale = false) {
-        var bitmap = new Bitmap(AssetLoader.Open(GetAssetUri(baseName, AssetSize)));
+    private static Bitmap GetAssetBitmap(string baseName, bool isDarkThemeVariant, bool grayscale = false) {
+        var bitmap = new Bitmap(AssetLoader.Open(GetAssetUri(baseName, isDarkThemeVariant, AssetSize)));
 
         if (grayscale) {
             var width = bitmap.PixelSize.Width;
@@ -88,13 +111,14 @@ internal class ThemeImageResources {
             bitmap.CopyPixels(default, bufferPtr.AddrOfPinnedObject(), buffer.Length, stride);
 
             for (var i = 0; i < buffer.Length; i += 4) {
-                var b = buffer[i];
+                var b = buffer[i + 0];
                 var g = buffer[i + 1];
                 var r = buffer[i + 2];
 
-                var grey = byte.CreateSaturating(0.299 * r + 0.587 * g + 0.114 * b);
+                var offset = isDarkThemeVariant ? -64 : +64;
+                var grey = byte.CreateSaturating(0.299 * r + 0.587 * g + 0.114 * b + offset);
 
-                buffer[i] = grey;
+                buffer[i + 0] = grey;
                 buffer[i + 1] = grey;
                 buffer[i + 2] = grey;
             }
@@ -110,18 +134,18 @@ internal class ThemeImageResources {
         return bitmap;
     }
 
-    private static Bitmap GetAssetBitmapX2(string baseName) {  // twice the size
+    private static Bitmap GetAssetBitmapX2(string baseName, bool isDarkThemeVariant) {  // twice the size
         var assetSize = (AssetSize * 2) switch {
             >= 64 => 64,
             >= 48 => 48,
             >= 32 => 32,
             _ => 24
         };
-        return new Bitmap(AssetLoader.Open(GetAssetUri(baseName, assetSize)));
+        return new Bitmap(AssetLoader.Open(GetAssetUri(baseName, isDarkThemeVariant, assetSize)));
     }
 
-    private static Uri GetAssetUri(string baseName, int size) {
-        var suffix = ((AppAvalonia.Current?.ActualThemeVariant ?? ThemeVariant.Light) == ThemeVariant.Light) ? "L" : "D";
+    private static Uri GetAssetUri(string baseName, bool isDarkThemeVariant, int size) {
+        var suffix = isDarkThemeVariant ? "D" : "L";
         return new Uri("avares://Bimil/Assets/Images/" + baseName + "_" + size.ToString(CultureInfo.InvariantCulture) + suffix + ".png");
     }
 }
