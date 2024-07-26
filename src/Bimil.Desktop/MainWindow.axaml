@@ -108,12 +108,12 @@
                 <Button Click="mnuFileProperties_Click" Name="mnuFileProperties" IsEnabled="false" ToolTip.Tip="File properties (Alt+Enter)">
                     <StackPanel Orientation="Horizontal">
                         <Image Source="{Binding FileEdit}" />
-                        <Menu>
+                        <Menu Opened="mnuFileProperties_Opened">
                             <MenuItem Header="▼" Classes="DropDown">
                                 <MenuItem Header="Properties…" HotKey="Alt+Enter" Click="mnuFileProperties_Click" ToolTip.Tip="Edit file properties" />
                                 <MenuItem Header="-" />
-                                <MenuItem Header="Change Password…" Click="mnuFilePropertiesPassword_Click" ToolTip.Tip="Change file's password" />
-                                <MenuItem Header="Read-only" Click="mnuFilePropertiesReadonly_Click" ToolTip.Tip="Controls if file is read-only or not" />
+                                <MenuItem Header="Change Password…" Name="mnuFilePropertiesPassword" Click="mnuFilePropertiesPassword_Click" ToolTip.Tip="Change file's password" />
+                                <MenuItem Header="Read-only" Name="mnuFilePropertiesReadonly" Click="mnuFilePropertiesReadonly_Click" ToolTip.Tip="Controls if file is read-only or not" />
                             </MenuItem>
                         </Menu>
                     </StackPanel>

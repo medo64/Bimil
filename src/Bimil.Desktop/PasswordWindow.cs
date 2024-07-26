@@ -6,7 +6,7 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 
 internal partial class PasswordWindow : Window {
-    private enum PasswordWindowType { New, Enter, Change }
+    private enum PasswordWindowType { New, Enter, Change, ChangeInFile }
 
     public static PasswordWindow GetNewPasswordWindow(string title) {
         return new PasswordWindow(title, PasswordWindowType.New);
@@ -16,8 +16,8 @@ internal partial class PasswordWindow : Window {
         return new PasswordWindow(title, PasswordWindowType.Enter);
     }
 
-    public static PasswordWindow GetChangePasswordWindow(string title) {
-        return new PasswordWindow(title, PasswordWindowType.Change);
+    public static PasswordWindow GetChangePasswordWindow(string title, bool hasFile) {
+        return new PasswordWindow(title, hasFile ? PasswordWindowType.ChangeInFile : PasswordWindowType.Change);
     }
 
     private PasswordWindow(string title, PasswordWindowType type) {
@@ -32,19 +32,54 @@ internal partial class PasswordWindow : Window {
                 txtPasswordCompare.IsVisible = true;
                 txtPasswordNew.TextChanged += (sender, e) => { CheckPasswordsAreSame(btnOK, txtPasswordNew, txtPasswordCompare, lblPasswordMismatch); };
                 txtPasswordCompare.TextChanged += (sender, e) => { CheckPasswordsAreSame(btnOK, txtPasswordNew, txtPasswordCompare, lblPasswordMismatch); };
-                btnOK.Click += (sender, e) => { Password = txtPasswordNew.Text; Close(); };
+                btnOK.Click += (sender, e) => {
+                    NewPassword = txtPasswordNew.Text ?? "";  // Text is null if not changed
+                    Close();
+                };
                 Helpers.FocusControl(txtPasswordNew);  // FocusFirstControl(this);
                 break;
 
             case PasswordWindowType.Enter:
                 lblPasswordExisting.IsVisible = true;
                 txtPasswordExisting.IsVisible = true;
-                btnOK.Click += (sender, e) => { Password = txtPasswordExisting.Text; Close(); };
+                btnOK.Click += (sender, e) => {
+                    ExistingPassword = txtPasswordExisting.Text ?? "";  // Text is null if not changed
+                    Close();
+                };
                 Helpers.FocusControl(txtPasswordExisting);  // FocusFirstControl(this);
                 break;
 
             case PasswordWindowType.Change:
+                lblPasswordNew.IsVisible = true;
+                txtPasswordNew.IsVisible = true;
+                lblPasswordCompare.IsVisible = true;
+                txtPasswordCompare.IsVisible = true;
+                txtPasswordNew.TextChanged += (sender, e) => { CheckPasswordsAreSame(btnOK, txtPasswordNew, txtPasswordCompare, lblPasswordMismatch); };
+                txtPasswordCompare.TextChanged += (sender, e) => { CheckPasswordsAreSame(btnOK, txtPasswordNew, txtPasswordCompare, lblPasswordMismatch); };
+                btnOK.Click += (sender, e) => {
+                    NewPassword = txtPasswordNew.Text ?? "";  // Text is null if not changed
+                    Close();
+                };
+                Helpers.FocusControl(txtPasswordNew);  // FocusFirstControl(this);
                 break;
+
+            case PasswordWindowType.ChangeInFile:
+                lblPasswordExisting.IsVisible = true;
+                txtPasswordExisting.IsVisible = true;
+                lblPasswordNew.IsVisible = true;
+                txtPasswordNew.IsVisible = true;
+                lblPasswordCompare.IsVisible = true;
+                txtPasswordCompare.IsVisible = true;
+                txtPasswordNew.TextChanged += (sender, e) => { CheckPasswordsAreSame(btnOK, txtPasswordNew, txtPasswordCompare, lblPasswordMismatch); };
+                txtPasswordCompare.TextChanged += (sender, e) => { CheckPasswordsAreSame(btnOK, txtPasswordNew, txtPasswordCompare, lblPasswordMismatch); };
+                btnOK.Click += (sender, e) => {
+                    ExistingPassword = txtPasswordExisting.Text ?? "";  // Text is null if not changed
+                    NewPassword = txtPasswordNew.Text ?? "";  // Text is null if not changed
+                    Close();
+                };
+                Helpers.FocusControl(txtPasswordExisting);  // FocusFirstControl(this);
+                break;
+
         }
     }
 
@@ -54,20 +89,22 @@ internal partial class PasswordWindow : Window {
     }
 
 
-    private void CheckPasswordsAreSame(Button okButton, TextBox textBox1, TextBox textBox2, Label mismatchLabel) {
-        var areSame = string.Equals(textBox1.Text, textBox2.Text, StringComparison.Ordinal);
+    private static void CheckPasswordsAreSame(Button okButton, TextBox textBox1, TextBox textBox2, Label mismatchLabel) {
+        var areSame = string.Equals(textBox1.Text ?? "", textBox2.Text ?? "", StringComparison.Ordinal);
         okButton.IsEnabled = areSame;
         mismatchLabel.IsVisible = !areSame;
     }
 
 
-    public string? Password { get; private set; }
+    public string? ExistingPassword { get; private set; }
+    public string? NewPassword { get; private set; }
 
 
     public void txtPassword_KeyDown(object sender, KeyEventArgs e) {
         if (e.Key == Key.Enter) {
-            var btnOK = Helpers.GetControl<Button>(this, "btnOK");
-            btnOK.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            if (btnOK.IsEnabled) {
+                btnOK.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            }
         }
     }
 

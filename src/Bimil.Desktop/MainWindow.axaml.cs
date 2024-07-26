@@ -74,9 +74,11 @@ internal partial class MainWindow : Window {
             }
 
             var hasDocument = (State.Document != null);
+            var isReadWrite = !(State.Document?.IsReadOnly ?? true);
             mnuFileSave.IsEnabled = hasDocument;
             mnuFileProperties.IsEnabled = hasDocument;
-            mnuItemAdd.IsEnabled = hasDocument;
+            mnuFilePropertiesPassword.IsEnabled = isReadWrite;
+            mnuItemAdd.IsEnabled = hasDocument && isReadWrite;
             mnuItemView.IsEnabled = false;  // will enable when item is selected
             mnuItemEdit.IsEnabled = false;
             mnuItemRemove.IsEnabled = false;
@@ -120,10 +122,10 @@ internal partial class MainWindow : Window {
     private async void OpenFile(FileInfo file, bool @readonly) {
         while (true) {  // repeat until successful or given up
             try {
-                var frm = PasswordWindow.GetEnterPasswordWindow(file.Name);
+                var frm = PasswordWindow.GetEnterPasswordWindow($"Enter password ({file.Name})");
                 await frm.ShowDialog(this);
-                if (frm.Password != null) {
-                    State.OpenFile(file, frm.Password, @readonly);
+                if (frm.ExistingPassword != null) {
+                    State.OpenFile(file, frm.ExistingPassword, @readonly);
                 }
                 break;
             } catch (Exception ex) {
@@ -138,8 +140,8 @@ internal partial class MainWindow : Window {
     public async void nnuFileNew_Click(object sender, RoutedEventArgs e) {
         var frm = PasswordWindow.GetNewPasswordWindow("Select password");
         await frm.ShowDialog(this);
-        if (frm.Password != null) {
-            State.NewFile(frm.Password);
+        if (frm.NewPassword != null) {
+            State.NewFile(frm.NewPassword);
         }
     }
 
@@ -188,16 +190,42 @@ internal partial class MainWindow : Window {
 
     }
 
+    public void mnuFileProperties_Opened(object sender, RoutedEventArgs e) {
+        mnuFilePropertiesReadonly.Header = (State.Document?.IsReadOnly ?? false)
+                                         ? "Make read/write"
+                                         : "Make read-only";
+    }
+
     public void mnuFileProperties_Click(object sender, RoutedEventArgs e) {
 
     }
 
-    public void mnuFilePropertiesPassword_Click(object sender, RoutedEventArgs e) {
-
+    public async void mnuFilePropertiesPassword_Click(object sender, RoutedEventArgs e) {
+        if (State.Document != null) {
+            var title = (State.File != null) ? $"Change password ({State.File.Name})" : $"Change password";
+            while (true) {  // repeat until successful or given up
+                var frm = PasswordWindow.GetChangePasswordWindow(title, hasFile: true);
+                await frm.ShowDialog(this);
+                if ((frm.ExistingPassword != null) && (frm.NewPassword != null)) {
+                    try {
+                        if (State.Document!.ValidatePassphrase(frm.ExistingPassword) == false) { throw new InvalidOperationException("Cannot verify existing password."); }
+                        State.Document!.ChangePassphrase(frm.NewPassword);
+                        break;
+                    } catch (Exception ex) {
+                        MessageBox.ShowErrorDialog(this, "Error changing password", ex.Message);
+                    }
+                } else {
+                    break;
+                }
+            }
+        }
     }
 
     public void mnuFilePropertiesReadonly_Click(object sender, RoutedEventArgs e) {
-
+        if (State.Document != null) {
+            State.Document.IsReadOnly = !State.Document.IsReadOnly;
+            State.ForceStateChange();  // state doesn't get automatically updated for this one
+        }
     }
 
 
