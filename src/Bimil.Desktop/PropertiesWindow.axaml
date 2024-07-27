@@ -58,6 +58,7 @@
 
         <DockPanel Margin="0 11 0 0">
             <StackPanel HorizontalAlignment="Right" VerticalAlignment="Bottom" Orientation="Horizontal" Spacing="7">
+                <Button Content="_Save" Click="btnSave_Click" HorizontalContentAlignment="Center" />
                 <Button Content="_Close" Name="btnClose" Click="btnClose_Click" HorizontalContentAlignment="Center" />
             </StackPanel>
         </DockPanel>

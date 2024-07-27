@@ -32,6 +32,14 @@ internal partial class PropertiesWindow : Window {
     }
 
 
+    public void btnSave_Click(object sender, RoutedEventArgs e) {
+        if (State.Document != null) {
+            State.Document.Name = txtName.Text ?? "";
+            State.Document.Description = txtDescription.Text ?? "";
+        }
+        Close();
+    }
+
     public void btnClose_Click(object sender, RoutedEventArgs e) {
         Close();
     }
