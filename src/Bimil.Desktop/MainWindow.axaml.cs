@@ -14,6 +14,7 @@ using System.IO;
 using Medo.Avalonia;
 using Medo.Configuration;
 using System.Threading.Tasks;
+using Tmds.DBus.Protocol;
 
 internal partial class MainWindow : Window {
 
@@ -164,7 +165,7 @@ internal partial class MainWindow : Window {
 
     public async void mnuFileOpen_Click(object sender, RoutedEventArgs e) {
         var files = await StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions {
-            Title = "Open Text File",
+            Title = "Open File",
             FileTypeFilter = new FilePickerFileType[] {
                 new("Bimil and PasswordSafe") { Patterns = [ "*.bimil", "*.passwordsafe" ], MimeTypes = [ "/*" ] },
                 new("Bimil") { Patterns = [ "*.bimil" ], MimeTypes = [ "/*" ] },
@@ -180,11 +181,28 @@ internal partial class MainWindow : Window {
     }
 
     public void mnuFileSave_Click(object sender, RoutedEventArgs e) {
-
+        if (State.File != null) {
+            State.Document?.Save(State.File.OpenWrite());
+        } else {
+            mnuFileSaveAs_Click(sender, e);
+        }
     }
 
-    public void mnuFileSaveAs_Click(object sender, RoutedEventArgs e) {
-
+    public async void mnuFileSaveAs_Click(object sender, RoutedEventArgs e) {
+        var file = await StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions {
+            Title = "Save File",
+            FileTypeChoices = new FilePickerFileType[] {
+                new("Bimil") { Patterns = [ "*.bimil" ], MimeTypes = [ "/*" ] },
+                new("PasswordSafe") { Patterns = [ "*.passwordsafe" ], MimeTypes = [ "/*" ] },
+            },
+            DefaultExtension = ".bimil",
+            ShowOverwritePrompt = false,
+            SuggestedFileName = State.File?.Name,
+        });
+        if (file != null) {
+            var fileInfo = new FileInfo(Uri.UnescapeDataString(file.Path.AbsolutePath));
+            State.Document?.Save(fileInfo.OpenWrite());
+        }
     }
 
     public void mnuFileProperties_Opened(object sender, RoutedEventArgs e) {
