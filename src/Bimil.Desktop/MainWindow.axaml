@@ -53,10 +53,10 @@
                     <Setter Property="Background" Value="Transparent" />
                 </Style>
                 <Style Selector="MenuItem.DropDown:pointerover">
-                    <Setter Property="Foreground" Value="{DynamicResource MenuTextEnabledForeground}"  />
+                    <Setter Property="Foreground" Value="{DynamicResource MenuTextEnabledForeground}" />
                 </Style>
                 <Style Selector="MenuItem">
-                    <Setter Property="Foreground" Value="{DynamicResource MenuTextEnabledForeground}"  />
+                    <Setter Property="Foreground" Value="{DynamicResource MenuTextEnabledForeground}" />
                 </Style>
                 <Style Selector="MenuItem">
                     <Setter Property="FontSize" Value="12" />
@@ -67,17 +67,17 @@
                     <Setter Property="Padding" Value="0" />
                 </Style>
                 <Style Selector="MenuItem.DropDown:pointerover">
-                    <Setter Property="Foreground" Value="{DynamicResource MenuTextEnabledForeground}"  />
+                    <Setter Property="Foreground" Value="{DynamicResource MenuTextEnabledForeground}" />
                 </Style>
                 <Style Selector="Label">
                     <Setter Property="Height" Value="24" />
                     <Setter Property="VerticalContentAlignment" Value="Center" />
-                    <Setter Property="Foreground" Value="{DynamicResource MenuTextEnabledForeground}"  />
+                    <Setter Property="Foreground" Value="{DynamicResource MenuTextEnabledForeground}" />
                 </Style>
                 <Style Selector="Label:disabled">
-                    <Setter Property="Foreground" Value="{DynamicResource MenuTextDisabledForeground}"/>
+                    <Setter Property="Foreground" Value="{DynamicResource MenuTextDisabledForeground}" />
                 </Style>
-        </Grid.Styles>
+            </Grid.Styles>
 
             <StackPanel Grid.Column="0" Orientation="Horizontal" Margin="2">
                 <Button Click="nnuFileNew_Click" Name="mnuFileNew" ToolTip.Tip="New file (Ctrl+N)">
@@ -160,7 +160,7 @@
                 <Button Click="mnuAppOptions_Click" Name="mnuApp">
                     <StackPanel Orientation="Horizontal">
                         <Image Source="{Binding App}" />
-                        <Menu Opened="OnMenuAppOpened" >
+                        <Menu Opened="OnMenuAppOpened">
                             <MenuItem Header="▼" Classes="DropDown">
                                 <MenuItem Header="Switch to Dark Mode" Click="OnMenuAppDarkModeClick" Name="MenuAppDarkMode" IsVisible="false" />
                                 <MenuItem Header="Switch to Light Mode" Click="OnMenuAppLightModeClick" Name="MenuAppLightMode" IsVisible="false" />
@@ -178,13 +178,26 @@
         </Grid>
 
         <!-- Statusbar -->
-        <Grid DockPanel.Dock="Bottom" ColumnDefinitions="Auto, *, Auto">
+        <Grid DockPanel.Dock="Bottom" ColumnDefinitions="Auto, *, Auto" Margin="7 5 7 0">
             <Label Name="lblFileName" Grid.Column="0"></Label>
             <Label Name="lblLastSave" Grid.Column="2"></Label>
         </Grid>
 
         <!-- Main -->
-        <Grid ColumnDefinitions="Auto, Auto, *, Auto">
+        <Grid ColumnDefinitions="2*, 1*" RowDefinitions="Auto, *">
+
+            <TextBox Grid.Row="0" Grid.Column="0" Watermark="Search..." Margin="5" />
+            <ComboBox Grid.Row="0" Grid.Column="1" Margin="0 5 5 5" HorizontalAlignment="Stretch">
+                <ComboBoxItem Content="Any category" Foreground="Gray" />
+                <ComboBoxItem Content="Category 1" />
+                <ComboBoxItem Content="Category 2" />
+            </ComboBox>
+
+            <ListBox Grid.Row="1" Grid.ColumnSpan="2">
+                <ListBoxItem Content="Item 1" />
+                <ListBoxItem Content="Item 2" />
+                <ListBoxItem Content="Item 3" />
+            </ListBox>
         </Grid>
 
     </DockPanel>
