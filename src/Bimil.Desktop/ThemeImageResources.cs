@@ -106,29 +106,32 @@ internal class ThemeImageResources {
 
             var buffer = new byte[width * height * 4];
             var bufferPtr = GCHandle.Alloc(buffer, GCHandleType.Pinned);
+            try {
+                var stride = 4 * width;
+                bitmap.CopyPixels(default, bufferPtr.AddrOfPinnedObject(), buffer.Length, stride);
 
-            var stride = 4 * width;
-            bitmap.CopyPixels(default, bufferPtr.AddrOfPinnedObject(), buffer.Length, stride);
+                for (var i = 0; i < buffer.Length; i += 4) {
+                    var b = buffer[i + 0];
+                    var g = buffer[i + 1];
+                    var r = buffer[i + 2];
 
-            for (var i = 0; i < buffer.Length; i += 4) {
-                var b = buffer[i + 0];
-                var g = buffer[i + 1];
-                var r = buffer[i + 2];
+                    var offset = isDarkThemeVariant ? -64 : +64;
+                    var grey = byte.CreateSaturating(0.299 * r + 0.587 * g + 0.114 * b + offset);
 
-                var offset = isDarkThemeVariant ? -64 : +64;
-                var grey = byte.CreateSaturating(0.299 * r + 0.587 * g + 0.114 * b + offset);
+                    buffer[i + 0] = grey;
+                    buffer[i + 1] = grey;
+                    buffer[i + 2] = grey;
+                }
 
-                buffer[i + 0] = grey;
-                buffer[i + 1] = grey;
-                buffer[i + 2] = grey;
+                var writableBitmap = new WriteableBitmap(new PixelSize(width, height), new Vector(96, 96), Avalonia.Platform.PixelFormat.Bgra8888);
+                using (var stream = writableBitmap.Lock()) {
+                    Marshal.Copy(buffer, 0, stream.Address, buffer.Length);
+                }
+
+                bitmap = writableBitmap;
+            } finally {
+                bufferPtr.Free();
             }
-
-            // Write the modified pixel data back to the WriteableBitmap
-            var writableBitmap = new WriteableBitmap(new PixelSize(width, height), new Vector(96, 96), Avalonia.Platform.PixelFormat.Bgra8888);
-            using (var stream = writableBitmap.Lock()) {
-                Marshal.Copy(buffer, 0, stream.Address, buffer.Length);
-            }
-            bitmap = writableBitmap;
         }
 
         return bitmap;
