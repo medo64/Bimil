@@ -187,7 +187,7 @@
         <Grid ColumnDefinitions="2*, 1*" RowDefinitions="Auto, *">
             <TextBox Name="txtFilter" Grid.Row="0" Grid.Column="0" Watermark="Search..." Margin="5" />
             <ComboBox Name="cmbGroups" Grid.Row="0" Grid.Column="1" Margin="0 5 5 5" HorizontalAlignment="Stretch" />
-            <ListBox Name="lsbEntries" Grid.Row="1" Grid.ColumnSpan="2" />
+            <ListBox Name="lsbEntries" Grid.Row="1" Grid.ColumnSpan="2" Background="{DynamicResource SystemAltMediumLowColor}" />
         </Grid>
 
     </DockPanel>

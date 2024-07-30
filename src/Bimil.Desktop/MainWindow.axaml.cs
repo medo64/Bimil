@@ -14,6 +14,8 @@ using System.IO;
 using Medo.Avalonia;
 using Medo.Configuration;
 using System.Threading.Tasks;
+using Avalonia.Media;
+using Avalonia.Layout;
 
 internal partial class MainWindow : Window {
 
@@ -358,13 +360,25 @@ internal partial class MainWindow : Window {
             var group = (cmbGroups.SelectedItem as ComboBoxItem)?.Tag as string;
             var items = State.GetEntries(filter, group);
             foreach (var item in items) {
-                var groupBlock = new TextBlock() { Text = !string.IsNullOrEmpty(item.Group) ? item.Group : "(no group)", FontSize = FontSize * 0.75 };
-                var titleBlock = new TextBlock() { Text = item.Title, FontSize = FontSize * 1.25 };
-                var stack = new StackPanel();
-                stack.Children.Add(groupBlock);
-                stack.Children.Add(titleBlock);
+                var titleBlock = new TextBlock() {
+                    Text = item.Title,
+                    FontSize = FontSize * 1.25,
+                    HorizontalAlignment = HorizontalAlignment.Stretch,
+                    VerticalAlignment = VerticalAlignment.Center,
+                };
+                var groupBlock = new TextBlock() {
+                    Text = !string.IsNullOrEmpty(item.Group) ? item.Group : "(no group)",
+                    TextAlignment = TextAlignment.Right,
+                    FontSize = FontSize * 0.75,
+                    VerticalAlignment = VerticalAlignment.Center,
+                };
+                var dock = new DockPanel();
+                dock.Children.Add(titleBlock);
+                dock.Children.Add(groupBlock);
+                DockPanel.SetDock(titleBlock, Dock.Left);
+                DockPanel.SetDock(groupBlock, Dock.Right);
 
-                lsbEntries.Items.Add(new ListBoxItem { Content = stack, Tag = item });
+                lsbEntries.Items.Add(new ListBoxItem { Content = dock, Tag = item });
             }
         }
     }
