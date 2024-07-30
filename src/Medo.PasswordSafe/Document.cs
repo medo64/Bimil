@@ -730,6 +730,12 @@ public class Document : IDisposable {
     /// </summary>
     public bool TrackModify { get; set; }
 
+
+    /// <summary>
+    /// Raised whenever a change is detected.
+    /// </summary>
+    public event EventHandler<EventArgs>? Changed;
+
     /// <summary>
     /// Gets is document has been changed since last save.
     /// </summary>
@@ -737,6 +743,7 @@ public class Document : IDisposable {
 
     internal void MarkAsChanged() {
         HasChanged = true;
+        Changed?.Invoke(this, EventArgs.Empty);
     }
 
 
