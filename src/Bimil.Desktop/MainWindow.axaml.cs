@@ -108,6 +108,15 @@ internal partial class MainWindow : Window {
                 }
             }
         };
+
+        // Items update
+        State.ItemsChanged += (_, _) => {
+            FillEntries();
+        };
+
+        // attach events
+        txtFilter.TextChanged += (_, _) => { FillEntries(); };
+        cmbGroups.SelectionChanged += (_, _) => { FillEntries(); };
     }
 
 
@@ -340,5 +349,24 @@ internal partial class MainWindow : Window {
     }
 
     #endregion Menu
+
+
+    private void FillEntries() {
+        lsbEntries.Items.Clear();
+        if (State.Document != null) {
+            var filter = txtFilter.Text ?? "";
+            var group = (cmbGroups.SelectedItem as ComboBoxItem)?.Tag as string;
+            var items = State.GetEntries(filter, group);
+            foreach (var item in items) {
+                var groupBlock = new TextBlock() { Text = !string.IsNullOrEmpty(item.Group) ? item.Group : "(no group)", FontSize = FontSize * 0.75 };
+                var titleBlock = new TextBlock() { Text = item.Title, FontSize = FontSize * 1.25 };
+                var stack = new StackPanel();
+                stack.Children.Add(groupBlock);
+                stack.Children.Add(titleBlock);
+
+                lsbEntries.Items.Add(new ListBoxItem { Content = stack, Tag = item });
+            }
+        }
+    }
 
 }
