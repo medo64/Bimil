@@ -14,7 +14,6 @@ using System.IO;
 using Medo.Avalonia;
 using Medo.Configuration;
 using System.Threading.Tasks;
-using Tmds.DBus.Protocol;
 
 internal partial class MainWindow : Window {
 
@@ -45,7 +44,7 @@ internal partial class MainWindow : Window {
 
         // Centralized log handler
         UnhandledCatch.Attach();
-        UnhandledCatch.UnhandledException += (sender, e) => {
+        UnhandledCatch.UnhandledException += (_, e) => {
             if (e.Exception != null) {
                 Trace.WriteLine(e.Exception.Message);
                 Trace.WriteLine(e.Exception.StackTrace);
@@ -56,7 +55,7 @@ internal partial class MainWindow : Window {
         };
 
         // State update
-        State.StateChanged += (sender, e) => {
+        State.DocumentChanged += (_, _) => {
             var file = State.File;
             if (file != null) {
                 Title = file.Name;
@@ -83,6 +82,31 @@ internal partial class MainWindow : Window {
             mnuFind.IsEnabled = hasDocument;
 
             ThemeImageResources.Update();  // enable/disable buttons
+        };
+
+        // Group update
+        State.GroupsChanged += (_, _) => {
+            var previousGroup = (cmbGroups.SelectedItem as ComboBoxItem)?.Tag;
+            cmbGroups.Items.Clear();
+
+            if (State.Document != null) {
+                cmbGroups.Items.Add(new ComboBoxItem { Content = "(any group)", Tag = null });
+
+                var groups = State.GetGroups();
+                if (groups.Count > 0) {
+                    foreach (var group in groups) {
+                        var groupText = (group.Length > 0) ? group : "(no group)";
+                        cmbGroups.Items.Add(new ComboBoxItem { Content = groupText, Tag = group });
+                    }
+                }
+
+                foreach (var item in cmbGroups.Items) {
+                    if ((item is ComboBoxItem comboBoxItem) && (comboBoxItem.Tag == previousGroup)) {
+                        cmbGroups.SelectedItem = comboBoxItem;
+                        break;
+                    }
+                }
+            }
         };
     }
 
@@ -242,7 +266,7 @@ internal partial class MainWindow : Window {
     public void mnuFilePropertiesReadonly_Click(object sender, RoutedEventArgs e) {
         if (State.Document != null) {
             State.Document.IsReadOnly = !State.Document.IsReadOnly;
-            State.ForceStateChange();  // state doesn't get automatically updated for this one
+            State.RaiseDocumentChange();  // state doesn't get automatically updated for this one
         }
     }
 

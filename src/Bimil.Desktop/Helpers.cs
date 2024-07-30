@@ -92,11 +92,11 @@ internal static class Helpers {
                     if (oldValue != newValue) {  // change only if different
                         propertyInfo.SetValue(null, newValue);
                         runOnUpdate?.Invoke();
-                        control.Background = GetBrush("SystemAltMediumLowColor");  // doesn't change brush immediatelly :(
+                        control.Background = GetBrush("SystemAltMediumLowColor");  // doesn't change brush immediately :(
                         control.InvalidateMeasure();
                     }
                 } else {
-                    control.Background = GetRedBrush("SystemAltMediumLowColor");  // doesn't change brush immediatelly :(
+                    control.Background = GetRedBrush("SystemAltMediumLowColor");  // doesn't change brush immediately :(
                     control.InvalidateMeasure();
                 }
             };

@@ -187,11 +187,7 @@
         <Grid ColumnDefinitions="2*, 1*" RowDefinitions="Auto, *">
 
             <TextBox Grid.Row="0" Grid.Column="0" Watermark="Search..." Margin="5" />
-            <ComboBox Grid.Row="0" Grid.Column="1" Margin="0 5 5 5" HorizontalAlignment="Stretch">
-                <ComboBoxItem Content="Any category" Foreground="Gray" />
-                <ComboBoxItem Content="Category 1" />
-                <ComboBoxItem Content="Category 2" />
-            </ComboBox>
+            <ComboBox Name="cmbGroups" Grid.Row="0" Grid.Column="1" Margin="0 5 5 5" HorizontalAlignment="Stretch" />
 
             <ListBox Grid.Row="1" Grid.ColumnSpan="2">
                 <ListBoxItem Content="Item 1" />
