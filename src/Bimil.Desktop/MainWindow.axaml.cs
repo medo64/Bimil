@@ -57,68 +57,14 @@ internal partial class MainWindow : Window {
         };
 
         // State update
-        State.DocumentChanged += (_, _) => {
-            var file = State.File;
-            if (file != null) {
-                Title = file.Name;
-                lblFileName.Content = file.FullName;
-                lblLastSave.Content = (file.LastWriteTime != DateTime.MinValue)
-                                    ? file.LastWriteTime.ToShortDateString() + " " + file.LastWriteTime.ToLongTimeString()
-                                    : "";
-                RecentFiles.Add(file);
-            } else {
-                Title = "Bimil";
-                lblFileName.Content = "";
-                lblLastSave.Content = "";
-            }
-
-            var hasDocument = (State.Document != null);
-            var isReadWrite = !(State.Document?.IsReadOnly ?? true);
-            mnuFileSave.IsEnabled = hasDocument;
-            mnuFileProperties.IsEnabled = hasDocument;
-            mnuFilePropertiesPassword.IsEnabled = isReadWrite;
-            mnuItemAdd.IsEnabled = hasDocument && isReadWrite;
-            mnuItemView.IsEnabled = false;  // will enable when item is selected
-            mnuItemEdit.IsEnabled = false;
-            mnuItemRemove.IsEnabled = false;
-            mnuFind.IsEnabled = hasDocument;
-
-            ThemeImageResources.Update();  // enable/disable buttons
-        };
-
-        // Group update
-        State.GroupsChanged += (_, _) => {
-            var previousGroup = (cmbGroups.SelectedItem as ComboBoxItem)?.Tag;
-            cmbGroups.Items.Clear();
-
-            if (State.Document != null) {
-                cmbGroups.Items.Add(new ComboBoxItem { Content = "(any group)", Tag = null });
-
-                var groups = State.GetGroups();
-                if (groups.Count > 0) {
-                    foreach (var group in groups) {
-                        var groupText = (group.Length > 0) ? group : "(no group)";
-                        cmbGroups.Items.Add(new ComboBoxItem { Content = groupText, Tag = group });
-                    }
-                }
-
-                foreach (var item in cmbGroups.Items) {
-                    if ((item is ComboBoxItem comboBoxItem) && (comboBoxItem.Tag == previousGroup)) {
-                        cmbGroups.SelectedItem = comboBoxItem;
-                        break;
-                    }
-                }
-            }
-        };
-
-        // Items update
-        State.ItemsChanged += (_, _) => {
-            FillEntries();
-        };
+        State.DocumentChanged += (_, _) => { ReplenishDocument(); };
+        State.GroupsChanged += (_, _) => { ReplenishGroups(); };
+        State.ItemsChanged += (_, _) => { ReplenishEntries(); };
+        ReplenishDocument();
 
         // attach events
-        txtFilter.TextChanged += (_, _) => { FillEntries(); };
-        cmbGroups.SelectionChanged += (_, _) => { FillEntries(); };
+        txtFilter.TextChanged += (_, _) => { ReplenishEntries(); };
+        cmbGroups.SelectionChanged += (_, _) => { ReplenishEntries(); };
     }
 
 
@@ -353,7 +299,70 @@ internal partial class MainWindow : Window {
     #endregion Menu
 
 
-    private void FillEntries() {
+    private void ReplenishDocument() {
+        var file = State.File;
+        if (file != null) {
+            Title = file.Name;
+            lblFileName.Content = file.FullName;
+            lblLastSave.Content = (file.LastWriteTime != DateTime.MinValue)
+                                ? file.LastWriteTime.ToShortDateString() + " " + file.LastWriteTime.ToLongTimeString()
+                                : "";
+            RecentFiles.Add(file);
+        } else {
+            Title = "Bimil";
+            lblFileName.Content = "";
+            lblLastSave.Content = "";
+        }
+
+        var hasDocument = (State.Document != null);
+        var isReadWrite = !(State.Document?.IsReadOnly ?? true);
+        mnuFileSave.IsEnabled = hasDocument;
+        mnuFileProperties.IsEnabled = hasDocument;
+        mnuFilePropertiesPassword.IsEnabled = isReadWrite;
+        mnuItemAdd.IsEnabled = hasDocument && isReadWrite;
+        mnuItemView.IsEnabled = false;  // will enable when item is selected
+        mnuItemEdit.IsEnabled = false;
+        mnuItemRemove.IsEnabled = false;
+        mnuFind.IsEnabled = hasDocument;
+
+        txtFilter.IsVisible = hasDocument;
+        cmbGroups.IsVisible = hasDocument;
+        lsbEntries.IsVisible = hasDocument;
+
+        ThemeImageResources.Update();  // enable/disable buttons
+
+        txtFilter.Text = "";
+        cmbGroups.SelectedItem = null;
+
+        ReplenishGroups();
+        ReplenishEntries();
+    }
+
+    private void ReplenishGroups() {
+        var previousGroup = (cmbGroups.SelectedItem as ComboBoxItem)?.Tag as string;
+        cmbGroups.Items.Clear();
+
+        if (State.Document != null) {
+            cmbGroups.Items.Add(new ComboBoxItem { Content = "(any group)", Tag = null });
+
+            var groups = State.GetGroups();
+            if (groups.Count > 0) {
+                foreach (var group in groups) {
+                    var groupText = (group.Length > 0) ? group : "(no group)";
+                    cmbGroups.Items.Add(new ComboBoxItem { Content = groupText, Tag = group });
+                }
+            }
+
+            foreach (var item in cmbGroups.Items) {
+                if ((item is ComboBoxItem comboBoxItem) && ((comboBoxItem.Tag as string) == previousGroup)) {
+                    cmbGroups.SelectedItem = comboBoxItem;
+                    break;
+                }
+            }
+        }
+    }
+
+    private void ReplenishEntries() {
         lsbEntries.Items.Clear();
         if (State.Document != null) {
             var filter = txtFilter.Text ?? "";
