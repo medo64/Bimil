@@ -132,11 +132,11 @@ internal partial class PasswordGeneratorWindow : Window {
     private void GenerateNewPassword(PasswordGenerator generator) {
         txtPassword.Text = generator.GetNewPassword();
 
-        imgGeneratorLevel.Source = generator.GetEstimatedSecurityLevel() switch {
-            PasswordSecurityLevel.High => ThemeImageResources.Enabled!.SecurityLevelHighX2,
-            PasswordSecurityLevel.Medium => ThemeImageResources.Enabled!.SecurityLevelMediumX2,
-            _ => ThemeImageResources.Enabled!.SecurityLevelLowX2,
-        };
+        switch (generator.GetEstimatedSecurityLevel()) {
+            case PasswordSecurityLevel.High: ThemeImageResources.SetImage(imgGeneratorLevel, "SecurityHigh", doubleScale: true); break;
+            case PasswordSecurityLevel.Medium: ThemeImageResources.SetImage(imgGeneratorLevel, "SecurityMedium", doubleScale: true); break;
+            default: ThemeImageResources.SetImage(imgGeneratorLevel, "SecurityLow", doubleScale: true); break;
+        }
 
         var duration = generator.GetEstimatedCrackDuration();
         var totalDays = (long)duration.TotalDays;

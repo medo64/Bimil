@@ -12,53 +12,34 @@ using Avalonia.Styling;
 
 internal class ThemeImageResources {
 
-    private ThemeImageResources(bool isDarkThemeVariant, bool isEnabled) {
-        SecurityLevelLowX2 = GetAssetBitmapX2("SecurityLow", isDarkThemeVariant);
-        SecurityLevelMediumX2 = GetAssetBitmapX2("SecurityMedium", isDarkThemeVariant);
-        SecurityLevelHighX2 = GetAssetBitmapX2("SecurityHigh", isDarkThemeVariant);
-    }
-
-    #region SecurityLevel
-
-    public Bitmap SecurityLevelLowX2 { get; private init; }
-    public Bitmap SecurityLevelMediumX2 { get; private init; }
-    public Bitmap SecurityLevelHighX2 { get; private init; }
-
-    #endregion SecurityLevel
-
-
     public static ThemeImageResources? Enabled { get; private set; }
     public static ThemeImageResources? Disabled { get; private set; }
     public static event EventHandler<EventArgs>? Updated;
 
     internal static void Setup(MainWindow mainWindow) {
         var scale = mainWindow?.Screens?.ScreenFromWindow(mainWindow)?.Scaling ?? 1;
-        AssetSize = (scale * 24) switch {
-            >= 64.0 => 64,
-            >= 48.0 => 48,
-            >= 32.0 => 32,
-            >= 24.0 => 24,
+        AssetSize = (scale * 16) switch {
+            >= 56.0 => 64,
+            >= 40.0 => 48,
+            >= 28.0 => 32,
+            >= 20.0 => 24,
             _ => 16
         };
         Debug.WriteLine($"Assets are {AssetSize}x{AssetSize} pixels");
 
         IsDarkThemeVariant = !((AppAvalonia.Current?.ActualThemeVariant ?? ThemeVariant.Light) == ThemeVariant.Light);
-        Enabled = new ThemeImageResources(IsDarkThemeVariant, isEnabled: true);
-        Disabled = new ThemeImageResources(IsDarkThemeVariant, isEnabled: false);
         Updated?.Invoke(null, EventArgs.Empty);
 
         var app = AppAvalonia.Current;
         if (app != null) {
             app.ActualThemeVariantChanged += (object? sender, EventArgs e) => {
                 var isDarkThemeVariant = !((AppAvalonia.Current?.ActualThemeVariant ?? ThemeVariant.Light) == ThemeVariant.Light);
-                Enabled = new ThemeImageResources(isDarkThemeVariant, isEnabled: true);
-                Disabled = new ThemeImageResources(isDarkThemeVariant, isEnabled: false);
                 Updated?.Invoke(null, EventArgs.Empty);
             };
         }
     }
 
-    public static void SetImage(Button button, string bitmapName) {
+    public static void SetImage(Button button, string bitmapName, bool doubleScale = false) {
         Image? image = null;
         if (button.Content is Image childT) {
             image = childT;
@@ -70,12 +51,23 @@ internal class ThemeImageResources {
             }
         }
         if (image != null) {
-            var bitmap = GetAssetBitmap(bitmapName, IsDarkThemeVariant, !button.IsEnabled);
+            var bitmap = GetAssetBitmap(bitmapName, IsDarkThemeVariant, grayscale: !button.IsEnabled, doubleScale);
             image.Source = bitmap;
-            image.Height = bitmap.Size.Height;
+            var scaledSize = AssetSize * (doubleScale ? 2 : 1);
+            image.Height = scaledSize;
+            image.Width = scaledSize;
             button.Height = double.NaN;
         }
     }
+
+    public static void SetImage(Image image, string bitmapName, bool doubleScale = false) {
+        var bitmap = GetAssetBitmap(bitmapName, IsDarkThemeVariant, doubleScale: doubleScale);
+        image.Source = bitmap;
+        var scaledSize = AssetSize * (doubleScale ? 2 : 1);
+        image.Height = scaledSize;
+        image.Width= scaledSize;
+    }
+
 
     public static void Update() {
         Updated?.Invoke(null, EventArgs.Empty);
@@ -86,8 +78,8 @@ internal class ThemeImageResources {
     private static int AssetSize = 24;
 
 
-    private static Bitmap GetAssetBitmap(string baseName, bool isDarkThemeVariant, bool grayscale = false) {
-        var bitmap = new Bitmap(AssetLoader.Open(GetAssetUri(baseName, isDarkThemeVariant, AssetSize)));
+    private static Bitmap GetAssetBitmap(string baseName, bool isDarkThemeVariant, bool grayscale = false, bool doubleScale = false) {
+        var bitmap = new Bitmap(AssetLoader.Open(GetAssetUri(baseName, isDarkThemeVariant, Math.Min(AssetSize * (doubleScale ? 2 : 1), 64))));
 
         if (grayscale) {
             var width = bitmap.PixelSize.Width;
@@ -124,16 +116,6 @@ internal class ThemeImageResources {
         }
 
         return bitmap;
-    }
-
-    private static Bitmap GetAssetBitmapX2(string baseName, bool isDarkThemeVariant) {  // twice the size
-        var assetSize = (AssetSize * 2) switch {
-            >= 64 => 64,
-            >= 48 => 48,
-            >= 32 => 32,
-            _ => 24
-        };
-        return new Bitmap(AssetLoader.Open(GetAssetUri(baseName, isDarkThemeVariant, assetSize)));
     }
 
     private static Uri GetAssetUri(string baseName, bool isDarkThemeVariant, int size) {
