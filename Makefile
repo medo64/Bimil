@@ -1,25 +1,8 @@
-.PHONY: all clean distclean dist debug release run test
+#~ .NET Project
 
-all:
-	@bash ./Make.sh release
+.SILENT:
+.NOTPARALLEL:
+.ONESHELL:
 
-clean:
-	@bash ./Make.sh clean
-
-distclean:
-	@bash ./Make.sh distclean
-
-dist:
-	@bash ./Make.sh dist
-
-debug:
-	@bash ./Make.sh debug
-
-release:
-	@bash ./Make.sh release
-
-run:
-	@bash ./Make.sh run
-
-test:
-	@bash ./Make.sh test
+all clean run test benchmark examples tools debug release package publish ~clean ~run ~test ~benchmark ~examples ~tools ~debug ~release ~package ~publish &:
+	./Make.sh $(MAKECMDGOALS)
