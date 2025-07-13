@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <AssemblyName>Bimil.Core</AssemblyName>
+    <AssemblyName>bimil.core</AssemblyName>
     <RootNamespace>Bimil</RootNamespace>
   </PropertyGroup>
 

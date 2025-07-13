@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <AssemblyName>Bimil</AssemblyName>
+    <AssemblyName>bimil</AssemblyName>
     <RootNamespace>Bimil.Desktop</RootNamespace>
     <Product>Bimil</Product>
     <Version>0.0.0</Version>

@@ -1,7 +1,7 @@
 <Project Sdk="MSTest.Sdk/3.7.3">
 
   <PropertyGroup>
-    <AssemblyName>Bimil.Core.Tests</AssemblyName>
+    <AssemblyName>bimil.core.tests</AssemblyName>
     <RootNamespace>Tests</RootNamespace>
   </PropertyGroup>
 
