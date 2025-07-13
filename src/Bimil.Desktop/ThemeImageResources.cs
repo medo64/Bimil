@@ -1,11 +1,11 @@
 namespace Bimil.Desktop;
 
 using System;
-using System.Data;
 using System.Diagnostics;
 using System.Globalization;
 using System.Runtime.InteropServices;
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Avalonia.Styling;
@@ -13,43 +13,10 @@ using Avalonia.Styling;
 internal class ThemeImageResources {
 
     private ThemeImageResources(bool isDarkThemeVariant, bool isEnabled) {
-        FileNew = GetAssetBitmap("FileNew", isDarkThemeVariant, grayscale: !isEnabled);
-        FileOpen = GetAssetBitmap("FileOpen", isDarkThemeVariant, grayscale: !isEnabled);
-        FileSave = GetAssetBitmap("FileSave", isDarkThemeVariant, grayscale: !isEnabled);
-        FileProperties = GetAssetBitmap("FileEdit", isDarkThemeVariant, grayscale: !isEnabled);
-        ItemAdd = GetAssetBitmap("ItemAdd", isDarkThemeVariant, grayscale: !isEnabled);
-        ItemEdit = GetAssetBitmap("ItemEdit", isDarkThemeVariant, grayscale: !isEnabled);
-        ItemView = GetAssetBitmap("ItemView", isDarkThemeVariant, grayscale: !isEnabled);
-        ItemRemove = GetAssetBitmap("ItemRemove", isDarkThemeVariant, grayscale: !isEnabled);
-        Find = GetAssetBitmap("Find", isDarkThemeVariant, grayscale: !isEnabled);
-        PasswordGenerator = GetAssetBitmap("PasswordGenerate", isDarkThemeVariant, grayscale: !isEnabled);
-        App = GetAssetBitmap("App", isDarkThemeVariant, grayscale: !isEnabled);
-        AppHasUpgrade = GetAssetBitmap("AppHasUpgrade", isDarkThemeVariant, grayscale: !isEnabled);
-
         SecurityLevelLowX2 = GetAssetBitmapX2("SecurityLow", isDarkThemeVariant);
         SecurityLevelMediumX2 = GetAssetBitmapX2("SecurityMedium", isDarkThemeVariant);
         SecurityLevelHighX2 = GetAssetBitmapX2("SecurityHigh", isDarkThemeVariant);
     }
-
-    #region Toolbar
-
-    public Bitmap FileNew { get; private init; }
-    public Bitmap FileOpen { get; private init; }
-    public Bitmap FileSave { get; private init; }
-    public Bitmap FileProperties { get; private init; }
-
-    public Bitmap ItemAdd { get; private init; }
-    public Bitmap ItemEdit { get; private init; }
-    public Bitmap ItemView { get; private init; }
-    public Bitmap ItemRemove { get; private init; }
-
-    public Bitmap Find { get; private init; }
-    public Bitmap PasswordGenerator { get; private init; }
-
-    public Bitmap App { get; private init; }
-    public Bitmap AppHasUpgrade { get; private init; }
-
-    #endregion Toolbar
 
     #region SecurityLevel
 
@@ -70,13 +37,14 @@ internal class ThemeImageResources {
             >= 64.0 => 64,
             >= 48.0 => 48,
             >= 32.0 => 32,
-            _ => 24
+            >= 24.0 => 24,
+            _ => 16
         };
         Debug.WriteLine($"Assets are {AssetSize}x{AssetSize} pixels");
 
-        var isDarkThemeVariant = !((AppAvalonia.Current?.ActualThemeVariant ?? ThemeVariant.Light) == ThemeVariant.Light);
-        Enabled = new ThemeImageResources(isDarkThemeVariant, isEnabled: true);
-        Disabled = new ThemeImageResources(isDarkThemeVariant, isEnabled: false);
+        IsDarkThemeVariant = !((AppAvalonia.Current?.ActualThemeVariant ?? ThemeVariant.Light) == ThemeVariant.Light);
+        Enabled = new ThemeImageResources(IsDarkThemeVariant, isEnabled: true);
+        Disabled = new ThemeImageResources(IsDarkThemeVariant, isEnabled: false);
         Updated?.Invoke(null, EventArgs.Empty);
 
         var app = AppAvalonia.Current;
@@ -90,12 +58,33 @@ internal class ThemeImageResources {
         }
     }
 
+    public static void SetImage(Button button, string bitmapName) {
+        Image? image = null;
+        if (button.Content is Image childT) {
+            image = childT;
+        } else if (button.Content is Panel panel) {
+            foreach (var childControl in panel.Children) {
+                if (childControl is Image childControlT) {
+                    image = childControlT;
+                }
+            }
+        }
+        if (image != null) {
+            var bitmap = GetAssetBitmap(bitmapName, IsDarkThemeVariant, !button.IsEnabled);
+            image.Source = bitmap;
+            image.Height = bitmap.Size.Height;
+            button.Height = double.NaN;
+        }
+    }
+
     public static void Update() {
         Updated?.Invoke(null, EventArgs.Empty);
     }
 
 
+    private static bool IsDarkThemeVariant = false;
     private static int AssetSize = 24;
+
 
     private static Bitmap GetAssetBitmap(string baseName, bool isDarkThemeVariant, bool grayscale = false) {
         var bitmap = new Bitmap(AssetLoader.Open(GetAssetUri(baseName, isDarkThemeVariant, AssetSize)));
