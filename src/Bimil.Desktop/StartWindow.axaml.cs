@@ -1,6 +1,7 @@
 namespace Bimil.Desktop;
 
 using System;
+using System.Collections;
 using System.IO;
 using Avalonia.Controls;
 using Avalonia.Input;
@@ -14,7 +15,8 @@ internal partial class StartWindow : Window {
     public StartWindow() {
         InitializeComponent();
         lsbFiles.SelectionChanged += (sender, e) => {
-            var hasSelection = (lsbFiles.SelectedItem != null);
+            var selectedStack = lsbFiles.SelectedItem as StackPanel;
+            var hasSelection = (selectedStack?.Tag != null);
             btnOpen.IsEnabled = hasSelection;
             btnOpenReadonly.IsEnabled = hasSelection;
         };
@@ -50,6 +52,11 @@ internal partial class StartWindow : Window {
             lsbFiles.SelectedIndex = 0;
             Helpers.FocusControl(btnOpen);
         } else {
+            var stack = new StackPanel() { Tag = null };
+            var titleBlock = new Label() { Content = "No recent files", FontSize = FontSize * 1.25 };
+            stack.Children.Add(titleBlock);
+            lsbFiles.Items.Add(stack);
+            lsbFiles.IsEnabled = false;
             Helpers.FocusControl(btnClose);
         }
     }

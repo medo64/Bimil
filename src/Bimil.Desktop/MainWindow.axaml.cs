@@ -74,16 +74,14 @@ internal partial class MainWindow : Window {
         while (!IsActive) { await Task.Delay(10); }  // wait for window to be fully initialized; otherwise it doesn't center right
 
         var files = RecentFiles.GetFiles();
-        if (files.Count > 0) {
-            if (Settings.ShowStart) {
-                var frm = new StartWindow();
-                await frm.ShowDialog(this);
-                if (frm.SelectedFile != null) {
-                    OpenFile(frm.SelectedFile, frm.SelectedReadonly);
-                }
-            } else if (Settings.LoadLast) {
-                OpenFile(files[0], @readonly: false);
+        if (Settings.ShowStart) {
+            var frm = new StartWindow();
+            await frm.ShowDialog(this);
+            if (frm.SelectedFile != null) {
+                OpenFile(frm.SelectedFile, frm.SelectedReadonly);
             }
+        } else if (Settings.LoadLast) {
+            OpenFile(files[0], @readonly: false);
         }
     }
 
