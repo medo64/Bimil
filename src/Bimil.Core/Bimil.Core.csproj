@@ -27,7 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../../lib/PasswordSafe/src/Medo.PasswordSafe/Medo.PasswordSafe.csproj" />
+    <PackageReference Include="Medo.PasswordSafe" Version="6.3.0" />
   </ItemGroup>
 
 </Project>
