@@ -1,5 +1,7 @@
 namespace Tests;
 
+using System;
+using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Bimil.Core;
 
@@ -11,7 +13,7 @@ public class TestClassicPasswordGenerator {
         var gen = new ClassicPasswordGenerator() {
             PasswordLength = 8,
         };
-        var dict = new Dictionary<string, object?>();
+        var dict = new Dictionary<string, object>();
         for (var i = 0; i < 10000; i++) {
             var password = gen.GetNewPassword();
             Assert.AreEqual(8, password.Length);
@@ -25,7 +27,7 @@ public class TestClassicPasswordGenerator {
         var gen = new ClassicPasswordGenerator() {
             PasswordLength = 14,
         };
-        var dict = new Dictionary<string, object?>();
+        var dict = new Dictionary<string, object>();
         for (var i = 0; i < 10000; i++) {
             var password = gen.GetNewPassword();
             Assert.AreEqual(14, password.Length);

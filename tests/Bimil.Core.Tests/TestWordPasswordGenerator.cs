@@ -1,17 +1,31 @@
 namespace Tests;
 
+using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Bimil.Core;
 
 [TestClass]
-public class TestTripletPasswordGenerator {
+public class TestWordPasswordGenerator {
+
+    [TestMethod]
+    public void Generate4() {
+        var gen = new WordPasswordGenerator() {
+            WordCount = 4,
+        };
+        var dict = new Dictionary<string, object>();
+        for (var i = 0; i < 10000; i++) {
+            var password = gen.GetNewPassword();
+            Assert.IsFalse(dict.ContainsKey(password));
+            dict.Add(password, null);
+        }
+    }
 
     [TestMethod]
     public void Generate5() {
-        var gen = new TripletPasswordGenerator() {
-            TripletCount = 5,
+        var gen = new WordPasswordGenerator() {
+            WordCount = 5,
         };
-        var dict = new Dictionary<string, object?>();
+        var dict = new Dictionary<string, object>();
         for (var i = 0; i < 10000; i++) {
             var password = gen.GetNewPassword();
             Assert.IsFalse(dict.ContainsKey(password));
@@ -20,22 +34,9 @@ public class TestTripletPasswordGenerator {
     }
 
     [TestMethod]
-    public void Generate6() {
-        var gen = new TripletPasswordGenerator() {
-            TripletCount = 6,
-        };
-        var dict = new Dictionary<string, object?>();
-        for (var i = 0; i < 10000; i++) {
-            var password = gen.GetNewPassword();
-            Assert.IsFalse(dict.ContainsKey(password));
-            dict.Add(password, null);
-        }
-    }
-
-    [TestMethod]
-    public void Generate6None() {
-        var gen = new TripletPasswordGenerator() {
-            TripletCount = 6,
+    public void Generate5None() {
+        var gen = new WordPasswordGenerator() {
+            WordCount = 5,
             IncludeNumber = false,
             IncludeSpecialCharacters = false,
             IncludeSwappedCase = false,
@@ -45,15 +46,15 @@ public class TestTripletPasswordGenerator {
             RestrictAdjustmentsToSuffix = false,
             UseSpacesSeparator = false,
         };
-        Assert.AreEqual(6, gen.TripletCount);
-        Assert.AreEqual(3.3226281284987204E+19, gen.GetEstimatedCombinationCount());
-        Assert.AreEqual(64, gen.GetEstimatedEntropyInBits());
+        Assert.AreEqual(5, gen.WordCount);
+        Assert.AreEqual(1.6273676242087346E+19, gen.GetEstimatedCombinationCount());
+        Assert.AreEqual(63, gen.GetEstimatedEntropyInBits());
     }
 
     [TestMethod]
-    public void Generate6WithNumber() {
-        var gen = new TripletPasswordGenerator() {
-            TripletCount = 6,
+    public void Generate5WithNumber() {
+        var gen = new WordPasswordGenerator() {
+            WordCount = 5,
             IncludeNumber = true,
             IncludeSpecialCharacters = false,
             IncludeSwappedCase = false,
@@ -63,15 +64,15 @@ public class TestTripletPasswordGenerator {
             RestrictAdjustmentsToSuffix = false,
             UseSpacesSeparator = false,
         };
-        Assert.AreEqual(6, gen.TripletCount);
-        Assert.AreEqual(6.6452562569974405E+22, gen.GetEstimatedCombinationCount());
-        Assert.AreEqual(75, gen.GetEstimatedEntropyInBits());
+        Assert.AreEqual(5, gen.WordCount);
+        Assert.AreEqual(3.2547352484174694E+22, gen.GetEstimatedCombinationCount());
+        Assert.AreEqual(74, gen.GetEstimatedEntropyInBits());
     }
 
     [TestMethod]
-    public void Generate6WithNumberAndSpecial() {
-        var gen = new TripletPasswordGenerator() {
-            TripletCount = 6,
+    public void Generate5WithNumberAndSpecial() {
+        var gen = new WordPasswordGenerator() {
+            WordCount = 5,
             IncludeNumber = true,
             IncludeSpecialCharacters = true,
             IncludeSwappedCase = false,
@@ -81,15 +82,15 @@ public class TestTripletPasswordGenerator {
             RestrictAdjustmentsToSuffix = false,
             UseSpacesSeparator = false,
         };
-        Assert.AreEqual(6, gen.TripletCount);
-        Assert.AreEqual(3.8542486290585156E+25, gen.GetEstimatedCombinationCount());
-        Assert.AreEqual(84, gen.GetEstimatedEntropyInBits());
+        Assert.AreEqual(5, gen.WordCount);
+        Assert.AreEqual(1.8877464440821322E+25, gen.GetEstimatedCombinationCount());
+        Assert.AreEqual(83, gen.GetEstimatedEntropyInBits());
     }
 
     [TestMethod]
-    public void Generate6WithNumberSpecialAndSwappedCase() {
-        var gen = new TripletPasswordGenerator() {
-            TripletCount = 6,
+    public void Generate5WithNumberSpecialAndSwappedCase() {
+        var gen = new WordPasswordGenerator() {
+            WordCount = 5,
             IncludeNumber = true,
             IncludeSpecialCharacters = true,
             IncludeSwappedCase = true,
@@ -99,15 +100,15 @@ public class TestTripletPasswordGenerator {
             RestrictAdjustmentsToSuffix = false,
             UseSpacesSeparator = false,
         };
-        Assert.AreEqual(6, gen.TripletCount);
-        Assert.AreEqual(2.809747250583658E+28, gen.GetEstimatedCombinationCount());
-        Assert.AreEqual(94, gen.GetEstimatedEntropyInBits());
+        Assert.AreEqual(5, gen.WordCount);
+        Assert.AreEqual(5.899207637756662E+28, gen.GetEstimatedCombinationCount());
+        Assert.AreEqual(95, gen.GetEstimatedEntropyInBits());
     }
 
     [TestMethod]
-    public void Generate6WithNumberSpecialSwappedCaseAndIncomplete() {
-        var gen = new TripletPasswordGenerator() {
-            TripletCount = 6,
+    public void Generate5WithNumberSpecialSwappedCaseAndIncomplete() {
+        var gen = new WordPasswordGenerator() {
+            WordCount = 5,
             IncludeNumber = true,
             IncludeSpecialCharacters = true,
             IncludeSwappedCase = true,
@@ -117,15 +118,15 @@ public class TestTripletPasswordGenerator {
             RestrictAdjustmentsToSuffix = false,
             UseSpacesSeparator = false,
         };
-        Assert.AreEqual(6, gen.TripletCount);
-        Assert.AreEqual(2.0483057456754867E+31, gen.GetEstimatedCombinationCount());
-        Assert.AreEqual(104, gen.GetEstimatedEntropyInBits());
+        Assert.AreEqual(5, gen.WordCount);
+        Assert.AreEqual(1.8435023867989573E+32, gen.GetEstimatedCombinationCount());
+        Assert.AreEqual(107, gen.GetEstimatedEntropyInBits());
     }
 
     [TestMethod]
-    public void Generate6WithAllButTitle() {
-        var gen = new TripletPasswordGenerator() {
-            TripletCount = 6,
+    public void Generate5WithAllButTitle() {
+        var gen = new WordPasswordGenerator() {
+            WordCount = 5,
             IncludeNumber = true,
             IncludeSpecialCharacters = true,
             IncludeSwappedCase = true,
@@ -135,15 +136,15 @@ public class TestTripletPasswordGenerator {
             RestrictAdjustmentsToSuffix = false,
             UseSpacesSeparator = false,
         };
-        Assert.AreEqual(6, gen.TripletCount);
-        Assert.AreEqual(2.0483057456754867E+31, gen.GetEstimatedCombinationCount());  // Title case alone doesn't change combination count
-        Assert.AreEqual(104, gen.GetEstimatedEntropyInBits());
+        Assert.AreEqual(5, gen.WordCount);
+        Assert.AreEqual(1.8435023867989573E+32, gen.GetEstimatedCombinationCount());  // Title case alone doesn't change combination count
+        Assert.AreEqual(107, gen.GetEstimatedEntropyInBits());
     }
 
     [TestMethod]
-    public void Generate6WithAllButTitleAndBreakup() {
-        var gen = new TripletPasswordGenerator() {
-            TripletCount = 6,
+    public void Generate5WithAllButTitleAndBreakup() {
+        var gen = new WordPasswordGenerator() {
+            WordCount = 5,
             IncludeNumber = true,
             IncludeSpecialCharacters = true,
             IncludeSwappedCase = true,
@@ -153,15 +154,15 @@ public class TestTripletPasswordGenerator {
             RestrictAdjustmentsToSuffix = false,
             UseSpacesSeparator = false,
         };
-        Assert.AreEqual(6, gen.TripletCount);
-        Assert.AreEqual(1.578700238462368E+27, gen.GetEstimatedCombinationCount());
-        Assert.AreEqual(90, gen.GetEstimatedEntropyInBits());
+        Assert.AreEqual(5, gen.WordCount);
+        Assert.AreEqual(1.9330523587401032E+26, gen.GetEstimatedCombinationCount());
+        Assert.AreEqual(87, gen.GetEstimatedEntropyInBits());
     }
 
     [TestMethod]
-    public void Generate6WithAllButTitleBreakupAndSuffixRestriction() {
-        var gen = new TripletPasswordGenerator() {
-            TripletCount = 6,
+    public void Generate5WithAllButTitleBreakupAndSuffixRestriction() {
+        var gen = new WordPasswordGenerator() {
+            WordCount = 5,
             IncludeNumber = true,
             IncludeSpecialCharacters = true,
             IncludeSwappedCase = true,
@@ -171,15 +172,15 @@ public class TestTripletPasswordGenerator {
             RestrictAdjustmentsToSuffix = true,
             UseSpacesSeparator = false,
         };
-        Assert.AreEqual(6, gen.TripletCount);
-        Assert.AreEqual(1.9271243145292577E+23, gen.GetEstimatedCombinationCount());
-        Assert.AreEqual(77, gen.GetEstimatedEntropyInBits());
+        Assert.AreEqual(5, gen.WordCount);
+        Assert.AreEqual(9.438732220410662E+22, gen.GetEstimatedCombinationCount());
+        Assert.AreEqual(76, gen.GetEstimatedEntropyInBits());
     }
 
     [TestMethod]
-    public void Generate6WithAllButAll() {
-        var gen = new TripletPasswordGenerator() {
-            TripletCount = 6,
+    public void Generate5WithAllButAll() {
+        var gen = new WordPasswordGenerator() {
+            WordCount = 5,
             IncludeNumber = true,
             IncludeSpecialCharacters = true,
             IncludeSwappedCase = true,
@@ -189,9 +190,9 @@ public class TestTripletPasswordGenerator {
             RestrictAdjustmentsToSuffix = true,
             UseSpacesSeparator = true,
         };
-        Assert.AreEqual(6, gen.TripletCount);
-        Assert.AreEqual(1.9271243145292577E+23, gen.GetEstimatedCombinationCount());  // Space separator alone doesn't change combination count
-        Assert.AreEqual(77, gen.GetEstimatedEntropyInBits());
+        Assert.AreEqual(5, gen.WordCount);
+        Assert.AreEqual(9.438732220410662E+22, gen.GetEstimatedCombinationCount());  // Space separator alone doesn't change combination count
+        Assert.AreEqual(76, gen.GetEstimatedEntropyInBits());
     }
 
 }
