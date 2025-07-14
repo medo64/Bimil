@@ -2,20 +2,21 @@ namespace Bimil.Desktop;
 
 using System;
 using System.Diagnostics;
+using System.IO;
+using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.Layout;
+using Avalonia.Media;
 using Avalonia.Platform.Storage;
 using Avalonia.Styling;
 using Avalonia.Threading;
-using Medo.Diagnostics;
 using Bimil.Core;
-using System.IO;
 using Medo.Avalonia;
 using Medo.Configuration;
-using System.Threading.Tasks;
-using Avalonia.Media;
-using Avalonia.Layout;
+using Medo.Diagnostics;
+using Medo.Security.Cryptography.PasswordSafe;
 
 internal partial class MainWindow : Window {
 
@@ -58,7 +59,7 @@ internal partial class MainWindow : Window {
 
         // State update
         State.DocumentChanged += (_, _) => { ReplenishDocument(); };
-        State.GroupsChanged += (_, _) => { ReplenishGroups(); };
+        State.GroupsChanged += (_, _) => { Helpers.ReplenishGroups(cmbGroups, includeAnyGroup: true); };
         State.ItemsChanged += (_, _) => { ReplenishEntries(); };
         ReplenishDocument();
 
@@ -226,20 +227,31 @@ internal partial class MainWindow : Window {
     }
 
 
-    public void mnuItemAdd_Click(object sender, RoutedEventArgs e) {
-
+    public async void mnuItemAdd_Click(object sender, RoutedEventArgs e) {
+        var frm = new EntryWindow();
+        await frm.ShowDialog(this);
     }
 
-    public void mnuItemEdit_Click(object sender, RoutedEventArgs e) {
-
+    public async void mnuItemEdit_Click(object sender, RoutedEventArgs e) {
+        if (lsbEntries.SelectedItem is ListBoxItem { Tag: Entry selectedEntry }) {
+            var frm = new EntryWindow(selectedEntry);
+            await frm.ShowDialog(this);
+        }
     }
 
-    public void mnuItemView_Click(object sender, RoutedEventArgs e) {
-
+    public async void mnuItemView_Click(object sender, RoutedEventArgs e) {
+        if (lsbEntries.SelectedItem is ListBoxItem { Tag: Entry selectedEntry }) {
+            var frm = new EntryWindow(selectedEntry, readOnly: true);
+            await frm.ShowDialog(this);
+        }
     }
 
     public void mnuItemRemove_Click(object sender, RoutedEventArgs e) {
-
+        if (lsbEntries.SelectedItem is ListBoxItem { Tag: Entry selectedEntry }) {
+            if (MessageBox.ShowQuestionDialog(this, "Remove entry", $"Do you really want to remove entry '{selectedEntry.Title}'?", "Yes", "No") == 0) {
+                lsbEntries.Items.RemoveAt(lsbEntries.SelectedIndex);
+            }
+        }
     }
 
 
@@ -296,6 +308,20 @@ internal partial class MainWindow : Window {
 
     #endregion Menu
 
+    #region Events
+
+    public void lsbEntries_SelectionChanged(object sender, SelectionChangedEventArgs e) {
+        var selectedEntry = (lsbEntries.SelectedItem as ListBoxItem)?.Tag as Entry;
+        mnuItemView.IsEnabled = (selectedEntry != null);
+        mnuItemEdit.IsEnabled = (selectedEntry != null);
+        mnuItemRemove.IsEnabled = (selectedEntry != null);
+    }
+
+    public void lsbEntries_DoubleTapped(object sender, TappedEventArgs e) {
+        mnuItemEdit_Click(sender, e);
+    }
+
+    #endregion
 
     private void ReplenishDocument() {
         var file = State.File;
@@ -332,32 +358,8 @@ internal partial class MainWindow : Window {
         txtFilter.Text = "";
         cmbGroups.SelectedItem = null;
 
-        ReplenishGroups();
+        Helpers.ReplenishGroups(cmbGroups, includeAnyGroup: true);
         ReplenishEntries();
-    }
-
-    private void ReplenishGroups() {
-        var previousGroup = (cmbGroups.SelectedItem as ComboBoxItem)?.Tag as string;
-        cmbGroups.Items.Clear();
-
-        if (State.Document != null) {
-            cmbGroups.Items.Add(new ComboBoxItem { Content = "(any group)", Tag = null });
-
-            var groups = State.GetGroups();
-            if (groups.Count > 0) {
-                foreach (var group in groups) {
-                    var groupText = (group.Length > 0) ? group : "(no group)";
-                    cmbGroups.Items.Add(new ComboBoxItem { Content = groupText, Tag = group });
-                }
-            }
-
-            foreach (var item in cmbGroups.Items) {
-                if ((item is ComboBoxItem comboBoxItem) && ((comboBoxItem.Tag as string) == previousGroup)) {
-                    cmbGroups.SelectedItem = comboBoxItem;
-                    break;
-                }
-            }
-        }
     }
 
     private void ReplenishEntries() {

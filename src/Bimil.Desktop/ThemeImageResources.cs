@@ -37,7 +37,7 @@ internal class ThemeImageResources {
 
         var app = AppAvalonia.Current;
         if (app != null) {
-            app.ActualThemeVariantChanged += (object? sender, EventArgs e) => {
+            app.ActualThemeVariantChanged += (sender, e) => {
                 var isDarkThemeVariant = !((AppAvalonia.Current?.ActualThemeVariant ?? ThemeVariant.Light) == ThemeVariant.Light);
                 Updated?.Invoke(null, EventArgs.Empty);
             };
@@ -56,12 +56,18 @@ internal class ThemeImageResources {
             }
         }
         if (image != null) {
-            var bitmap = GetAssetBitmap(bitmapName, IsDarkThemeVariant, grayscale: !button.IsEnabled, doubleScale);
-            image.Source = bitmap;
+            var bitmapColor = GetAssetBitmap(bitmapName, IsDarkThemeVariant, grayscale: false, doubleScale);
+            var bitmapGray = GetAssetBitmap(bitmapName, IsDarkThemeVariant, grayscale: true, doubleScale);
+            image.Source = button.IsEnabled ? bitmapColor : bitmapGray;
             var scaledSize = AssetSize * (doubleScale ? 2 : 1);
             image.Height = scaledSize;
             image.Width = scaledSize;
             button.Height = double.NaN;
+            button.PropertyChanged += (sender, e) => {
+                if (e.Property == Button.IsEnabledProperty) {
+                    image.Source = button.IsEnabled ? bitmapColor : bitmapGray;
+                }
+            };
         }
     }
 

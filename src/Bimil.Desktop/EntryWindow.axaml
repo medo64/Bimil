@@ -1,0 +1,58 @@
+<Window xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+    x:Class="Bimil.Desktop.EntryWindow"
+    Width="600" Height="500"
+    WindowStartupLocation="CenterOwner"
+    CanResize="false"
+    Title="Entry">
+
+    <DockPanel Margin="7" VerticalAlignment="Stretch">
+
+        <DockPanel Margin="0 11 0 0" DockPanel.Dock="Bottom">
+            <StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom" Orientation="Horizontal" Spacing="7">
+                <Button Content="_Auto-type" Name="btnAutoType" Click="btnAutoType_Click" HorizontalContentAlignment="Center" />
+                <Button Content="_Fields" Name="btnFields" Click="btnFields_Click" HorizontalContentAlignment="Center" />
+            </StackPanel>
+            <StackPanel HorizontalAlignment="Right" VerticalAlignment="Bottom" Orientation="Horizontal" Spacing="7">
+                <Button Content="_OK" Name="btnOK" Click="btnOK_Click" HorizontalContentAlignment="Center" />
+                <Button Content="_Cancel" Name="btnCancel" Click="btnCancel_Click" HorizontalContentAlignment="Center" />
+            </StackPanel>
+        </DockPanel>
+
+        <ScrollViewer DockPanel.Dock="Top" Margin="0 0 0 13">
+            <Grid ColumnDefinitions="Auto, *" RowDefinitions="*, *" Name="grdRecords">
+                <Grid.Styles>
+                    <Style Selector="Button:disabled /template/ ContentPresenter">
+                        <Setter Property="Background" Value="Transparent" />
+                    </Style>
+                    <Style Selector="Label">
+                        <Setter Property="Height" Value="24" />
+                        <Setter Property="VerticalContentAlignment" Value="Top" />
+                        <Setter Property="Foreground" Value="{DynamicResource MenuTextEnabledForeground}" />
+                    </Style>
+                    <Style Selector="TextBox">
+                        <Setter Property="HorizontalAlignment" Value="Stretch" />
+                        <Setter Property="Margin" Value="5" />
+                    </Style>
+                    <Style Selector="ComboBox">
+                        <Setter Property="HorizontalAlignment" Value="Stretch" />
+                        <Setter Property="Margin" Value="5" />
+                    </Style>
+                </Grid.Styles>
+
+                <Label Grid.Row="0" Grid.Column="0">Name:</Label>
+                <TextBox Grid.Row="0" Grid.Column="1" Name="txtTitle" />
+
+                <Label Grid.Row="1" Grid.Column="0">Category:</Label>
+                <ComboBox Grid.Row="1" Grid.Column="1" Name="cmbGroups" Margin="3 0 3 13" />
+            </Grid>
+        </ScrollViewer>
+
+        <StackPanel />
+
+    </DockPanel>
+
+</Window>

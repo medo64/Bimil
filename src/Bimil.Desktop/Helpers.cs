@@ -10,6 +10,9 @@ using Avalonia.Input;
 using Avalonia.Media;
 using Avalonia.Styling;
 using Avalonia.VisualTree;
+using Bimil.Core;
+using HarfBuzzSharp;
+using Medo.Security.Cryptography.PasswordSafe;
 
 internal static class Helpers {
 
@@ -106,4 +109,62 @@ internal static class Helpers {
         }
 
     }
+
+    public static string? GetRecordCaption(RecordType recordType) {
+        switch (recordType) {
+            case RecordType.UserName: return "User name";
+            case RecordType.Password: return "Password";
+            case RecordType.Url: return "URL";
+            case RecordType.EmailAddress: return "E-mail";
+            case RecordType.Notes: return "Notes";
+
+            case RecordType.TwoFactorKey: return "Two-factor key";
+            case RecordType.CreditCardNumber: return "Card number";
+            case RecordType.CreditCardExpiration: return "Card expiration";
+            case RecordType.CreditCardVerificationValue: return "Card security code";
+            case RecordType.CreditCardPin: return "Card PIN";
+
+            case RecordType.QRCode: return "QR Code";
+
+            case RecordType.RunCommand: return "Run command";
+
+            default: return null; //all other fields are not really supported
+        }
+    }
+
+    public static void ReplenishGroups(ComboBox cmbGroups, bool includeAnyGroup = false) {
+        var previousGroup = (cmbGroups.SelectedItem as ComboBoxItem)?.Tag as string;
+        cmbGroups.Items.Clear();
+
+        if (includeAnyGroup) {
+            cmbGroups.Items.Add(new ComboBoxItem { Content = "(any group)", Tag = null });
+        }
+
+        var groups = State.GetGroups();
+        if (groups.Count > 0) {
+            foreach (var group in groups) {
+                var groupText = (group.Length > 0) ? group : "(no group)";
+                cmbGroups.Items.Add(new ComboBoxItem { Content = groupText, Tag = group });
+            }
+        }
+
+        foreach (var item in cmbGroups.Items) {
+            if ((item is ComboBoxItem comboBoxItem) && ((comboBoxItem.Tag as string) == previousGroup)) {
+                cmbGroups.SelectedItem = comboBoxItem;
+                break;
+            }
+        }
+    }
+
+    public static void SelectGroup(ComboBox cmbGroups, string group) {
+        foreach (var item in cmbGroups.Items) {
+            if ((item is ComboBoxItem comboBoxItem) && (comboBoxItem.Tag is string currGroup)) {
+                if (group.Equals(currGroup, StringComparison.CurrentCultureIgnoreCase)) {
+                    cmbGroups.SelectedItem = item;
+                    return;
+                }
+            }
+        }
+    }
+
 }
