@@ -27,6 +27,11 @@ internal class ThemeImageResources {
         };
         Debug.WriteLine($"Assets are {AssetSize}x{AssetSize} pixels");
 
+        if (mainWindow != null) {
+            mainWindow.MinWidth = 480 * scale;
+            mainWindow.MinHeight = 320 * scale;
+        }
+
         IsDarkThemeVariant = !((AppAvalonia.Current?.ActualThemeVariant ?? ThemeVariant.Light) == ThemeVariant.Light);
         Updated?.Invoke(null, EventArgs.Empty);
 

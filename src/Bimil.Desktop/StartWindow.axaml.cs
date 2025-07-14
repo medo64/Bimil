@@ -56,7 +56,6 @@ internal partial class StartWindow : Window {
             var titleBlock = new Label() { Content = "No recent files", FontSize = FontSize * 1.25 };
             stack.Children.Add(titleBlock);
             lsbFiles.Items.Add(stack);
-            lsbFiles.IsEnabled = false;
             Helpers.FocusControl(btnClose);
         }
     }
