@@ -59,7 +59,7 @@ internal partial class MainWindow : Window {
 
         // State update
         State.DocumentChanged += (_, _) => { ReplenishDocument(); };
-        State.GroupsChanged += (_, _) => { Helpers.ReplenishGroups(cmbGroups, includeAnyGroup: true); };
+        State.GroupsChanged += (_, _) => { Replenishment.FillGroups(cmbGroups, includeAnyGroup: true); };
         State.ItemsChanged += (_, _) => { ReplenishEntries(); };
         ReplenishDocument();
 
@@ -358,7 +358,7 @@ internal partial class MainWindow : Window {
         txtFilter.Text = "";
         cmbGroups.SelectedItem = null;
 
-        Helpers.ReplenishGroups(cmbGroups, includeAnyGroup: true);
+        Replenishment.FillGroups(cmbGroups, includeAnyGroup: true);
         ReplenishEntries();
     }
 

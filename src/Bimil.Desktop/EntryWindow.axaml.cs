@@ -12,16 +12,15 @@ internal partial class EntryWindow : Window {
 
     public EntryWindow() {
         InitializeComponent();
-        Helpers.ReplenishGroups(cmbGroups);
+        Replenishment.FillGroups(cmbGroups);
 
         Title = "New";
         Helpers.FocusControl(txtTitle);
     }
 
-
     public EntryWindow(Entry entry, bool readOnly = false) {
         InitializeComponent();
-        Helpers.ReplenishGroups(cmbGroups);
+        Replenishment.FillGroups(cmbGroups);
 
         if (readOnly) {
             Title = "View";
@@ -35,7 +34,7 @@ internal partial class EntryWindow : Window {
         }
 
         txtTitle.Text = entry.Title;
-        Helpers.SelectGroup(cmbGroups, entry.Group);
+        Replenishment.SelectGroup(cmbGroups, entry.Group);
 
         foreach (var record in entry.Records) {
             switch (record.RecordType) {
