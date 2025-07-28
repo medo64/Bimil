@@ -1,4 +1,4 @@
-namespace Bimil.Desktop;
+namespace Bimil;
 
 using System;
 using System.Diagnostics;
@@ -12,7 +12,6 @@ using Avalonia.Media;
 using Avalonia.Platform.Storage;
 using Avalonia.Styling;
 using Avalonia.Threading;
-using Bimil.Core;
 using Medo.Avalonia;
 using Medo.Configuration;
 using Medo.Diagnostics;

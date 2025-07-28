@@ -8,7 +8,7 @@
 
   <PropertyGroup>
     <AssemblyName>bimil</AssemblyName>
-    <RootNamespace>Bimil.Desktop</RootNamespace>
+    <RootNamespace>Bimil</RootNamespace>
     <Product>Bimil</Product>
     <Version>0.0.0</Version>
   </PropertyGroup>
@@ -23,7 +23,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../Bimil.Core/Bimil.Core.csproj" />
+    <ProjectReference Include="../Bimil.Common/Bimil.Common.csproj" />
   </ItemGroup>
 
   <ItemGroup>

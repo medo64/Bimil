@@ -1,7 +1,7 @@
 <Project Sdk="MSTest.Sdk/3.7.3">
 
   <PropertyGroup>
-    <AssemblyName>bimil.core.tests</AssemblyName>
+    <AssemblyName>bimil.common.tests</AssemblyName>
     <RootNamespace>Tests</RootNamespace>
   </PropertyGroup>
 
@@ -14,7 +14,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../../src/Bimil.Core/Bimil.Core.csproj" />
+    <ProjectReference Include="../../src/Bimil.Common/Bimil.Common.csproj" />
   </ItemGroup>
 
 </Project>

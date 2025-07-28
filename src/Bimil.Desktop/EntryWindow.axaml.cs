@@ -1,10 +1,9 @@
-namespace Bimil.Desktop;
+namespace Bimil;
 
 using System;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using Bimil.Core;
 using Medo.Security.Cryptography.PasswordSafe;
 using Metsys.Bson;
 

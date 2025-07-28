@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <AssemblyName>bimil.core</AssemblyName>
+    <AssemblyName>bimil.common</AssemblyName>
     <RootNamespace>Bimil</RootNamespace>
   </PropertyGroup>
 
@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <InternalsVisibleTo Include="Bimil.Core.Tests" />
+    <InternalsVisibleTo Include="Bimil.Common.Tests" />
   </ItemGroup>
 
   <ItemGroup>

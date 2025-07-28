@@ -2,7 +2,7 @@ namespace Tests;
 
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Bimil.Core;
+using Bimil;
 
 [TestClass]
 public class TestWordPasswordGenerator {

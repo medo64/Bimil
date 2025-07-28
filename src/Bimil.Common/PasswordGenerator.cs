@@ -1,4 +1,4 @@
-namespace Bimil.Core;
+namespace Bimil;
 
 using System;
 using System.Security.Cryptography;

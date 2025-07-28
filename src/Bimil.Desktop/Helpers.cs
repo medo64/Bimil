@@ -1,4 +1,4 @@
-namespace Bimil.Desktop;
+namespace Bimil;
 
 using System;
 using System.Collections.Generic;
@@ -10,7 +10,6 @@ using Avalonia.Input;
 using Avalonia.Media;
 using Avalonia.Styling;
 using Avalonia.VisualTree;
-using Bimil.Core;
 using HarfBuzzSharp;
 using Medo.Security.Cryptography.PasswordSafe;
 
@@ -92,7 +91,7 @@ internal static class Helpers {
     internal static class ControlSetup {
 
         private static PropertyInfo GetControlPropertyInfo(Control control, string propertyPath) {  // ignore possibility of the non-existent name
-            var type = Assembly.GetExecutingAssembly().GetType("Bimil.Desktop." + propertyPath[0..propertyPath.LastIndexOf('.')].Replace('.', '+'))!;
+            var type = Assembly.GetExecutingAssembly().GetType("Bimil." + propertyPath[0..propertyPath.LastIndexOf('.')].Replace('.', '+'))!;
             return type.GetProperty(propertyPath[(propertyPath.LastIndexOf('.') + 1)..])!;
         }
 

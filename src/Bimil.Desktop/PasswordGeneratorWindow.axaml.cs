@@ -1,4 +1,4 @@
-namespace Bimil.Desktop;
+namespace Bimil;
 
 using System.Diagnostics;
 using System.Globalization;
@@ -6,7 +6,6 @@ using System.Runtime.InteropServices;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using Bimil.Core;
 using Medo.X11;
 
 internal partial class PasswordGeneratorWindow : Window {

@@ -1,4 +1,4 @@
-namespace Bimil.Desktop;
+namespace Bimil;
 
 using System;
 using System.Collections.Generic;
@@ -10,7 +10,6 @@ using Avalonia.Input;
 using Avalonia.Media;
 using Avalonia.Styling;
 using Avalonia.VisualTree;
-using Bimil.Core;
 using HarfBuzzSharp;
 using Medo.Security.Cryptography.PasswordSafe;
 

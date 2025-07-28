@@ -1,4 +1,4 @@
-namespace Bimil.Desktop;
+namespace Bimil;
 
 using System.Runtime.InteropServices;
 using Avalonia.Controls;

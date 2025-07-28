@@ -1,4 +1,4 @@
-namespace Bimil.Core;
+namespace Bimil;
 
 /// <summary>
 /// Suggested password security level.

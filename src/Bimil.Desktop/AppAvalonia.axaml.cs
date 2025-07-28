@@ -1,4 +1,4 @@
-namespace Bimil.Desktop;
+namespace Bimil;
 
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;

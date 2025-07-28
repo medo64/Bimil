@@ -1,9 +1,9 @@
 <Solution>
   <Folder Name="/Code/">
-    <Project Path="Bimil.Core/Bimil.Core.csproj" />
+    <Project Path="Bimil.Common/Bimil.Common.csproj" />
     <Project Path="Bimil.Desktop/Bimil.Desktop.csproj" />
   </Folder>
   <Folder Name="/Tests/" Id="f4193310-f20b-425e-b55a-606624987d67">
-    <Project Path="../tests/Bimil.Core.Tests/Bimil.Core.Tests.csproj" />
+    <Project Path="../tests/Bimil.Common.Tests/Bimil.Common.Tests.csproj" />
   </Folder>
 </Solution>
