@@ -16,8 +16,11 @@ internal class ThemeImageResources {
     public static ThemeImageResources? Disabled { get; private set; }
     public static event EventHandler<EventArgs>? Updated;
 
-    internal static void Setup(MainWindow mainWindow) {
-        var scale = mainWindow?.Screens?.ScreenFromWindow(mainWindow)?.Scaling ?? 1;
+    internal static void Setup(MainWindow mainWindow, bool attachToScaleChangedEvent = true) {
+        var topWindow = TopLevel.GetTopLevel(mainWindow);
+        var currentScreen = mainWindow?.Screens?.ScreenFromWindow(mainWindow);
+        var scale = topWindow?.RenderScaling ?? currentScreen?.Scaling ?? 1;
+
         AssetSize = (scale * 16) switch {
             >= 56.0 => 64,
             >= 40.0 => 48,
@@ -25,7 +28,7 @@ internal class ThemeImageResources {
             >= 20.0 => 24,
             _ => 16
         };
-        Debug.WriteLine($"Assets are {AssetSize}x{AssetSize} pixels");
+        Debug.WriteLine($"Assets are {AssetSize}x{AssetSize} pixels ({scale})");
 
         if (mainWindow != null) {
             mainWindow.MinWidth = 480 * scale;
@@ -40,6 +43,12 @@ internal class ThemeImageResources {
             app.ActualThemeVariantChanged += (sender, e) => {
                 var isDarkThemeVariant = !((AppAvalonia.Current?.ActualThemeVariant ?? ThemeVariant.Light) == ThemeVariant.Light);
                 Updated?.Invoke(null, EventArgs.Empty);
+            };
+        }
+
+        if ((mainWindow != null) && attachToScaleChangedEvent) {
+            TopLevel.GetTopLevel(mainWindow)!.ScalingChanged += (sender, e) => {
+                Setup(mainWindow, attachToScaleChangedEvent: false);
             };
         }
     }
