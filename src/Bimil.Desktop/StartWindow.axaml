@@ -12,6 +12,14 @@
     <DockPanel Margin="7" VerticalAlignment="Stretch">
 
         <DockPanel Margin="0 11 0 0" DockPanel.Dock="Bottom">
+            <DockPanel.Styles>
+                <Style Selector="Button">
+                    <Setter Property="Width" Value="129" />
+                    <Setter Property="Height" Value="33" />
+                    <Setter Property="HorizontalContentAlignment" Value="Center" />
+                    <Setter Property="VerticalContentAlignment" Value="Center" />
+                </Style>
+            </DockPanel.Styles>
             <StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom" Orientation="Horizontal" Spacing="7">
                 <Button Content="_Open" Name="btnOpen" Click="btnOpen_Click" IsEnabled="false" HorizontalContentAlignment="Center" />
                 <Button Content="Open _Read-only" Name="btnOpenReadonly" Click="btnOpenReadonly_Click" IsEnabled="false" HorizontalContentAlignment="Center" />

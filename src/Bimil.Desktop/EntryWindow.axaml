@@ -12,6 +12,14 @@
     <DockPanel Margin="7" VerticalAlignment="Stretch">
 
         <DockPanel Margin="0 11 0 0" DockPanel.Dock="Bottom">
+            <DockPanel.Styles>
+                <Style Selector="Button">
+                    <Setter Property="Width" Value="129" />
+                    <Setter Property="Height" Value="33" />
+                    <Setter Property="HorizontalContentAlignment" Value="Center" />
+                    <Setter Property="VerticalContentAlignment" Value="Center" />
+                </Style>
+            </DockPanel.Styles>
             <StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom" Orientation="Horizontal" Spacing="7">
                 <Button Content="_Auto-type" Name="btnAutoType" Click="btnAutoType_Click" HorizontalContentAlignment="Center" />
                 <Button Content="_Fields" Name="btnFields" Click="btnFields_Click" HorizontalContentAlignment="Center" />
