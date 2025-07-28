@@ -38,6 +38,10 @@ internal static class Replenishment {
         }
     }
 
+    public static void FillGroups(AutoCompleteBox cmbGroups) {
+        cmbGroups.ItemsSource = State.GetGroups();
+    }
+
     public static void SelectGroup(ComboBox cmbGroups, string group) {
         foreach (var item in cmbGroups.Items) {
             if ((item is ComboBoxItem comboBoxItem) && (comboBoxItem.Tag is string currGroup)) {

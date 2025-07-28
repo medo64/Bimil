@@ -33,7 +33,7 @@ internal partial class EntryWindow : Window {
         }
 
         txtTitle.Text = entry.Title;
-        Replenishment.SelectGroup(cmbGroups, entry.Group);
+        cmbGroups.Text = entry.Group;
 
         foreach (var record in entry.Records) {
             switch (record.RecordType) {
