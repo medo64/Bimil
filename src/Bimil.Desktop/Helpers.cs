@@ -37,6 +37,25 @@ internal static class Helpers {
         return default;
     }
 
+    public static void DisableTab(Control control) {
+        control.IsTabStop = false;
+        if (control is Panel panel) {
+            foreach (var child in panel.Children) {
+                DisableTab(child);
+            }
+        } else if (control is ContentControl content) {
+            if (content.Content is Control contentControl) {
+                DisableTab(contentControl);
+            }
+        } else if (control is Menu menu) {
+            foreach (var child in menu.Items) {
+                if (child is MenuItem childItem) {
+                    DisableTab(childItem);
+                }
+            }
+        }
+    }
+
 
     private static readonly Dictionary<string, ISolidColorBrush> BrushCache = [];
     public static ISolidColorBrush GetBrush(string name) {

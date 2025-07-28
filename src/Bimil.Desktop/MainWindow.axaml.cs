@@ -58,6 +58,7 @@ internal partial class MainWindow : Window {
         };
 
         // State update
+        Helpers.DisableTab(mnu);
         State.DocumentChanged += (_, _) => { ReplenishDocument(); };
         State.GroupsChanged += (_, _) => { Replenishment.FillGroups(cmbGroups, includeAnyGroup: true); };
         State.ItemsChanged += (_, _) => { ReplenishEntries(); };
@@ -87,9 +88,27 @@ internal partial class MainWindow : Window {
     }
 
     protected override void OnKeyDown(KeyEventArgs e) {
+        Debug.WriteLine($"[MainWindow] KeyDown: {e.Key} (Modifiers: {e.KeyModifiers})");
+
         switch (e.Key) {
             case Key.Escape:
                 if (Settings.CloseOnEscape) { Close(); }
+                break;
+
+            case Key.Enter:
+                lsbEntries_DoubleTapped(null!, null!);
+                break;
+
+            case Key.Down:
+                if (lsbEntries.SelectedIndex < lsbEntries.Items.Count - 1) {
+                    lsbEntries.SelectedIndex += 1;
+                }
+                break;
+
+            case Key.Up:
+                if (lsbEntries.SelectedIndex > 0) {
+                    lsbEntries.SelectedIndex -= 1;
+                }
                 break;
 
             default: base.OnKeyDown(e); break;
@@ -110,6 +129,7 @@ internal partial class MainWindow : Window {
                 MessageBox.ShowErrorDialog(this, "Error opening file", ex.Message);
             }
         }
+        Helpers.FocusControl(txtFilter);
     }
 
 
@@ -389,6 +409,9 @@ internal partial class MainWindow : Window {
 
                 lsbEntries.Items.Add(new ListBoxItem { Content = dock, Tag = item });
             }
+        }
+        if (lsbEntries.Items.Count > 0) {
+            lsbEntries.SelectedIndex = 0;
         }
     }
 
