@@ -100,7 +100,9 @@ public static class State {
             if ((group == null) || string.Equals(entry.Group, group, StringComparison.CurrentCultureIgnoreCase)) {
                 var isHidden = entry.Title.StartsWith('.');
                 if (isHidden && !includeHidden) { continue; }
-                if (!string.IsNullOrEmpty(filter)) {
+                if (string.IsNullOrEmpty(filter)) {
+                    if ((group == null) && (entry.Group != "")) { continue; }  // if group is not set, skip entries with group
+                } else {
                     if (entry.Title.IndexOf(filter, StringComparison.CurrentCultureIgnoreCase) < 0) { continue; }
                     // TODO better filter
                 }
