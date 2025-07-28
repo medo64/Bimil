@@ -12,35 +12,35 @@ internal partial class PasswordGeneratorWindow : Window {
     public PasswordGeneratorWindow() {
         InitializeComponent();
 
-        Helpers.ControlSetup.SetupCheckBox(chbClassicIncludeLowercaseLetters, "Settings.PasswordGenerator.Classic.IncludeLowercaseLetters", GenerateNewClassicPassword);
-        Helpers.ControlSetup.SetupCheckBox(chbClassicIncludeUppercaseLetters, "Settings.PasswordGenerator.Classic.IncludeUppercaseLetters", GenerateNewClassicPassword);
-        Helpers.ControlSetup.SetupCheckBox(chbClassicIncludeDigits, "Settings.PasswordGenerator.Classic.IncludeDigits", GenerateNewClassicPassword);
-        Helpers.ControlSetup.SetupCheckBox(chbClassicIncludeSpecialCharacters, "Settings.PasswordGenerator.Classic.IncludeSpecialCharacters", GenerateNewClassicPassword);
-        Helpers.ControlSetup.SetupCheckBox(chbClassicExcludeSimilarCharacters, "Settings.PasswordGenerator.Classic.ExcludeSimilarCharacters", GenerateNewClassicPassword);
-        Helpers.ControlSetup.SetupCheckBox(chbClassicExcludeMovableCharacters, "Settings.PasswordGenerator.Classic.ExcludeMovableCharacters", GenerateNewClassicPassword);
-        Helpers.ControlSetup.SetupCheckBox(chbClassicExcludeUnpronounceable, "Settings.PasswordGenerator.Classic.ExcludeUnpronounceable", GenerateNewClassicPassword);
-        Helpers.ControlSetup.SetupCheckBox(chbClassicExcludeRepeatedCharacters, "Settings.PasswordGenerator.Classic.ExcludeRepeatedCharacters", GenerateNewClassicPassword);
-        Helpers.ControlSetup.SetupTextBoxFromInt32(txtClassicLength, "Settings.PasswordGenerator.Classic.PasswordLength", 6, 99, GenerateNewClassicPassword);
+        AvaloniaHelpers.ControlSetup.SetupCheckBox(chbClassicIncludeLowercaseLetters, "Settings.PasswordGenerator.Classic.IncludeLowercaseLetters", GenerateNewClassicPassword);
+        AvaloniaHelpers.ControlSetup.SetupCheckBox(chbClassicIncludeUppercaseLetters, "Settings.PasswordGenerator.Classic.IncludeUppercaseLetters", GenerateNewClassicPassword);
+        AvaloniaHelpers.ControlSetup.SetupCheckBox(chbClassicIncludeDigits, "Settings.PasswordGenerator.Classic.IncludeDigits", GenerateNewClassicPassword);
+        AvaloniaHelpers.ControlSetup.SetupCheckBox(chbClassicIncludeSpecialCharacters, "Settings.PasswordGenerator.Classic.IncludeSpecialCharacters", GenerateNewClassicPassword);
+        AvaloniaHelpers.ControlSetup.SetupCheckBox(chbClassicExcludeSimilarCharacters, "Settings.PasswordGenerator.Classic.ExcludeSimilarCharacters", GenerateNewClassicPassword);
+        AvaloniaHelpers.ControlSetup.SetupCheckBox(chbClassicExcludeMovableCharacters, "Settings.PasswordGenerator.Classic.ExcludeMovableCharacters", GenerateNewClassicPassword);
+        AvaloniaHelpers.ControlSetup.SetupCheckBox(chbClassicExcludeUnpronounceable, "Settings.PasswordGenerator.Classic.ExcludeUnpronounceable", GenerateNewClassicPassword);
+        AvaloniaHelpers.ControlSetup.SetupCheckBox(chbClassicExcludeRepeatedCharacters, "Settings.PasswordGenerator.Classic.ExcludeRepeatedCharacters", GenerateNewClassicPassword);
+        AvaloniaHelpers.ControlSetup.SetupTextBoxFromInt32(txtClassicLength, "Settings.PasswordGenerator.Classic.PasswordLength", 6, 99, GenerateNewClassicPassword);
 
-        Helpers.ControlSetup.SetupCheckBox(chbWordIncludeNumber, "Settings.PasswordGenerator.Word.IncludeNumber", GenerateNewWordPassword);
-        Helpers.ControlSetup.SetupCheckBox(chbWordIncludeSpecialCharacters, "Settings.PasswordGenerator.Word.IncludeSpecialCharacters", GenerateNewWordPassword);
-        Helpers.ControlSetup.SetupCheckBox(chbWordIncludeSwappedCase, "Settings.PasswordGenerator.Word.IncludeSwappedCase", GenerateNewWordPassword);
-        Helpers.ControlSetup.SetupCheckBox(chbWordDropOneCharacter, "Settings.PasswordGenerator.Word.DropOneCharacter", GenerateNewWordPassword);
-        Helpers.ControlSetup.SetupCheckBox(chbWordUseTitlecase, "Settings.PasswordGenerator.Word.UseTitlecase", GenerateNewWordPassword);
-        Helpers.ControlSetup.SetupCheckBox(chbWordRestrictWordBreakup, "Settings.PasswordGenerator.Word.RestrictWordBreakup", GenerateNewWordPassword);
-        Helpers.ControlSetup.SetupCheckBox(chbWordRestrictAdjustmentsToSuffix, "Settings.PasswordGenerator.Word.RestrictAdjustmentsToSuffix", GenerateNewWordPassword);
-        Helpers.ControlSetup.SetupCheckBox(chbWordUseSpacesSeparator, "Settings.PasswordGenerator.Word.UseSpacesSeparator", GenerateNewWordPassword);
-        Helpers.ControlSetup.SetupTextBoxFromInt32(txtWordCount, "Settings.PasswordGenerator.Word.WordCount", 2, 16, GenerateNewWordPassword);
+        AvaloniaHelpers.ControlSetup.SetupCheckBox(chbWordIncludeNumber, "Settings.PasswordGenerator.Word.IncludeNumber", GenerateNewWordPassword);
+        AvaloniaHelpers.ControlSetup.SetupCheckBox(chbWordIncludeSpecialCharacters, "Settings.PasswordGenerator.Word.IncludeSpecialCharacters", GenerateNewWordPassword);
+        AvaloniaHelpers.ControlSetup.SetupCheckBox(chbWordIncludeSwappedCase, "Settings.PasswordGenerator.Word.IncludeSwappedCase", GenerateNewWordPassword);
+        AvaloniaHelpers.ControlSetup.SetupCheckBox(chbWordDropOneCharacter, "Settings.PasswordGenerator.Word.DropOneCharacter", GenerateNewWordPassword);
+        AvaloniaHelpers.ControlSetup.SetupCheckBox(chbWordUseTitlecase, "Settings.PasswordGenerator.Word.UseTitlecase", GenerateNewWordPassword);
+        AvaloniaHelpers.ControlSetup.SetupCheckBox(chbWordRestrictWordBreakup, "Settings.PasswordGenerator.Word.RestrictWordBreakup", GenerateNewWordPassword);
+        AvaloniaHelpers.ControlSetup.SetupCheckBox(chbWordRestrictAdjustmentsToSuffix, "Settings.PasswordGenerator.Word.RestrictAdjustmentsToSuffix", GenerateNewWordPassword);
+        AvaloniaHelpers.ControlSetup.SetupCheckBox(chbWordUseSpacesSeparator, "Settings.PasswordGenerator.Word.UseSpacesSeparator", GenerateNewWordPassword);
+        AvaloniaHelpers.ControlSetup.SetupTextBoxFromInt32(txtWordCount, "Settings.PasswordGenerator.Word.WordCount", 2, 16, GenerateNewWordPassword);
 
-        Helpers.ControlSetup.SetupCheckBox(chbTripletIncludeNumber, "Settings.PasswordGenerator.Triplet.IncludeNumber", GenerateNewTripletPassword);
-        Helpers.ControlSetup.SetupCheckBox(chbTripletIncludeSpecialCharacters, "Settings.PasswordGenerator.Triplet.IncludeSpecialCharacters", GenerateNewTripletPassword);
-        Helpers.ControlSetup.SetupCheckBox(chbTripletIncludeSwappedCase, "Settings.PasswordGenerator.Triplet.IncludeSwappedCase", GenerateNewTripletPassword);
-        Helpers.ControlSetup.SetupCheckBox(chbTripletDropOneCharacter, "Settings.PasswordGenerator.Triplet.DropOneCharacter", GenerateNewTripletPassword);
-        Helpers.ControlSetup.SetupCheckBox(chbTripletUseTitlecase, "Settings.PasswordGenerator.Triplet.UseTitlecase", GenerateNewTripletPassword);
-        Helpers.ControlSetup.SetupCheckBox(chbTripletRestrictWordBreakup, "Settings.PasswordGenerator.Triplet.RestrictWordBreakup", GenerateNewTripletPassword);
-        Helpers.ControlSetup.SetupCheckBox(chbTripletRestrictAdjustmentsToSuffix, "Settings.PasswordGenerator.Triplet.RestrictAdjustmentsToSuffix", GenerateNewTripletPassword);
-        Helpers.ControlSetup.SetupCheckBox(chbTripletUseSpacesSeparator, "Settings.PasswordGenerator.Triplet.UseSpacesSeparator", GenerateNewTripletPassword);
-        Helpers.ControlSetup.SetupTextBoxFromInt32(txtTripletCount, "Settings.PasswordGenerator.Triplet.TripletCount", 2, 16, GenerateNewTripletPassword);
+        AvaloniaHelpers.ControlSetup.SetupCheckBox(chbTripletIncludeNumber, "Settings.PasswordGenerator.Triplet.IncludeNumber", GenerateNewTripletPassword);
+        AvaloniaHelpers.ControlSetup.SetupCheckBox(chbTripletIncludeSpecialCharacters, "Settings.PasswordGenerator.Triplet.IncludeSpecialCharacters", GenerateNewTripletPassword);
+        AvaloniaHelpers.ControlSetup.SetupCheckBox(chbTripletIncludeSwappedCase, "Settings.PasswordGenerator.Triplet.IncludeSwappedCase", GenerateNewTripletPassword);
+        AvaloniaHelpers.ControlSetup.SetupCheckBox(chbTripletDropOneCharacter, "Settings.PasswordGenerator.Triplet.DropOneCharacter", GenerateNewTripletPassword);
+        AvaloniaHelpers.ControlSetup.SetupCheckBox(chbTripletUseTitlecase, "Settings.PasswordGenerator.Triplet.UseTitlecase", GenerateNewTripletPassword);
+        AvaloniaHelpers.ControlSetup.SetupCheckBox(chbTripletRestrictWordBreakup, "Settings.PasswordGenerator.Triplet.RestrictWordBreakup", GenerateNewTripletPassword);
+        AvaloniaHelpers.ControlSetup.SetupCheckBox(chbTripletRestrictAdjustmentsToSuffix, "Settings.PasswordGenerator.Triplet.RestrictAdjustmentsToSuffix", GenerateNewTripletPassword);
+        AvaloniaHelpers.ControlSetup.SetupCheckBox(chbTripletUseSpacesSeparator, "Settings.PasswordGenerator.Triplet.UseSpacesSeparator", GenerateNewTripletPassword);
+        AvaloniaHelpers.ControlSetup.SetupTextBoxFromInt32(txtTripletCount, "Settings.PasswordGenerator.Triplet.TripletCount", 2, 16, GenerateNewTripletPassword);
 
         tabKind.SelectedIndex = Settings.PasswordGenerator.Kind switch {
             Settings.PasswordGenerator.GeneratorKind.Triplet => 2,
@@ -56,7 +56,7 @@ internal partial class PasswordGeneratorWindow : Window {
         };
         GenerateNewPassword(Settings.PasswordGenerator.Kind);  // for first run
 
-        Helpers.FocusControl(btnCopy);
+        AvaloniaHelpers.FocusControl(btnCopy);
     }
 
     protected override void OnKeyDown(KeyEventArgs e) {

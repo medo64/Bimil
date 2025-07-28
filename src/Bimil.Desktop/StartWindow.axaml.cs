@@ -50,13 +50,13 @@ internal partial class StartWindow : Window {
 
         if (lsbFiles.Items.Count > 0) {
             lsbFiles.SelectedIndex = 0;
-            Helpers.FocusControl(btnOpen);
+            AvaloniaHelpers.FocusControl(btnOpen);
         } else {
             var stack = new StackPanel() { Tag = null };
             var titleBlock = new Label() { Content = "No recent files", FontSize = FontSize * 1.25 };
             stack.Children.Add(titleBlock);
             lsbFiles.Items.Add(stack);
-            Helpers.FocusControl(btnClose);
+            AvaloniaHelpers.FocusControl(btnClose);
         }
     }
 
@@ -69,21 +69,21 @@ internal partial class StartWindow : Window {
             case Key.Down: if (lsbFiles.SelectedIndex < lsbFiles.Items.Count - 1) { lsbFiles.SelectedIndex += 1; } break;
             case Key.Left: {
                     if (btnOpen.IsFocused) {
-                        Helpers.FocusControl(btnClose);
+                        AvaloniaHelpers.FocusControl(btnClose);
                     } else if (btnOpenReadonly.IsFocused) {
-                        Helpers.FocusControl(btnOpen);
+                        AvaloniaHelpers.FocusControl(btnOpen);
                     } else if (btnClose.IsFocused) {
-                        Helpers.FocusControl(btnOpenReadonly);
+                        AvaloniaHelpers.FocusControl(btnOpenReadonly);
                     }
                 }
                 break;
             case Key.Right: {
                     if (btnOpen.IsFocused) {
-                        Helpers.FocusControl(btnOpenReadonly);
+                        AvaloniaHelpers.FocusControl(btnOpenReadonly);
                     } else if (btnOpenReadonly.IsFocused) {
-                        Helpers.FocusControl(btnClose);
+                        AvaloniaHelpers.FocusControl(btnClose);
                     } else if (btnClose.IsFocused) {
-                        Helpers.FocusControl(btnOpen);
+                        AvaloniaHelpers.FocusControl(btnOpen);
                     }
                 }
                 break;

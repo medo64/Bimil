@@ -57,7 +57,7 @@ internal partial class MainWindow : Window {
         };
 
         // State update
-        Helpers.DisableTab(mnu);
+        AvaloniaHelpers.DisableTab(mnu);
         State.DocumentChanged += (_, _) => { ReplenishDocument(); };
         State.GroupsChanged += (_, _) => { Replenishment.FillGroups(cmbGroups, includeAnyGroup: true); };
         State.ItemsChanged += (_, _) => { ReplenishEntries(); };
@@ -128,7 +128,7 @@ internal partial class MainWindow : Window {
                 MessageBox.ShowErrorDialog(this, "Error opening file", ex.Message);
             }
         }
-        Helpers.FocusControl(txtFilter);
+        AvaloniaHelpers.FocusControl(txtFilter);
     }
 
 

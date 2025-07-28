@@ -14,7 +14,7 @@ internal partial class EntryWindow : Window {
         Replenishment.FillGroups(cmbGroups);
 
         Title = "New";
-        Helpers.FocusControl(txtTitle);
+        AvaloniaHelpers.FocusControl(txtTitle);
     }
 
     public EntryWindow(Entry entry, bool readOnly = false) {
@@ -26,10 +26,10 @@ internal partial class EntryWindow : Window {
             btnOK.IsVisible = false;
             btnCancel.Content = "Close";
             btnFields.IsVisible = false;
-            Helpers.FocusControl(btnCancel);
+            AvaloniaHelpers.FocusControl(btnCancel);
         } else {
             Title = "Edit";
-            Helpers.FocusControl(txtTitle);
+            AvaloniaHelpers.FocusControl(txtTitle);
         }
 
         txtTitle.Text = entry.Title;

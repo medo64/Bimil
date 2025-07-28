@@ -10,7 +10,6 @@ using Avalonia.Input;
 using Avalonia.Media;
 using Avalonia.Styling;
 using Avalonia.VisualTree;
-using HarfBuzzSharp;
 using Medo.Security.Cryptography.PasswordSafe;
 
 internal static class Replenishment {

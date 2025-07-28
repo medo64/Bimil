@@ -36,7 +36,7 @@ internal partial class PasswordWindow : Window {
                     NewPassword = txtPasswordNew.Text ?? "";  // Text is null if not changed
                     Close();
                 };
-                Helpers.FocusControl(txtPasswordNew);  // FocusFirstControl(this);
+                AvaloniaHelpers.FocusControl(txtPasswordNew);  // FocusFirstControl(this);
                 break;
 
             case PasswordWindowType.Enter:
@@ -46,7 +46,7 @@ internal partial class PasswordWindow : Window {
                     ExistingPassword = txtPasswordExisting.Text ?? "";  // Text is null if not changed
                     Close();
                 };
-                Helpers.FocusControl(txtPasswordExisting);  // FocusFirstControl(this);
+                AvaloniaHelpers.FocusControl(txtPasswordExisting);  // FocusFirstControl(this);
                 break;
 
             case PasswordWindowType.Change:
@@ -60,7 +60,7 @@ internal partial class PasswordWindow : Window {
                     NewPassword = txtPasswordNew.Text ?? "";  // Text is null if not changed
                     Close();
                 };
-                Helpers.FocusControl(txtPasswordNew);  // FocusFirstControl(this);
+                AvaloniaHelpers.FocusControl(txtPasswordNew);  // FocusFirstControl(this);
                 break;
 
             case PasswordWindowType.ChangeInFile:
@@ -77,7 +77,7 @@ internal partial class PasswordWindow : Window {
                     NewPassword = txtPasswordNew.Text ?? "";  // Text is null if not changed
                     Close();
                 };
-                Helpers.FocusControl(txtPasswordExisting);  // FocusFirstControl(this);
+                AvaloniaHelpers.FocusControl(txtPasswordExisting);  // FocusFirstControl(this);
                 break;
 
         }

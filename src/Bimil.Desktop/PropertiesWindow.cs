@@ -22,7 +22,7 @@ internal partial class PropertiesWindow : Window {
 
         // TODO: static keys
 
-        Helpers.FocusControl(btnClose);
+        AvaloniaHelpers.FocusControl(btnClose);
     }
 
     protected override void OnKeyDown(KeyEventArgs e) {

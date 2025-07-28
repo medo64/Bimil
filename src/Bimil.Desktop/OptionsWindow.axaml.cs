@@ -13,7 +13,7 @@ internal partial class OptionsWindow : Window {
         chbLoadLast.IsCheckedChanged += (sender, e) => { if (chbLoadLast.IsChecked == true) { chbShowStart.IsChecked = false; } };
         chbShowStart.IsCheckedChanged += (sender, e) => { if (chbShowStart.IsChecked == true) { chbLoadLast.IsChecked = false; } };
 
-        Helpers.FocusControl(btnClose);
+        AvaloniaHelpers.FocusControl(btnClose);
     }
 
     protected override void OnKeyDown(KeyEventArgs e) {
