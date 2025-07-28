@@ -95,16 +95,27 @@ public static class State {
     public static IReadOnlyList<Entry> GetEntries(string filter, string? group, bool includeHidden = false) {
         if (Document == null) { return Array.Empty<Entry>(); }
 
+        var filterWords = filter.Split(Array.Empty<char>(), StringSplitOptions.RemoveEmptyEntries);
+
         var list = new List<Entry>();
         foreach (var entry in Document.Entries) {
             if ((group == null) || string.Equals(entry.Group, group, StringComparison.CurrentCultureIgnoreCase)) {
                 var isHidden = entry.Title.StartsWith('.');
                 if (isHidden && !includeHidden) { continue; }
-                if (string.IsNullOrEmpty(filter)) {
-                    if ((group == null) && (entry.Group != "")) { continue; }  // if group is not set, skip entries with group
-                } else {
-                    if (entry.Title.IndexOf(filter, StringComparison.CurrentCultureIgnoreCase) < 0) { continue; }
-                    // TODO better filter
+
+
+                if (filterWords.Length > 0) {
+                    var allMatched = true;
+                    foreach (var word in filterWords) {
+                        if ((entry.Title.IndexOf(word, StringComparison.CurrentCultureIgnoreCase) < 0)
+                        && (entry.Group.ToString().IndexOf(word, StringComparison.CurrentCultureIgnoreCase) < 0)) {
+                            allMatched = false;
+                            break;
+                        }
+                    }
+                    if (!allMatched) { continue; }
+                } else if ((group == null) && (entry.Group != "")) {
+                    continue;  // if group is not set, skip entries with group
                 }
                 list.Add(entry);
             }

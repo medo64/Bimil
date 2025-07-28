@@ -10,7 +10,7 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/src/Bimil.Desktop/bin/Debug/net8.0/Bimil.dll",
+            "program": "${workspaceFolder}/src/Bimil.Desktop/bin/Debug/net8.0/bimil.dll",
             "args": [],
             "cwd": "${workspaceFolder}/src/Bimil.Desktop",
             // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
