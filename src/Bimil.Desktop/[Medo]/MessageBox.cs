@@ -184,6 +184,8 @@ public static class MessageBox {
                 HorizontalAlignment = HorizontalAlignment.Right,
                 HorizontalContentAlignment = HorizontalAlignment.Center,
                 Margin = new Thickness(7, 0, 0, 0),
+                Width = 129,
+                Height = 33,
                 Tag = i,
             };
             button.Click += (s, e) => { selectedButton = (int)((Button)s!).Tag!; window.Close(); };
