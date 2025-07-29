@@ -86,8 +86,8 @@
                 <Button Click="mnuFileOpen_Click" Name="mnuFileOpen" ToolTip.Tip="Open file (Ctrl+O)">
                     <StackPanel Orientation="Horizontal">
                         <Image Source="{Binding FileOpen}" />
-                        <Menu Opened="mnuFileOpen_Opened">
-                            <MenuItem Header="▼" Classes="DropDown" Name="mnuFileOpenDropDown">
+                        <Menu>
+                            <MenuItem Header="▼" Classes="DropDown" Name="mnuFileOpenDropDown" SubmenuOpened="mnuFileOpen_SubmenuOpened">
                                 <MenuItem Header="Open…" Click="mnuFileOpen_Click" />
                                 <MenuItem Header="-" IsVisible="false" />
                             </MenuItem>
@@ -108,8 +108,8 @@
                 <Button Click="mnuFileProperties_Click" Name="mnuFileProperties" IsEnabled="false" ToolTip.Tip="File properties (Alt+Enter)">
                     <StackPanel Orientation="Horizontal">
                         <Image Source="{Binding FileEdit}" />
-                        <Menu Opened="mnuFileProperties_Opened">
-                            <MenuItem Header="▼" Classes="DropDown">
+                        <Menu>
+                            <MenuItem Header="▼" Classes="DropDown" SubmenuOpened="mnuFileProperties_SubmenuOpened">
                                 <MenuItem Header="Properties…" HotKey="Alt+Enter" Click="mnuFileProperties_Click" ToolTip.Tip="Edit file properties" />
                                 <MenuItem Header="-" />
                                 <MenuItem Header="Change Password…" Name="mnuFilePropertiesPassword" Click="mnuFilePropertiesPassword_Click" ToolTip.Tip="Change file's password" />

@@ -211,8 +211,10 @@ internal partial class MainWindow : Window {
         }
     }
 
-    public void mnuFileOpen_Opened(object sender, RoutedEventArgs e) {
-        var root = (Menu)sender!;
+    public void mnuFileOpen_SubmenuOpened(object sender, RoutedEventArgs e) {
+        var root = sender as Menu ?? (sender as MenuItem)?.Parent as Menu;
+        if (root == null) { return; }
+
         var menu = (MenuItem)root.Items[0]!;
         for (var i = menu.Items.Count - 1; i > 1; i--) {
             menu.Items.RemoveAt(i);
@@ -279,7 +281,7 @@ internal partial class MainWindow : Window {
         }
     }
 
-    public void mnuFileProperties_Opened(object sender, RoutedEventArgs e) {
+    public void mnuFileProperties_SubmenuOpened(object sender, RoutedEventArgs e) {
         mnuFilePropertiesReadonly.Header = (State.Document?.IsReadOnly ?? false)
                                          ? "Make read/write"
                                          : "Make read-only";
