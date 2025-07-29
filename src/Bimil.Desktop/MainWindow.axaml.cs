@@ -184,14 +184,15 @@ internal partial class MainWindow : Window {
 
     private async void OpenFile(FileInfo file, bool @readonly) {
         while (true) {  // repeat until successful or given up
+            var frm = PasswordWindow.GetEnterPasswordWindow($"Enter password ({file.Name})");
+            await frm.ShowDialog(this);
             try {
-                var frm = PasswordWindow.GetEnterPasswordWindow($"Enter password ({file.Name})");
-                await frm.ShowDialog(this);
                 if (frm.ExistingPassword != null) {
                     State.OpenFile(file, frm.ExistingPassword, @readonly);
                 }
                 break;
             } catch (Exception ex) {
+                await Dispatcher.UIThread.InvokeAsync(() => { }, DispatcherPriority.Background);  // allow UI to update
                 MessageBox.ShowErrorDialog(this, "Error opening file", ex.Message);
             }
         }

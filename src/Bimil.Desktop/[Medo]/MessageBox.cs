@@ -2,6 +2,8 @@
 
 //2024-07-24: Added ShowQuestionDialog
 //2024-07-22: Initial version
+//2025-07-28: Fixed parent centering
+//            Larger button
 
 namespace Medo.Avalonia;
 
@@ -125,7 +127,7 @@ public static class MessageBox {
         window.ExtendClientAreaToDecorationsHint = true;
         window.Title = title;
 
-        window.Opened += (sender, e) => {  // adjust position as needed
+        window.Resized += (sender, e) => {  // adjust position as needed
             var screen = window.Screens.ScreenFromWindow(window);
             if ((screen == null) || (window.FrameSize == null)) { return; }
 
@@ -133,6 +135,12 @@ public static class MessageBox {
             var size = PixelSize.FromSize(window.FrameSize.Value, screen.Scaling);
             var rect = new PixelRect(pos, size);
             Debug.WriteLine(rect);
+
+            if ((owner != null) && (owner.FrameSize != null)) {  // center again, if resized
+                var ownerRect = new PixelRect(owner.Position, PixelSize.FromSize(owner.FrameSize.Value, screen.Scaling));
+                rect = rect.WithX(ownerRect.X + (ownerRect.Width - rect.Width) / 2);
+                rect = rect.WithY(ownerRect.Y + (ownerRect.Height - rect.Height) / 2);
+            }
 
             if (rect.Right > screen.Bounds.Right) { rect = rect.WithX(screen.Bounds.Right - rect.Width); }
             if (rect.X < screen.Bounds.X) { rect = rect.WithX(screen.Bounds.X); }
