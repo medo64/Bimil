@@ -80,14 +80,14 @@
             </Grid.Styles>
 
             <StackPanel Grid.Column="0" Orientation="Horizontal" Margin="2">
-                <Button Click="nnuFileNew_Click" Name="mnuFileNew" ToolTip.Tip="New file (Ctrl+N)">
+                <Button Click="mnuFileNew_Click" Name="mnuFileNew" ToolTip.Tip="New file (Ctrl+N)">
                     <Image Name="imgMenuFileNew" Source="{Binding FileNew}" />
                 </Button>
                 <Button Click="mnuFileOpen_Click" Name="mnuFileOpen" ToolTip.Tip="Open file (Ctrl+O)">
                     <StackPanel Orientation="Horizontal">
                         <Image Source="{Binding FileOpen}" />
                         <Menu Opened="mnuFileOpen_Opened">
-                            <MenuItem Header="▼" Classes="DropDown">
+                            <MenuItem Header="▼" Classes="DropDown" Name="mnuFileOpenDropDown">
                                 <MenuItem Header="Open…" Click="mnuFileOpen_Click" />
                                 <MenuItem Header="-" IsVisible="false" />
                             </MenuItem>
@@ -98,7 +98,7 @@
                     <StackPanel Orientation="Horizontal">
                         <Image Source="{Binding FileSave}" />
                         <Menu>
-                            <MenuItem Header="▼" Classes="DropDown">
+                            <MenuItem Header="▼" Classes="DropDown" Name="mnuFileSaveDropDown">
                                 <MenuItem Header="Save" Click="mnuFileSave_Click" />
                                 <MenuItem Header="Save As…" Click="mnuFileSaveAs_Click" />
                             </MenuItem>
@@ -161,7 +161,7 @@
                     <StackPanel Orientation="Horizontal">
                         <Image Source="{Binding App}" />
                         <Menu Opened="OnMenuAppOpened">
-                            <MenuItem Header="▼" Classes="DropDown">
+                            <MenuItem Header="▼" Classes="DropDown" Name="mnuAppDropDown">
                                 <MenuItem Header="Switch to Dark Mode" Click="OnMenuAppDarkModeClick" Name="MenuAppDarkMode" IsVisible="false" />
                                 <MenuItem Header="Switch to Light Mode" Click="OnMenuAppLightModeClick" Name="MenuAppLightMode" IsVisible="false" />
                                 <MenuItem Header="Options…" Click="mnuAppOptions_Click" />

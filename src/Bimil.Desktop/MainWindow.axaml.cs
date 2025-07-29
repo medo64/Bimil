@@ -89,29 +89,96 @@ internal partial class MainWindow : Window {
     protected override void OnKeyDown(KeyEventArgs e) {
         Debug.WriteLine($"[MainWindow] KeyDown: {e.Key} (Modifiers: {e.KeyModifiers})");
 
-        switch (e.Key) {
-            case Key.Escape:
+        switch ((e.Key, e.KeyModifiers)) {
+            case (Key.Escape, KeyModifiers.None):
                 if (Settings.CloseOnEscape) { Close(); }
                 break;
 
-            case Key.Enter:
+            case (Key.Enter, KeyModifiers.None):
                 lsbEntries_DoubleTapped(null!, null!);
                 break;
 
-            case Key.Down:
+            case (Key.Down, KeyModifiers.None):
                 if (lsbEntries.SelectedIndex < lsbEntries.Items.Count - 1) {
                     lsbEntries.SelectedIndex += 1;
                 }
                 break;
 
-            case Key.Up:
+            case (Key.Up, KeyModifiers.None):
                 if (lsbEntries.SelectedIndex > 0) {
                     lsbEntries.SelectedIndex -= 1;
                 }
                 break;
 
-            default: base.OnKeyDown(e); break;
+            case (Key.PageDown, KeyModifiers.None):
+                if (cmbGroups.SelectedIndex < cmbGroups.Items.Count - 1) {
+                    cmbGroups.SelectedIndex += 1;
+                }
+                break;
+
+
+            case (Key.N, KeyModifiers.Control):
+            case (Key.N, KeyModifiers.Alt):
+                mnuFileNew_Click(null!, null!);
+                break;
+
+            case (Key.O, KeyModifiers.Control):
+                mnuFileOpen_Click(null!, null!);
+                break;
+
+            case (Key.O, KeyModifiers.Alt):
+                mnuFileOpenDropDown.IsSubMenuOpen = true;
+                break;
+
+            case (Key.S, KeyModifiers.Control):
+                mnuFileSave_Click(null!, null!);
+                break;
+
+            case (Key.S, KeyModifiers.Control | KeyModifiers.Shift):
+                mnuFileSaveAs_Click(null!, null!);
+                break;
+
+            case (Key.S, KeyModifiers.Alt):
+                mnuFileSaveDropDown.IsSubMenuOpen = true;
+                break;
+
+
+            case (Key.Enter, KeyModifiers.Alt):
+                mnuFileProperties_Click(null!, null!);
+                break;
+
+            case (Key.A, KeyModifiers.Alt):
+            case (Key.OemPlus, KeyModifiers.None):
+            case (Key.Add, KeyModifiers.None):
+            case (Key.Insert, KeyModifiers.None):
+                mnuItemAdd_Click(null!, null!);
+                break;
+
+            case (Key.E, KeyModifiers.Alt):
+            case (Key.OemPipe, KeyModifiers.None):
+            case (Key.Multiply, KeyModifiers.None):
+                mnuItemEdit_Click(null!, null!);
+                break;
+
+            case (Key.R, KeyModifiers.Alt):
+            case (Key.OemMinus, KeyModifiers.None):
+            case (Key.Subtract, KeyModifiers.None):
+            case (Key.Delete, KeyModifiers.None):
+                mnuItemRemove_Click(null!, null!);
+                break;
+
+            case (Key.F, KeyModifiers.Control):
+                mnuFind_Click(null!, null!);
+                break;
+
+            case (Key.F1, KeyModifiers.None):
+                mnuAppDropDown.IsSubMenuOpen = true;
+                break;
+
+            default: base.OnKeyDown(e); return;
         }
+
+        e.Handled = true;
     }
 
 
@@ -134,7 +201,9 @@ internal partial class MainWindow : Window {
 
     #region Menu
 
-    public async void nnuFileNew_Click(object sender, RoutedEventArgs e) {
+    public async void mnuFileNew_Click(object sender, RoutedEventArgs e) {
+        if (mnuFileNew.IsEnabled == false) { return; }
+
         var frm = PasswordWindow.GetNewPasswordWindow("Select password");
         await frm.ShowDialog(this);
         if (frm.NewPassword != null) {
@@ -163,6 +232,8 @@ internal partial class MainWindow : Window {
     }
 
     public async void mnuFileOpen_Click(object sender, RoutedEventArgs e) {
+        if (mnuFileOpen.IsEnabled == false) { return; }
+
         var files = await StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions {
             Title = "Open File",
             FileTypeFilter = new FilePickerFileType[] {
@@ -180,6 +251,8 @@ internal partial class MainWindow : Window {
     }
 
     public void mnuFileSave_Click(object sender, RoutedEventArgs e) {
+        if (mnuFileSave.IsEnabled == false) { return; }
+
         if (State.File != null) {
             State.Document?.Save(State.File.OpenWrite());
         } else {
@@ -188,6 +261,8 @@ internal partial class MainWindow : Window {
     }
 
     public async void mnuFileSaveAs_Click(object sender, RoutedEventArgs e) {
+        if (mnuFileSave.IsEnabled == false) { return; }
+
         var file = await StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions {
             Title = "Save File",
             FileTypeChoices = new FilePickerFileType[] {
@@ -211,6 +286,8 @@ internal partial class MainWindow : Window {
     }
 
     public async void mnuFileProperties_Click(object sender, RoutedEventArgs e) {
+        if (mnuFileProperties.IsEnabled == false) { return; }
+
         if (State.Document != null) {
             var frm = new PropertiesWindow();
             await frm.ShowDialog(this);
@@ -247,11 +324,19 @@ internal partial class MainWindow : Window {
 
 
     public async void mnuItemAdd_Click(object sender, RoutedEventArgs e) {
+        if (mnuItemAdd.IsEnabled == false) { return; }
+
         var frm = new EntryWindow();
         await frm.ShowDialog(this);
     }
 
     public async void mnuItemEdit_Click(object sender, RoutedEventArgs e) {
+        if (mnuItemEdit.IsEnabled == false) { return; }
+        if (mnuItemEdit.IsVisible == false) {  // all "view" actions should call the view handler
+            mnuItemView_Click(sender, e);
+            return;
+        }
+
         if (lsbEntries.SelectedItem is ListBoxItem { Tag: Entry selectedEntry }) {
             var frm = new EntryWindow(selectedEntry);
             await frm.ShowDialog(this);
@@ -259,6 +344,8 @@ internal partial class MainWindow : Window {
     }
 
     public async void mnuItemView_Click(object sender, RoutedEventArgs e) {
+        if (mnuItemView.IsEnabled == false) { return; }
+
         if (lsbEntries.SelectedItem is ListBoxItem { Tag: Entry selectedEntry }) {
             var frm = new EntryWindow(selectedEntry, readOnly: true);
             await frm.ShowDialog(this);
@@ -266,6 +353,8 @@ internal partial class MainWindow : Window {
     }
 
     public void mnuItemRemove_Click(object sender, RoutedEventArgs e) {
+        if (mnuItemRemove.IsEnabled == false) { return; }
+
         if (lsbEntries.SelectedItem is ListBoxItem { Tag: Entry selectedEntry }) {
             if (MessageBox.ShowQuestionDialog(this, "Remove entry", $"Do you really want to remove entry '{selectedEntry.Title}'?", "Yes", "No") == 0) {
                 lsbEntries.Items.RemoveAt(lsbEntries.SelectedIndex);
