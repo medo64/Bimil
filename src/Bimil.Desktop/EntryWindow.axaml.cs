@@ -1,9 +1,12 @@
 namespace Bimil;
 
 using System;
+using System.Net.Http;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.Media;
 using Medo.Security.Cryptography.PasswordSafe;
 using Metsys.Bson;
 
@@ -56,27 +59,18 @@ internal partial class EntryWindow : Window {
                 case RecordType.Autotype:
                     continue;
 
-                default: {
-                        grdRecords.RowDefinitions.Add(new RowDefinition());
-                        var label = new Label() {
-                            Content = Helpers.GetRecordCaption(record.RecordType),
-                        };
-                        var textBox = new TextBox() {
-                            Text = record.Text,
-                        };
-                        var row = grdRecords.RowDefinitions.Count - 1;
-                        grdRecords.Children.Add(label);
-                        Grid.SetRow(label, row);
-                        Grid.SetColumn(label, 0);
-                        grdRecords.Children.Add(textBox);
-                        Grid.SetRow(textBox, row);
-                        Grid.SetColumn(textBox, 1);
-                    }
+                case RecordType.Notes:
+                    AddMultilineText(record);
+                    break;
+
+                default:
+                    AddPlainText(record);
                     break;
             }
         }
 
     }
+
 
     protected override void OnKeyDown(KeyEventArgs e) {
         switch (e.Key) {
@@ -98,6 +92,54 @@ internal partial class EntryWindow : Window {
     }
 
     public void btnFields_Click(object sender, RoutedEventArgs e) {
+    }
+
+
+    private void AddPlainText(Record record) {
+        var control = AddRow<TextBox>(Helpers.GetRecordCaption(record.RecordType));
+        control.Text = record.Text;
+    }
+
+    private void AddMultilineText(Record record) {
+        var control = AddRow<TextBox>(Helpers.GetRecordCaption(record.RecordType));
+        control.AcceptsReturn = true;
+        control.TextWrapping = TextWrapping.Wrap;
+        control.MaxHeight = control.MinHeight * 3;
+        control.MinHeight = control.MinHeight * 2;
+        control.Text = record.Text;
+    }
+
+    private T AddRow<T>(string? caption, params Button[] buttons) where T : Control, new() {
+        grdRecords.RowDefinitions.Add(new RowDefinition());
+        var label = new Label() {
+            Content = caption ?? "Unknown",
+        };
+
+        var row = grdRecords.RowDefinitions.Count - 1;
+        grdRecords.Children.Add(label);
+        Grid.SetRow(label, row);
+        Grid.SetColumn(label, 0);
+
+        var control = new T();
+        if ((buttons is not null) && (buttons.Length > 0)) {
+            var panel = new DockPanel() {
+                LastChildFill = true,
+            };
+            foreach (var button in buttons) {
+                panel.Children.Add(button);
+                DockPanel.SetDock(button, Dock.Right);
+            }
+            panel.Children.Add(control);
+            grdRecords.Children.Add(panel);
+            Grid.SetRow(panel, row);
+            Grid.SetColumn(panel, 1);
+        } else {
+            grdRecords.Children.Add(control);
+            Grid.SetRow(control, row);
+            Grid.SetColumn(control, 1);
+        }
+
+        return control;
     }
 
 }
