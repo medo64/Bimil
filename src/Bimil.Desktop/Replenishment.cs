@@ -14,7 +14,7 @@ using Medo.Security.Cryptography.PasswordSafe;
 
 internal static class Replenishment {
 
-    public static void FillGroups(ComboBox cmbGroups, bool includeAnyGroup = false) {
+    public static void FillGroups(State state, ComboBox cmbGroups, bool includeAnyGroup = false) {
         var previousGroup = (cmbGroups.SelectedItem as ComboBoxItem)?.Tag as string;
         cmbGroups.Items.Clear();
 
@@ -22,7 +22,7 @@ internal static class Replenishment {
             cmbGroups.Items.Add(new ComboBoxItem { Content = "(any group)", Tag = null });
         }
 
-        var groups = State.GetGroups();
+        var groups = state.GetGroups();
         if (groups.Count > 0) {
             foreach (var group in groups) {
                 var groupText = (group.Length > 0) ? group : "(no group)";
@@ -38,8 +38,8 @@ internal static class Replenishment {
         }
     }
 
-    public static void FillGroups(AutoCompleteBox cmbGroups) {
-        cmbGroups.ItemsSource = State.GetGroups();
+    public static void FillGroups(State state, AutoCompleteBox cmbGroups) {
+        cmbGroups.ItemsSource = state.GetGroups();
     }
 
     public static void SelectGroup(ComboBox cmbGroups, string group) {

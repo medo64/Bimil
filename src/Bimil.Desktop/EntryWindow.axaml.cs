@@ -9,17 +9,24 @@ using Metsys.Bson;
 
 internal partial class EntryWindow : Window {
 
-    public EntryWindow() {
+    public EntryWindow(State state) {
         InitializeComponent();
-        Replenishment.FillGroups(cmbGroups);
+        State = state;
+
+        Replenishment.FillGroups(state, cmbGroups);
 
         Title = "New";
         AvaloniaHelpers.FocusControl(txtTitle);
     }
 
-    public EntryWindow(Entry entry, bool readOnly = false) {
+    public readonly State State;
+
+
+    public EntryWindow(State state, Entry entry, bool readOnly = false) {
         InitializeComponent();
-        Replenishment.FillGroups(cmbGroups);
+        State = state;
+
+        Replenishment.FillGroups(state, cmbGroups);
 
         if (readOnly) {
             Title = "View";

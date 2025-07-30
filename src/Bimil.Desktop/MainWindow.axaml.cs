@@ -59,7 +59,7 @@ internal partial class MainWindow : Window {
         // State update
         AvaloniaHelpers.DisableTab(mnu);
         State.DocumentChanged += (_, _) => { ReplenishDocument(); };
-        State.GroupsChanged += (_, _) => { Replenishment.FillGroups(cmbGroups, includeAnyGroup: true); };
+        State.GroupsChanged += (_, _) => { Replenishment.FillGroups(State, cmbGroups, includeAnyGroup: true); };
         State.ItemsChanged += (_, _) => { ReplenishEntries(); };
         ReplenishDocument();
 
@@ -67,6 +67,8 @@ internal partial class MainWindow : Window {
         txtFilter.TextChanged += (_, _) => { ReplenishEntries(); };
         cmbGroups.SelectionChanged += (_, _) => { ReplenishEntries(); };
     }
+
+    public readonly State State= new();
 
 
     protected override async void OnOpened(EventArgs e) {
@@ -292,7 +294,7 @@ internal partial class MainWindow : Window {
         if (mnuFileProperties.IsEnabled == false) { return; }
 
         if (State.Document != null) {
-            var frm = new PropertiesWindow();
+            var frm = new PropertiesWindow(State.Document);
             await frm.ShowDialog(this);
         }
     }
@@ -329,7 +331,7 @@ internal partial class MainWindow : Window {
     public async void mnuItemAdd_Click(object sender, RoutedEventArgs e) {
         if (mnuItemAdd.IsEnabled == false) { return; }
 
-        var frm = new EntryWindow();
+        var frm = new EntryWindow(State);
         await frm.ShowDialog(this);
     }
 
@@ -341,7 +343,7 @@ internal partial class MainWindow : Window {
         }
 
         if (lsbEntries.SelectedItem is ListBoxItem { Tag: Entry selectedEntry }) {
-            var frm = new EntryWindow(selectedEntry);
+            var frm = new EntryWindow(State, selectedEntry);
             await frm.ShowDialog(this);
         }
     }
@@ -350,7 +352,7 @@ internal partial class MainWindow : Window {
         if (mnuItemView.IsEnabled == false) { return; }
 
         if (lsbEntries.SelectedItem is ListBoxItem { Tag: Entry selectedEntry }) {
-            var frm = new EntryWindow(selectedEntry, readOnly: true);
+            var frm = new EntryWindow(State, selectedEntry, readOnly: true);
             await frm.ShowDialog(this);
         }
     }
@@ -469,7 +471,7 @@ internal partial class MainWindow : Window {
         txtFilter.Text = "";
         cmbGroups.SelectedItem = null;
 
-        Replenishment.FillGroups(cmbGroups, includeAnyGroup: true);
+        Replenishment.FillGroups(State, cmbGroups, includeAnyGroup: true);
         ReplenishEntries();
     }
 
