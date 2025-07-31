@@ -1,14 +1,12 @@
 namespace Bimil;
 
-using System;
-using System.Net.Http;
+using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.Layout;
 using Avalonia.Media;
 using Medo.Security.Cryptography.PasswordSafe;
-using Metsys.Bson;
 
 internal partial class EntryWindow : Window {
 
@@ -59,12 +57,20 @@ internal partial class EntryWindow : Window {
                 case RecordType.Autotype:
                     continue;
 
+                case RecordType.UserName:
+                    AddPlainText(record);
+                    break;
+
+                case RecordType.Password:
+                    AddPasswordText(record);
+                    break;
+
                 case RecordType.Notes:
                     AddMultilineText(record);
                     break;
 
                 default:
-                    AddPlainText(record);
+                    AddUnknownText(record);
                     break;
             }
         }
@@ -95,9 +101,36 @@ internal partial class EntryWindow : Window {
     }
 
 
-    private void AddPlainText(Record record) {
+    private void AddUnknownText(Record record) {
         var control = AddRow<TextBox>(Helpers.GetRecordCaption(record.RecordType));
         control.Text = record.Text;
+    }
+
+    private void AddPlainText(Record record) {
+        var buttonCopy = GetButton("EditCopy");
+        buttonCopy.Click += (sender, args) => {
+            Clipboard?.SetTextAsync(record.Text);
+        };
+
+        var control = AddRow<TextBox>(Helpers.GetRecordCaption(record.RecordType), buttonCopy);
+        control.Text = record.Text;
+    }
+
+    private void AddPasswordText(Record record) {
+        var buttonView = GetButton("EditView");
+
+        var buttonCopy = GetButton("EditCopy");
+        buttonCopy.Click += (sender, args) => {
+            Clipboard?.SetTextAsync(record.Text);
+        };
+
+        var control = AddRow<TextBox>(Helpers.GetRecordCaption(record.RecordType), buttonView, buttonCopy);
+        control.PasswordChar = '•';
+        control.Text = record.Text;
+
+        buttonView.Click += (sender, args) => {
+            control.RevealPassword = !control.RevealPassword;
+        };
     }
 
     private void AddMultilineText(Record record) {
@@ -126,13 +159,20 @@ internal partial class EntryWindow : Window {
                 LastChildFill = true,
             };
             foreach (var button in buttons) {
-                panel.Children.Add(button);
+                panel.Children.Insert(0, button);
                 DockPanel.SetDock(button, Dock.Right);
             }
             panel.Children.Add(control);
             grdRecords.Children.Add(panel);
             Grid.SetRow(panel, row);
             Grid.SetColumn(panel, 1);
+
+            control.SizeChanged += (sender, args) => {
+                foreach (var button in buttons) {
+                    button.MaxWidth = control.Bounds.Height;
+                    button.MaxHeight = control.Bounds.Height;
+                }
+            };
         } else {
             grdRecords.Children.Add(control);
             Grid.SetRow(control, row);
@@ -140,6 +180,26 @@ internal partial class EntryWindow : Window {
         }
 
         return control;
+    }
+
+    private Button GetButton(string bitmapName) {
+        var button = new Button {
+            Padding = new Thickness(2),
+            HorizontalContentAlignment = HorizontalAlignment.Center,
+            VerticalContentAlignment = VerticalAlignment.Center,
+        };
+        button.SizeChanged += (sender, args) => {
+            var bitmap = ThemeImageResources.GetBitmap(bitmapName, button, out var scale);
+            var image = new Image() {
+                Width = bitmap.Size.Width / scale,
+                Height = bitmap.Size.Height / scale,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+                Source = bitmap
+            };
+            button.Content = image;
+        };
+        return button;
     }
 
 }

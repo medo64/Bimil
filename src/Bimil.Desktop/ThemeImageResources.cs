@@ -85,7 +85,16 @@ internal class ThemeImageResources {
         image.Source = bitmap;
         var scaledSize = AssetSize * (doubleScale ? 2 : 1);
         image.Height = scaledSize;
-        image.Width= scaledSize;
+        image.Width = scaledSize;
+    }
+
+    public static Bitmap GetBitmap(string bitmapName, Control control, out double scale) {
+        var topWindow = TopLevel.GetTopLevel(control);
+        scale = topWindow?.RenderScaling ??  1;
+        var maxSize = (int)(Math.Min(control.Bounds.Width, control.Bounds.Height) * scale);
+        var bitmap = new Bitmap(AssetLoader.Open(GetAssetUri(bitmapName, IsDarkThemeVariant, maxSize)));
+        Debug.WriteLine($"Loaded bitmap '{bitmapName}' with size {bitmap.PixelSize.Width}x{bitmap.PixelSize.Height} pixels.");
+        return bitmap;
     }
 
 
@@ -139,7 +148,15 @@ internal class ThemeImageResources {
     }
 
     private static Uri GetAssetUri(string baseName, bool isDarkThemeVariant, int size) {
+        size = size switch {
+            >= 64 => 64,
+            >= 48 => 48,
+            >= 32 => 32,
+            >= 24 => 24,
+            _ => 16
+        };
         var suffix = isDarkThemeVariant ? "D" : "L";
         return new Uri("avares://Bimil/Assets/Images/" + baseName + "_" + size.ToString(CultureInfo.InvariantCulture) + suffix + ".png");
     }
+
 }
