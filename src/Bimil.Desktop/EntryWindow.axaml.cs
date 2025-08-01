@@ -1,5 +1,7 @@
 namespace Bimil;
 
+using System;
+using System.Diagnostics;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
@@ -63,6 +65,10 @@ internal partial class EntryWindow : Window {
 
                 case RecordType.Password:
                     AddPasswordText(record);
+                    break;
+
+                case RecordType.Url:
+                    AddUrlText(record);
                     break;
 
                 case RecordType.Notes:
@@ -131,6 +137,28 @@ internal partial class EntryWindow : Window {
         buttonView.Click += (sender, args) => {
             control.RevealPassword = !control.RevealPassword;
         };
+    }
+
+    private void AddUrlText(Record record) {
+        var buttonLink = GetButton("LinkUrl");
+        buttonLink.Click += (sender, args) => {
+            if (Uri.TryCreate(record.Text, UriKind.Absolute, out var uri)) {
+            } else if (Uri.TryCreate("http://" + record.Text, UriKind.Absolute, out uri)) {  // try with http
+            } else { return; }  // cannot figure the URL
+            try {
+                Process.Start(new ProcessStartInfo(uri.AbsoluteUri) {
+                    UseShellExecute = true,
+                });
+            } catch { }
+        };
+
+        var buttonCopy = GetButton("EditCopy");
+        buttonCopy.Click += (sender, args) => {
+            Clipboard?.SetTextAsync(record.Text);
+        };
+
+        var control = AddRow<TextBox>(Helpers.GetRecordCaption(record.RecordType), buttonLink, buttonCopy);
+        control.Text = record.Text;
     }
 
     private void AddMultilineText(Record record) {
