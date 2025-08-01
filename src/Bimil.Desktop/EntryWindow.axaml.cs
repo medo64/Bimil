@@ -8,6 +8,8 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Media;
+using Medo.Avalonia;
+using Medo.Security.Cryptography;
 using Medo.Security.Cryptography.PasswordSafe;
 
 internal partial class EntryWindow : Window {
@@ -69,6 +71,14 @@ internal partial class EntryWindow : Window {
 
                 case RecordType.Url:
                     AddUrlText(record);
+                    break;
+
+                case RecordType.EmailAddress:
+                    AddUrlText(record, protocol: "mailto");
+                    break;
+
+                case RecordType.TwoFactorKey:
+                    AddTwoFactorText(record);
                     break;
 
                 case RecordType.Notes:
@@ -139,11 +149,11 @@ internal partial class EntryWindow : Window {
         };
     }
 
-    private void AddUrlText(Record record) {
+    private void AddUrlText(Record record, string protocol = "http") {
         var buttonLink = GetButton("LinkUrl");
         buttonLink.Click += (sender, args) => {
             if (Uri.TryCreate(record.Text, UriKind.Absolute, out var uri)) {
-            } else if (Uri.TryCreate("http://" + record.Text, UriKind.Absolute, out uri)) {  // try with http
+            } else if (Uri.TryCreate(protocol + "://" + record.Text, UriKind.Absolute, out uri)) {  // try with http
             } else { return; }  // cannot figure the URL
             try {
                 Process.Start(new ProcessStartInfo(uri.AbsoluteUri) {
@@ -159,6 +169,30 @@ internal partial class EntryWindow : Window {
 
         var control = AddRow<TextBox>(Helpers.GetRecordCaption(record.RecordType), buttonLink, buttonCopy);
         control.Text = record.Text;
+    }
+
+    private void AddTwoFactorText(Record record) {
+        var otp = new OneTimePassword(record.GetBytes());
+
+        var buttonView = GetButton("EditView");
+
+        var buttonShow = GetButton("LinkCode");
+        buttonShow.Click += (sender, args) => {
+            MessageBox.ShowInfoDialog(this, "Two-factor code", otp.GetCode().ToString("000 000"));
+        };
+
+        var buttonCopy = GetButton("EditCopy2FA");
+        buttonCopy.Click += (sender, args) => {
+            Clipboard?.SetTextAsync(otp.GetCode().ToString("000 000"));
+        };
+
+        var control = AddRow<TextBox>(Helpers.GetRecordCaption(record.RecordType), buttonView, buttonShow, buttonCopy);
+        control.PasswordChar = '•';
+        control.Text = otp.GetBase32Secret();
+
+        buttonView.Click += (sender, args) => {
+            control.RevealPassword = !control.RevealPassword;
+        };
     }
 
     private void AddMultilineText(Record record) {
