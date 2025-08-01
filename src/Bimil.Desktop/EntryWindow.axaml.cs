@@ -124,74 +124,103 @@ internal partial class EntryWindow : Window {
 
     private void AddPlainText(Record record) {
         var buttonCopy = GetButton("EditCopy");
-        buttonCopy.Click += (sender, args) => {
-            Clipboard?.SetTextAsync(record.Text);
-        };
-
         var control = AddRow<TextBox>(Helpers.GetRecordCaption(record.RecordType), buttonCopy);
         control.Text = record.Text;
+
+        control.TextChanged += (sender, args) => {
+            var hasData = !string.IsNullOrEmpty(control.Text);
+            buttonCopy.IsEnabled = hasData;
+        };
+
+        buttonCopy.Click += (sender, args) => {
+            Clipboard?.SetTextAsync(control.Text);
+        };
     }
+
 
     private void AddPasswordText(Record record) {
         var buttonView = GetButton("EditView");
-
         var buttonCopy = GetButton("EditCopy");
-        buttonCopy.Click += (sender, args) => {
-            Clipboard?.SetTextAsync(record.Text);
-        };
-
         var control = AddRow<TextBox>(Helpers.GetRecordCaption(record.RecordType), buttonView, buttonCopy);
         control.PasswordChar = '•';
         control.Text = record.Text;
 
+        control.TextChanged += (sender, args) => {
+            var hasData = !string.IsNullOrEmpty(control.Text);
+            buttonView.IsEnabled = hasData;
+            buttonCopy.IsEnabled = hasData;
+        };
+
         buttonView.Click += (sender, args) => {
             control.RevealPassword = !control.RevealPassword;
+        };
+        buttonCopy.Click += (sender, args) => {
+            Clipboard?.SetTextAsync(record.Text);
         };
     }
 
     private void AddUrlText(Record record, string protocol = "http") {
         var buttonLink = GetButton("LinkUrl");
+        var buttonCopy = GetButton("EditCopy");
+        var control = AddRow<TextBox>(Helpers.GetRecordCaption(record.RecordType), buttonLink, buttonCopy);
+        control.Text = record.Text;
+
+        control.TextChanged += (sender, args) => {
+            var hasData = !string.IsNullOrEmpty(control.Text);
+            buttonLink.IsEnabled = hasData;
+            buttonCopy.IsEnabled = hasData;
+        };
+
         buttonLink.Click += (sender, args) => {
-            if (Uri.TryCreate(record.Text, UriKind.Absolute, out var uri)) {
-            } else if (Uri.TryCreate(protocol + "://" + record.Text, UriKind.Absolute, out uri)) {  // try with http
+            if (Uri.TryCreate(control.Text, UriKind.Absolute, out var uri)) {
+            } else if (Uri.TryCreate(protocol + "://" + control.Text, UriKind.Absolute, out uri)) {  // try with default protocol
             } else { return; }  // cannot figure the URL
+
             try {
-                Process.Start(new ProcessStartInfo(uri.AbsoluteUri) {
-                    UseShellExecute = true,
-                });
+                Process.Start(new ProcessStartInfo(uri.AbsoluteUri) { UseShellExecute = true });
             } catch { }
         };
 
-        var buttonCopy = GetButton("EditCopy");
         buttonCopy.Click += (sender, args) => {
-            Clipboard?.SetTextAsync(record.Text);
+            Clipboard?.SetTextAsync(control.Text);
         };
-
-        var control = AddRow<TextBox>(Helpers.GetRecordCaption(record.RecordType), buttonLink, buttonCopy);
-        control.Text = record.Text;
     }
 
     private void AddTwoFactorText(Record record) {
-        var otp = new OneTimePassword(record.GetBytes());
+        OneTimePassword otp;
+        byte[] secret = record?.GetBytes() ?? [];
+        try {
+            otp = new OneTimePassword(secret);
+        } finally {
+            Array.Clear(secret, 0, secret.Length);
+        }
 
         var buttonView = GetButton("EditView");
-
         var buttonShow = GetButton("LinkCode");
-        buttonShow.Click += (sender, args) => {
-            MessageBox.ShowInfoDialog(this, "Two-factor code", otp.GetCode().ToString("000 000"));
-        };
-
         var buttonCopy = GetButton("EditCopy2FA");
-        buttonCopy.Click += (sender, args) => {
-            Clipboard?.SetTextAsync(otp.GetCode().ToString("000 000"));
-        };
-
         var control = AddRow<TextBox>(Helpers.GetRecordCaption(record.RecordType), buttonView, buttonShow, buttonCopy);
         control.PasswordChar = '•';
         control.Text = otp.GetBase32Secret();
 
+        control.TextChanged += (sender, args) => {
+            var hasData = !string.IsNullOrEmpty(control.Text);
+            buttonView.IsEnabled = hasData;
+            buttonShow.IsEnabled = hasData;
+            buttonCopy.IsEnabled = hasData;
+        };
+
         buttonView.Click += (sender, args) => {
             control.RevealPassword = !control.RevealPassword;
+        };
+        buttonShow.Click += (sender, args) => {
+            var otp = new OneTimePassword(control.Text);
+            var time = DateTime.UtcNow;  // TODO: check against server
+            MessageBox.ShowInfoDialog(this, "Two-factor code", "Code: " + otp.GetCode(time).ToString("000 000") + "\n\n" + time.ToString("yyyy-MM-dd\nHH:mm:ss"));
+        };
+        buttonCopy.Click += (sender, args) => {
+            var otp = new OneTimePassword(control.Text);
+            var time = DateTime.UtcNow;  // TODO: check against server
+            Clipboard?.SetTextAsync(otp.GetCode(time).ToString("000 000"));
         };
     }
 
