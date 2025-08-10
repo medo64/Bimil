@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
+using System.IO;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
@@ -209,10 +210,19 @@ namespace Bimil {
                     }
                     if (sbArgKeys.Length > 0) {
                         var keys = sbArgKeys.ToString();
-                        Process.Start(
-                                "xdotool",
-                                string.Format(CultureInfo.InvariantCulture, "key --delay {0} {1}", Delay, keys)
-                            ).WaitForExit();
+                        var hasXDoTool = File.Exists("/usr/bin/xdotool");
+                        var hasYDoTool = File.Exists("/usr/bin/ydotool");
+                        if (hasXDoTool && !hasYDoTool) {
+                            Process.Start(
+                                    "xdotool",
+                                    string.Format(CultureInfo.InvariantCulture, "key --delay {0} {1}", Delay, keys)
+                                ).WaitForExit();
+                        } else {
+                            Process.Start(
+                                    "ydotool",
+                                    string.Format(CultureInfo.InvariantCulture, "key --delay {0} {1}", Delay, keys)
+                                ).WaitForExit();
+                        }
                     }
                     Thread.Sleep(Delay);
                 } catch (Win32Exception) { }
