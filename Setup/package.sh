@@ -134,7 +134,7 @@ TERM=xterm
 EOF
 chmod 755 "$DIRECTORY_PACKAGE/opt/bimil/bimil"
 
-dpkg-deb --build $DIRECTORY_PACKAGE > /dev/null
+dpkg-deb -Z gzip --build $DIRECTORY_PACKAGE > /dev/null
 
 cp "$DIRECTORY_ROOT/$PACKAGE_NAME.deb" $DIRECTORY_RELEASE
 if [ $? -eq 0 ]; then
