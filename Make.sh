@@ -242,7 +242,9 @@ if [ "$PACKAGE_NUGET" != "" ]; then
 
     PACKAGE_NUGET_VERSION=`cat "$PACKAGE_NUGET_ENTRYPOINT" | grep "<Version>" | sed 's^</\?Version>^^g' | xargs`
     if [ "$PACKAGE_NUGET_VERSION" = "" ]; then
-        PACKAGE_NUGET_VERSION=$ASSEMBLY_VERSION_TEXT
+        if [ "$PACKAGE_NUGET_VERSION" = "" ]; then
+            PACKAGE_NUGET_VERSION=0.0.0
+        fi
     fi
     echo "${ANSI_PURPLE}NuGET package version: ${ANSI_MAGENTA}$PACKAGE_NUGET_VERSION${ANSI_RESET}"
 
@@ -298,12 +300,10 @@ prereq_package() {
             exit 113
         fi
         if ! [ -e "$SCRIPT_DIR/packaging/linux-deb/usr/share/applications"/*.desktop ]; then
-            echo "${ANSI_RED}Missing desktip file${ANSI_RESET}" >&2
-            exit 113
+            echo "${ANSI_YELLOW}Missing desktop file${ANSI_RESET}" >&2
         fi
         if ! [ -e "$SCRIPT_DIR/packaging/linux-deb/usr/share/icons/hicolor/128x128/apps"/*.png ]; then
-            echo "${ANSI_RED}Missing icon files${ANSI_RESET}" >&2
-            exit 113
+            echo "${ANSI_YELLOW}Missing icon files${ANSI_RESET}" >&2
         fi
         if ! command -v dpkg-deb >/dev/null; then
             echo "${ANSI_RED}Missing dpkg-deb command (dpkg-deb package)${ANSI_RESET}" >&2
@@ -339,16 +339,12 @@ make_clean() {
     rmdir "$SCRIPT_DIR/bin" 2>/dev/null || true
     find "$SCRIPT_DIR/build" -mindepth 1 -delete 2>/dev/null || true
     rmdir "$SCRIPT_DIR/build" 2>/dev/null || true
-    find "$SCRIPT_DIR/examples/bin" -mindepth 1 -delete 2>/dev/null || true
-    rmdir "$SCRIPT_DIR/examples/bin" 2>/dev/null || true
-    find "$SCRIPT_DIR/tools/bin" -mindepth 1 -delete 2>/dev/null || true
-    rmdir "$SCRIPT_DIR/tools/bin" 2>/dev/null || true
 
-    find "$SCRIPT_DIR/src" -type d \( -name "bin" -or -name "obj" \) -exec rm -rf "{}" + 2>/dev/null || true
-    find "$SCRIPT_DIR/tests" -type d \( -name "bin" -or -name "obj" \) -exec rm -rf "{}" + 2>/dev/null || true
-    find "$SCRIPT_DIR/tests" -type d -name "BenchmarkDotNet.Artifacts" -exec rm -rf "{}" + 2>/dev/null || true
+    find "$SCRIPT_DIR/src"      -type d \( -name "bin" -or -name "obj" \) -exec rm -rf "{}" + 2>/dev/null || true
+    find "$SCRIPT_DIR/tests"    -type d \( -name "bin" -or -name "obj" \) -exec rm -rf "{}" + 2>/dev/null || true
+    find "$SCRIPT_DIR/tests"    -type d -name "BenchmarkDotNet.Artifacts" -exec rm -rf "{}" + 2>/dev/null || true
     find "$SCRIPT_DIR/examples" -type d \( -name "bin" -or -name "obj" \) -exec rm -rf "{}" + 2>/dev/null || true
-    find "$SCRIPT_DIR/tools" -type d \( -name "bin" -or -name "obj" \) -exec rm -rf "{}" + 2>/dev/null || true
+    find "$SCRIPT_DIR/tools"    -type d \( -name "bin" -or -name "obj" \) -exec rm -rf "{}" + 2>/dev/null || true
 }
 
 make_run() {
@@ -361,9 +357,17 @@ make_run() {
     echo "${ANSI_MAGENTA}$(basename $PROJECT_ENTRYPOINT)${ANSI_RESET}"
     if [ "$PROJECT_OUTPUTTYPE" = "exe" ] || [ "$PROJECT_OUTPUTTYPE" = "winexe" ]; then
         cd $( dirname "$SCRIPT_DIR/$PROJECT_ENTRYPOINT" )
-        dotnet run                                       \
-            -p:EnableNETAnalyzers=false                  \
-            --project "$SCRIPT_DIR/$PROJECT_ENTRYPOINT"
+
+        RUN_USE_SUDO=$( cat "$SCRIPT_DIR/.meta" | grep -E "^RUN_USE_SUDO:" | sed  -n 1p | cut -d: -sf2- | xargs )
+        if [ "$RUN_USE_SUDO" = "true" ]; then
+            sudo $(which dotnet) run                         \
+                -p:EnableNETAnalyzers=false                  \
+                --project "$SCRIPT_DIR/$PROJECT_ENTRYPOINT"
+        else
+            dotnet run                                       \
+                -p:EnableNETAnalyzers=false                  \
+                --project "$SCRIPT_DIR/$PROJECT_ENTRYPOINT"
+        fi
     else
         echo "${ANSI_RED}Nothing to run${ANSI_RESET}" >&2
         exit 113
@@ -392,12 +396,13 @@ make_test() {
         ANYTHING_DONE=1
         echo "${ANSI_MAGENTA}$(basename $PROJECT_FILE)${ANSI_RESET}"
 
-        dotnet test                                \
-            -p:TestingPlatformCaptureOutput=false  \
-            -p:EnableNETAnalyzers=false            \
-            -l "console;verbosity=detailed"        \
-            --verbosity detailed                   \
-            "$PROJECT_FILE"                       || exit 113
+        dotnet test                                 \
+            -p:TestingPlatformCaptureOutput=false   \
+            -p:TestingPlatformShowTestsFailure=true \
+            -p:EnableNETAnalyzers=false             \
+            --verbosity minimal                     \
+            "$PROJECT_FILE" || exit 113
+
         echo
     done
 
@@ -447,13 +452,13 @@ make_examples() {
 
     ANYTHING_DONE=0
 
-    for PROJECT_FILE in $(find "$SCRIPT_DIR/examples/src" -name "*.csproj"); do
+    for PROJECT_FILE in $(find "$SCRIPT_DIR/examples" -name "*.csproj" 2>/dev/null); do
         ANYTHING_DONE=1
 
         echo "${ANSI_MAGENTA}$(basename $PROJECT_FILE) ($(basename $(dirname $PROJECT_FILE)))${ANSI_RESET}"
 
-        mkdir -p "$SCRIPT_DIR/examples/bin"
-        dotnet build "$PROJECT_FILE" --configuration Release --output "$SCRIPT_DIR/examples/bin"
+        mkdir -p "$SCRIPT_DIR/bin"
+        dotnet build "$PROJECT_FILE" --configuration Release --output "$SCRIPT_DIR/bin"
         echo
     done
 
@@ -472,18 +477,18 @@ make_tools() {
 
     ANYTHING_DONE=0
 
-    for PROJECT_FILE in $(find "$SCRIPT_DIR/tools/src" -name "*.csproj"); do
+    for PROJECT_FILE in $(find "$SCRIPT_DIR/tools" -name "*.csproj" 2>/dev/null); do
         ANYTHING_DONE=1
 
         echo "${ANSI_MAGENTA}$(basename $PROJECT_FILE) ($(basename $(dirname $PROJECT_FILE)))${ANSI_RESET}"
 
-        mkdir -p "$SCRIPT_DIR/tools/bin"
-        dotnet build "$PROJECT_FILE" --configuration Release --output "$SCRIPT_DIR/tools/bin"
+        mkdir -p "$SCRIPT_DIR/bin"
+        dotnet build "$PROJECT_FILE" --configuration Release --output "$SCRIPT_DIR/bin"
         echo
     done
 
     if [ "$ANYTHING_DONE" -eq 0 ]; then
-        echo "${ANSI_RED}No example project found${ANSI_RESET}" >&2
+        echo "${ANSI_RED}No tools project found${ANSI_RESET}" >&2
         exit 113
     fi
 }
@@ -672,7 +677,9 @@ make_package() {
             sed -i "s/<DEB_VERSION>/$DEB_VERSION/" "$SCRIPT_DIR/build/$DEB_PACKAGE_NAME/DEBIAN/control" || exit 113
             sed -i "s/<DEB_ARCHITECTURE>/amd64/" "$SCRIPT_DIR/build/$DEB_PACKAGE_NAME/DEBIAN/control" || exit 113
 
-            rsync -a "$SCRIPT_DIR/packaging/linux-deb/usr/" "$SCRIPT_DIR/build/$DEB_PACKAGE_NAME/usr/" || exit 113
+            if [ -e "$SCRIPT_DIR/packaging/linux-deb/usr/" ]; then
+                rsync -a "$SCRIPT_DIR/packaging/linux-deb/usr/" "$SCRIPT_DIR/build/$DEB_PACKAGE_NAME/usr/" || exit 113
+            fi
 
             mkdir -p  "$SCRIPT_DIR/build/$DEB_PACKAGE_NAME/opt/$PROJECT_NAME/"
             rsync -a "$SCRIPT_DIR/bin/linux-x64/" "$SCRIPT_DIR/build/$DEB_PACKAGE_NAME/opt/$PROJECT_NAME/" || exit 113
@@ -894,7 +901,13 @@ PREREQ_COMPILE=0
 PREREQ_PACKAGE=0
 for ACTION in $ACTIONS; do
     case $ACTION in
-        all)        TOKENS="$TOKENS clean release"                      ; PREREQ_COMPILE=1                    ;;
+        all)
+            TOKENS="$TOKENS clean release"
+            PREREQ_COMPILE=1
+            if [ -e "$SCRIPT_DIR/examples" ]; then TOKENS="$TOKENS examples"; fi
+            if [ -e "$SCRIPT_DIR/tests" ]; then TOKENS="$TOKENS test"; fi
+            if [ -e "$SCRIPT_DIR/tools" ]; then TOKENS="$TOKENS tools"; fi
+        ;;
         clean)      TOKENS="$TOKENS clean"                                                                    ;;
         run)        TOKENS="$TOKENS run"                                ; PREREQ_COMPILE=1                    ;;
         test)       TOKENS="$TOKENS clean test"                         ; PREREQ_COMPILE=1                    ;;
