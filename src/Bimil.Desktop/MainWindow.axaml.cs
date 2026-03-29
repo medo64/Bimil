@@ -12,8 +12,8 @@ using Avalonia.Media;
 using Avalonia.Platform.Storage;
 using Avalonia.Styling;
 using Avalonia.Threading;
+using Medo;
 using Medo.Avalonia;
-using Medo.Configuration;
 using Medo.Diagnostics;
 using Medo.Security.Cryptography.PasswordSafe;
 
@@ -68,7 +68,7 @@ internal partial class MainWindow : Window {
         cmbGroups.SelectionChanged += (_, _) => { ReplenishEntries(); };
     }
 
-    public readonly State State= new();
+    public readonly State State = new();
 
 
     protected override async void OnOpened(EventArgs e) {
@@ -76,7 +76,7 @@ internal partial class MainWindow : Window {
 
         while (!IsActive) { await Task.Delay(10); }  // wait for window to be fully initialized; otherwise it doesn't center right
 
-        var files = RecentFiles.GetFiles();
+        var files = Config.Recent.Files;
         if (Settings.ShowStart) {
             var frm = new StartWindow();
             await frm.ShowDialog(this);
@@ -223,7 +223,7 @@ internal partial class MainWindow : Window {
             menu.Items.RemoveAt(i);
         }
 
-        var files = RecentFiles.GetFiles();
+        var files = Config.Recent.Files;
         var separatorMenuItem = (MenuItem)menu.Items[1]!;
         separatorMenuItem.IsVisible = (files.Count > 0);
 
@@ -444,7 +444,7 @@ internal partial class MainWindow : Window {
             lblLastSave.Content = (file.LastWriteTime != DateTime.MinValue)
                                 ? file.LastWriteTime.ToShortDateString() + " " + file.LastWriteTime.ToLongTimeString()
                                 : "";
-            RecentFiles.Add(file);
+            Config.Recent.Files.Add(file);
         } else {
             Title = "Bimil";
             lblFileName.Content = "";
