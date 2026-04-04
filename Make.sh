@@ -242,9 +242,10 @@ if [ "$PACKAGE_NUGET" != "" ]; then
 
     PACKAGE_NUGET_VERSION=`cat "$PACKAGE_NUGET_ENTRYPOINT" | grep "<Version>" | sed 's^</\?Version>^^g' | xargs`
     if [ "$PACKAGE_NUGET_VERSION" = "" ]; then
-        if [ "$PACKAGE_NUGET_VERSION" = "" ]; then
-            PACKAGE_NUGET_VERSION=0.0.0
-        fi
+        PACKAGE_NUGET_VERSION="$GIT_VERSION"
+    fi
+    if [ "$PACKAGE_NUGET_VERSION" = "" ]; then
+        PACKAGE_NUGET_VERSION=0.0.0
     fi
     echo "${ANSI_PURPLE}NuGET package version: ${ANSI_MAGENTA}$PACKAGE_NUGET_VERSION${ANSI_RESET}"
 
@@ -341,8 +342,7 @@ make_clean() {
     rmdir "$SCRIPT_DIR/build" 2>/dev/null || true
 
     find "$SCRIPT_DIR/src"      -type d \( -name "bin" -or -name "obj" \) -exec rm -rf "{}" + 2>/dev/null || true
-    find "$SCRIPT_DIR/tests"    -type d \( -name "bin" -or -name "obj" \) -exec rm -rf "{}" + 2>/dev/null || true
-    find "$SCRIPT_DIR/tests"    -type d -name "BenchmarkDotNet.Artifacts" -exec rm -rf "{}" + 2>/dev/null || true
+    find "$SCRIPT_DIR/tests"    -type d \( -name "bin" -or -name "obj" -or -name "BenchmarkDotNet.Artifacts" -or -name "TestResults" \) -exec rm -rf "{}" + 2>/dev/null || true
     find "$SCRIPT_DIR/examples" -type d \( -name "bin" -or -name "obj" \) -exec rm -rf "{}" + 2>/dev/null || true
     find "$SCRIPT_DIR/tools"    -type d \( -name "bin" -or -name "obj" \) -exec rm -rf "{}" + 2>/dev/null || true
 }
@@ -390,7 +390,7 @@ make_test() {
     ANYTHING_DONE=0
 
     for PROJECT_FILE in $(find "$SCRIPT_DIR/tests" -name "*.csproj"); do
-        IS_TEST=$(cat "$PROJECT_FILE" | grep -E "MSTest.Sdk" | wc -l)
+        IS_TEST=$(cat "$PROJECT_FILE" | grep -E 'MSTest\.Sdk|Microsoft\.NET\.Test\.Sdk' | wc -l)
         if [ $IS_TEST -eq 0 ]; then continue; fi
 
         ANYTHING_DONE=1
