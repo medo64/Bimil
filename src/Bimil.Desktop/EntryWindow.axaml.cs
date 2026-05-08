@@ -119,13 +119,13 @@ internal partial class EntryWindow : Window {
 
 
     private void AddUnknownText(Record record) {
-        var control = AddRow<TextBox>(Helpers.GetRecordCaption(record.RecordType));
+        var control = AddRow<TextBox>(record.Caption);
         control.Text = record.Text;
     }
 
     private void AddPlainText(Record record) {
         var buttonCopy = GetButton("EditCopy");
-        var control = AddRow<TextBox>(Helpers.GetRecordCaption(record.RecordType), buttonCopy);
+        var control = AddRow<TextBox>(record.Caption, buttonCopy);
         control.Text = record.Text;
 
         control.TextChanged += (sender, args) => {
@@ -144,7 +144,7 @@ internal partial class EntryWindow : Window {
     private void AddPasswordText(Record record) {
         var buttonView = GetButton("EditView");
         var buttonCopy = GetButton("EditCopy");
-        var control = AddRow<TextBox>(Helpers.GetRecordCaption(record.RecordType), buttonView, buttonCopy);
+        var control = AddRow<TextBox>(record.Caption, buttonView, buttonCopy);
         control.PasswordChar = '•';
         control.Text = record.Text;
 
@@ -157,15 +157,18 @@ internal partial class EntryWindow : Window {
         buttonView.Click += (sender, args) => {
             control.RevealPassword = !control.RevealPassword;
         };
+
         buttonCopy.Click += (sender, args) => {
-            Clipboard?.SetTextAsync(record.Text);
+            var data = new DataTransfer();
+            data.Add(DataTransferItem.CreateText(record.Text));
+            Clipboard?.SetDataAsync(data);
         };
     }
 
     private void AddUrlText(Record record, string protocol = "http") {
         var buttonLink = GetButton("LinkUrl");
         var buttonCopy = GetButton("EditCopy");
-        var control = AddRow<TextBox>(Helpers.GetRecordCaption(record.RecordType), buttonLink, buttonCopy);
+        var control = AddRow<TextBox>(record.Caption, buttonLink, buttonCopy);
         control.Text = record.Text;
 
         control.TextChanged += (sender, args) => {
@@ -203,7 +206,7 @@ internal partial class EntryWindow : Window {
         var buttonView = GetButton("EditView");
         var buttonShow = GetButton("LinkCode");
         var buttonCopy = GetButton("EditCopy2FA");
-        var control = AddRow<TextBox>(Helpers.GetRecordCaption(record.RecordType), buttonView, buttonShow, buttonCopy);
+        var control = AddRow<TextBox>(record.Caption, buttonView, buttonShow, buttonCopy);
         control.PasswordChar = '•';
         control.Text = otp.GetSecretAsText();
 
@@ -217,24 +220,30 @@ internal partial class EntryWindow : Window {
         buttonView.Click += (sender, args) => {
             control.RevealPassword = !control.RevealPassword;
         };
+
         buttonShow.Click += (sender, args) => {
             var time = DateTime.UtcNow;  // TODO: check against server
             var otp = new TimeBasedOtp(control.Text) {
                 Time = time
             };
+
             MessageBox.ShowInfoDialog(this, "Two-factor code", "Code: " + otp.GetCodeAsText(CodeOutputFormat.Spaced) + "\n\n" + time.ToString("yyyy-MM-dd\nHH:mm:ss"));
         };
+
         buttonCopy.Click += (sender, args) => {
             var time = DateTime.UtcNow;  // TODO: check against server
             var otp = new TimeBasedOtp(control.Text) {
                 Time = time
             };
-            Clipboard?.SetTextAsync(otp.GetCodeAsText());
+
+            var data = new DataTransfer();
+            data.Add(DataTransferItem.CreateText(otp.GetCodeAsText()));
+            Clipboard?.SetDataAsync(data);
         };
     }
 
     private void AddMultilineText(Record record) {
-        var control = AddRow<TextBox>(Helpers.GetRecordCaption(record.RecordType));
+        var control = AddRow<TextBox>(record.Caption);
         control.AcceptsReturn = true;
         control.TextWrapping = TextWrapping.Wrap;
         control.MaxHeight = control.MinHeight * 3;
