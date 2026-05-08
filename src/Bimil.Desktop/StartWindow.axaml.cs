@@ -7,8 +7,8 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
+using Medo;
 using Medo.Avalonia;
-using Medo.Configuration;
 
 internal partial class StartWindow : Window {
 
@@ -33,7 +33,7 @@ internal partial class StartWindow : Window {
             }
         };
 
-        foreach (var file in RecentFiles.GetFiles()) {
+        foreach (var file in Config.Recent.Files) {
             var stack = new StackPanel() { Tag = file };
             var titleBlock = new Label() { Content = file.Name, FontSize = FontSize * 1.25 };
             var pathBlock = new TextBlock() { Text = file.FullName, FontSize = FontSize * 0.75 };
@@ -95,7 +95,7 @@ internal partial class StartWindow : Window {
                                                      "Do you really want to remove file from the most-recent list?",
                                                      "Yes", "No") == 0) {
                         var file = (FileInfo)stack.Tag!;
-                        RecentFiles.Remove(file);
+                        Config.Recent.Files.Remove(file);
                         lsbFiles.Items.Remove(stack);
                     }
                 }

@@ -1,7 +1,7 @@
 namespace Bimil;
 
 using System;
-using Medo.Configuration;
+using Medo;
 
 internal static class Settings {
 
