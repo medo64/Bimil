@@ -23,7 +23,7 @@ internal partial class StartWindow : Window {
 
         lsbFiles.DoubleTapped += (sender, e) => {
             if (lsbFiles.SelectedItem is StackPanel stack) {
-                if (stack.Children[1] is TextBlock pathBlock) {
+                if ((stack.Children.Count > 1) && (stack.Children[1] is TextBlock pathBlock)) {
                     var path = pathBlock.Text;
                     if (File.Exists(path)) {
                         SelectedFile = new FileInfo(path);

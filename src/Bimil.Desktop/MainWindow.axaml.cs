@@ -68,7 +68,7 @@ internal partial class MainWindow : Window {
         cmbGroups.SelectionChanged += (_, _) => { ReplenishEntries(); };
     }
 
-    public readonly State State= new();
+    public readonly State State = new();
 
 
     protected override async void OnOpened(EventArgs e) {
