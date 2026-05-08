@@ -10,21 +10,6 @@
     Icon="/Assets/App.ico"
     Title="Bimil">
 
-    <Window.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.ThemeDictionaries>
-                <ResourceDictionary x:Key="Light">
-                    <SolidColorBrush x:Key="MenuTextEnabledForeground">#2D4772</SolidColorBrush>
-                    <SolidColorBrush x:Key="MenuTextDisabledForeground">#444444</SolidColorBrush>
-                </ResourceDictionary>
-                <ResourceDictionary x:Key="Dark">
-                    <SolidColorBrush x:Key="MenuTextEnabledForeground">#90AFE1</SolidColorBrush>
-                    <SolidColorBrush x:Key="MenuTextDisabledForeground">#ABABAB</SolidColorBrush>
-                </ResourceDictionary>
-            </ResourceDictionary.ThemeDictionaries>
-        </ResourceDictionary>
-    </Window.Resources>
-
     <DockPanel>
         <!-- Toolbar -->
         <Grid Name="mnu" DockPanel.Dock="Top" ColumnDefinitions="Auto, Auto, Auto, *, Auto">
