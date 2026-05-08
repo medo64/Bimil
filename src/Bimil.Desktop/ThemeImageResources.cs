@@ -159,4 +159,17 @@ internal class ThemeImageResources {
         return new Uri("avares://Bimil/Assets/Images/" + baseName + "_" + size.ToString(CultureInfo.InvariantCulture) + suffix + ".png");
     }
 
+
+    public Bitmap FileNew => GetAssetBitmap("FileNew", IsDarkThemeVariant);
+    public Bitmap FileOpen => GetAssetBitmap("FileOpen", IsDarkThemeVariant);
+    public Bitmap FileSave => GetAssetBitmap("FileSave", IsDarkThemeVariant);
+    public Bitmap FileEdit => GetAssetBitmap("FileEdit", IsDarkThemeVariant);
+    public Bitmap ItemAdd => GetAssetBitmap("ItemAdd", IsDarkThemeVariant);
+    public Bitmap ItemView => GetAssetBitmap("ItemView", IsDarkThemeVariant);
+    public Bitmap ItemEdit => GetAssetBitmap("ItemEdit", IsDarkThemeVariant);
+    public Bitmap ItemRemove => GetAssetBitmap("ItemRemove", IsDarkThemeVariant);
+    public Bitmap Find => GetAssetBitmap("Find", IsDarkThemeVariant);
+    public Bitmap PasswordGenerate => GetAssetBitmap("PasswordGenerate", IsDarkThemeVariant);
+    public Bitmap App => GetAssetBitmap("App", IsDarkThemeVariant);
+
 }

@@ -184,7 +184,11 @@ internal partial class PasswordGeneratorWindow : Window {
                 }
             }
 
-            await Clipboard.SetTextAsync(text);
+            if (Clipboard != null) {
+                var data = new DataTransfer();
+                data.Add(DataTransferItem.CreateText(text));
+                await Clipboard.SetDataAsync(data);
+            }
         } else {
             Debug.WriteLine("Clipboard is not available.");
         }

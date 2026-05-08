@@ -134,7 +134,9 @@ internal partial class EntryWindow : Window {
         };
 
         buttonCopy.Click += (sender, args) => {
-            Clipboard?.SetTextAsync(control.Text);
+            var data = new DataTransfer();
+            data.Add(DataTransferItem.CreateText(control.Text));
+            Clipboard?.SetDataAsync(data);
         };
     }
 
@@ -183,7 +185,9 @@ internal partial class EntryWindow : Window {
         };
 
         buttonCopy.Click += (sender, args) => {
-            Clipboard?.SetTextAsync(control.Text);
+            var data = new DataTransfer();
+            data.Add(DataTransferItem.CreateText(control.Text));
+            Clipboard?.SetDataAsync(data);
         };
     }
 

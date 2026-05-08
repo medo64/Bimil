@@ -1,5 +1,6 @@
 /* Josip Medved <jmedved@jmedved.com> * www.medo64.com * MIT License */
 
+//2026-05-07: Updated for Avalonia 12
 //2024-07-16: Waiting for dialog close
 //            Move window outside of bounds
 //2024-07-07: Adjusted border color
@@ -57,7 +58,7 @@ public static class AboutBox {
         window.CanResize = false;
         window.ShowActivated = true;
         window.SizeToContent = SizeToContent.WidthAndHeight;
-        window.SystemDecorations = SystemDecorations.BorderOnly;
+        window.WindowDecorations = WindowDecorations.BorderOnly;
         window.ExtendClientAreaToDecorationsHint = true;
         window.Title = "About";
 

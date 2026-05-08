@@ -1,5 +1,6 @@
 /* Josip Medved <jmedved@jmedved.com> * www.medo64.com * MIT License */
 
+//2026-05-07: Updated for Avalonia 12
 //2024-07-16: Waiting for dialog close
 //            Move window outside of bounds
 //2024-07-09: Initial Avalonia version
@@ -58,7 +59,7 @@ public static class UpgradeBox {
         window.CanResize = false;
         window.ShowActivated = true;
         window.SizeToContent = SizeToContent.WidthAndHeight;
-        window.SystemDecorations = SystemDecorations.BorderOnly;
+        window.WindowDecorations = WindowDecorations.BorderOnly;
         window.ExtendClientAreaToDecorationsHint = true;
         window.Title = "Upgrade";
 

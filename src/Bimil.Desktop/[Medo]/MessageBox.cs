@@ -1,5 +1,6 @@
 /* Josip Medved <jmedved@jmedved.com> * www.medo64.com * MIT License */
 
+//2026-05-07: Updated for Avalonia 12
 //2024-07-24: Added ShowQuestionDialog
 //2024-07-22: Initial version
 //2025-07-28: Fixed parent centering
@@ -123,7 +124,7 @@ public static class MessageBox {
         window.CanResize = false;
         window.ShowActivated = true;
         window.SizeToContent = SizeToContent.WidthAndHeight;
-        window.SystemDecorations = SystemDecorations.BorderOnly;
+        window.WindowDecorations = WindowDecorations.BorderOnly;
         window.ExtendClientAreaToDecorationsHint = true;
         window.Title = title;
 
