@@ -36,6 +36,7 @@
 
   <ItemGroup>
     <PackageReference Include="Medo.Config" Version="1.2.1" />
+    <PackageReference Include="Medo.Otp" Version="1.1.0" />
     <PackageReference Include="Medo.PasswordSafe" Version="6.5.0" />
   </ItemGroup>
 
@@ -44,7 +45,7 @@
     <PackageReference Include="Avalonia.Desktop" Version="11.3.13" />
     <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.13" />
     <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.13" />
-    <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.3.2" />
+    <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.3.13" />
   </ItemGroup>
 
   <ItemGroup>

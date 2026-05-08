@@ -8,6 +8,7 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Media;
+using Medo;
 using Medo.Avalonia;
 using Medo.Security.Cryptography;
 using Medo.Security.Cryptography.PasswordSafe;
@@ -187,10 +188,10 @@ internal partial class EntryWindow : Window {
     }
 
     private void AddTwoFactorText(Record record) {
-        OneTimePassword otp;
+        TimeBasedOtp otp;
         byte[] secret = record?.GetBytes() ?? [];
         try {
-            otp = new OneTimePassword(secret);
+            otp = new TimeBasedOtp(secret);
         } finally {
             Array.Clear(secret, 0, secret.Length);
         }
@@ -200,7 +201,7 @@ internal partial class EntryWindow : Window {
         var buttonCopy = GetButton("EditCopy2FA");
         var control = AddRow<TextBox>(Helpers.GetRecordCaption(record.RecordType), buttonView, buttonShow, buttonCopy);
         control.PasswordChar = '•';
-        control.Text = otp.GetBase32Secret();
+        control.Text = otp.GetSecretAsText();
 
         control.TextChanged += (sender, args) => {
             var hasData = !string.IsNullOrEmpty(control.Text);
@@ -213,14 +214,18 @@ internal partial class EntryWindow : Window {
             control.RevealPassword = !control.RevealPassword;
         };
         buttonShow.Click += (sender, args) => {
-            var otp = new OneTimePassword(control.Text);
             var time = DateTime.UtcNow;  // TODO: check against server
-            MessageBox.ShowInfoDialog(this, "Two-factor code", "Code: " + otp.GetCode(time).ToString("000 000") + "\n\n" + time.ToString("yyyy-MM-dd\nHH:mm:ss"));
+            var otp = new TimeBasedOtp(control.Text) {
+                Time = time
+            };
+            MessageBox.ShowInfoDialog(this, "Two-factor code", "Code: " + otp.GetCodeAsText(CodeOutputFormat.Spaced) + "\n\n" + time.ToString("yyyy-MM-dd\nHH:mm:ss"));
         };
         buttonCopy.Click += (sender, args) => {
-            var otp = new OneTimePassword(control.Text);
             var time = DateTime.UtcNow;  // TODO: check against server
-            Clipboard?.SetTextAsync(otp.GetCode(time).ToString("000 000"));
+            var otp = new TimeBasedOtp(control.Text) {
+                Time = time
+            };
+            Clipboard?.SetTextAsync(otp.GetCodeAsText());
         };
     }
 
