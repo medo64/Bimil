@@ -6,6 +6,7 @@ SCRIPT_NAME=`basename $0`
 if [ -t 1 ]; then
     ANSI_RESET="$(tput sgr0)"
     ANSI_RED="`[ $(tput colors) -ge 16 ] && tput setaf 9 || tput setaf 1 bold`"
+    ANSI_GREEN="`[ $(tput colors) -ge 16 ] && tput setaf 10 || tput setaf 2 bold`"
     ANSI_YELLOW="`[ $(tput colors) -ge 16 ] && tput setaf 11 || tput setaf 3 bold`"
     ANSI_MAGENTA="`[ $(tput colors) -ge 16 ] && tput setaf 13 || tput setaf 5 bold`"
     ANSI_PURPLE="$(tput setaf 5)"
@@ -242,7 +243,10 @@ if [ "$PACKAGE_NUGET" != "" ]; then
 
     PACKAGE_NUGET_VERSION=`cat "$PACKAGE_NUGET_ENTRYPOINT" | grep "<Version>" | sed 's^</\?Version>^^g' | xargs`
     if [ "$PACKAGE_NUGET_VERSION" = "" ]; then
-        PACKAGE_NUGET_VERSION=$ASSEMBLY_VERSION_TEXT
+        PACKAGE_NUGET_VERSION="$GIT_VERSION"
+    fi
+    if [ "$PACKAGE_NUGET_VERSION" = "" ]; then
+        PACKAGE_NUGET_VERSION=0.0.0
     fi
     echo "${ANSI_PURPLE}NuGET package version: ${ANSI_MAGENTA}$PACKAGE_NUGET_VERSION${ANSI_RESET}"
 
@@ -258,6 +262,18 @@ if [ "$PACKAGE_NUGET" != "" ]; then
         echo "${ANSI_PURPLE}NuGET package key ...: ${ANSI_YELLOW}(not configured)${ANSI_RESET}" >&2
     else
         echo "${ANSI_PURPLE}NuGET package key ...: ${ANSI_MAGENTA}(configured)${ANSI_RESET}"
+    fi
+fi
+
+PUBLISH_GITHUB_URL=$( cat "$SCRIPT_DIR/.meta" "$SCRIPT_DIR/.meta.private" 2>/dev/null | grep -E "^PUBLISH_GITHUB_URL:" | sed  -n 1p | cut -d: -sf2- | xargs )
+if [ "$PUBLISH_GITHUB_URL" != "" ]; then
+    echo "${ANSI_PURPLE}GitHub URL ..........: ${ANSI_MAGENTA}$PUBLISH_GITHUB_URL${ANSI_RESET}" >&2
+
+    PUBLISH_GITHUB_KEY=$( cat "$SCRIPT_DIR/.meta.private" 2>/dev/null | grep -E "^PUBLISH_GITHUB_KEY:" | sed  -n 1p | cut -d: -sf2- | xargs )
+    if [ "$PUBLISH_GITHUB_KEY" = "" ]; then
+        echo "${ANSI_PURPLE}GitHub API key ......: ${ANSI_YELLOW}(not configured)${ANSI_RESET}" >&2
+    else
+        echo "${ANSI_PURPLE}GitHub API key ......: ${ANSI_MAGENTA}(configured)${ANSI_RESET}"
     fi
 fi
 
@@ -298,12 +314,10 @@ prereq_package() {
             exit 113
         fi
         if ! [ -e "$SCRIPT_DIR/packaging/linux-deb/usr/share/applications"/*.desktop ]; then
-            echo "${ANSI_RED}Missing desktip file${ANSI_RESET}" >&2
-            exit 113
+            echo "${ANSI_YELLOW}Missing desktop file${ANSI_RESET}" >&2
         fi
         if ! [ -e "$SCRIPT_DIR/packaging/linux-deb/usr/share/icons/hicolor/128x128/apps"/*.png ]; then
-            echo "${ANSI_RED}Missing icon files${ANSI_RESET}" >&2
-            exit 113
+            echo "${ANSI_YELLOW}Missing icon files${ANSI_RESET}" >&2
         fi
         if ! command -v dpkg-deb >/dev/null; then
             echo "${ANSI_RED}Missing dpkg-deb command (dpkg-deb package)${ANSI_RESET}" >&2
@@ -339,16 +353,11 @@ make_clean() {
     rmdir "$SCRIPT_DIR/bin" 2>/dev/null || true
     find "$SCRIPT_DIR/build" -mindepth 1 -delete 2>/dev/null || true
     rmdir "$SCRIPT_DIR/build" 2>/dev/null || true
-    find "$SCRIPT_DIR/examples/bin" -mindepth 1 -delete 2>/dev/null || true
-    rmdir "$SCRIPT_DIR/examples/bin" 2>/dev/null || true
-    find "$SCRIPT_DIR/tools/bin" -mindepth 1 -delete 2>/dev/null || true
-    rmdir "$SCRIPT_DIR/tools/bin" 2>/dev/null || true
 
-    find "$SCRIPT_DIR/src" -type d \( -name "bin" -or -name "obj" \) -exec rm -rf "{}" + 2>/dev/null || true
-    find "$SCRIPT_DIR/tests" -type d \( -name "bin" -or -name "obj" \) -exec rm -rf "{}" + 2>/dev/null || true
-    find "$SCRIPT_DIR/tests" -type d -name "BenchmarkDotNet.Artifacts" -exec rm -rf "{}" + 2>/dev/null || true
+    find "$SCRIPT_DIR/src"      -type d \( -name "bin" -or -name "obj" \) -exec rm -rf "{}" + 2>/dev/null || true
+    find "$SCRIPT_DIR/tests"    -type d \( -name "bin" -or -name "obj" -or -name "BenchmarkDotNet.Artifacts" -or -name "TestResults" \) -exec rm -rf "{}" + 2>/dev/null || true
     find "$SCRIPT_DIR/examples" -type d \( -name "bin" -or -name "obj" \) -exec rm -rf "{}" + 2>/dev/null || true
-    find "$SCRIPT_DIR/tools" -type d \( -name "bin" -or -name "obj" \) -exec rm -rf "{}" + 2>/dev/null || true
+    find "$SCRIPT_DIR/tools"    -type d \( -name "bin" -or -name "obj" \) -exec rm -rf "{}" + 2>/dev/null || true
 }
 
 make_run() {
@@ -361,9 +370,17 @@ make_run() {
     echo "${ANSI_MAGENTA}$(basename $PROJECT_ENTRYPOINT)${ANSI_RESET}"
     if [ "$PROJECT_OUTPUTTYPE" = "exe" ] || [ "$PROJECT_OUTPUTTYPE" = "winexe" ]; then
         cd $( dirname "$SCRIPT_DIR/$PROJECT_ENTRYPOINT" )
-        dotnet run                                       \
-            -p:EnableNETAnalyzers=false                  \
-            --project "$SCRIPT_DIR/$PROJECT_ENTRYPOINT"
+
+        RUN_USE_SUDO=$( cat "$SCRIPT_DIR/.meta" | grep -E "^RUN_USE_SUDO:" | sed  -n 1p | cut -d: -sf2- | xargs )
+        if [ "$RUN_USE_SUDO" = "true" ]; then
+            sudo $(which dotnet) run                         \
+                -p:EnableNETAnalyzers=false                  \
+                --project "$SCRIPT_DIR/$PROJECT_ENTRYPOINT"
+        else
+            dotnet run                                       \
+                -p:EnableNETAnalyzers=false                  \
+                --project "$SCRIPT_DIR/$PROJECT_ENTRYPOINT"
+        fi
     else
         echo "${ANSI_RED}Nothing to run${ANSI_RESET}" >&2
         exit 113
@@ -386,18 +403,19 @@ make_test() {
     ANYTHING_DONE=0
 
     for PROJECT_FILE in $(find "$SCRIPT_DIR/tests" -name "*.csproj"); do
-        IS_TEST=$(cat "$PROJECT_FILE" | grep -E "MSTest.Sdk" | wc -l)
+        IS_TEST=$(cat "$PROJECT_FILE" | grep -E 'MSTest\.Sdk|Microsoft\.NET\.Test\.Sdk' | wc -l)
         if [ $IS_TEST -eq 0 ]; then continue; fi
 
         ANYTHING_DONE=1
         echo "${ANSI_MAGENTA}$(basename $PROJECT_FILE)${ANSI_RESET}"
 
-        dotnet test                                \
-            -p:TestingPlatformCaptureOutput=false  \
-            -p:EnableNETAnalyzers=false            \
-            -l "console;verbosity=detailed"        \
-            --verbosity detailed                   \
-            "$PROJECT_FILE"                       || exit 113
+        dotnet test                                 \
+            -p:TestingPlatformCaptureOutput=false   \
+            -p:TestingPlatformShowTestsFailure=true \
+            -p:EnableNETAnalyzers=false             \
+            --verbosity minimal                     \
+            "$PROJECT_FILE" || exit 113
+
         echo
     done
 
@@ -447,13 +465,13 @@ make_examples() {
 
     ANYTHING_DONE=0
 
-    for PROJECT_FILE in $(find "$SCRIPT_DIR/examples/src" -name "*.csproj"); do
+    for PROJECT_FILE in $(find "$SCRIPT_DIR/examples" -name "*.csproj" 2>/dev/null); do
         ANYTHING_DONE=1
 
         echo "${ANSI_MAGENTA}$(basename $PROJECT_FILE) ($(basename $(dirname $PROJECT_FILE)))${ANSI_RESET}"
 
-        mkdir -p "$SCRIPT_DIR/examples/bin"
-        dotnet build "$PROJECT_FILE" --configuration Release --output "$SCRIPT_DIR/examples/bin"
+        mkdir -p "$SCRIPT_DIR/bin"
+        dotnet build "$PROJECT_FILE" --configuration Release --output "$SCRIPT_DIR/bin"
         echo
     done
 
@@ -472,18 +490,18 @@ make_tools() {
 
     ANYTHING_DONE=0
 
-    for PROJECT_FILE in $(find "$SCRIPT_DIR/tools/src" -name "*.csproj"); do
+    for PROJECT_FILE in $(find "$SCRIPT_DIR/tools" -name "*.csproj" 2>/dev/null); do
         ANYTHING_DONE=1
 
         echo "${ANSI_MAGENTA}$(basename $PROJECT_FILE) ($(basename $(dirname $PROJECT_FILE)))${ANSI_RESET}"
 
-        mkdir -p "$SCRIPT_DIR/tools/bin"
-        dotnet build "$PROJECT_FILE" --configuration Release --output "$SCRIPT_DIR/tools/bin"
+        mkdir -p "$SCRIPT_DIR/bin"
+        dotnet build "$PROJECT_FILE" --configuration Release --output "$SCRIPT_DIR/bin"
         echo
     done
 
     if [ "$ANYTHING_DONE" -eq 0 ]; then
-        echo "${ANSI_RED}No example project found${ANSI_RESET}" >&2
+        echo "${ANSI_RED}No tools project found${ANSI_RESET}" >&2
         exit 113
     fi
 }
@@ -672,7 +690,9 @@ make_package() {
             sed -i "s/<DEB_VERSION>/$DEB_VERSION/" "$SCRIPT_DIR/build/$DEB_PACKAGE_NAME/DEBIAN/control" || exit 113
             sed -i "s/<DEB_ARCHITECTURE>/amd64/" "$SCRIPT_DIR/build/$DEB_PACKAGE_NAME/DEBIAN/control" || exit 113
 
-            rsync -a "$SCRIPT_DIR/packaging/linux-deb/usr/" "$SCRIPT_DIR/build/$DEB_PACKAGE_NAME/usr/" || exit 113
+            if [ -e "$SCRIPT_DIR/packaging/linux-deb/usr/" ]; then
+                rsync -a "$SCRIPT_DIR/packaging/linux-deb/usr/" "$SCRIPT_DIR/build/$DEB_PACKAGE_NAME/usr/" || exit 113
+            fi
 
             mkdir -p  "$SCRIPT_DIR/build/$DEB_PACKAGE_NAME/opt/$PROJECT_NAME/"
             rsync -a "$SCRIPT_DIR/bin/linux-x64/" "$SCRIPT_DIR/build/$DEB_PACKAGE_NAME/opt/$PROJECT_NAME/" || exit 113
@@ -770,6 +790,7 @@ make_publish() {
     echo
 
     ANYTHING_DONE=0
+    GITHUB_UPLOAD_FILES=
 
     if [ "$PUBLISH_LINUX_ARCHIVE" != "" ]; then
         if [ "$GIT_VERSION" != "" ]; then
@@ -781,7 +802,8 @@ make_publish() {
                 esac
 
                 ANYTHING_DONE=1
-                echo "${ANSI_MAGENTA}archive $ARCHIVE_NAME_CURR ($RUNTIME)${ANSI_RESET}"
+                echo "${ANSI_MAGENTA}Published archive $ARCHIVE_NAME_CURR ($RUNTIME)${ANSI_RESET}"
+                GITHUB_UPLOAD_FILES="$GITHUB_UPLOAD_FILES dist/$ARCHIVE_NAME_CURR"
 
                 rsync --no-g --no-o --progress --chmod=D755,F644  "dist/$ARCHIVE_NAME_CURR" $PUBLISH_LINUX_ARCHIVE || exit 113
                 echo "${ANSI_CYAN}$PUBLISH_LINUX_ARCHIVE/$ARCHIVE_NAME_CURR${ANSI_RESET}"
@@ -801,7 +823,8 @@ make_publish() {
             esac
 
             ANYTHING_DONE=1
-            echo "${ANSI_MAGENTA}appimage ($RUNTIME)${ANSI_RESET}"
+            echo "${ANSI_MAGENTA}Published appimage ($RUNTIME)${ANSI_RESET}"
+            GITHUB_UPLOAD_FILES="$GITHUB_UPLOAD_FILES dist/$APPIMAGE_NAME_CURR"
 
             rsync --no-g --no-o --progress --chmod=D755,F644  "dist/$APPIMAGE_NAME_CURR" $PUBLISH_LINUX_APPIMAGE || exit 113
             echo "${ANSI_CYAN}$PUBLISH_LINUX_APPIMAGE${ANSI_RESET}"
@@ -818,7 +841,8 @@ make_publish() {
             esac
 
             ANYTHING_DONE=1
-            echo "${ANSI_MAGENTA}deb ($RUNTIME: $DEB_ARCHITECTURE)${ANSI_RESET}"
+            echo "${ANSI_MAGENTA}Published deb ($RUNTIME: $DEB_ARCHITECTURE)${ANSI_RESET}"
+            GITHUB_UPLOAD_FILES="$GITHUB_UPLOAD_FILES dist/$APPIMAGE_NAME_CURR"
 
             PUBLISH_LINUX_DEB_CURR="$( echo "$PUBLISH_LINUX_DEB" | sed "s/<DEB_ARCHITECTURE>/$DEB_ARCHITECTURE/g" )"
 
@@ -864,19 +888,69 @@ make_publish() {
     fi
 
     if [ "$PUBLISH_NUGET_KEY" != "" ]; then
-        ANYTHING_DONE=1
-
-        if [ "$PACKAGE_NUGET_VERSION" = "0.0.0" ]; then
-            echo "${ANSI_RED}Not pushing version 0.0.0!${ANSI_RESET}" >&2
-            return 1;
+        if [ "$PACKAGE_NUGET_VERSION" != "" ] && [ "$PACKAGE_NUGET_VERSION" != "0.0.0" ]; then
+            dotnet nuget push   \
+                --source "https://api.nuget.org/v3/index.json"           \
+                --api-key "$PUBLISH_NUGET_KEY"                           \
+                --symbol-api-key "$PUBLISH_NUGET_KEY"                    \
+                "./dist/$PACKAGE_NUGET_ID.$PACKAGE_NUGET_VERSION.nupkg" || return 1
+            ANYTHING_DONE=1
+            PACKAGE_NUGET_FILENAME=$PACKAGE_NUGET_ID-$PACKAGE_NUGET_VERSION.nupkg
+            echo "${ANSI_GREEN}Sent ${ANSI_CYAN}dist/$PACKAGE_NUGET_FILENAME${ANSI_RESET}"
+            GITHUB_UPLOAD_FILES="$GITHUB_UPLOAD_FILES dist/$PACKAGE_NUGET_FILENAME"
+            echo
+        else
+            echo "${ANSI_RED}Not pushing to NuGET without a version${ANSI_RESET}" >&2
         fi
-        dotnet nuget push   \
-            --source "https://api.nuget.org/v3/index.json"           \
-            --api-key "$PUBLISH_NUGET_KEY"                           \
-            --symbol-api-key "$PUBLISH_NUGET_KEY"                    \
-            "./dist/$PACKAGE_NUGET_ID.$PACKAGE_NUGET_VERSION.nupkg" || return 1
-        echo "${ANSI_GREEN}Sent ${ANSI_CYAN}dist/$PACKAGE_NUGET_ID-$PACKAGE_NUGET_VERSION.nupkg${ANSI_RESET}"
-        echo
+    fi
+
+    if [ "$PUBLISH_GITHUB_KEY" != "" ] && [ "$PUBLISH_GITHUB_URL" != "" ]; then
+        if [ "$GIT_VERSION" != "" ] && [ "$GIT_VERSION" != "0.0.0" ]; then
+            PUBLISH_GITHUB_OWNER=$( echo "$PUBLISH_GITHUB_URL" | cut -d/ -f4 )
+            PUBLISH_GITHUB_REPO=$( echo "$PUBLISH_GITHUB_URL" | cut -d/ -f5 )
+            echo "${ANSI_CYAN}Pusing to $PUBLISH_GITHUB_OWNER:$PUBLISH_GITHUB_REPO${ANSI_RESET}" >&2
+
+            if [ "$GITHUB_UPLOAD_FILES" != "" ]; then
+                PUBLISH_GITHUB_EXISTING_RELEASE_ID=$( curl -s https://api.github.com/repos/$PUBLISH_GITHUB_OWNER/$PUBLISH_GITHUB_REPO/releases \
+                                                              -H "Authorization: Bearer $PUBLISH_GITHUB_KEY" \
+                                                      | jq -r ".[] | select(.tag_name==\"$GIT_VERSION\") | .id" 2>/dev/null )
+                if [ "$PUBLISH_GITHUB_EXISTING_RELEASE_ID" != "" ]; then
+                    echo "${ANSI_YELLOW}Release with tag $GIT_VERSION already exists, deleting it first${ANSI_RESET}" >&2
+                    curl -X DELETE https://api.github.com/repos/$PUBLISH_GITHUB_OWNER/$PUBLISH_GITHUB_REPO/releases/$PUBLISH_GITHUB_EXISTING_RELEASE_ID \
+                                   -H "Authorization: Bearer $PUBLISH_GITHUB_KEY" >/dev/null 2>&1 || true
+                fi
+
+                PUBLISH_GITHUB_RELEASE_ID=$( curl -X POST https://api.github.com/repos/$PUBLISH_GITHUB_OWNER/$PUBLISH_GITHUB_REPO/releases \
+                                                          -H "Authorization: Bearer $PUBLISH_GITHUB_KEY" \
+                                                          -H "Accept: application/vnd.github+json" \
+                                                          -d "{
+                                                              \"tag_name\": \"$GIT_VERSION\",
+                                                              \"name\": \"$GIT_VERSION\",
+                                                              \"body\": \"\",
+                                                              \"draft\": false,
+                                                              \"prerelease\": false
+                                                          }" 2>/dev/null | jq -r .id )
+                if [ "$PUBLISH_GITHUB_RELEASE_ID" = "" ] || [ "$PUBLISH_GITHUB_RELEASE_ID" = "null" ]; then
+                    echo "${ANSI_RED}Failed to create GitHub release for version $GIT_VERSION${ANSI_RESET}" >&2
+                    return 1
+                fi
+                echo "${ANSI_CYAN}Created release $GIT_VERSION ($PUBLISH_GITHUB_RELEASE_ID)${ANSI_RESET}" >&2
+
+                for GITHUB_UPLOAD_FILE in $GITHUB_UPLOAD_FILES ; do
+                    GITHUB_UPLOAD_FILENAME=$( basename "$GITHUB_UPLOAD_FILE" )
+                    echo "${ANSI_CYAN}Uploading $GITHUB_UPLOAD_FILE${ANSI_RESET}"
+                    curl -X POST "https://uploads.github.com/repos/$PUBLISH_GITHUB_OWNER/$PUBLISH_GITHUB_REPO/releases/$PUBLISH_GITHUB_RELEASE_ID/assets?name=$GITHUB_UPLOAD_FILENAME" \
+                                  -H "Authorization: Bearer $PUBLISH_GITHUB_KEY" \
+                                  -H "Content-Type: application/octet-stream" \
+                                  --data-binary @$GITHUB_UPLOAD_FILE >/dev/null 2>&1 || return 1
+                    ANYTHING_DONE=1
+                    echo "${ANSI_GREEN}Pushed $GITHUB_UPLOAD_FILE${ANSI_RESET}" >&2
+                done
+            fi
+        else
+            echo "${ANSI_RED}Not pushing to GitHub without a version${ANSI_RESET}" >&2
+        fi
+        GIT_VERSION=
     fi
 
     if [ "$ANYTHING_DONE" -eq 0 ]; then
@@ -894,7 +968,13 @@ PREREQ_COMPILE=0
 PREREQ_PACKAGE=0
 for ACTION in $ACTIONS; do
     case $ACTION in
-        all)        TOKENS="$TOKENS clean release"                      ; PREREQ_COMPILE=1                    ;;
+        all)
+            TOKENS="$TOKENS clean release"
+            PREREQ_COMPILE=1
+            if [ -e "$SCRIPT_DIR/examples" ]; then TOKENS="$TOKENS examples"; fi
+            if [ -e "$SCRIPT_DIR/tests" ]; then TOKENS="$TOKENS test"; fi
+            if [ -e "$SCRIPT_DIR/tools" ]; then TOKENS="$TOKENS tools"; fi
+        ;;
         clean)      TOKENS="$TOKENS clean"                                                                    ;;
         run)        TOKENS="$TOKENS run"                                ; PREREQ_COMPILE=1                    ;;
         test)       TOKENS="$TOKENS clean test"                         ; PREREQ_COMPILE=1                    ;;
