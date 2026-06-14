@@ -35,9 +35,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Medo.Config" Version="1.2.1" />
+    <PackageReference Include="Medo.Config" Version="1.3.0" />
     <PackageReference Include="Medo.Otp" Version="1.1.0" />
     <PackageReference Include="Medo.PasswordSafe" Version="6.5.0" />
+    <PackageReference Include="Medo.PTClipboard" Version="1.0.0" />
   </ItemGroup>
 
   <ItemGroup>

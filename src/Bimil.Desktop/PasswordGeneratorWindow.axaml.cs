@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using Medo.X11;
+using Medo;
 
 internal partial class PasswordGeneratorWindow : Window {
     public PasswordGeneratorWindow() {
@@ -176,15 +176,13 @@ internal partial class PasswordGeneratorWindow : Window {
         if (Clipboard != null) {
             var text = txtPassword.Text!;
 
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) && Settings.SyncX11PrimaryClipboard) {  // set both primary and clipboard on X11
-                X11Clipboard.Primary.SetText(text);  // no fallback
-                if (X11Clipboard.Clipboard.IsAvailable) {
-                    X11Clipboard.Clipboard.SetText(text);
-                    return;  // skip call to Avalonia clipboard
+            if (PTClipboard.Main.IsAvailable) {
+                if (Settings.SyncX11PrimaryClipboard) {  // set both primary and clipboard on X11
+                    PTClipboard.SetText(text);
+                } else {
+                    PTClipboard.Main.SetText(text);
                 }
-            }
-
-            if (Clipboard != null) {
+            } else if (Clipboard != null) {  // Avalonia fallback
                 var data = new DataTransfer();
                 data.Add(DataTransferItem.CreateText(text));
                 await Clipboard.SetDataAsync(data);
