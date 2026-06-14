@@ -695,7 +695,7 @@ make_package() {
             fi
 
             mkdir -p  "$SCRIPT_DIR/build/$DEB_PACKAGE_NAME/opt/$PROJECT_NAME/"
-            rsync -a "$SCRIPT_DIR/bin/linux-x64/" "$SCRIPT_DIR/build/$DEB_PACKAGE_NAME/opt/$PROJECT_NAME/" || exit 113
+            rsync -a "$SCRIPT_DIR/bin/linux-x64/" "$SCRIPT_DIR/build/$DEB_PACKAGE_NAME/opt/$PROJECT_NAME_LOWER/" || exit 113
 
             if [ -e "$SCRIPT_DIR/packaging/linux-deb/copyright" ]; then
                 mkdir -p "$SCRIPT_DIR/build/$DEB_PACKAGE_NAME/usr/share/doc/$PROJECT_NAME/"
@@ -833,23 +833,27 @@ make_publish() {
     fi
 
     if [ "$PUBLISH_LINUX_DEB" != "" ]; then
-        for RUNTIME in $PROJECT_RUNTIMES; do
-            case $RUNTIME in
-                linux-x64)   DEB_ARCHITECTURE=amd64 ; DEB_PACKAGE_CURR=$DEB_PACKAGE_AMD64 ;;
-                linux-arm64) DEB_ARCHITECTURE=arm64 ; DEB_PACKAGE_CURR=$DEB_PACKAGE_ARM64 ;;
-                *)           continue ;;
-            esac
+        if [ "$PACKAGE_NUGET_VERSION" != "" ] && [ "$PACKAGE_NUGET_VERSION" != "0.0.0" ]; then
+            for RUNTIME in $PROJECT_RUNTIMES; do
+                case $RUNTIME in
+                    linux-x64)   DEB_ARCHITECTURE=amd64 ; DEB_PACKAGE_CURR=$DEB_PACKAGE_AMD64 ;;
+                    linux-arm64) DEB_ARCHITECTURE=arm64 ; DEB_PACKAGE_CURR=$DEB_PACKAGE_ARM64 ;;
+                    *)           continue ;;
+                esac
 
-            ANYTHING_DONE=1
-            echo "${ANSI_MAGENTA}Published deb ($RUNTIME: $DEB_ARCHITECTURE)${ANSI_RESET}"
-            GITHUB_UPLOAD_FILES="$GITHUB_UPLOAD_FILES dist/$APPIMAGE_NAME_CURR"
+                ANYTHING_DONE=1
+                echo "${ANSI_MAGENTA}Published deb ($RUNTIME: $DEB_ARCHITECTURE)${ANSI_RESET}"
+                GITHUB_UPLOAD_FILES="$GITHUB_UPLOAD_FILES dist/$APPIMAGE_NAME_CURR"
 
-            PUBLISH_LINUX_DEB_CURR="$( echo "$PUBLISH_LINUX_DEB" | sed "s/<DEB_ARCHITECTURE>/$DEB_ARCHITECTURE/g" )"
+                PUBLISH_LINUX_DEB_CURR="$( echo "$PUBLISH_LINUX_DEB" | sed "s/<DEB_ARCHITECTURE>/$DEB_ARCHITECTURE/g" )"
 
-            rsync --no-g --no-o --progress "dist/$DEB_PACKAGE_CURR" $PUBLISH_LINUX_DEB_CURR || exit 113
-            echo "${ANSI_CYAN}$PUBLISH_LINUX_DEB_CURR${ANSI_RESET}"
-            echo
-        done
+                rsync --no-g --no-o --progress "dist/$DEB_PACKAGE_CURR" $PUBLISH_LINUX_DEB_CURR || exit 113
+                echo "${ANSI_CYAN}$PUBLISH_LINUX_DEB_CURR${ANSI_RESET}"
+                echo
+            done
+        else
+            echo "${ANSI_RED}Not sending to remote without a version${ANSI_RESET}" >&2
+        fi
     fi
 
     if [ "$PUBLISH_LINUX_DOCKER" != "" ]; then
