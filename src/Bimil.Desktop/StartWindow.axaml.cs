@@ -7,6 +7,7 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
+using Avalonia.Threading;
 using Medo;
 using Medo.Avalonia;
 
@@ -14,6 +15,16 @@ internal partial class StartWindow : Window {
 
     public StartWindow() {
         InitializeComponent();
+
+        PropertyChanged += (sender, e) => {  // close on minimize
+            if (e.Property == Window.WindowStateProperty && WindowState == WindowState.Minimized) {
+                Dispatcher.UIThread.InvokeAsync(() => {
+                    WindowState = WindowState.Normal;
+                    Close();
+                });
+            }
+        };
+
         lsbFiles.SelectionChanged += (sender, e) => {
             var selectedStack = lsbFiles.SelectedItem as StackPanel;
             var hasSelection = (selectedStack?.Tag != null);
