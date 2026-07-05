@@ -266,10 +266,13 @@ internal partial class EntryWindow : Window {
         return control;
     }
 
+    private int NextTabIndex = 0;
+
     private T AddRow<T>(string? caption, params Button[] buttons) where T : Control, new() {
         grdRecords.RowDefinitions.Add(new RowDefinition());
         var label = new Label() {
             Content = caption ?? "Unknown",
+            TabIndex = NextTabIndex++,
         };
 
         var row = grdRecords.RowDefinitions.Count - 1;
@@ -277,12 +280,15 @@ internal partial class EntryWindow : Window {
         Grid.SetRow(label, row);
         Grid.SetColumn(label, 0);
 
-        var control = new T();
+        var control = new T(){
+            TabIndex = NextTabIndex++,
+        };
         if ((buttons is not null) && (buttons.Length > 0)) {
             var panel = new DockPanel() {
                 LastChildFill = true,
             };
             foreach (var button in buttons) {
+                button.TabIndex = NextTabIndex++;
                 panel.Children.Insert(0, button);
                 DockPanel.SetDock(button, Dock.Right);
             }
