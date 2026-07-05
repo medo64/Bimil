@@ -4,22 +4,13 @@ using System;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using Avalonia.Threading;
 using Medo.Security.Cryptography.PasswordSafe;
 
 internal partial class PropertiesWindow : Window {
 
     public PropertiesWindow(State state) {
         InitializeComponent();
-
-        PropertyChanged += (sender, e) => {  // close on minimize
-            if (e.Property == Window.WindowStateProperty && WindowState == WindowState.Minimized) {
-                Dispatcher.UIThread.InvokeAsync(() => {
-                    WindowState = WindowState.Normal;
-                    Close();
-                });
-            }
-        };
+        AvaloniaHelpers.SetupDialog(this);
 
         Document = state.Document;
 

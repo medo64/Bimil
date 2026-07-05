@@ -17,6 +17,8 @@ internal partial class EntryWindow : Window {
 
     public EntryWindow(State state) {
         InitializeComponent();
+        AvaloniaHelpers.SetupDialog(this);
+
         State = state;
 
         Replenishment.FillGroups(state, cmbGroups);

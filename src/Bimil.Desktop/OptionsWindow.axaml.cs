@@ -8,6 +8,7 @@ using Avalonia.Interactivity;
 internal partial class OptionsWindow : Window {
     public OptionsWindow() {
         InitializeComponent();
+        AvaloniaHelpers.SetupDialog(this);
 
         LoadState();
         chbLoadLast.IsCheckedChanged += (sender, e) => { if (chbLoadLast.IsChecked == true) { chbShowStart.IsChecked = false; } };

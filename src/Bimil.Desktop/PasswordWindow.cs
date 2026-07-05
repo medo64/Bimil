@@ -22,6 +22,8 @@ internal partial class PasswordWindow : Window {
 
     private PasswordWindow(string title, PasswordWindowType type) {
         InitializeComponent();
+        AvaloniaHelpers.SetupDialog(this);
+
         Title = title;
 
         switch (type) {

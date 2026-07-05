@@ -7,8 +7,10 @@ using System.Reflection;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
+using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Styling;
+using Avalonia.Threading;
 using Avalonia.VisualTree;
 
 internal static class AvaloniaHelpers {
@@ -34,6 +36,17 @@ internal static class AvaloniaHelpers {
                 };
             }
         }
+    }
+
+    public static void SetupDialog(Window window) {
+        window.PropertyChanged += (sender, e) => {  // close on minimize
+            if ((e.Property == Window.WindowStateProperty) && (window.WindowState == WindowState.Minimized)) {
+                Dispatcher.UIThread.InvokeAsync(() => {
+                    window.WindowState = WindowState.Normal;
+                    window.Close();
+                });
+            }
+        };
     }
 
     public static void FocusControl(Control control) {

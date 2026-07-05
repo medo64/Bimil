@@ -16,15 +16,7 @@ internal partial class StartWindow : Window {
 
     public StartWindow() {
         InitializeComponent();
-
-        PropertyChanged += (sender, e) => {  // close on minimize
-            if (e.Property == Window.WindowStateProperty && WindowState == WindowState.Minimized) {
-                Dispatcher.UIThread.InvokeAsync(() => {
-                    WindowState = WindowState.Normal;
-                    Close();
-                });
-            }
-        };
+        AvaloniaHelpers.SetupDialog(this);
 
         lsbFiles.SelectionChanged += (sender, e) => {
             var selectedStack = lsbFiles.SelectedItem as StackPanel;

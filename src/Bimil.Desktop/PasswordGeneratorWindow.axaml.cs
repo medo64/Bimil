@@ -11,6 +11,7 @@ using Medo;
 internal partial class PasswordGeneratorWindow : Window {
     public PasswordGeneratorWindow() {
         InitializeComponent();
+        AvaloniaHelpers.SetupDialog(this);
 
         AvaloniaHelpers.ControlSetup.SetupCheckBox(chbClassicIncludeLowercaseLetters, "Settings.PasswordGenerator.Classic.IncludeLowercaseLetters", GenerateNewClassicPassword);
         AvaloniaHelpers.ControlSetup.SetupCheckBox(chbClassicIncludeUppercaseLetters, "Settings.PasswordGenerator.Classic.IncludeUppercaseLetters", GenerateNewClassicPassword);
