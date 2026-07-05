@@ -1,5 +1,6 @@
 /* Josip Medved <jmedved@jmedved.com> * www.medo64.com * MIT License */
 
+//2026-07-04: Changed font for product
 //2026-05-07: Updated for Avalonia 12
 //2024-07-16: Waiting for dialog close
 //            Move window outside of bounds
@@ -98,7 +99,6 @@ public static class AboutBox {
         var productTextBlock = new TextBlock() {
             Text = productText,
             FontSize = window.FontSize * 2,
-            FontStyle = FontStyle.Oblique,
         };
 
         var productVersionTextBlock = new TextBlock() {
