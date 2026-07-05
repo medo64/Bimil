@@ -26,7 +26,7 @@ if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
     echo "  release    Compile in release mode"
     echo "  package    Package the project"
     echo "  publish    Publish the project"
-    echo "  tools      Compile tools"
+    echo "  tools      Compile tools used by project"
     echo
     echo "Actions with '~' prefix are negated"
     echo
@@ -93,13 +93,29 @@ fi
 echo "${ANSI_PURPLE}Assembly version ....: ${ANSI_MAGENTA}$ASSEMBLY_VERSION${ANSI_RESET}"
 echo "${ANSI_PURPLE}Assembly version text: ${ANSI_MAGENTA}$ASSEMBLY_VERSION_TEXT${ANSI_RESET}"
 
-PROJECT_ENTRYPOINT=$( cat "$SCRIPT_DIR/.meta" | grep -E "^PROJECT_ENTRYPOINT:" | sed  -n 1p | cut -d: -sf2- | xargs )
-if [ "$PROJECT_ENTRYPOINT" = "" ]; then  # auto-detect
-    PROJECT_ENTRYPOINT=$( find "$SCRIPT_DIR/src" -type f -name "*.csproj" -print | sed -n 1p )
-    PROJECT_ENTRYPOINT=$( echo "$PROJECT_ENTRYPOINT" | sed "s|$SCRIPT_DIR/||g" )
+PROJECT_ENTRYPOINTS=$( cat "$SCRIPT_DIR/.meta" | grep -E "^PROJECT_ENTRYPOINT:" | cut -d: -sf2- | xargs )
+if [ "$PROJECT_ENTRYPOINTS" = "" ]; then  # auto-detect
+    PROJECT_ENTRYPOINTS=$( find "$SCRIPT_DIR/src" -type f -name "*.csproj" -print | sed -n 1p )
+    PROJECT_ENTRYPOINTS=$( echo "$PROJECT_ENTRYPOINTS" | sed "s|$SCRIPT_DIR/||g" )
 fi
-if [ "$PROJECT_ENTRYPOINT" != "" ] && [ -e "$SCRIPT_DIR/$PROJECT_ENTRYPOINT" ]; then
-    echo "${ANSI_PURPLE}Project entry point .: ${ANSI_MAGENTA}$PROJECT_ENTRYPOINT${ANSI_RESET}"
+if [ "$PROJECT_ENTRYPOINTS" != "" ]; then
+    FIRST_LINE=1
+    for PROJECT_ENTRYPOINT in $PROJECT_ENTRYPOINTS; do
+        if [ "$FIRST_LINE" -ne 0 ]; then
+            echo -n "${ANSI_PURPLE}Project entry point .: "
+            FIRST_LINE=0
+        else
+            echo -n "${ANSI_PURPLE}                       "
+        fi
+        if [ -e "$SCRIPT_DIR/$PROJECT_ENTRYPOINT" ]; then
+            echo "${ANSI_MAGENTA}$PROJECT_ENTRYPOINT${ANSI_RESET}"
+        else
+            echo "${ANSI_RED}not found${ANSI_RESET}" >&2
+            exit 113
+        fi
+    done
+    # main entrypoint controls everything, other entry point is just to build them all
+    PROJECT_ENTRYPOINT=$( echo "$PROJECT_ENTRYPOINTS" | tr ' ' '\n' | sed -n 1p )
 else
     echo "${ANSI_PURPLE}Project entry point .: ${ANSI_RED}not found${ANSI_RESET}" >&2
     exit 113
@@ -496,7 +512,16 @@ make_tools() {
         echo "${ANSI_MAGENTA}$(basename $PROJECT_FILE) ($(basename $(dirname $PROJECT_FILE)))${ANSI_RESET}"
 
         mkdir -p "$SCRIPT_DIR/bin"
-        dotnet build "$PROJECT_FILE" --configuration Release --output "$SCRIPT_DIR/bin"
+        dotnet publish "$PROJECT_FILE"                                             \
+            --configuration Release                                                \
+            -p:DebugType=embedded -p:PathMap="$SCRIPT_DIR=/"                       \
+            -p:CopyDebugSymbolFilesFromPackages=false                              \
+            -p:Deterministic=true -p:ContinuousIntegrationBuild=true               \
+            -p:AssemblyVersion=$ASSEMBLY_VERSION -p:FileVersion=$ASSEMBLY_VERSION  \
+            -p:Version=$ASSEMBLY_VERSION_TEXT                                      \
+            -p:EnableNETAnalyzers=false                                            \
+            -p:PublishSingleFile=true --self-contained true                        \
+            --output "$SCRIPT_DIR/bin/tools"                                      || exit 113
         echo
     done
 
@@ -513,14 +538,40 @@ make_debug() {
     echo "${ANSI_MAGENTA}┗━━━━━━━┛${ANSI_RESET}"
     echo
 
-    echo "${ANSI_MAGENTA}$(basename $PROJECT_ENTRYPOINT)${ANSI_RESET}"
+    mkdir -p "$SCRIPT_DIR/bin/debug"
+    for ENTRYPOINT in $PROJECT_ENTRYPOINTS; do
+        echo "${ANSI_MAGENTA}$(basename $ENTRYPOINT)${ANSI_RESET}"
 
-    mkdir -p "$SCRIPT_DIR/bin"
-    dotnet build                           \
-        --configuration Debug              \
-        --output "$SCRIPT_DIR/bin"         \
-        -p:EnableNETAnalyzers=false        \
-        "$SCRIPT_DIR/$PROJECT_ENTRYPOINT" || exit 113
+        PUBLISH_EXTRA_ARGS=
+        if [ "$PROJECT_SINGLEFILE" = "true" ]; then
+            PUBLISH_EXTRA_ARGS="$PUBLISH_EXTRA_ARGS --self-contained true -p:PublishSingleFile=true"
+        elif [ "$PROJECT_SINGLEFILE" = "false" ]; then
+            PUBLISH_EXTRA_ARGS="$PUBLISH_EXTRA_ARGS --self-contained false -p:PublishSingleFile=false"
+        fi
+
+        ENTRYPOINT_OUTPUTTYPE=$( cat "$SCRIPT_DIR/$ENTRYPOINT" | grep -E "<OutputType>" | sed -n 1p | sed -E "s|.*<OutputType>(.*)</OutputType>.*|\1|g" | xargs | tr '[:upper:]' '[:lower:]' )
+        if [ "$ENTRYPOINT_OUTPUTTYPE" = "exe" ] || [ "$ENTRYPOINT_OUTPUTTYPE" = "winexe" ]; then
+            PUBLISH_EXTRA_ARGS="$PUBLISH_EXTRA_ARGS -p:PublishReadyToRun=true"
+        elif [ "$ENTRYPOINT_OUTPUTTYPE" = "library" ]; then  # libraries cannot be published as a single file
+            PUBLISH_EXTRA_ARGS="$PUBLISH_EXTRA_ARGS -p:GenerateDocumentationFile=true"
+        else
+            echo "${ANSI_RED}Cannot compile project type'$ENTRYPOINT_OUTPUTTYPE'${ANSI_RESET}" >&2
+            exit 113
+        fi
+
+        dotnet publish "$SCRIPT_DIR/$ENTRYPOINT"                                   \
+            --configuration Debug                                                  \
+            -p:DebugType=portable -p:PathMap="$SCRIPT_DIR=/"                       \
+            -p:CopyDebugSymbolFilesFromPackages=true                               \
+            -p:Deterministic=true -p:ContinuousIntegrationBuild=true               \
+            -p:AssemblyVersion=$ASSEMBLY_VERSION -p:FileVersion=$ASSEMBLY_VERSION  \
+            -p:Version=$ASSEMBLY_VERSION_TEXT                                      \
+            -p:EnableNETAnalyzers=true                                             \
+            $PUBLISH_EXTRA_ARGS --output "$SCRIPT_DIR/bin/debug"                   \
+        && echo "${ANSI_CYAN}$SCRIPT_DIR/bin/debug/${ANSI_RESET}"                  || exit 113
+
+        echo
+    done
 }
 
 make_release() {
@@ -533,51 +584,59 @@ make_release() {
     mkdir -p "$SCRIPT_DIR/bin"
     PROJECT_RUNTIME_COUNT=$(echo $PROJECT_RUNTIMES | wc -w)
     for RUNTIME in $PROJECT_RUNTIMES; do
-        echo "${ANSI_MAGENTA}$(basename $PROJECT_ENTRYPOINT) ($RUNTIME)${ANSI_RESET}"
+        for ENTRYPOINT in $PROJECT_ENTRYPOINTS; do
+            echo "${ANSI_MAGENTA}$(basename $ENTRYPOINT) ($RUNTIME)${ANSI_RESET}"
 
-        PUBLISH_EXTRA_ARGS=
-        if [ "$PROJECT_SINGLEFILE" = "true" ]; then
-            PUBLISH_EXTRA_ARGS="$PUBLISH_EXTRA_ARGS --self-contained true -p:PublishSingleFile=true"
-        elif [ "$PROJECT_SINGLEFILE" = "false" ]; then
-            PUBLISH_EXTRA_ARGS="$PUBLISH_EXTRA_ARGS --self-contained false -p:PublishSingleFile=false"
-        fi
-
-        if [ "$PROJECT_OUTPUTTYPE" = "exe" ] || [ "$PROJECT_OUTPUTTYPE" = "winexe" ]; then
-            PUBLISH_EXTRA_ARGS="$PUBLISH_EXTRA_ARGS -p:PublishReadyToRun=true"
-        elif [ "$PROJECT_OUTPUTTYPE" = "library" ]; then  # libraries cannot be published as a single file
-            PUBLISH_EXTRA_ARGS="$PUBLISH_EXTRA_ARGS -p:GenerateDocumentationFile=true"
-        else
-            echo "${ANSI_RED}Cannot compile project type'$PROJECT_OUTPUTTYPE'${ANSI_RESET}" >&2
-            exit 113
-        fi
-
-        if [ "$RUNTIME" = "current" ]; then
-            PUBLISH_EXTRA_ARGS="$PUBLISH_EXTRA_ARGS --use-current-runtime"
-            if [ "$PROJECT_RUNTIME_COUNT" -eq 1 ]; then
-                PUBLISH_OUTPUT_DIR="$SCRIPT_DIR/bin"
-            else
-                PUBLISH_OUTPUT_DIR="$SCRIPT_DIR/bin/current"
+            PUBLISH_EXTRA_ARGS=
+            if [ "$PROJECT_SINGLEFILE" = "true" ]; then
+                PUBLISH_EXTRA_ARGS="$PUBLISH_EXTRA_ARGS --self-contained true -p:PublishSingleFile=true"
+            elif [ "$PROJECT_SINGLEFILE" = "false" ]; then
+                PUBLISH_EXTRA_ARGS="$PUBLISH_EXTRA_ARGS --self-contained false -p:PublishSingleFile=false"
             fi
-        else
-            PUBLISH_EXTRA_ARGS="$PUBLISH_EXTRA_ARGS --runtime $RUNTIME"
-            PUBLISH_OUTPUT_DIR="$SCRIPT_DIR/bin/$RUNTIME"
-        fi
 
-        dotnet publish "$SCRIPT_DIR/$PROJECT_ENTRYPOINT"                           \
-            --configuration Release                                                \
-            -p:AssemblyVersion=$ASSEMBLY_VERSION -p:FileVersion=$ASSEMBLY_VERSION  \
-            -p:Version=$ASSEMBLY_VERSION_TEXT                                      \
-            -p:EnableNETAnalyzers=false                                            \
-            $PUBLISH_EXTRA_ARGS --output "$PUBLISH_OUTPUT_DIR"                     \
-        && echo "${ANSI_CYAN}$SCRIPT_DIR/bin${ANSI_RESET}"                        || exit 113
+            ENTRYPOINT_OUTPUTTYPE=$( cat "$SCRIPT_DIR/$ENTRYPOINT" | grep -E "<OutputType>" | sed -n 1p | sed -E "s|.*<OutputType>(.*)</OutputType>.*|\1|g" | xargs | tr '[:upper:]' '[:lower:]' )
+            if [ "$ENTRYPOINT_OUTPUTTYPE" = "exe" ] || [ "$ENTRYPOINT_OUTPUTTYPE" = "winexe" ]; then
+                PUBLISH_EXTRA_ARGS="$PUBLISH_EXTRA_ARGS -p:PublishReadyToRun=true"
+            elif [ "$ENTRYPOINT_OUTPUTTYPE" = "library" ]; then  # libraries cannot be published as a single file
+                PUBLISH_EXTRA_ARGS="$PUBLISH_EXTRA_ARGS -p:GenerateDocumentationFile=true"
+            else
+                echo "${ANSI_RED}Cannot compile project type'$ENTRYPOINT_OUTPUTTYPE'${ANSI_RESET}" >&2
+                exit 113
+            fi
+
+            if [ "$RUNTIME" = "current" ]; then
+                PUBLISH_EXTRA_ARGS="$PUBLISH_EXTRA_ARGS --use-current-runtime"
+                if [ "$PROJECT_RUNTIME_COUNT" -eq 1 ]; then
+                    PUBLISH_OUTPUT_DIR="$SCRIPT_DIR/bin"
+                else
+                    PUBLISH_OUTPUT_DIR="$SCRIPT_DIR/bin/current"
+                fi
+            else
+                PUBLISH_EXTRA_ARGS="$PUBLISH_EXTRA_ARGS --runtime $RUNTIME"
+                PUBLISH_OUTPUT_DIR="$SCRIPT_DIR/bin/$RUNTIME"
+            fi
+
+            dotnet publish "$SCRIPT_DIR/$ENTRYPOINT"                                   \
+                --configuration Release                                                \
+                -p:DebugType=embedded -p:PathMap="$SCRIPT_DIR=/"                       \
+                -p:CopyDebugSymbolFilesFromPackages=false                              \
+                -p:Deterministic=true -p:ContinuousIntegrationBuild=true               \
+                -p:AssemblyVersion=$ASSEMBLY_VERSION -p:FileVersion=$ASSEMBLY_VERSION  \
+                -p:Version=$ASSEMBLY_VERSION_TEXT                                      \
+                -p:EnableNETAnalyzers=false                                            \
+                $PUBLISH_EXTRA_ARGS --output "$PUBLISH_OUTPUT_DIR"                     \
+            && echo "${ANSI_CYAN}$SCRIPT_DIR/bin/${ANSI_RESET}"                        || exit 113
+
+            echo
+        done
 
         if [ -e "$SCRIPT_DIR/examples/content" ]; then
+            echo "${ANSI_MAGENTA}examples: content ($RUNTIME)${ANSI_RESET}"
             mkdir -p "$PUBLISH_OUTPUT_DIR/examples"
             (cd "$SCRIPT_DIR/examples/content" && find . -type d -exec mkdir -p "$PUBLISH_OUTPUT_DIR/examples/{}" \;)
             (cd "$SCRIPT_DIR/examples/content" && find . -type f -exec cp --parents {} "$PUBLISH_OUTPUT_DIR/examples/" \;)
+            echo
         fi
-
-        echo
     done
 }
 
