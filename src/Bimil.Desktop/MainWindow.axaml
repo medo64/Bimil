@@ -164,12 +164,6 @@
             </StackPanel>
         </Grid>
 
-        <!-- Statusbar -->
-        <Grid DockPanel.Dock="Bottom" ColumnDefinitions="Auto, *, Auto" Margin="7 5 7 0">
-            <Label Name="lblFileName" Grid.Column="0"></Label>
-            <Label Name="lblLastSave" Grid.Column="2"></Label>
-        </Grid>
-
         <!-- Main -->
         <Grid ColumnDefinitions="2*, 1*" RowDefinitions="Auto, *">
             <TextBox Name="txtFilter" Grid.Row="0" Grid.Column="0" Watermark="Search..." Margin="5" />

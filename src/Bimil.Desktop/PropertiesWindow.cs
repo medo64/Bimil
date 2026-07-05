@@ -4,24 +4,36 @@ using System;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.Threading;
 using Medo.Security.Cryptography.PasswordSafe;
 
 internal partial class PropertiesWindow : Window {
 
-    public PropertiesWindow(Document? document) {
+    public PropertiesWindow(State state) {
         InitializeComponent();
 
-        Document = document;
+        PropertyChanged += (sender, e) => {  // close on minimize
+            if (e.Property == Window.WindowStateProperty && WindowState == WindowState.Minimized) {
+                Dispatcher.UIThread.InvokeAsync(() => {
+                    WindowState = WindowState.Normal;
+                    Close();
+                });
+            }
+        };
 
-        txtID.Text = document?.Uuid.ToString() ?? "";
-        txtName.Text = document?.Name ?? "";
-        txtDescription.Text = document?.Description ?? "";
+        Document = state.Document;
 
-        txtSaveApplication.Text = document?.LastSaveApplication ?? "";
-        txtSaveUser.Text = document?.LastSaveUser ?? "";
-        txtSaveHost.Text = document?.LastSaveHost ?? "";
-        if ((document?.LastSaveTime != null) && (document?.LastSaveTime > DateTime.MinValue)) {
-            txtSaveTime.Text = document.LastSaveTime.ToShortDateString() + " " + document.LastSaveTime.ToLongTimeString();
+        txtFileName.Text = state.File?.FullName ?? "";
+
+        txtID.Text = state.Document?.Uuid.ToString() ?? "";
+        txtName.Text = state.Document?.Name ?? "";
+        txtDescription.Text = state.Document?.Description ?? "";
+
+        txtSaveApplication.Text = state.Document?.LastSaveApplication ?? "";
+        txtSaveUser.Text = state.Document?.LastSaveUser ?? "";
+        txtSaveHost.Text = state.Document?.LastSaveHost ?? "";
+        if ((state.Document?.LastSaveTime != null) && (state.Document?.LastSaveTime > DateTime.MinValue)) {
+            txtSaveTime.Text = state.Document.LastSaveTime.ToShortDateString() + " " + state.Document.LastSaveTime.ToLongTimeString();
         }
 
         // TODO: static keys

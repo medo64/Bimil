@@ -294,7 +294,7 @@ internal partial class MainWindow : Window {
         if (mnuFileProperties.IsEnabled == false) { return; }
 
         if (State.Document != null) {
-            var frm = new PropertiesWindow(State.Document);
+            var frm = new PropertiesWindow(State);
             await frm.ShowDialog(this);
         }
     }
@@ -440,15 +440,9 @@ internal partial class MainWindow : Window {
         var file = State.File;
         if (file != null) {
             Title = file.Name;
-            lblFileName.Content = file.FullName;
-            lblLastSave.Content = (file.LastWriteTime != DateTime.MinValue)
-                                ? file.LastWriteTime.ToShortDateString() + " " + file.LastWriteTime.ToLongTimeString()
-                                : "";
             Config.Recent.Files.Add(file);
         } else {
             Title = "Bimil";
-            lblFileName.Content = "";
-            lblLastSave.Content = "";
         }
 
         var hasDocument = (State.Document != null);
