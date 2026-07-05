@@ -62,20 +62,26 @@ internal partial class EntryWindow : Window {
                 case RecordType.Autotype:
                     continue;
 
-                case RecordType.UserName:
-                    AddPlainText(record);
+                case RecordType.UserName: {
+                        var control = AddPlainText(record);
+                        AvaloniaHelpers.RegisterForAlternateFont(control);
+                    }
                     break;
 
-                case RecordType.Password:
-                    AddPasswordText(record);
+                case RecordType.Password: {
+                        var control = AddPasswordText(record);
+                        AvaloniaHelpers.RegisterForAlternateFont(control);
+                    }
                     break;
 
                 case RecordType.Url:
                     AddUrlText(record);
                     break;
 
-                case RecordType.EmailAddress:
-                    AddUrlText(record, protocol: "mailto");
+                case RecordType.EmailAddress: {
+                        var control = AddUrlText(record, protocol: "mailto");
+                        AvaloniaHelpers.RegisterForAlternateFont(control);
+                    }
                     break;
 
                 case RecordType.TwoFactorKey:
@@ -123,7 +129,7 @@ internal partial class EntryWindow : Window {
         control.Text = record.Text;
     }
 
-    private void AddPlainText(Record record) {
+    private TextBox AddPlainText(Record record) {
         var buttonCopy = GetButton("EditCopy");
         var control = AddRow<TextBox>(record.Caption, buttonCopy);
         control.Text = record.Text;
@@ -138,16 +144,17 @@ internal partial class EntryWindow : Window {
             data.Add(DataTransferItem.CreateText(control.Text));
             Clipboard?.SetDataAsync(data);
         };
+
+        return control;
     }
 
 
-    private void AddPasswordText(Record record) {
+    private TextBox AddPasswordText(Record record) {
         var buttonView = GetButton("EditView");
         var buttonCopy = GetButton("EditCopy");
         var control = AddRow<TextBox>(record.Caption, buttonView, buttonCopy);
         control.PasswordChar = '•';
         control.Text = record.Text;
-        AvaloniaHelpers.RegisterForAlternateFont(control);
 
         control.TextChanged += (sender, args) => {
             var hasData = !string.IsNullOrEmpty(control.Text);
@@ -164,9 +171,11 @@ internal partial class EntryWindow : Window {
             data.Add(DataTransferItem.CreateText(record.Text));
             Clipboard?.SetDataAsync(data);
         };
+
+        return control;
     }
 
-    private void AddUrlText(Record record, string protocol = "http") {
+    private TextBox AddUrlText(Record record, string protocol = "http") {
         var buttonLink = GetButton("LinkUrl");
         var buttonCopy = GetButton("EditCopy");
         var control = AddRow<TextBox>(record.Caption, buttonLink, buttonCopy);
@@ -193,9 +202,11 @@ internal partial class EntryWindow : Window {
             data.Add(DataTransferItem.CreateText(control.Text));
             Clipboard?.SetDataAsync(data);
         };
+
+        return control;
     }
 
-    private void AddTwoFactorText(Record record) {
+    private TextBox AddTwoFactorText(Record record) {
         TimeBasedOtp otp;
         byte[] secret = record?.GetBytes() ?? [];
         try {
@@ -241,15 +252,18 @@ internal partial class EntryWindow : Window {
             data.Add(DataTransferItem.CreateText(otp.GetCodeAsText()));
             Clipboard?.SetDataAsync(data);
         };
+
+        return control;
     }
 
-    private void AddMultilineText(Record record) {
+    private TextBox AddMultilineText(Record record) {
         var control = AddRow<TextBox>(record.Caption);
         control.AcceptsReturn = true;
         control.TextWrapping = TextWrapping.Wrap;
         control.MaxHeight = control.MinHeight * 3;
         control.MinHeight = control.MinHeight * 2;
         control.Text = record.Text;
+        return control;
     }
 
     private T AddRow<T>(string? caption, params Button[] buttons) where T : Control, new() {
