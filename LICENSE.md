@@ -22,6 +22,36 @@ so, subject to the following conditions:
 
 
 
+## Avalonia (https://github.com/AvaloniaUI/Avalonia)
+
+Used as a GUI framework
+
+
+### The MIT License (MIT)
+
+Copyright (c) AvaloniaUI OÜ
+All Rights Reserved
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+
+
 ## QR Coder (https://github.com/codebude/QRCoder)
 
 To generate QR codes Bimil uses modified  version of QRCoder.
@@ -47,6 +77,36 @@ FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
 COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
+## Serious Shanns (https://github.com/kaBeech/serious-shanns/)
+
+Font used as an alternate for better readability.
+
+
+### MIT License
+
+Original work Copyright (c) 2018 Shannon Miwa
+Modified work Copyright (c) 2019 dtinth
+Modified work Copyright (c) 2023-2024 Kyle Beechly
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 
 
 
@@ -85,11 +145,9 @@ copyright in this software, database and any associated documentation shall at
 all times remain with Princeton University and LICENSEE agrees to preserve same.
 
 
-
 ## Popular Baby Names (United States Social Security Administration)
 
 Public Domain
-
 
 
 ## US Board On Geographic Names (States, Territories, Associated Areas of the United States)
@@ -97,17 +155,14 @@ Public Domain
 Public Domain
 
 
-
 ## The Bible, King James Version, Complete (Project Gutenberg)
 
 Public Domain, The Project Gutenberg License
 
 
-
 ## The Complete Works of William Shakespeare (Project Gutenberg)
 
 Public Domain, The Project Gutenberg License, Produced by World Library, Inc., from their Library of the Future
-
 
 
 ## The Complete Works of Jane Austen (Project Gutenberg):

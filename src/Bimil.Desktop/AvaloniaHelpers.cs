@@ -13,6 +13,29 @@ using Avalonia.VisualTree;
 
 internal static class AvaloniaHelpers {
 
+    private static readonly FontFamily AlternateFontFamily = new("avares://Bimil/Assets/Fonts/SeriousShanns-Light.otf#Serious Shanns Light");
+
+    public static void RegisterForAlternateFont(params TextBox?[] textBoxes) {
+        if (textBoxes == null) { return; }
+        foreach (var textBox in textBoxes) {
+            if (textBox != null) {
+                var originalFontFamily = textBox.FontFamily;
+                textBox.KeyDown += (sender, e) => {
+                    if (e.Key == Key.F1) {
+                        if (!textBox.RevealPassword) { textBox.RevealPassword = true; }
+                        if (textBox.FontFamily != AlternateFontFamily) {
+                            textBox.FontFamily = AlternateFontFamily;
+                            textBox.FontSize *= 2;
+                        } else {
+                            textBox.FontFamily = originalFontFamily;
+                            textBox.FontSize /= 2;
+                        }
+                    }
+                };
+            }
+        }
+    }
+
     public static void FocusControl(Control control) {
         if (control.IsAttachedToVisualTree()) {
             control.Focus(NavigationMethod.Tab);

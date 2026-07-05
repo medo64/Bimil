@@ -147,6 +147,7 @@ internal partial class EntryWindow : Window {
         var control = AddRow<TextBox>(record.Caption, buttonView, buttonCopy);
         control.PasswordChar = '•';
         control.Text = record.Text;
+        AvaloniaHelpers.RegisterForAlternateFont(control);
 
         control.TextChanged += (sender, args) => {
             var hasData = !string.IsNullOrEmpty(control.Text);
