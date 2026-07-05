@@ -239,7 +239,7 @@ internal partial class MainWindow : Window {
     public async void mnuFileOpen_Click(object sender, RoutedEventArgs e) {
         if (mnuFileOpen.IsEnabled == false) { return; }
 
-        var files = await StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions {
+        var filePickerOptions = new FilePickerOpenOptions {
             Title = "Open File",
             FileTypeFilter = new FilePickerFileType[] {
                 new("Bimil and PasswordSafe") { Patterns = [ "*.bimil", "*.passwordsafe" ], MimeTypes = [ "/*" ] },
@@ -247,8 +247,13 @@ internal partial class MainWindow : Window {
                 new("PasswordSafe") { Patterns = [ "*.passwordsafe" ], MimeTypes = [ "/*" ] },
                 FilePickerFileTypes.All
             },
-            AllowMultiple = false
-        });
+            AllowMultiple = false,
+        };
+        if (Config.Recent.Files.TryGet(0, out var recentFile) && (recentFile.DirectoryName != null)) {
+            filePickerOptions.SuggestedStartLocation = await StorageProvider.TryGetFolderFromPathAsync(recentFile.DirectoryName);
+        }
+
+        var files = await StorageProvider.OpenFilePickerAsync(filePickerOptions);
         if (files.Count > 0) {
             var fileInfo = new FileInfo(Uri.UnescapeDataString(files[0].Path.AbsolutePath));
             OpenFile(fileInfo, @readonly: false);
@@ -268,7 +273,7 @@ internal partial class MainWindow : Window {
     public async void mnuFileSaveAs_Click(object sender, RoutedEventArgs e) {
         if (mnuFileSave.IsEnabled == false) { return; }
 
-        var file = await StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions {
+        var filePickerOptions = new FilePickerSaveOptions {
             Title = "Save File",
             FileTypeChoices = new FilePickerFileType[] {
                 new("Bimil") { Patterns = [ "*.bimil" ], MimeTypes = [ "/*" ] },
@@ -276,8 +281,15 @@ internal partial class MainWindow : Window {
             },
             DefaultExtension = ".bimil",
             ShowOverwritePrompt = false,
-            SuggestedFileName = State.File?.Name,
-        });
+        };
+        if (State.File != null) {
+            filePickerOptions.SuggestedStartLocation = await StorageProvider.TryGetFolderFromPathAsync(State.File.DirectoryName!);
+            filePickerOptions.SuggestedFileName = State.File.Name;
+        } else if (Config.Recent.Files.TryGet(0, out var recentFile) && (recentFile.DirectoryName != null)) {
+            filePickerOptions.SuggestedStartLocation = await StorageProvider.TryGetFolderFromPathAsync(recentFile.DirectoryName);
+        }
+
+        var file = await StorageProvider.SaveFilePickerAsync(filePickerOptions);
         if (file != null) {
             var fileInfo = new FileInfo(Uri.UnescapeDataString(file.Path.AbsolutePath));
             State.Document?.Save(fileInfo.OpenWrite());
