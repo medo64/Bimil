@@ -148,6 +148,24 @@ if [ "$PROJECT_RUNTIMES" = "" ]; then
 fi
 echo "${ANSI_PURPLE}Project runtimes ....: ${ANSI_MAGENTA}$PROJECT_RUNTIMES${ANSI_RESET}"
 
+PROJECT_EXAMPLES=$( cat "$SCRIPT_DIR/.meta" | grep -E "^PROJECT_EXAMPLES_DIR:" | cut -d: -sf2- | xargs )
+if [ "$PROJECT_EXAMPLES" != "" ]; then
+    FIRST_LINE=1
+    for PROJECT_EXAMPLE in $PROJECT_EXAMPLES; do
+        if [ "$FIRST_LINE" -ne 0 ]; then
+            echo -n "${ANSI_PURPLE}Project examples ....: "
+            FIRST_LINE=0
+        else
+            echo -n "${ANSI_PURPLE}                       "
+        fi
+        if [ -e "$SCRIPT_DIR/$PROJECT_EXAMPLE" ]; then
+            echo "${ANSI_MAGENTA}$PROJECT_EXAMPLE${ANSI_RESET}"
+        else
+            echo "${ANSI_RED}not found${ANSI_RESET}" >&2
+            exit 113
+        fi
+    done
+fi
 
 DOCKER_FILE="$(find "$SCRIPT_DIR/src" -type f -name "Dockerfile" -print | sed -n 1p)"
 
@@ -630,13 +648,13 @@ make_release() {
             echo
         done
 
-        if [ -e "$SCRIPT_DIR/examples/content" ]; then
-            echo "${ANSI_MAGENTA}examples: content ($RUNTIME)${ANSI_RESET}"
+        for PROJECT_EXAMPLE in $PROJECT_EXAMPLES; do
+            echo "${ANSI_MAGENTA}examples: $PROJECT_EXAMPLE ($RUNTIME)${ANSI_RESET}"
             mkdir -p "$PUBLISH_OUTPUT_DIR/examples"
-            (cd "$SCRIPT_DIR/examples/content" && find . -type d -exec mkdir -p "$PUBLISH_OUTPUT_DIR/examples/{}" \;)
-            (cd "$SCRIPT_DIR/examples/content" && find . -type f -exec cp --parents {} "$PUBLISH_OUTPUT_DIR/examples/" \;)
+            (cd "$SCRIPT_DIR/$PROJECT_EXAMPLE" && find . -type d -exec mkdir -p "$PUBLISH_OUTPUT_DIR/examples/{}" \;)
+            (cd "$SCRIPT_DIR/$PROJECT_EXAMPLE" && find . -type f -exec cp --parents {} "$PUBLISH_OUTPUT_DIR/examples/" \;)
             echo
-        fi
+        done
     done
 }
 
@@ -976,7 +994,7 @@ make_publish() {
             if [ "$GITHUB_UPLOAD_FILES" != "" ]; then
                 PUBLISH_GITHUB_EXISTING_RELEASE_ID=$( curl -s https://api.github.com/repos/$PUBLISH_GITHUB_OWNER/$PUBLISH_GITHUB_REPO/releases \
                                                               -H "Authorization: Bearer $PUBLISH_GITHUB_KEY" \
-                                                      | jq -r ".[] | select(.tag_name==\"$GIT_VERSION\") | .id" 2>/dev/null )
+                                                      | jq -r ".[] | select(.tag_name==\"v$GIT_VERSION\") | .id" 2>/dev/null )
                 if [ "$PUBLISH_GITHUB_EXISTING_RELEASE_ID" != "" ]; then
                     echo "${ANSI_YELLOW}Release with tag $GIT_VERSION already exists, deleting it first${ANSI_RESET}" >&2
                     curl -X DELETE https://api.github.com/repos/$PUBLISH_GITHUB_OWNER/$PUBLISH_GITHUB_REPO/releases/$PUBLISH_GITHUB_EXISTING_RELEASE_ID \
@@ -987,7 +1005,7 @@ make_publish() {
                                                           -H "Authorization: Bearer $PUBLISH_GITHUB_KEY" \
                                                           -H "Accept: application/vnd.github+json" \
                                                           -d "{
-                                                              \"tag_name\": \"$GIT_VERSION\",
+                                                              \"tag_name\": \"v$GIT_VERSION\",
                                                               \"name\": \"$GIT_VERSION\",
                                                               \"body\": \"\",
                                                               \"draft\": false,
