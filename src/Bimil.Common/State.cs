@@ -74,6 +74,26 @@ public sealed class State {
     }
 
     /// <summary>
+    /// Save file to the same file name.
+    /// </summary>
+    public void SaveFile() {
+        if (File == null) { throw new InvalidOperationException("Cannot determine file."); }
+        SaveFile(File);
+    }
+
+    /// <summary>
+    /// Saves a file to a new name.
+    /// </summary>
+    /// <param name="file">File.</param>
+    public void SaveFile(FileInfo file) {
+        if (file == null) { throw new InvalidOperationException("Cannot determine file."); }
+        using var stream = file.OpenWrite();
+        stream?.SetLength(0);
+        StaticKey.SaveDocumentWithStaticKey(Document, stream);
+        File = file;
+    }
+
+    /// <summary>
     /// Forces raising of document change event.
     /// </summary>
     public void RaiseDocumentChange() {

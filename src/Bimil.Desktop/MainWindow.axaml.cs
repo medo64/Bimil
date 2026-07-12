@@ -264,7 +264,11 @@ internal partial class MainWindow : Window {
         if (mnuFileSave.IsEnabled == false) { return; }
 
         if (State.File != null) {
-            State.Document?.Save(State.File.OpenWrite());
+            try {
+                State.SaveFile();
+            } catch (Exception ex) {
+                MessageBox.ShowErrorDialog(this, "Save file", ex.Message);
+            }
         } else {
             mnuFileSaveAs_Click(sender, e);
         }
@@ -292,7 +296,11 @@ internal partial class MainWindow : Window {
         var file = await StorageProvider.SaveFilePickerAsync(filePickerOptions);
         if (file != null) {
             var fileInfo = new FileInfo(Uri.UnescapeDataString(file.Path.AbsolutePath));
-            State.Document?.Save(fileInfo.OpenWrite());
+            try {
+                State.SaveFile(fileInfo);
+            } catch (Exception ex) {
+                MessageBox.ShowErrorDialog(this, "Save file", ex.Message);
+            }
         }
     }
 

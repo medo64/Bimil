@@ -27,7 +27,16 @@ internal partial class PropertiesWindow : Window {
             txtSaveTime.Text = state.Document.LastSaveTime.ToShortDateString() + " " + state.Document.LastSaveTime.ToLongTimeString();
         }
 
-        // TODO: static keys
+        var staticKey = StaticKey.GetStaticKeyAsBase58(state.Document);
+        if (staticKey != null) {
+            txtStaticKey.Text = staticKey;
+            chbStaticKeyUse.IsChecked = true;
+        } else {
+            txtStaticKey.Text = "";
+            chbStaticKeyUse.IsChecked = false;
+        }
+        chbStaticKeyUse.IsEnabled = !(Document?.IsReadOnly ?? true);
+        chbStaticKeyUse.IsCheckedChanged += chbStaticKeyUse_IsCheckedChanged;  // assigned late to avoid triggering when set the first time
 
         AvaloniaHelpers.FocusControl(btnClose);
     }
@@ -40,12 +49,34 @@ internal partial class PropertiesWindow : Window {
         base.OnKeyDown(e);
     }
 
+    private bool hadAnyStaticKeyChanges = false;
 
-    public void btnSave_Click(object sender, RoutedEventArgs e) {
+    public void chbStaticKeyUse_IsCheckedChanged(object? sender, RoutedEventArgs e) {
+        hadAnyStaticKeyChanges = true;
+        if (chbStaticKeyUse.IsChecked == true) {
+            txtStaticKey.Text = StaticKey.GetNewStaticKeyAsBase58();
+        } else {
+            txtStaticKey.Text = "";
+        }
+    }
+
+
+    public void btnSave_Click(object? sender, RoutedEventArgs e) {
         if (Document != null) {
             Document.Name = txtName.Text ?? "";
             Document.Description = txtDescription.Text ?? "";
+            if (hadAnyStaticKeyChanges) {
+                if (chbStaticKeyUse.IsChecked == true) {
+                    StaticKey.RemoveStaticKey(Document);
+                } else {
+                    StaticKey.SetStaticKey(Document, txtStaticKey.Text);
+                }
+            }
         }
+
+        txtStaticKey.Text = "";
+        GC.Collect();
+
         Close();
     }
 
