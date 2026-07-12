@@ -23,6 +23,9 @@ internal partial class StartWindow : Window {
             var hasSelection = (selectedStack?.Tag != null);
             btnOpen.IsEnabled = hasSelection;
             btnOpenReadonly.IsEnabled = hasSelection;
+            mnuOpen.IsEnabled = hasSelection;
+            mnuOpenReadOnly.IsEnabled = hasSelection;
+            mnuRemove.IsEnabled = hasSelection;
         };
 
 
@@ -94,16 +97,7 @@ internal partial class StartWindow : Window {
                 break;
 
             case Key.Delete:
-                if (lsbFiles.SelectedItem is StackPanel stack) {
-                    if (MessageBox.ShowQuestionDialog(this,
-                                                     "Remove from recent files",
-                                                     "Do you really want to remove file from the most-recent list?",
-                                                     "Yes", "No") == 0) {
-                        var file = (FileInfo)stack.Tag!;
-                        Config.Recent.Files.Remove(file);
-                        lsbFiles.Items.Remove(stack);
-                    }
-                }
+                mnuRemove_Click(null, e);
                 break;
 
             default: base.OnKeyDown(e); break;
@@ -127,6 +121,19 @@ internal partial class StartWindow : Window {
             SelectedFile = (FileInfo)stack.Tag!;
             SelectedReadonly = true;
             Close();
+        }
+    }
+
+    public void mnuRemove_Click(object? sender, RoutedEventArgs e) {
+        if (lsbFiles.SelectedItem is StackPanel stack) {
+            if (MessageBox.ShowQuestionDialog(this,
+                                             "Remove from recent files",
+                                             "Do you really want to remove file from the most-recent list?",
+                                             "Yes", "No") == 0) {
+                var file = (FileInfo)stack.Tag!;
+                Config.Recent.Files.Remove(file);
+                lsbFiles.Items.Remove(stack);
+            }
         }
     }
 
