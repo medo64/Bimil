@@ -220,7 +220,7 @@ internal partial class EntryWindow : Window {
         var buttonView = GetButton("EditView");
         var buttonShow = GetButton("LinkCode");
         var buttonCopy = GetButton("EditCopy2FA");
-        var control = AddRow<TextBox>(record.Caption, buttonView, buttonShow, buttonCopy);
+        var control = AddRow<TextBox>(record?.Caption ?? "", buttonView, buttonShow, buttonCopy);
         control.PasswordChar = '•';
         control.Text = otp.GetSecretAsText();
 
