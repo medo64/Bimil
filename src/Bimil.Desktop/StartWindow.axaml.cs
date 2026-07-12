@@ -17,6 +17,11 @@ internal partial class StartWindow : Window {
     public StartWindow() {
         InitializeComponent();
         AvaloniaHelpers.SetupDialog(this);
+        InputElement.KeyDownEvent.AddClassHandler<TopLevel>((sender, e) => {
+            if ((e.KeyModifiers == KeyModifiers.None) && (e.Key == Key.Enter)) {
+                OnKeyDown(e);
+            }
+        }, handledEventsToo: true);
 
         lsbFiles.SelectionChanged += (sender, e) => {
             var selectedStack = lsbFiles.SelectedItem as StackPanel;
@@ -69,13 +74,13 @@ internal partial class StartWindow : Window {
     }
 
     protected override void OnKeyDown(KeyEventArgs e) {
-        switch (e.Key) {
-            case Key.Escape: Close(); break;
-            case Key.Enter: btnOpen_Click(this, e); break;
+        switch ((e.Key, e.KeyModifiers)) {
+            case (Key.Escape, KeyModifiers.None): Close(); break;
+            case (Key.Enter, KeyModifiers.None): btnOpen_Click(this, e); break;
 
-            case Key.Up: if (lsbFiles.SelectedIndex > 0) { lsbFiles.SelectedIndex -= 1; } break;
-            case Key.Down: if (lsbFiles.SelectedIndex < lsbFiles.Items.Count - 1) { lsbFiles.SelectedIndex += 1; } break;
-            case Key.Left: {
+            case (Key.Up, KeyModifiers.None): if (lsbFiles.SelectedIndex > 0) { lsbFiles.SelectedIndex -= 1; } break;
+            case (Key.Down, KeyModifiers.None): if (lsbFiles.SelectedIndex < lsbFiles.Items.Count - 1) { lsbFiles.SelectedIndex += 1; } break;
+            case (Key.Left, KeyModifiers.None): {
                     if (btnOpen.IsFocused) {
                         AvaloniaHelpers.FocusControl(btnClose);
                     } else if (btnOpenReadonly.IsFocused) {
@@ -85,7 +90,7 @@ internal partial class StartWindow : Window {
                     }
                 }
                 break;
-            case Key.Right: {
+            case (Key.Right, KeyModifiers.None): {
                     if (btnOpen.IsFocused) {
                         AvaloniaHelpers.FocusControl(btnOpenReadonly);
                     } else if (btnOpenReadonly.IsFocused) {
@@ -96,7 +101,7 @@ internal partial class StartWindow : Window {
                 }
                 break;
 
-            case Key.Delete:
+            case (Key.Delete, KeyModifiers.None):
                 mnuRemove_Click(null, e);
                 break;
 

@@ -39,10 +39,10 @@
             </ListBox.Template>
             <ListBox.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Header="_Open" Name="mnuOpen" Click="btnOpen_Click" />
+                    <MenuItem Header="_Open" Name="mnuOpen" InputGesture="Enter" Click="btnOpen_Click" />
                     <MenuItem Header="O_pen Read-only" Name="mnuOpenReadOnly" Click="btnOpenReadonly_Click" />
                     <MenuItem Header="-" />
-                    <MenuItem Header="_Remove" Name="mnuRemove" Click="mnuRemove_Click" />
+                    <MenuItem Header="_Remove" Name="mnuRemove" InputGesture="Delete" Click="mnuRemove_Click" />
                 </ContextMenu>
             </ListBox.ContextMenu>
         </ListBox>
