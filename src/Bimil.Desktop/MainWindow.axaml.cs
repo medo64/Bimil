@@ -118,6 +118,10 @@ internal partial class MainWindow : Window {
                 }
                 break;
 
+            case (Key.C, KeyModifiers.Control):
+            case (Key.Insert, KeyModifiers.Control):
+                mnuEntryCopy_Click(null!, null!);
+                break;
 
             case (Key.N, KeyModifiers.Control):
             case (Key.N, KeyModifiers.Alt):
@@ -142,6 +146,16 @@ internal partial class MainWindow : Window {
 
             case (Key.S, KeyModifiers.Alt):
                 mnuFileSaveDropDown.IsSubMenuOpen = true;
+                break;
+
+            case (Key.V, KeyModifiers.Control):
+            case (Key.Insert, KeyModifiers.Shift):
+                mnuEntryPaste_Click(null!, null!);
+                break;
+
+            case (Key.X, KeyModifiers.Control):
+            case (Key.Delete, KeyModifiers.Shift):
+                mnuEntryCut_Click(null!, null!);
                 break;
 
 
@@ -439,6 +453,29 @@ internal partial class MainWindow : Window {
         Medo.Avalonia.AboutBox.ShowDialog(this, new Uri("https://medo64.com/bimil/"));
     }
 
+
+    public void mnuEntryCut_Click(object? sender, RoutedEventArgs e) {
+        if ((lsbEntries.SelectedItem as ListBoxItem)?.Tag is not Entry entry) { return; }
+        var json = entry.ExportToJson();
+        PTClipboard.SetText(json);
+        lsbEntries.Items.Remove(lsbEntries.SelectedItem);
+    }
+
+    public void mnuEntryCopy_Click(object? sender, RoutedEventArgs e) {
+        if ((lsbEntries.SelectedItem as ListBoxItem)?.Tag is not Entry entry) { return; }
+        var json = entry.ExportToJson();
+        PTClipboard.SetText(json);
+    }
+
+    public void mnuEntryPaste_Click(object? sender, RoutedEventArgs e) {
+        var text = PTClipboard.GetText();
+        if (Entry.TryImportFromJson(text, out var entry)) {
+            entry.Title = "Test";
+            State?.Document?.Entries.Add(entry);
+            ReplenishEntries(entry);
+        }
+    }
+
     #endregion Menu
 
     #region Events
@@ -489,7 +526,14 @@ internal partial class MainWindow : Window {
         ReplenishEntries();
     }
 
-    private void ReplenishEntries() {
+    private void ReplenishEntries(Entry? selectedEntry = null) {
+        if (selectedEntry == null) {
+            if (lsbEntries.SelectedItem is ListBoxItem { Tag: Entry entry }) {
+                selectedEntry = entry;
+            }
+        }
+        ListBoxItem? newSelected = null;
+
         lsbEntries.Items.Clear();
         if (State.Document != null) {
             var filter = txtFilter.Text ?? "";
@@ -514,10 +558,14 @@ internal partial class MainWindow : Window {
                 DockPanel.SetDock(titleBlock, Dock.Left);
                 DockPanel.SetDock(groupBlock, Dock.Right);
 
-                lsbEntries.Items.Add(new ListBoxItem { Content = dock, Tag = item });
+                var newLBItem = new ListBoxItem { Content = dock, Tag = item };
+                lsbEntries.Items.Add(newLBItem);
+                if (item == selectedEntry) {
+                    lsbEntries.SelectedItem = newLBItem;
+                }
             }
         }
-        if (lsbEntries.Items.Count > 0) {
+        if ((lsbEntries.SelectedIndex < 0) && (lsbEntries.Items.Count > 0)) {
             lsbEntries.SelectedIndex = 0;
         }
     }
