@@ -110,6 +110,11 @@ internal partial class PasswordWindow : Window {
         }
     }
 
+    public void chbShowPassword_IsCheckedChanged(object? sender, RoutedEventArgs e) {
+        txtPasswordExisting.RevealPassword = !txtPasswordExisting.RevealPassword;
+        txtPasswordCompare.RevealPassword = !txtPasswordCompare.RevealPassword;
+    }
+
     public void btnCancel_Click(object sender, RoutedEventArgs e) {
         Close();
     }
