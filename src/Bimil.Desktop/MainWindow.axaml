@@ -170,7 +170,7 @@
             <ComboBox Name="cmbGroups" Grid.Row="0" Grid.Column="1" Margin="0 5 5 5" HorizontalAlignment="Stretch" />
             <ListBox Name="lsbEntries" Grid.Row="1" Grid.ColumnSpan="2" Background="{DynamicResource SystemAltMediumLowColor}" SelectionChanged="lsbEntries_SelectionChanged" DoubleTapped="lsbEntries_DoubleTapped">
                 <ListBox.ContextMenu>
-                    <ContextMenu>
+                    <ContextMenu Opening="mnuEntry_Opening">
                         <MenuItem Header="Cu_t" Name="mnuEntryCut" InputGesture="Ctrl+X" Click="mnuEntryCut_Click" />
                         <MenuItem Header="_Copy" Name="mnuEntryCopy" InputGesture="Ctrl+C" Click="mnuEntryCopy_Click" />
                         <MenuItem Header="_Paste" Name="mnuEntryPaste" InputGesture="Ctrl+V" Click="mnuEntryPaste_Click" />

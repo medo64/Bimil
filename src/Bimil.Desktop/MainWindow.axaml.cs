@@ -1,6 +1,7 @@
 namespace Bimil;
 
 using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
@@ -458,11 +459,20 @@ internal partial class MainWindow : Window {
     }
 
 
+    public void mnuEntry_Opening(object? sender, CancelEventArgs e) {
+        var canPaste = Entry.TryImportFromJson(PTClipboard.GetText(), out _);
+        var canCopy = (lsbEntries.SelectedItem as ListBoxItem)?.Tag is Entry;
+        mnuEntryCut.IsEnabled = canCopy;
+        mnuEntryCopy.IsEnabled = canCopy;
+        mnuEntryPaste.IsEnabled = canPaste;
+    }
+
     public void mnuEntryCut_Click(object? sender, RoutedEventArgs e) {
         if ((lsbEntries.SelectedItem as ListBoxItem)?.Tag is not Entry entry) { return; }
         var json = entry.ExportToJson();
         PTClipboard.SetText(json);
         lsbEntries.Items.Remove(lsbEntries.SelectedItem);
+        State?.Document?.Entries.Remove(entry);
     }
 
     public void mnuEntryCopy_Click(object? sender, RoutedEventArgs e) {
@@ -474,7 +484,6 @@ internal partial class MainWindow : Window {
     public void mnuEntryPaste_Click(object? sender, RoutedEventArgs e) {
         var text = PTClipboard.GetText();
         if (Entry.TryImportFromJson(text, out var entry)) {
-            entry.Title = "Test";
             State?.Document?.Entries.Add(entry);
             ReplenishEntries(entry);
         }
@@ -536,7 +545,6 @@ internal partial class MainWindow : Window {
                 selectedEntry = entry;
             }
         }
-        ListBoxItem? newSelected = null;
 
         lsbEntries.Items.Clear();
         if (State.Document != null) {
