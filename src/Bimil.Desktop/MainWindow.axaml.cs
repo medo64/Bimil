@@ -482,10 +482,24 @@ internal partial class MainWindow : Window {
     }
 
     public void mnuEntryPaste_Click(object? sender, RoutedEventArgs e) {
+        var document = State?.Document;
+        if (document == null) { return; }
+
         var text = PTClipboard.GetText();
-        if (Entry.TryImportFromJson(text, out var entry)) {
-            State?.Document?.Entries.Add(entry);
-            ReplenishEntries(entry);
+        if (Entry.TryImportFromJson(text, out var pastedEntry)) {
+            var foundUuid = false;
+            foreach (var entry in document.Entries) {
+                if (entry.Uuid == pastedEntry.Uuid) {
+                    foundUuid = true;
+                    break;
+                }
+            }
+            if (foundUuid) {
+                Trace.WriteLine("Updated pasted UUID");
+                pastedEntry.Uuid = Guid.NewGuid();
+            }
+            document.Entries.Add(pastedEntry);
+            ReplenishEntries(pastedEntry);
         }
     }
 
