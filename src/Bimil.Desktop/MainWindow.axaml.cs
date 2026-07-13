@@ -191,6 +191,10 @@ internal partial class MainWindow : Window {
                 mnuAppDropDown.IsSubMenuOpen = true;
                 break;
 
+            case (Key.F5, KeyModifiers.None):
+                ReplenishEntries();
+                break;
+
             default: base.OnKeyDown(e); return;
         }
 
