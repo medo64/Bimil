@@ -86,8 +86,10 @@ internal partial class EntryWindow : Window {
                     }
                     break;
 
-                case RecordType.TwoFactorKey:
-                    AddTwoFactorText(record);
+                case RecordType.TwoFactorKey: {
+                        var (textBox, textBoxCode) = AddTwoFactorText(record);
+                        AvaloniaHelpers.RegisterForTwoFactorView(textBox, textBoxCode, record);
+                    }
                     break;
 
                 case RecordType.Notes:
@@ -208,7 +210,7 @@ internal partial class EntryWindow : Window {
         return control;
     }
 
-    private TextBox AddTwoFactorText(Record record) {
+    private (TextBox, TextBox) AddTwoFactorText(Record record) {
         TimeBasedOtp otp;
         byte[] secret = record?.GetBytes() ?? [];
         try {
@@ -221,6 +223,16 @@ internal partial class EntryWindow : Window {
         var buttonShow = GetButton("LinkCode");
         var buttonCopy = GetButton("EditCopy2FA");
         var control = AddRow<TextBox>(record?.Caption ?? "", buttonView, buttonShow, buttonCopy);
+
+        var control2FA = new TextBox();
+        Grid.SetColumn(control2FA, Grid.GetColumn(control));
+        Grid.SetRow(control2FA, Grid.GetRow(control));
+        control2FA.TabIndex = control.TabIndex;
+        control2FA.IsVisible = false;
+        control2FA.TextAlignment = TextAlignment.Center;
+        var panel = (Panel)control.Parent!;
+        panel.Children.Insert(panel.Children.IndexOf(control), control2FA);
+
         control.PasswordChar = '•';
         control.Text = otp.GetSecretAsText();
 
@@ -255,7 +267,7 @@ internal partial class EntryWindow : Window {
             Clipboard?.SetDataAsync(data);
         };
 
-        return control;
+        return (control, control2FA);
     }
 
     private TextBox AddMultilineText(Record record) {
@@ -282,7 +294,7 @@ internal partial class EntryWindow : Window {
         Grid.SetRow(label, row);
         Grid.SetColumn(label, 0);
 
-        var control = new T(){
+        var control = new T() {
             TabIndex = NextTabIndex++,
         };
         if ((buttons is not null) && (buttons.Length > 0)) {

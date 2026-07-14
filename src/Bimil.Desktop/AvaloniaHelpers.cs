@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
+using System.Threading;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
@@ -12,6 +13,8 @@ using Avalonia.Media;
 using Avalonia.Styling;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
+using Medo;
+using Medo.Security.Cryptography.PasswordSafe;
 
 internal static class AvaloniaHelpers {
 
@@ -38,6 +41,54 @@ internal static class AvaloniaHelpers {
                 };
             }
         }
+    }
+
+    public static void RegisterForTwoFactorView(TextBox textBox, TextBox textBoxCode, Record record) {
+        textBoxCode.FontFamily = AlternateFontFamily;
+        textBoxCode.FontSize *= 2;
+
+        void keyDownHandler(object? sender, KeyEventArgs e) {
+            if (e.Key == Key.F1) {
+                var panel = (Panel)textBox.Parent!;
+                var timer = textBoxCode.Tag as Timer;
+                if (textBox.IsVisible) {
+                    textBox.IsVisible = false;
+                    panel.Children.Remove(textBoxCode);
+                    panel.Children.Add(textBoxCode);
+                    textBoxCode.IsVisible = true;
+                    if (timer == null) {
+                        textBoxCode.Tag = new Timer(_ => {  // TODO: find clearer way of cleaning this up
+                            TimeBasedOtp otp;
+                            byte[] secret = record?.GetBytes() ?? [];
+                            try {
+                                otp = new TimeBasedOtp(secret);
+                                var code = otp.GetCodeAsText(CodeOutputFormat.None);
+                                Dispatcher.UIThread.Post(() => {
+                                    if (textBoxCode.Text != code) {
+                                        textBoxCode.Text = code;
+                                        textBoxCode.SelectAll();
+                                    }
+                                });
+                            } finally {
+                                Array.Clear(secret, 0, secret.Length);
+                            }
+                        }, null, TimeSpan.Zero, TimeSpan.FromSeconds(1));
+                    } else {
+                        timer?.Change(TimeSpan.Zero, TimeSpan.FromSeconds(1));
+                    }
+                    FocusControl(textBoxCode);
+                } else {
+                    textBoxCode.IsVisible = false;
+                    panel.Children.Remove(textBox);
+                    panel.Children.Add(textBox);
+                    textBox.IsVisible = true;
+                    timer?.Change(TimeSpan.Zero, Timeout.InfiniteTimeSpan);
+                    FocusControl(textBox);
+                }
+            }
+        }
+        textBox.KeyDown += keyDownHandler;
+        textBoxCode.KeyDown += keyDownHandler;
     }
 
     public static void SetupDialog(Window window) {
