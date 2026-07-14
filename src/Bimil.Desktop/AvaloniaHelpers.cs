@@ -24,13 +24,15 @@ internal static class AvaloniaHelpers {
                 var originalFontFamily = textBox.FontFamily;
                 textBox.KeyDown += (sender, e) => {
                     if (e.Key == Key.F1) {
-                        if (!textBox.RevealPassword) { textBox.RevealPassword = true; }
+                        var isPass = textBox.PasswordChar != '\0';
                         if (textBox.FontFamily != AlternateFontFamily) {
                             textBox.FontFamily = AlternateFontFamily;
                             textBox.FontSize *= 2;
+                            if (isPass) { textBox.RevealPassword = true; }
                         } else {
                             textBox.FontFamily = originalFontFamily;
                             textBox.FontSize /= 2;
+                            if (isPass) { textBox.RevealPassword = false; }
                         }
                     }
                 };
