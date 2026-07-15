@@ -401,7 +401,14 @@ internal partial class MainWindow : Window {
 
         if (lsbEntries.SelectedItem is ListBoxItem { Tag: Entry selectedEntry }) {
             if (MessageBox.ShowQuestionDialog(this, "Remove entry", $"Do you really want to remove entry '{selectedEntry.Title}'?", "Yes", "No") == 0) {
-                lsbEntries.Items.RemoveAt(lsbEntries.SelectedIndex);
+                var index = lsbEntries.Items.IndexOf(lsbEntries.SelectedItem);
+                if (index + 1 < lsbEntries.Items.Count) {
+                    lsbEntries.SelectedItem = lsbEntries.Items[index + 1];
+                } else if (index > 0) {
+                    lsbEntries.SelectedItem = lsbEntries.Items[index - 1];
+                }
+                State?.Document?.Entries.Remove(selectedEntry);
+                ReplenishEntries();
             }
         }
     }
