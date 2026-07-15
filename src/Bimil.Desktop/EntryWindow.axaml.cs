@@ -228,6 +228,7 @@ internal partial class EntryWindow : Window {
         Grid.SetColumn(control2FA, Grid.GetColumn(control));
         Grid.SetRow(control2FA, Grid.GetRow(control));
         control2FA.TabIndex = control.TabIndex;
+        control2FA.IsReadOnly = true;
         control2FA.IsVisible = false;
         control2FA.TextAlignment = TextAlignment.Center;
         var panel = (Panel)control.Parent!;
