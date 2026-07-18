@@ -1,3 +1,4 @@
 PROJECT_NAME:           Bimil
 PROJECT_ENTRYPOINT:     src/Bimil.Desktop/Bimil.Desktop.csproj
-PROJECT_RUNTIMES:       current linux-x64 linux-musl-x64 win-x64
+PUBLISH_RUNTIMES:       current linux-x64 linux-musl-x64 win-x64
+PUBLISH_SINGLEFILE:     true

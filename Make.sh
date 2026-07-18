@@ -129,24 +129,31 @@ else
     exit 113
 fi
 
-PROJECT_SINGLEFILE=$( cat "$SCRIPT_DIR/.meta" | grep -E "^PROJECT_SINGLEFILE:" | sed  -n 1p | cut -d: -sf2- | xargs | tr '[:upper:]' '[:lower:]' )
-if [ "$PROJECT_SINGLEFILE" = "true" ] || [ "$PROJECT_SINGLEFILE" = "false" ]; then
-    echo "${ANSI_PURPLE}Project single-file .: ${ANSI_MAGENTA}$PROJECT_SINGLEFILE${ANSI_RESET}"
+PUBLISH_SINGLEFILE=$( cat "$SCRIPT_DIR/.meta" | grep -E "^PUBLISH_SINGLEFILE:" | sed  -n 1p | cut -d: -sf2- | xargs | tr '[:upper:]' '[:lower:]' )
+if [ "$PUBLISH_SINGLEFILE" = "true" ] || [ "$PUBLISH_SINGLEFILE" = "false" ]; then
+    echo "${ANSI_PURPLE}Publish single-file .: ${ANSI_MAGENTA}$PUBLISH_SINGLEFILE${ANSI_RESET}"
 elif [ "$PROJECT_OUTPUTTYPE" = "exe" ] || [ "$PROJECT_OUTPUTTYPE" = "winexe" ]; then
-    PROJECT_SINGLEFILE=true
-    echo "${ANSI_PURPLE}Project single-file .: ${ANSI_MAGENTA}$PROJECT_SINGLEFILE${ANSI_RESET}"
+    PUBLISH_SINGLEFILE=true
+    echo "${ANSI_PURPLE}Publish single-file .: ${ANSI_MAGENTA}$PUBLISH_SINGLEFILE${ANSI_RESET}"
 elif [ "$PROJECT_OUTPUTTYPE" = "library" ]; then  # libraries cannot be published as a single file
-    PROJECT_SINGLEFILE=false
-    echo "${ANSI_PURPLE}Project single-file .: ${ANSI_MAGENTA}$PROJECT_SINGLEFILE${ANSI_RESET}"
+    PUBLISH_SINGLEFILE=false
+    echo "${ANSI_PURPLE}Publish single-file .: ${ANSI_MAGENTA}$PUBLISH_SINGLEFILE${ANSI_RESET}"
 else
-    PROJECT_SINGLEFILE=
+    PUBLISH_SINGLEFILE=
 fi
 
-PROJECT_RUNTIMES=$( cat "$SCRIPT_DIR/.meta" | grep -E "^PROJECT_RUNTIMES:" | sed  -n 1p | cut -d: -sf2- | xargs )
-if [ "$PROJECT_RUNTIMES" = "" ]; then
-    PROJECT_RUNTIMES=current
+PUBLISH_AOT=$( cat "$SCRIPT_DIR/.meta" | grep -E "^PUBLISH_AOT:" | sed  -n 1p | cut -d: -sf2- | xargs | tr '[:upper:]' '[:lower:]' )
+if [ "$PUBLISH_AOT" = "true" ] || [ "$PUBLISH_AOT" = "false" ]; then
+    echo "${ANSI_PURPLE}Publish AOT compile .: ${ANSI_MAGENTA}$PUBLISH_AOT${ANSI_RESET}"
+else
+    PUBLISH_AOT=
 fi
-echo "${ANSI_PURPLE}Project runtimes ....: ${ANSI_MAGENTA}$PROJECT_RUNTIMES${ANSI_RESET}"
+
+PUBLISH_RUNTIMES=$( cat "$SCRIPT_DIR/.meta" | grep -E "^PUBLISH_RUNTIMES:" | sed  -n 1p | cut -d: -sf2- | xargs )
+if [ "$PUBLISH_RUNTIMES" = "" ]; then
+    PUBLISH_RUNTIMES=current
+fi
+echo "${ANSI_PURPLE}Publish runtimes ....: ${ANSI_MAGENTA}$PUBLISH_RUNTIMES${ANSI_RESET}"
 
 PROJECT_EXAMPLES=$( cat "$SCRIPT_DIR/.meta" | grep -E "^PROJECT_EXAMPLES_DIR:" | cut -d: -sf2- | xargs )
 if [ "$PROJECT_EXAMPLES" != "" ]; then
@@ -561,9 +568,9 @@ make_debug() {
         echo "${ANSI_MAGENTA}$(basename $ENTRYPOINT)${ANSI_RESET}"
 
         PUBLISH_EXTRA_ARGS=
-        if [ "$PROJECT_SINGLEFILE" = "true" ]; then
+        if [ "$PUBLISH_SINGLEFILE" = "true" ]; then
             PUBLISH_EXTRA_ARGS="$PUBLISH_EXTRA_ARGS --self-contained true -p:PublishSingleFile=true"
-        elif [ "$PROJECT_SINGLEFILE" = "false" ]; then
+        elif [ "$PUBLISH_SINGLEFILE" = "false" ]; then
             PUBLISH_EXTRA_ARGS="$PUBLISH_EXTRA_ARGS --self-contained false -p:PublishSingleFile=false"
         fi
 
@@ -600,16 +607,21 @@ make_release() {
     echo
 
     mkdir -p "$SCRIPT_DIR/bin"
-    PROJECT_RUNTIME_COUNT=$(echo $PROJECT_RUNTIMES | wc -w)
-    for RUNTIME in $PROJECT_RUNTIMES; do
+    PROJECT_RUNTIME_COUNT=$(echo $PUBLISH_RUNTIMES | wc -w)
+    for RUNTIME in $PUBLISH_RUNTIMES; do
         for ENTRYPOINT in $PROJECT_ENTRYPOINTS; do
             echo "${ANSI_MAGENTA}$(basename $ENTRYPOINT) ($RUNTIME)${ANSI_RESET}"
 
             PUBLISH_EXTRA_ARGS=
-            if [ "$PROJECT_SINGLEFILE" = "true" ]; then
+            if [ "$PUBLISH_SINGLEFILE" = "true" ]; then
                 PUBLISH_EXTRA_ARGS="$PUBLISH_EXTRA_ARGS --self-contained true -p:PublishSingleFile=true"
-            elif [ "$PROJECT_SINGLEFILE" = "false" ]; then
+            elif [ "$PUBLISH_SINGLEFILE" = "false" ]; then
                 PUBLISH_EXTRA_ARGS="$PUBLISH_EXTRA_ARGS --self-contained false -p:PublishSingleFile=false"
+            fi
+            if [ "$PUBLISH_AOT" = "true" ]; then
+                PUBLISH_EXTRA_ARGS="$PUBLISH_EXTRA_ARGS -p:PublishAot=true"
+            elif [ "$PUBLISH_AOT" = "false" ]; then
+                PUBLISH_EXTRA_ARGS="$PUBLISH_EXTRA_ARGS -p:PublishAot=false"
             fi
 
             ENTRYPOINT_OUTPUTTYPE=$( cat "$SCRIPT_DIR/$ENTRYPOINT" | grep -E "<OutputType>" | sed -n 1p | sed -E "s|.*<OutputType>(.*)</OutputType>.*|\1|g" | xargs | tr '[:upper:]' '[:lower:]' )
@@ -667,7 +679,7 @@ make_package() {
 
     ANYTHING_DONE=0
 
-    for RUNTIME in $PROJECT_RUNTIMES; do
+    for RUNTIME in $PUBLISH_RUNTIMES; do
         if [ "$RUNTIME" = "current" ]; then continue; fi
 
         ANYTHING_DONE=1
@@ -696,7 +708,7 @@ make_package() {
     done
 
     if [ "$PACKAGE_LINUX_APPIMAGE" != "" ]; then
-        for RUNTIME in $PROJECT_RUNTIMES; do
+        for RUNTIME in $PUBLISH_RUNTIMES; do
             case $RUNTIME in
                 linux-x64)   APPIMAGE_ARCHITECTURE=x86_64 ;;
                 linux-arm64) APPIMAGE_ARCHITECTURE=aarch64 ;;
@@ -742,7 +754,7 @@ make_package() {
     fi
 
     if [ "$PACKAGE_LINUX_DEB" != "" ]; then
-        for RUNTIME in $PROJECT_RUNTIMES; do
+        for RUNTIME in $PUBLISH_RUNTIMES; do
             case $RUNTIME in
                 linux-x64)   DEB_ARCHITECTURE=amd64 ;;
                 linux-arm64) DEB_ARCHITECTURE=arm64 ;;
@@ -871,7 +883,7 @@ make_publish() {
 
     if [ "$PUBLISH_LINUX_ARCHIVE" != "" ]; then
         if [ "$GIT_VERSION" != "" ]; then
-            for RUNTIME in $PROJECT_RUNTIMES; do
+            for RUNTIME in $PUBLISH_RUNTIMES; do
                 case $RUNTIME in
                     current) continue ;;
                     win-*)   ARCHIVE_NAME_CURR="$PROJECT_NAME_LOWER-$ASSEMBLY_VERSION_TEXT-$RUNTIME.zip" ;;
@@ -892,7 +904,7 @@ make_publish() {
     fi
 
     if [ "$PUBLISH_LINUX_APPIMAGE" != "" ]; then
-        for RUNTIME in $PROJECT_RUNTIMES; do
+        for RUNTIME in $PUBLISH_RUNTIMES; do
             case $RUNTIME in
                 linux-x64)   APPIMAGE_NAME_CURR=$APPIMAGE_NAME_AMD64 ;;
                 linux-arm64) APPIMAGE_NAME_CURR=$APPIMAGE_NAME_ARM64 ;;
@@ -911,7 +923,7 @@ make_publish() {
 
     if [ "$PUBLISH_LINUX_DEB" != "" ]; then
         if [ "$PACKAGE_NUGET_VERSION" != "" ] && [ "$PACKAGE_NUGET_VERSION" != "0.0.0" ]; then
-            for RUNTIME in $PROJECT_RUNTIMES; do
+            for RUNTIME in $PUBLISH_RUNTIMES; do
                 case $RUNTIME in
                     linux-x64)   DEB_ARCHITECTURE=amd64 ; DEB_PACKAGE_CURR=$DEB_PACKAGE_AMD64 ;;
                     linux-arm64) DEB_ARCHITECTURE=arm64 ; DEB_PACKAGE_CURR=$DEB_PACKAGE_ARM64 ;;
