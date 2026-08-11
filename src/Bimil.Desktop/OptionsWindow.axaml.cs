@@ -40,13 +40,13 @@ internal partial class OptionsWindow : Window {
 
     public void btnDefaults_Click(object sender, RoutedEventArgs e) {
         // Behavior
-        chbCloseOnEscape.IsChecked = false;
-        chbLoadLast.IsChecked = false;
-        chbShowStart.IsChecked = true;
+        chbCloseOnEscape.IsChecked = Settings.Defaults.CloseOnEscape;
+        chbLoadLast.IsChecked = Settings.Defaults.LoadLast;
+        chbShowStart.IsChecked = Settings.Defaults.ShowStart;;
 
         // Special
-        chbSyncX11PrimaryClipboard.IsChecked = true;
-        chbShowPasswordSafeCompatibilityWarnings.IsChecked = false;
+        chbSyncX11PrimaryClipboard.IsChecked = Settings.Defaults.SyncX11PrimaryClipboard;
+        chbShowPasswordSafeCompatibilityWarnings.IsChecked = Settings.Defaults.ShowPasswordSafeCompatibilityWarnings;
     }
 
     public void btnSave_Click(object sender, RoutedEventArgs e) {

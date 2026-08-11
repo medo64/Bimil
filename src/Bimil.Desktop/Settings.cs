@@ -1,9 +1,22 @@
 namespace Bimil;
 
 using System;
+using Avalonia.Utilities;
 using Medo;
 
 internal static class Settings {
+
+    internal static class Defaults {
+
+        public static bool CloseOnEscape => false;
+        public static bool LoadLast => false;
+        public static int NotesLineCount => 3;
+        public static bool ShowPasswordSafeCompatibilityWarnings => false;
+        public static bool ShowStart => true;
+        public static bool SyncX11PrimaryClipboard => true;
+        public static string Theme => "Default";
+
+    }
 
     #region Behavior
 
@@ -12,7 +25,7 @@ internal static class Settings {
     /// Default value is false.
     /// </summary>
     public static bool CloseOnEscape {
-        get { return Config.Read("CloseOnEscape", false); }
+        get { return Config.Read("CloseOnEscape", Defaults.CloseOnEscape); }
         set { Config.Write("CloseOnEscape", value); }
     }
 
@@ -20,7 +33,7 @@ internal static class Settings {
     /// Gets/sets if the last file will be automatically loaded.
     /// </summary>
     public static bool LoadLast {
-        get { return Config.Read("LoadLast", false) && !ShowStart; }
+        get { return Config.Read("LoadLast", Defaults.LoadLast) && !ShowStart; }
         set {
             Config.Write("LoadLast", value);
             if ((value == true) && ShowStart) { ShowStart = false; }
@@ -31,7 +44,7 @@ internal static class Settings {
     /// Gets/sets if start window will be shown.
     /// </summary>
     public static bool ShowStart {
-        get { return Config.Read("ShowStart", true); }
+        get { return Config.Read("ShowStart", Defaults.ShowStart); }
         set {
             Config.Write("ShowStart", value);
             if ((value == true) && LoadLast) { LoadLast = false; }
@@ -46,7 +59,7 @@ internal static class Settings {
     /// Gets/sets if warnings will be shown upon adding fields not compatible with PasswordSafe.
     /// </summary>
     public static bool ShowPasswordSafeCompatibilityWarnings {
-        get { return Config.Read("ShowPasswordSafeWarnings", false); }
+        get { return Config.Read("ShowPasswordSafeWarnings", Defaults.ShowPasswordSafeCompatibilityWarnings); }
         set { Config.Write("ShowPasswordSafeWarnings", value); }
     }
 
@@ -55,7 +68,7 @@ internal static class Settings {
     /// Default value is true.
     /// </summary>
     public static bool SyncX11PrimaryClipboard {
-        get { return Config.Read("SyncX11PrimaryClipboard", true); }
+        get { return Config.Read("SyncX11PrimaryClipboard", Defaults.SyncX11PrimaryClipboard); }
         set { Config.Write("SyncX11PrimaryClipboard", value); }
     }
 
@@ -68,12 +81,9 @@ internal static class Settings {
     /// Default value is 3.
     /// </summary>
     public static int NotesLineCount {
-        get { return Math.Max(3, Math.Min(10, Config.Read("NotesLineCount", 3))); }
+        get { return LimitBetween(Config.Read("NotesLineCount", Defaults.NotesLineCount), 3, 10); }
         set { Config.Write("NotesLineCount", value); }
     }
-
-    #endregion UI
-
 
     /// <summary>
     /// Gets/sets theme.
@@ -82,13 +92,15 @@ internal static class Settings {
     /// </summary>
     public static ThemeVariant Theme {
         get {
-            var value = Config.Read("Theme", "Default");
+            var value = Config.Read("Theme", Defaults.Theme);
             if (value.Equals("Light", StringComparison.OrdinalIgnoreCase)) { return ThemeVariant.Light; }
             if (value.Equals("Dark", StringComparison.OrdinalIgnoreCase)) { return ThemeVariant.Dark; }
-            return ThemeVariant.Default;
+            return ThemeVariant.System;
         }
         set { Config.Write("Theme", value.ToString()); }
     }
+
+    #endregion UI
 
 
 
@@ -496,7 +508,7 @@ internal static class Settings {
     #region Helper
 
     public enum ThemeVariant {
-        Default = 0,
+        System = 0,
         Light = 1,
         Dark = 2,
     }
