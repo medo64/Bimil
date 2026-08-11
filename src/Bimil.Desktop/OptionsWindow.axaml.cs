@@ -35,7 +35,6 @@ internal partial class OptionsWindow : Window {
         } else {
             chbSyncX11PrimaryClipboard.IsVisible = false;
         }
-        chbShowPasswordSafeCompatibilityWarnings.IsChecked = Settings.ShowPasswordSafeCompatibilityWarnings;
     }
 
     public void btnDefaults_Click(object sender, RoutedEventArgs e) {
@@ -46,7 +45,6 @@ internal partial class OptionsWindow : Window {
 
         // Special
         chbSyncX11PrimaryClipboard.IsChecked = Settings.Defaults.SyncX11PrimaryClipboard;
-        chbShowPasswordSafeCompatibilityWarnings.IsChecked = Settings.Defaults.ShowPasswordSafeCompatibilityWarnings;
     }
 
     public void btnSave_Click(object sender, RoutedEventArgs e) {
@@ -57,7 +55,6 @@ internal partial class OptionsWindow : Window {
 
         // Special
         Settings.SyncX11PrimaryClipboard = chbSyncX11PrimaryClipboard.IsChecked!.Value;
-        Settings.ShowPasswordSafeCompatibilityWarnings = chbShowPasswordSafeCompatibilityWarnings.IsChecked!.Value;
 
         Close();
     }

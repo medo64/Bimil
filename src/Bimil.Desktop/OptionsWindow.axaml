@@ -29,7 +29,6 @@
             <TabItem Header="Special">
                 <StackPanel Margin="0 7 0 0" Spacing="3">
                     <CheckBox Content="Sync X11 primary clipboard" Name="chbSyncX11PrimaryClipboard" ToolTip.Tip="If set, both normal and primary (aka, middle-click) clipboard will be used when copying data." />
-                    <CheckBox Content="Show PasswordSafe compatibility warnings" Name="chbShowPasswordSafeCompatibilityWarnings" ToolTip.Tip="If set, warnings will be shown upon adding fields not compatible with PasswordSafe." />
                 </StackPanel>
             </TabItem>
         </TabControl>
