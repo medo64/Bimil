@@ -51,7 +51,7 @@ internal static class Settings {
     }
 
     /// <summary>
-    /// Gets/sets if X11 primary keyboard should be .
+    /// Gets/sets if X11 primary keyboard should be synced with normal clipboard.
     /// Default value is true.
     /// </summary>
     public static bool SyncX11PrimaryClipboard {
@@ -60,6 +60,20 @@ internal static class Settings {
     }
 
     #endregion Special
+
+    #region UI
+
+    /// <summary>
+    /// Gets/sets number of lines.
+    /// Default value is 3.
+    /// </summary>
+    public static int NotesLineCount {
+        get { return Math.Max(3, Math.Min(10, Config.Read("NotesLineCount", 3))); }
+        set { Config.Write("NotesLineCount", value); }
+    }
+
+    #endregion UI
+
 
     /// <summary>
     /// Gets/sets theme.

@@ -93,7 +93,7 @@ internal partial class EntryWindow : Window {
                     break;
 
                 case RecordType.Notes:
-                    AddMultilineText(record);
+                    AddMultilineText(record, Settings.NotesLineCount);
                     break;
 
                 default:
@@ -271,12 +271,12 @@ internal partial class EntryWindow : Window {
         return (control, control2FA);
     }
 
-    private TextBox AddMultilineText(Record record) {
+    private TextBox AddMultilineText(Record record, int lineCount) {
         var control = AddRow<TextBox>(record.Caption);
         control.AcceptsReturn = true;
         control.TextWrapping = TextWrapping.Wrap;
-        control.MaxHeight = control.MinHeight * 3;
-        control.MinHeight = control.MinHeight * 2;
+        control.MaxHeight = control.MinHeight * lineCount;
+        control.MinHeight = control.MinHeight * (lineCount - 1);
         control.Text = record.Text;
         return control;
     }
