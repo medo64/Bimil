@@ -12,7 +12,7 @@ internal static class Settings {
         public static bool LoadLast => false;
         public static int NotesLineCount => 3;
         public static bool ShowStart => true;
-        public static bool SyncX11PrimaryClipboard => true;
+        public static bool SyncPrimaryClipboard => true;
         public static string Theme => "Default";
 
     }
@@ -50,20 +50,16 @@ internal static class Settings {
         }
     }
 
-    #endregion Behavior
-
-    #region Special
-
     /// <summary>
-    /// Gets/sets if X11 primary keyboard should be synced with normal clipboard.
+    /// Gets/sets if primary keyboard should be synced with normal clipboard.
     /// Default value is true.
     /// </summary>
-    public static bool SyncX11PrimaryClipboard {
-        get { return Config.Read("SyncX11PrimaryClipboard", Defaults.SyncX11PrimaryClipboard); }
-        set { Config.Write("SyncX11PrimaryClipboard", value); }
+    public static bool SyncPrimaryClipboard {
+        get { return Config.Read("SyncPrimaryClipboard", Defaults.SyncPrimaryClipboard); }
+        set { Config.Write("SyncPrimaryClipboard", value); }
     }
 
-    #endregion Special
+    #endregion Behavior
 
     #region UI
 

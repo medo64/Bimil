@@ -18,17 +18,17 @@
                     <CheckBox Content="Close on escape" Name="chbCloseOnEscape" ToolTip.Tip="If set, escape key can be used to close application's main window." />
                     <CheckBox Content="Load last" Name="chbLoadLast" ToolTip.Tip="If set, last file will be loaded." />
                     <CheckBox Content="Show start window" Name="chbShowStart" ToolTip.Tip="If set, start dialog will be shown." />
+                    <CheckBox Content="Sync clipboards" Name="chbSyncPrimaryClipboard" ToolTip.Tip="If set, both normal and primary (aka, middle-click) clipboard will be used when copying data." />
+                </StackPanel>
+            </TabItem>
+
+            <TabItem Header="UI">
+                <StackPanel Margin="0 7 0 0" Spacing="3">
                 </StackPanel>
             </TabItem>
 
             <TabItem Header="Security">
                 <StackPanel Margin="0 7 0 0" Spacing="3">
-                </StackPanel>
-            </TabItem>
-
-            <TabItem Header="Special">
-                <StackPanel Margin="0 7 0 0" Spacing="3">
-                    <CheckBox Content="Sync X11 primary clipboard" Name="chbSyncX11PrimaryClipboard" ToolTip.Tip="If set, both normal and primary (aka, middle-click) clipboard will be used when copying data." />
                 </StackPanel>
             </TabItem>
         </TabControl>

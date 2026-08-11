@@ -31,9 +31,9 @@ internal partial class OptionsWindow : Window {
 
         // Special
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) {
-            chbSyncX11PrimaryClipboard.IsChecked = Settings.SyncX11PrimaryClipboard;
+            chbSyncPrimaryClipboard.IsChecked = Settings.SyncPrimaryClipboard;
         } else {
-            chbSyncX11PrimaryClipboard.IsVisible = false;
+            chbSyncPrimaryClipboard.IsVisible = false;
         }
     }
 
@@ -44,7 +44,7 @@ internal partial class OptionsWindow : Window {
         chbShowStart.IsChecked = Settings.Defaults.ShowStart;;
 
         // Special
-        chbSyncX11PrimaryClipboard.IsChecked = Settings.Defaults.SyncX11PrimaryClipboard;
+        chbSyncPrimaryClipboard.IsChecked = Settings.Defaults.SyncPrimaryClipboard;
     }
 
     public void btnSave_Click(object sender, RoutedEventArgs e) {
@@ -54,7 +54,7 @@ internal partial class OptionsWindow : Window {
         Settings.ShowStart = chbShowStart.IsChecked!.Value;
 
         // Special
-        Settings.SyncX11PrimaryClipboard = chbSyncX11PrimaryClipboard.IsChecked!.Value;
+        Settings.SyncPrimaryClipboard = chbSyncPrimaryClipboard.IsChecked!.Value;
 
         Close();
     }
