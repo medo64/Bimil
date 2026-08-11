@@ -28,13 +28,14 @@ internal partial class OptionsWindow : Window {
         chbCloseOnEscape.IsChecked = Settings.CloseOnEscape;
         chbLoadLast.IsChecked = Settings.LoadLast;
         chbShowStart.IsChecked = Settings.ShowStart;
-
-        // Special
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) {
             chbSyncPrimaryClipboard.IsChecked = Settings.SyncPrimaryClipboard;
         } else {
             chbSyncPrimaryClipboard.IsVisible = false;
         }
+
+        // UI
+        cmbTheme.SelectedIndex = (int)Settings.Theme;
     }
 
     public void btnDefaults_Click(object sender, RoutedEventArgs e) {
@@ -42,9 +43,10 @@ internal partial class OptionsWindow : Window {
         chbCloseOnEscape.IsChecked = Settings.Defaults.CloseOnEscape;
         chbLoadLast.IsChecked = Settings.Defaults.LoadLast;
         chbShowStart.IsChecked = Settings.Defaults.ShowStart;;
-
-        // Special
         chbSyncPrimaryClipboard.IsChecked = Settings.Defaults.SyncPrimaryClipboard;
+
+        // UI
+        cmbTheme.SelectedIndex = (int)Settings.Defaults.Theme;
     }
 
     public void btnSave_Click(object sender, RoutedEventArgs e) {
@@ -52,9 +54,10 @@ internal partial class OptionsWindow : Window {
         Settings.CloseOnEscape = chbCloseOnEscape.IsChecked!.Value;
         Settings.LoadLast = chbLoadLast.IsChecked!.Value;
         Settings.ShowStart = chbShowStart.IsChecked!.Value;
-
-        // Special
         Settings.SyncPrimaryClipboard = chbSyncPrimaryClipboard.IsChecked!.Value;
+
+        // UI
+        Settings.Theme = (Settings.ThemeVariant)cmbTheme.SelectedIndex;
 
         Close();
     }

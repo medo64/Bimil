@@ -23,8 +23,33 @@
             </TabItem>
 
             <TabItem Header="UI">
-                <StackPanel Margin="0 7 0 0" Spacing="3">
-                </StackPanel>
+                <Grid Margin="0 7 0 0" ColumnDefinitions="Auto, *" ColumnSpacing="3" RowSpacing="3">
+                    <Grid.Styles>
+                        <Style Selector="Button:disabled /template/ ContentPresenter">
+                            <Setter Property="Background" Value="Transparent" />
+                        </Style>
+                        <Style Selector="Label">
+                            <Setter Property="Height" Value="24" />
+                            <Setter Property="VerticalContentAlignment" Value="Top" />
+                            <Setter Property="Foreground" Value="{DynamicResource MenuTextEnabledForeground}" />
+                        </Style>
+                        <Style Selector="TextBox">
+                            <Setter Property="HorizontalAlignment" Value="Stretch" />
+                            <Setter Property="Margin" Value="5" />
+                        </Style>
+                        <Style Selector="ComboBox">
+                            <Setter Property="HorizontalAlignment" Value="Stretch" />
+                            <Setter Property="Margin" Value="5" />
+                        </Style>
+                    </Grid.Styles>
+
+                    <Label Grid.Row="0" Grid.Column="0">Theme:</Label>
+                    <ComboBox Name="cmbTheme" Grid.Row="0" Grid.Column="1" ToolTip.Tip="Theme to be used.">
+                        <ComboBoxItem>System</ComboBoxItem>
+                        <ComboBoxItem>Light</ComboBoxItem>
+                        <ComboBoxItem>Dark</ComboBoxItem>
+                    </ComboBox>
+                </Grid>
             </TabItem>
 
             <TabItem Header="Security">

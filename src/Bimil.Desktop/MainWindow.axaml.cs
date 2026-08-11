@@ -451,6 +451,17 @@ internal partial class MainWindow : Window {
     public async void mnuAppOptions_Click(object sender, RoutedEventArgs e) {
         var frm = new OptionsWindow();
         await frm.ShowDialog(this);
+        switch (Settings.Theme) {
+            case Settings.ThemeVariant.Dark:
+                AppAvalonia.Current!.RequestedThemeVariant = ThemeVariant.Dark;
+                break;
+            case Settings.ThemeVariant.Light:
+                AppAvalonia.Current!.RequestedThemeVariant = ThemeVariant.Light;
+                break;
+            default:
+                AppAvalonia.Current!.RequestedThemeVariant = ThemeVariant.Default;
+                break;
+        }
     }
 
     public void mnuAppFeedback_Click(object sender, RoutedEventArgs e) {

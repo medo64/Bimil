@@ -13,7 +13,7 @@ internal static class Settings {
         public static int NotesLineCount => 3;
         public static bool ShowStart => true;
         public static bool SyncPrimaryClipboard => true;
-        public static string Theme => "Default";
+        public static ThemeVariant Theme => ThemeVariant.System;
 
     }
 
@@ -79,7 +79,7 @@ internal static class Settings {
     /// </summary>
     public static ThemeVariant Theme {
         get {
-            var value = Config.Read("Theme", Defaults.Theme);
+            var value = Config.Read("Theme", Defaults.Theme.ToString());
             if (value.Equals("Light", StringComparison.OrdinalIgnoreCase)) { return ThemeVariant.Light; }
             if (value.Equals("Dark", StringComparison.OrdinalIgnoreCase)) { return ThemeVariant.Dark; }
             return ThemeVariant.System;
