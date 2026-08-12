@@ -44,11 +44,6 @@ internal partial class PropertiesWindow : Window {
     private Document? Document;
 
 
-    protected override void OnKeyDown(KeyEventArgs e) {
-        if (e.Key == Key.Escape) { Close(); }
-        base.OnKeyDown(e);
-    }
-
     private bool hadAnyStaticKeyChanges = false;
 
     public void chbStaticKeyUse_IsCheckedChanged(object? sender, RoutedEventArgs e) {

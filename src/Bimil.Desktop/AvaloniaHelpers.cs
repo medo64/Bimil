@@ -92,12 +92,20 @@ internal static class AvaloniaHelpers {
     }
 
     public static void SetupDialog(Window window) {
+        void CloseWindow() {
+            Dispatcher.UIThread.InvokeAsync(() => {
+                window.WindowState = WindowState.Normal;
+                window.Close();
+            });
+        }
         window.PropertyChanged += (sender, e) => {  // close on minimize
             if ((e.Property == Window.WindowStateProperty) && (window.WindowState == WindowState.Minimized)) {
-                Dispatcher.UIThread.InvokeAsync(() => {
-                    window.WindowState = WindowState.Normal;
-                    window.Close();
-                });
+                CloseWindow();
+            }
+        };
+        window.KeyDown += (sender, e) => {
+            if ((e.Key, e.KeyModifiers) == (Key.Escape, KeyModifiers.None)) {
+                CloseWindow();
             }
         };
     }

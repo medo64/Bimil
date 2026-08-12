@@ -75,7 +75,6 @@ internal partial class StartWindow : Window {
 
     protected override void OnKeyDown(KeyEventArgs e) {
         switch ((e.Key, e.KeyModifiers)) {
-            case (Key.Escape, KeyModifiers.None): Close(); break;
             case (Key.Enter, KeyModifiers.None): btnOpen_Click(this, e); break;
 
             case (Key.Up, KeyModifiers.None): if (lsbFiles.SelectedIndex > 0) { lsbFiles.SelectedIndex -= 1; } break;

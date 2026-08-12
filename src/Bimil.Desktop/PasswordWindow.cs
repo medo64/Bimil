@@ -85,11 +85,6 @@ internal partial class PasswordWindow : Window {
         }
     }
 
-    protected override void OnKeyDown(KeyEventArgs e) {
-        if (e.Key == Key.Escape) { Close(); }
-        base.OnKeyDown(e);
-    }
-
 
     private static void CheckPasswordsAreSame(Button okButton, TextBox textBox1, TextBox textBox2, Label mismatchLabel) {
         var areSame = string.Equals(textBox1.Text ?? "", textBox2.Text ?? "", StringComparison.Ordinal);

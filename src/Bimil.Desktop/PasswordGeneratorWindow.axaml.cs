@@ -60,12 +60,6 @@ internal partial class PasswordGeneratorWindow : Window {
         AvaloniaHelpers.FocusControl(btnCopy);
     }
 
-    protected override void OnKeyDown(KeyEventArgs e) {
-        if (e.Key == Key.Escape) { Close(); }
-        base.OnKeyDown(e);
-    }
-
-
     #region Password
 
     private void GenerateNewPassword(Settings.PasswordGenerator.GeneratorKind kind) {  // also saves password

@@ -17,11 +17,6 @@ internal partial class OptionsWindow : Window {
         AvaloniaHelpers.FocusControl(btnClose);
     }
 
-    protected override void OnKeyDown(KeyEventArgs e) {
-        if (e.Key == Key.Escape) { Close(); }
-        base.OnKeyDown(e);
-    }
-
 
     private void LoadState() {
         // Behavior
