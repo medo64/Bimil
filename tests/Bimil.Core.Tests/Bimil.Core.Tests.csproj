@@ -1,0 +1,28 @@
+<Project Sdk="MSTest.Sdk/3.7.3">
+
+  <PropertyGroup>
+    <AssemblyName>bimil.core.tests</AssemblyName>
+    <RootNamespace>Tests</RootNamespace>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <IsPackable>false</IsPackable>
+    <Nullable>disable</Nullable>
+    <EnableNETAnalyzers>false</EnableNETAnalyzers>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\CBC_D_M.TXT" />
+    <EmbeddedResource Include="Assets\CBC_E_M.TXT" />
+    <EmbeddedResource Include="Assets\ECB_D_M.TXT" />
+    <EmbeddedResource Include="Assets\ECB_E_M.TXT" />
+    <EmbeddedResource Include="Assets\ECB_TBL.TXT" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../src/Bimil.Core/Bimil.Core.csproj" />
+  </ItemGroup>
+
+</Project>
