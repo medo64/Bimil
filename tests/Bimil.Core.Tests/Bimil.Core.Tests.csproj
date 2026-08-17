@@ -14,11 +14,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Assets\CBC_D_M.TXT" />
-    <EmbeddedResource Include="Assets\CBC_E_M.TXT" />
-    <EmbeddedResource Include="Assets\ECB_D_M.TXT" />
-    <EmbeddedResource Include="Assets\ECB_E_M.TXT" />
-    <EmbeddedResource Include="Assets\ECB_TBL.TXT" />
+    <EmbeddedResource Include="Assets/Twofish/*" />
   </ItemGroup>
 
   <ItemGroup>
