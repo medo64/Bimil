@@ -19,6 +19,7 @@ public class ProtectedBytesTests {
         pb.SetBytes(bytesIn);
         var bytesOut = pb.GetBytes();
 
+        Assert.AreEqual(123, pb.Length);
         Assert.AreEqual(Convert.ToHexString(bytes), Convert.ToHexString(bytesIn));
         Assert.AreEqual(Convert.ToHexString(bytes), Convert.ToHexString(bytesOut));
     }
@@ -34,6 +35,7 @@ public class ProtectedBytesTests {
         pb.SetBytes(bytesIn, zeroBytes: true);
         var bytesOut = pb.GetBytes();
 
+        Assert.AreEqual(123, pb.Length);
         Assert.AreEqual("", Convert.ToHexString(bytesIn).Replace("0",""));
         Assert.AreEqual(Convert.ToHexString(bytes), Convert.ToHexString(bytesOut));
     }

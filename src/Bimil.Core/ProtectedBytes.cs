@@ -1,6 +1,7 @@
 namespace Bimil;
 
 using System;
+using System.Buffers.Binary;
 using System.Security.Cryptography;
 
 /// <summary>
@@ -40,8 +41,8 @@ internal sealed class ProtectedBytes {
         return buffer;
     });
 
-    private byte[] Bytes = [];
 
+    private byte[] Bytes = [];
 
     /// <summary>
     /// Sets bytes.
@@ -63,6 +64,7 @@ internal sealed class ProtectedBytes {
 
         try {
             Bytes = ProtectData(bytes, RandomIV.Value);
+            Length = bytes.Length;
         } finally {
             if (zeroBytes) { CryptographicOperations.ZeroMemory(bytes); }
         }
@@ -73,6 +75,32 @@ internal sealed class ProtectedBytes {
     /// </summary>
     public byte[] GetBytes() {
         return UnprotectData(Bytes, RandomIV.Value);
+    }
+
+
+    private int BytesLength;
+    /// <summary>
+    /// Gets length of stored bytes.
+    /// </summary>
+    public int Length {
+        get {
+            return BytesLength ^ BinaryPrimitives.ReadInt32BigEndian(RandomIV.Value);
+        }
+        private set {
+            BytesLength = value ^ BinaryPrimitives.ReadInt32BigEndian(RandomIV.Value);  // just a bit of obfuscation
+        }
+    }
+
+
+    /// <inheritdoc />
+    public override int GetHashCode() {
+        var iv = RandomIV.Value.AsSpan();
+        return HashCode.Combine(
+            BinaryPrimitives.ReadInt32BigEndian(iv[0..4]),
+            BinaryPrimitives.ReadInt32BigEndian(iv[4..8]),
+            BinaryPrimitives.ReadInt32BigEndian(iv[8..12]),
+            BinaryPrimitives.ReadInt32BigEndian(iv[12..16])
+        );  // we're not including actual bytes into this
     }
 
 
