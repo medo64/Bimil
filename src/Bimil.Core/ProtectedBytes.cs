@@ -1,14 +1,82 @@
 namespace Bimil;
 
 using System;
-using System.IO;
 using System.Security.Cryptography;
 
 /// <summary>
 /// Handling obfuscation.
 /// Not really secure but it does minimize plain text flowing around.
 /// </summary>
-internal static class ProtectedBytes {
+internal sealed class ProtectedBytes {
+
+    /// <summary>
+    /// Creates a new instance.
+    /// </summary>
+    public ProtectedBytes()
+        : this([], zeroBytes: false) {
+    }
+
+    /// <summary>
+    /// Creates a new instance.
+    /// </summary>
+    /// <param name="bytes">Bytes.</param>
+    public ProtectedBytes(byte[] bytes)
+        : this(bytes, zeroBytes: false) {
+    }
+
+    /// <summary>
+    /// Creates a new instance.
+    /// </summary>
+    /// <param name="bytes">Bytes.</param>
+    /// <param name="zeroBytes">If true, input bytes will be zeroed after protection.</param>
+    public ProtectedBytes(byte[] bytes, bool zeroBytes) {
+        SetBytes(bytes, zeroBytes);
+    }
+
+
+    private readonly Lazy<byte[]> RandomIV = new(() => {
+        var buffer = GC.AllocateArray<byte>(16, pinned: true);
+        RandomNumberGenerator.Create().GetBytes(buffer);
+        return buffer;
+    });
+
+    private byte[] Bytes = [];
+
+
+    /// <summary>
+    /// Sets bytes.
+    /// </summary>
+    /// <param name="bytes">Bytes.</param>
+    public void SetBytes(byte[] bytes) {
+        ArgumentNullException.ThrowIfNull(bytes);
+
+        SetBytes(bytes, zeroBytes: false);
+    }
+
+    /// <summary>
+    /// Sets bytes.
+    /// </summary>
+    /// <param name="bytes">Bytes.</param>
+    /// <param name="zeroBytes">If true, input bytes will be zeroed after protection.</param>
+    public void SetBytes(byte[] bytes, bool zeroBytes) {
+        ArgumentNullException.ThrowIfNull(bytes);
+
+        try {
+            Bytes = ProtectData(bytes, RandomIV.Value);
+        } finally {
+            if (zeroBytes) { CryptographicOperations.ZeroMemory(bytes); }
+        }
+    }
+
+    /// <summary>
+    /// Returns bytes.
+    /// </summary>
+    public byte[] GetBytes() {
+        return UnprotectData(Bytes, RandomIV.Value);
+    }
+
+
+    #region Static
 
     private static readonly Lazy<byte[]> LazyRandomKey = new(() => {
         var buffer = GC.AllocateArray<byte>(32, pinned: true);
@@ -21,6 +89,7 @@ internal static class ProtectedBytes {
         RandomNumberGenerator.Create().GetBytes(buffer);
         return buffer;
     });
+
 
     private static readonly Lazy<Aes> CryptoAlgorithm = new(() => {
         var alg = Aes.Create();
@@ -36,11 +105,20 @@ internal static class ProtectedBytes {
     /// A portable replacement for ProtectedData.Protect(userData, optionalEntropy, DataProtectionScope.CurrentUser);
     /// </summary>
     /// <param name="userData">A byte array that contains data to encrypt.</param>
-    /// <param name="optionalEntropy">An optional additional byte array used to increase the complexity of the encryption, or null for no additional complexity.</param>
-    /// <param name="zeroUserData">If true, userData will be zeroed.</param>
     /// <exception cref="ArgumentNullException">Data cannot be null.</exception>
-    public static byte[] ProtectData(byte[] userData, byte[]? optionalEntropy = null, bool zeroUserData = false) {
-        if (userData == null) { throw new ArgumentNullException(nameof(userData), "Data cannot be null."); }
+    public static byte[] ProtectData(byte[] userData) {
+        return ProtectData(userData, optionalEntropy: null);
+    }
+
+    /// <summary>
+    /// Encrypts the data in a specified byte array and returns a byte array that contains the encrypted data.
+    /// A portable replacement for ProtectedData.Protect(userData, optionalEntropy, DataProtectionScope.CurrentUser);
+    /// </summary>
+    /// <param name="userData">A byte array that contains data to encrypt.</param>
+    /// <param name="optionalEntropy">An optional additional byte array used to increase the complexity of the encryption, or null for no additional complexity.</param>
+    /// <exception cref="ArgumentNullException">Data cannot be null.</exception>
+    public static byte[] ProtectData(byte[] userData, byte[]? optionalEntropy) {
+        ArgumentNullException.ThrowIfNull(userData);
 
         var iv = LazyRandomIV.Value;
         try {
@@ -49,7 +127,7 @@ internal static class ProtectedBytes {
             using var encryptor = CryptoAlgorithm.Value.CreateEncryptor(LazyRandomKey.Value, iv);
             return encryptor.TransformFinalBlock(userData, 0, userData.Length);
         } finally {
-            if (zeroUserData)  { CryptographicOperations.ZeroMemory(userData); }
+            CryptographicOperations.ZeroMemory(iv);
         }
     }
 
@@ -58,11 +136,20 @@ internal static class ProtectedBytes {
     /// A portable replacement for ProtectedData.Unprotect(encryptedData, optionalEntropy, DataProtectionScope.CurrentUser);
     /// </summary>
     /// <param name="encryptedData">A byte array containing data encrypted using the Protect(Byte[], Byte[], DataProtectionScope) method.</param>
-    /// <param name="optionalEntropy">An optional additional byte array that was used to encrypt the data, or null if the additional byte array was not used.</param>
-    /// <param name="zeroEncryptedData">If true, encryptedData will be zeroed.</param>
     /// <exception cref="ArgumentNullException">Data cannot be null.</exception>
-    public static byte[] UnprotectData(byte[] encryptedData, byte[]? optionalEntropy = null, bool zeroEncryptedData = false) {
-        if (encryptedData == null) { throw new ArgumentNullException(nameof(encryptedData), "Data cannot be null."); }
+    public static byte[] UnprotectData(byte[] encryptedData) {
+        return UnprotectData(encryptedData, optionalEntropy: null);
+    }
+
+    /// <summary>
+    /// Decrypts the data in a specified buffer and writes the decrypted data to a destination buffer.
+    /// A portable replacement for ProtectedData.Unprotect(encryptedData, optionalEntropy, DataProtectionScope.CurrentUser);
+    /// </summary>
+    /// <param name="encryptedData">A byte array containing data encrypted using the Protect(Byte[], Byte[], DataProtectionScope) method.</param>
+    /// <param name="optionalEntropy">An optional additional byte array that was used to encrypt the data, or null if the additional byte array was not used.</param>
+    /// <exception cref="ArgumentNullException">Data cannot be null.</exception>
+    public static byte[] UnprotectData(byte[] encryptedData, byte[]? optionalEntropy) {
+        ArgumentNullException.ThrowIfNull(encryptedData);
 
         var decryptedBuffer = Array.Empty<byte>();
         var iv = LazyRandomIV.Value;
@@ -77,8 +164,10 @@ internal static class ProtectedBytes {
             return newBuffer;
         } finally {
             CryptographicOperations.ZeroMemory(decryptedBuffer);
-            if (zeroEncryptedData)  { CryptographicOperations.ZeroMemory(encryptedData); }
+            CryptographicOperations.ZeroMemory(iv);
         }
     }
+
+    #endregion Static
 
 }
