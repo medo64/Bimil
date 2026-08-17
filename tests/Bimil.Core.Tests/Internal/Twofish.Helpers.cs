@@ -12,7 +12,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 [TestClass]
 public partial class TwofishTests {
 
-    public static List<TestBlock> GetTestBlocks(Stream fileStream) {
+    private static List<TestBlock> GetTestBlocks(Stream fileStream) {
         var result = new List<TestBlock>();
 
         using (var s = new StreamReader(fileStream)) {
@@ -46,7 +46,7 @@ public partial class TwofishTests {
         return result;
     }
 
-    public static byte[] ParseBytes(string hex) {
+    private static byte[] ParseBytes(string hex) {
         Trace.Assert((hex.Length % 2) == 0);
         var result = new byte[hex.Length / 2];
         for (var i = 0; i < hex.Length; i += 2) {
@@ -56,7 +56,7 @@ public partial class TwofishTests {
     }
 
     [DebuggerDisplay("{KeySize}:{Index}")]
-    public readonly struct TestBlock {
+    private readonly struct TestBlock {
         internal TestBlock(int keySize, int index, byte[] key, byte[] iv, byte[] plainText, byte[] cipherText) {
             KeySize = keySize;
             Index = index;
@@ -74,7 +74,7 @@ public partial class TwofishTests {
     }
 
 
-    public static byte[] Encrypt(SymmetricAlgorithm algorithm, byte[] key, byte[] iv, byte[] pt) {
+    private static byte[] Encrypt(SymmetricAlgorithm algorithm, byte[] key, byte[] iv, byte[] pt) {
         using var ms = new MemoryStream();
         using (var transform = algorithm.CreateEncryptor(key, iv)) {
             using var cs = new CryptoStream(ms, transform, CryptoStreamMode.Write);
@@ -83,7 +83,7 @@ public partial class TwofishTests {
         return ms.ToArray();
     }
 
-    public static byte[] Decrypt(SymmetricAlgorithm algorithm, byte[] key, byte[] iv, byte[] ct) {
+    private static byte[] Decrypt(SymmetricAlgorithm algorithm, byte[] key, byte[] iv, byte[] ct) {
         using var ctStream = new MemoryStream(ct);
         using var transform = algorithm.CreateDecryptor(key, iv);
         using var cs = new CryptoStream(ctStream, transform, CryptoStreamMode.Read);
@@ -93,11 +93,11 @@ public partial class TwofishTests {
     }
 
 
-    public static Stream GetResourceStream(string relativePath) {
-        if (relativePath == null) { return null; }
+    private static Stream GetResourceStream(string fileName) {
+        if (fileName == null) { return null; }
         var helperType = typeof(TwofishTests).GetTypeInfo();
         var assembly = helperType.Assembly;
-        return assembly.GetManifestResourceStream(helperType.Namespace + ".Assets.Twofish." + relativePath);
+        return assembly.GetManifestResourceStream(helperType.Namespace + ".Assets.Twofish." + fileName);
     }
 
 }
