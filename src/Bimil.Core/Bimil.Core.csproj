@@ -19,7 +19,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <InternalsVisibleTo Include="Bimil.Core.Tests" />
+    <InternalsVisibleTo Include="Bimil.Core.Internal.Tests" />
   </ItemGroup>
 
 </Project>

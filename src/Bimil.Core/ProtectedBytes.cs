@@ -8,7 +8,7 @@ using System.Security.Cryptography;
 /// Handling obfuscation.
 /// Not really secure but it does minimize plain text flowing around.
 /// </summary>
-internal sealed class ProtectedBytes {
+public sealed class ProtectedBytes {
 
     /// <summary>
     /// Creates a new instance.
@@ -194,6 +194,14 @@ internal sealed class ProtectedBytes {
             CryptographicOperations.ZeroMemory(decryptedBuffer);
             CryptographicOperations.ZeroMemory(iv);
         }
+    }
+
+    /// <summary>
+    /// Clears all bytes in the array.
+    /// </summary>
+    /// <param name="bytes">Bytes.</param>
+    public static void ZeroMemory(byte[] bytes) {
+        CryptographicOperations.ZeroMemory(bytes);
     }
 
     #endregion Static

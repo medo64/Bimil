@@ -97,7 +97,7 @@ public partial class TwofishTests {
         if (fileName == null) { return null; }
         var helperType = typeof(TwofishTests).GetTypeInfo();
         var assembly = helperType.Assembly;
-        return assembly.GetManifestResourceStream(helperType.Namespace + ".Assets.Twofish." + fileName);
+        return assembly.GetManifestResourceStream(helperType.Namespace + ".Assets." + fileName);
     }
 
 }
