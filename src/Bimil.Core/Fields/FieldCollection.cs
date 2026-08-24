@@ -29,17 +29,6 @@ public class FieldCollection : IList<Field> {
     internal FieldCollection(ICollection<Field> fields, bool isReadOnly) {
         if ((fields != null) && (fields.Count > 0)) { BaseCollection.AddRange(fields); }
         _IsReadOnly = isReadOnly;
-
-        // ensure first field is always Uuid and present
-        if (this[FieldType.Uuid] is UuidField uuidField) {
-            var uuidIndex = IndexOf(uuidField);
-            if (uuidIndex > 0) {
-                BaseCollection.RemoveAt(uuidIndex);
-                BaseCollection.Insert(0, uuidField);
-            }
-        } else {
-            throw new ArgumentOutOfRangeException(nameof(fields), "Version field is missing.");
-        }
     }
 
 

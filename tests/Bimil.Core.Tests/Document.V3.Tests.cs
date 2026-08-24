@@ -1,6 +1,7 @@
 namespace Tests;
 
 using System;
+using System.IO;
 using System.Text;
 using Bimil;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -8,7 +9,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 public partial class DocumentTests {
 
     [TestMethod]
-    public void Document_Load_Empty() {
+    public void Document_V3_Load_Empty() {
         var stream = GetResourceStream("Empty.psafe3");
         var doc = Document.Load(stream, Encoding.UTF8.GetBytes("changeme"));
 
@@ -34,6 +35,8 @@ public partial class DocumentTests {
         Assert.AreEqual("0153caff65334548a48f376775f0dd2534", ((TextHeader)doc.Headers[8]).Text);
 
         Assert.AreEqual(DatabaseVersion.V3, doc.DatabaseVersion);
+        Assert.AreEqual(327680U, doc.IterationCount);
+
         Assert.AreEqual(new Version(3, 17, 0, 0), doc.Version);
         Assert.AreEqual(Guid.Parse("7f8dc27f-8e80-424d-8561-4e1ff54a366e"), doc.Uuid);
         Assert.AreEqual(new DateTime(2026, 8, 16, 22, 50, 21, DateTimeKind.Utc), doc.LastSaveTime);
@@ -59,6 +62,36 @@ public partial class DocumentTests {
         Assert.AreEqual("1", ((EntryRecord)(doc.Records[0])).Title);
         Assert.AreEqual("", ((EntryRecord)(doc.Records[0])).Group);
         Assert.AreEqual(new DateTime(2026, 8, 16, 22, 50, 16, DateTimeKind.Utc), ((EntryRecord)(doc.Records[0])).CreationTime);
+    }
+
+    [TestMethod]
+    public void Document_V3_LoadSaveLoad() {
+        var stream = GetResourceStream("Empty.psafe3");
+        var docIn = Document.Load(stream, Encoding.UTF8.GetBytes("changeme"));
+
+        using var ms = new MemoryStream();
+        docIn.Save(ms);
+        ms.Position = 0;
+
+        var doc = Document.Load(ms, Encoding.UTF8.GetBytes("changeme"));
+
+        Assert.AreEqual(DatabaseVersion.V3, doc.DatabaseVersion);
+        Assert.AreEqual(327680U, doc.IterationCount);
+
+        Assert.AreEqual(new Version(3, 17, 0, 0), doc.Version);
+        Assert.AreEqual(Guid.Parse("7f8dc27f-8e80-424d-8561-4e1ff54a366e"), doc.Uuid);
+        Assert.IsTrue(new DateTime(2026, 8, 16, 22, 50, 21, DateTimeKind.Utc) < doc.LastSaveTime);
+        Assert.AreEqual(new DateTime(2026, 8, 16, 22, 48, 20, DateTimeKind.Utc), doc.LastPasswordChangeTime);
+        Assert.AreEqual(Environment.UserName, doc.LastSaveUser);
+        Assert.AreEqual(Environment.MachineName, doc.LastSaveHost);
+        Assert.AreEqual("Bimil V1.0.0", doc.LastSaveApplication);
+
+        Assert.AreEqual(4, doc.Records[0].Fields.Count);
+        var record0 = (EntryRecord)(doc.Records[0]);
+        Assert.AreEqual(Guid.Parse("65ffca53-4533-a448-8f37-6775f0dd2534"), record0.Uuid);
+        Assert.AreEqual("1", record0.Title);
+        Assert.AreEqual("", record0.Group);
+        Assert.AreEqual(new DateTime(2026, 8, 16, 22, 50, 16, DateTimeKind.Utc), record0.CreationTime);
     }
 
 }

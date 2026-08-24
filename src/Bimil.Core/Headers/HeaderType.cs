@@ -5,7 +5,7 @@ using System;
 /// <summary>
 /// Header field types.
 /// </summary>
-public enum HeaderType {
+public enum HeaderType : byte {
 
     /// <summary>
     /// Version.

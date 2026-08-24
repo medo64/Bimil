@@ -25,6 +25,7 @@ public sealed partial class Document {
     /// <param name="databaseVersion">Database version.</param>
     public Document(DatabaseVersion databaseVersion) {
         DatabaseVersion = databaseVersion;
+        IterationCount = 2 * 262144;
         Headers = new HeaderCollection([]);
         Records = new RecordCollection([]);
     }
@@ -33,10 +34,13 @@ public sealed partial class Document {
     /// Creates a new instance
     /// </summary>
     /// <param name="databaseVersion">Database version.</param>
-    /// <param name="headerFields">Header fields.</param>
-    private Document(DatabaseVersion databaseVersion, ICollection<Header> headerFields, ICollection<Record> records) {
+    /// <param name="iterationCount">Iteration count.</param>
+    /// <param name="headers">Header fields.</param>
+    /// <param name="records">Records.</param>
+    private Document(DatabaseVersion databaseVersion, uint iterationCount, ICollection<Header> headers, ICollection<Record> records) {
         DatabaseVersion = databaseVersion;
-        Headers = new HeaderCollection(headerFields);
+        IterationCount = iterationCount;
+        Headers = new HeaderCollection(headers);
         Records = new RecordCollection(records);
     }
 
@@ -47,6 +51,17 @@ public sealed partial class Document {
     /// Gets the document version..
     /// </summary>
     public DatabaseVersion DatabaseVersion { get; private set; }
+
+    /// <summary>
+    /// Gets/sets iteration count.
+    /// </summary>
+    public uint IterationCount {
+        get;
+        set {
+            if (value < 262144) { value = 262144; }
+            field = value;
+        }
+    }
 
     /// <summary>
     /// Gets file name used for the last save.
@@ -263,9 +278,25 @@ public sealed partial class Document {
     }
 
     /// <summary>
+    /// Saves document to provided file using provided passphrase.
+    /// </summary>
+    /// <param name="stream">Stream.</param>
+    public void Save(Stream stream) {
+        ArgumentNullException.ThrowIfNull(stream);
+        if (PassphraseBytes == null) { throw new InvalidOperationException("Passphrase not specified."); }
+
+        var passphraseBytes = GetPassphrase()!;  // passphrase is not null due to internal check above
+        try {
+            Save(stream, passphraseBytes);
+        } finally {
+            CryptographicOperations.ZeroMemory(passphraseBytes);
+        }
+    }
+
+    /// <summary>
     /// Saves document to the provided stream using provided passphrase.
     /// </summary>
-    /// <param name="stream">File.</param>
+    /// <param name="stream">Stream.</param>
     /// <param name="passphrase">Passphrase bytes.</param>
     public void Save(Stream stream, byte[] passphrase) {
         ArgumentNullException.ThrowIfNull(stream);
@@ -286,7 +317,7 @@ public sealed partial class Document {
             } else if (header.Type == HeaderType.TimestampOfLastSave && header is TimestampHeader saveHeader) {
                 saveHeader.Timestamp = DateTime.UtcNow;
             } else if (header.Type == HeaderType.WhatPerformedLastSave && header is TextHeader appHeader) {
-                appHeader.Text = "Bimil v1.0";
+                appHeader.Text = "Bimil V1.0.0";
             } else if (header.Type == HeaderType.LastSavedByUser && header is TextHeader userHeader) {
                 userHeader.Text = Environment.UserName;
                 insertUser = false;

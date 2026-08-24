@@ -3,7 +3,7 @@ namespace Bimil;
 /// <summary>
 /// Record field types.
 /// </summary>
-public enum FieldType {
+public enum FieldType : byte {
 
     /// <summary>
     /// UUID.

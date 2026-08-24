@@ -27,13 +27,14 @@ public sealed partial class Document {
             Buffer.BlockCopy(bytes, 136, iv, 0, iv.Length);
 
             data = DecryptData(keyK, iv, bytes, 152, bytes.Length - 200);
+            var dataSpan = data.AsSpan();
 
             using var dataHash = new HMACSHA256(keyL);
             var dataOffset = 0;
 
             var headerFields = new List<Header>();
             while (dataOffset < data.Length) {
-                var fieldLength = BitConverter.ToInt32(data, dataOffset + 0);
+                var fieldLength = BinaryPrimitives.ReadInt32LittleEndian(dataSpan[dataOffset..(dataOffset + 4)]);
                 var fieldLengthFull = ((fieldLength + 5 - 1) / 16 + 1) * 16;
                 var fieldType = (HeaderType)data[dataOffset + 4];
                 var fieldData = new byte[fieldLength];
@@ -60,7 +61,7 @@ public sealed partial class Document {
             var records = new List<Record>();
             var recordFields = new List<Field>();
             while (dataOffset < data.Length) {
-                var fieldLength = BitConverter.ToInt32(data, dataOffset + 0);
+                var fieldLength = BinaryPrimitives.ReadInt32LittleEndian(dataSpan[dataOffset..(dataOffset + 4)]);
                 var fieldLengthFull = ((fieldLength + 5 - 1) / 16 + 1) * 16;
                 var fieldType = (FieldType)data[dataOffset + 4];
                 var fieldData = new byte[fieldLength];
@@ -91,7 +92,7 @@ public sealed partial class Document {
             }
 
             //return new Document(passphraseBuffer, (int)iter, headerFields, [.. recordFields]);
-            var doc = new Document(DatabaseVersion.V3, headerFields, records);
+            var doc = new Document(DatabaseVersion.V3, iter, headerFields, records);
             return doc;
         } catch (CryptographicException ex) {
             throw new FormatException(ex.Message, ex);
@@ -105,7 +106,71 @@ public sealed partial class Document {
     }
 
     private void SaveCoreV3(Stream stream, byte[] passphrase) {
-        throw new NotImplementedException();
+        byte[]? stretchedKey = null;
+        var keyK = new byte[32];
+        var keyL = new byte[32];
+        var salt = new byte[32];
+        try {
+            var tag = new byte[4];
+            BinaryPrimitives.WriteUInt32BigEndian(tag, Tag);
+            stream.Write(tag);
+
+            RandomNumberGenerator.Fill(salt);
+            stream.Write(salt);
+
+            var iter = new byte[4];
+            BinaryPrimitives.WriteUInt32LittleEndian(iter, IterationCount);
+            stream.Write(iter, 0, 4);
+
+            stretchedKey = GetStretchedKey(passphrase, salt, IterationCount);
+            stream.Write(GetSha256Hash(stretchedKey), 0, 32);
+
+            RandomNumberGenerator.Fill(keyK);
+            RandomNumberGenerator.Fill(keyL);
+
+            stream.Write(EncryptKey(stretchedKey, keyK, 0));
+            stream.Write(EncryptKey(stretchedKey, keyL, 0));
+
+            var iv = new byte[16];
+            RandomNumberGenerator.Fill(iv);
+            stream.Write(iv);
+
+            using var dataHash = new HMACSHA256(keyL);
+            using var twofish = new Twofish() {
+                Mode = CipherMode.CBC,
+                Padding = PaddingMode.None,
+                KeySize = 256,
+                Key = keyK,
+                IV = iv,
+            };
+            using (var dataEncryptor = twofish.CreateEncryptor()) {
+                foreach (var header in Headers) {
+                    WriteBlock(stream, dataHash, dataEncryptor, (byte)header.Type, header.Data.GetBytes());
+                }
+                WriteBlock(stream, dataHash, dataEncryptor, (byte)HeaderType.EndOfEntry, []);
+
+                foreach (var record in Records) {
+                    foreach (var field in record.Fields) {
+                        WriteBlock(stream, dataHash, dataEncryptor, (byte)field.Type, field.Data.GetBytes());
+                    }
+                    WriteBlock(stream, dataHash, dataEncryptor, (byte)FieldType.EndOfEntry, []);
+                }
+            }
+
+            dataHash.TransformFinalBlock([], 0, 0);
+
+            var tagEof = new byte[16];
+            BinaryPrimitives.WriteUInt128BigEndian(tagEof, TagEof);
+            stream.Write(tagEof);
+
+            if (dataHash.Hash == null) { throw new InvalidOperationException("Cannot compute hash."); }  // newer happens actually
+            stream.Write(dataHash.Hash);
+        } finally {
+            if (stretchedKey != null) { CryptographicOperations.ZeroMemory(stretchedKey); }
+            CryptographicOperations.ZeroMemory(keyK);
+            CryptographicOperations.ZeroMemory(keyL);
+            CryptographicOperations.ZeroMemory(salt);
+        }
     }
 
 
@@ -159,6 +224,40 @@ public sealed partial class Document {
 
         using var transform = twofish.CreateDecryptor();
         return transform.TransformFinalBlock(buffer, offset, 32);
+    }
+
+    private static byte[] EncryptKey(byte[] stretchedKey, byte[] buffer, int offset) {
+        using var twofish = new Twofish();
+        twofish.Mode = CipherMode.ECB;
+        twofish.Padding = PaddingMode.None;
+        twofish.KeySize = 256;
+        twofish.Key = stretchedKey;
+
+        using var transform = twofish.CreateEncryptor();
+        return transform.TransformFinalBlock(buffer, offset, 32);
+    }
+
+    private static void WriteBlock(Stream stream, HashAlgorithm dataHash, ICryptoTransform dataEncryptor, byte type, byte[] fieldData) {
+        dataHash.TransformBlock(fieldData, 0, fieldData.Length, null, 0);
+
+        byte[]? fieldBlock = null;
+        try {
+            var fieldLengthPadded = ((fieldData.Length + 5 - 1) / 16 + 1) * 16;
+            fieldBlock = new byte[fieldLengthPadded];
+
+            RandomNumberGenerator.Fill(fieldBlock);
+            var dataLen = new byte[4];
+            BinaryPrimitives.WriteInt32LittleEndian(dataLen, fieldData.Length);
+            Buffer.BlockCopy(dataLen, 0, fieldBlock, 0, 4);
+            fieldBlock[4] = type;
+            Buffer.BlockCopy(fieldData, 0, fieldBlock, 5, fieldData.Length);
+
+            dataEncryptor.TransformBlock(fieldBlock, 0, fieldBlock.Length, fieldBlock, 0);
+            stream.Write(fieldBlock, 0, fieldBlock.Length);
+        } finally {
+            CryptographicOperations.ZeroMemory(fieldData);
+            if (fieldBlock != null) { CryptographicOperations.ZeroMemory(fieldBlock); }
+        }
     }
 
     #endregion Helpers
