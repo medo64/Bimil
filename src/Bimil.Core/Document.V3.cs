@@ -8,7 +8,7 @@ using System.Security.Cryptography;
 
 public sealed partial class Document {
 
-    private static Document LoadCoreV3(byte[] bytes, byte[] passphraseBytes) {
+    private static Document LoadCoreV3(byte[] bytes, byte[] passphrase) {
         var bytesSpan = bytes.AsSpan();
 
         var salt = bytes[4..36];
@@ -16,18 +16,16 @@ public sealed partial class Document {
 
         byte[]? stretchedKey = null, keyK = null, keyL = null, data = null;
         try {
-            stretchedKey = GetStretchedKey(passphraseBytes, salt, iter);
+            stretchedKey = GetStretchedKey(passphrase, salt, iter);
             if (!AreBytesTheSame(GetSha256Hash(stretchedKey), bytes, 40)) {
                 throw new CryptographicException("Password mismatch.");
             }
             keyK = DecryptKey(stretchedKey, bytes, 72);
             keyL = DecryptKey(stretchedKey, bytes, 104);
 
-            var keyBlock = KeyBlock.Create(salt, iter, keyK, keyL, passphraseBytes, zeroBytes: false);
+            var keyBlock = KeyBlock.Create(salt, iter, keyK, keyL, passphrase, zeroBytes: false);
 
             var iv = bytes[136..152];
-            Buffer.BlockCopy(bytes, 136, iv, 0, iv.Length);
-
             data = DecryptData(keyK, iv, bytes, 152, bytes.Length - 200);
             var dataSpan = data.AsSpan();
 
@@ -109,15 +107,14 @@ public sealed partial class Document {
 
     private void SaveCoreV3(Stream stream, byte[] passphrase) {
         byte[]? stretchedKey = null;
-        var keyK = new byte[32];
-        var keyL = new byte[32];
-        var salt = new byte[32];
+        var keyK = ActiveKeyBlock.KeyK.GetBytes();
+        var keyL = ActiveKeyBlock.KeyL.GetBytes();
+        var salt = ActiveKeyBlock.Salt.GetBytes();
         try {
             var tag = new byte[4];
             BinaryPrimitives.WriteUInt32BigEndian(tag, Tag);
             stream.Write(tag);
 
-            RandomNumberGenerator.Fill(salt);
             stream.Write(salt);
 
             var iter = new byte[4];
@@ -126,9 +123,6 @@ public sealed partial class Document {
 
             stretchedKey = GetStretchedKey(passphrase, salt, ActiveKeyBlock.IterationCount);
             stream.Write(GetSha256Hash(stretchedKey), 0, 32);
-
-            RandomNumberGenerator.Fill(keyK);
-            RandomNumberGenerator.Fill(keyL);
 
             stream.Write(EncryptKey(stretchedKey, keyK, 0));
             stream.Write(EncryptKey(stretchedKey, keyL, 0));

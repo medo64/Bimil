@@ -93,6 +93,13 @@ public partial class DocumentTests {
         Assert.AreEqual("1", record0.Title);
         Assert.AreEqual("", record0.Group);
         Assert.AreEqual(new DateTime(2026, 8, 16, 22, 50, 16, DateTimeKind.Utc), record0.CreationTime);
+
+        var keyInK = Convert.ToHexString(docIn.ActiveKeyBlock.KeyK.GetBytes());
+        var keyInL = Convert.ToHexString(docIn.ActiveKeyBlock.KeyL.GetBytes());
+        var keyK = Convert.ToHexString(doc.ActiveKeyBlock.KeyK.GetBytes());
+        var keyL = Convert.ToHexString(doc.ActiveKeyBlock.KeyL.GetBytes());
+        Assert.AreEqual(keyInK, keyK);
+        Assert.AreEqual(keyInL, keyL);
     }
 
 }

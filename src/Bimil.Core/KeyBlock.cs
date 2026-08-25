@@ -11,8 +11,8 @@ public sealed class KeyBlock {
     private KeyBlock(byte[] salt, uint iterationCount, byte[] encryptionKey, byte[] authenticationKey, byte[]? passphrase, bool zeroBytes) {
         Salt = new ProtectedBytes(salt, zeroBytes);
         IterationCount = iterationCount;
-        EncryptionKey = new ProtectedBytes(encryptionKey, zeroBytes);
-        AuthenticationKey = new ProtectedBytes(authenticationKey, zeroBytes);
+        KeyK = new ProtectedBytes(encryptionKey, zeroBytes);
+        KeyL = new ProtectedBytes(authenticationKey, zeroBytes);
         Passphrase = (passphrase != null) ? new ProtectedBytes(passphrase, zeroBytes) : new ProtectedBytes();
     }
 
@@ -30,12 +30,12 @@ public sealed class KeyBlock {
     /// <summary>
     /// Gets encryption key.
     /// </summary>
-    public ProtectedBytes EncryptionKey { get; }
+    public ProtectedBytes KeyK { get; }
 
     /// <summary>
     /// Gets authentication key.
     /// </summary>
-    public ProtectedBytes AuthenticationKey { get; }
+    public ProtectedBytes KeyL { get; }
 
     /// <summary>
     /// Gets passphrase.

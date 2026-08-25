@@ -131,8 +131,8 @@ public class KeyBlockCollection : IReadOnlyCollection<KeyBlock> {
         if (Document.DatabaseVersion == DatabaseVersion.V3) { throw new NotSupportedException("Multiple keys are not supported for database V3"); }
 
         var salt = new byte[32]; RandomNumberGenerator.Fill(salt);
-        var keyK = Document.ActiveKeyBlock.EncryptionKey.GetBytes();
-        var keyL = Document.ActiveKeyBlock.AuthenticationKey.GetBytes();
+        var keyK = Document.ActiveKeyBlock.KeyK.GetBytes();
+        var keyL = Document.ActiveKeyBlock.KeyL.GetBytes();
         try {
             var keyBlock = KeyBlock.Create(salt, KeyBlock.DefaultIterationCount, keyK, keyL, passphrase, zeroBytes);
             BaseCollection.Add(keyBlock);
