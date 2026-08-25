@@ -13,7 +13,7 @@ public sealed class ProtectedBytes {
     /// <summary>
     /// Creates a new instance.
     /// </summary>
-    public ProtectedBytes()
+    internal ProtectedBytes()
         : this([], zeroBytes: false) {
     }
 
@@ -21,7 +21,7 @@ public sealed class ProtectedBytes {
     /// Creates a new instance.
     /// </summary>
     /// <param name="bytes">Bytes.</param>
-    public ProtectedBytes(byte[] bytes)
+    internal ProtectedBytes(byte[] bytes)
         : this(bytes, zeroBytes: false) {
     }
 
@@ -30,7 +30,7 @@ public sealed class ProtectedBytes {
     /// </summary>
     /// <param name="bytes">Bytes.</param>
     /// <param name="zeroBytes">If true, input bytes will be zeroed after protection.</param>
-    public ProtectedBytes(byte[] bytes, bool zeroBytes) {
+    internal ProtectedBytes(byte[] bytes, bool zeroBytes) {
         SetBytes(bytes, zeroBytes);
     }
 
