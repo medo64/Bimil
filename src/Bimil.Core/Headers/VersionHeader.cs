@@ -34,13 +34,21 @@ public sealed class VersionHeader : Header {
             }
         }
         set {
-            if (value.Major is < 0 or > 255) { throw new ArgumentOutOfRangeException(nameof(value), "Major version must be between 0 and 255."); }
-            if (value.Minor is < 0 or > 255) { throw new ArgumentOutOfRangeException(nameof(value), "Minor version must be between 0 and 255."); }
-            //if (value.Build is not 0) { throw new ArgumentOutOfRangeException(nameof(value), "Build version must be 0."); }
-            //if (value.Revision is not 0) { throw new ArgumentOutOfRangeException(nameof(value), "Revision version must be 0."); }
-            var bytes = new byte[] { (byte)(value.Minor), (byte)(value.Major) };
-            Data.SetBytes(bytes, zeroBytes: true);
+            Data.SetBytes(GetBytes(value), zeroBytes: true);
         }
+    }
+
+
+    /// <summary>
+    /// Returns bytes based on the value provided.
+    /// </summary>
+    /// <param name="value">Value.</param>
+    public static byte[] GetBytes(Version value) {
+        if (value.Major is < 0 or > 255) { throw new ArgumentOutOfRangeException(nameof(value), "Major version must be between 0 and 255."); }
+        if (value.Minor is < 0 or > 255) { throw new ArgumentOutOfRangeException(nameof(value), "Minor version must be between 0 and 255."); }
+        //if (value.Build is not 0) { throw new ArgumentOutOfRangeException(nameof(value), "Build version must be 0."); }
+        //if (value.Revision is not 0) { throw new ArgumentOutOfRangeException(nameof(value), "Revision version must be 0."); }
+        return [(byte)(value.Minor), (byte)(value.Major)];
     }
 
 }

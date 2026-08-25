@@ -44,12 +44,21 @@ public sealed class TimestampField : Field {
             }
         }
         set {
-            if ((value < DateTime.UnixEpoch) || (value > DateTime.UnixEpoch.AddSeconds(uint.MaxValue))) { throw new ArgumentNullException(nameof(value), "Time outside of allowable range."); }
-            var seconds = (uint)((value.ToUniversalTime() - DateTime.UnixEpoch).TotalSeconds);
-            var bytes = new byte[4];
-            BinaryPrimitives.WriteUInt32LittleEndian(bytes, seconds);
-            Data.SetBytes(bytes, zeroBytes: true);
+            Data.SetBytes(GetBytes(value), zeroBytes: true);
         }
+    }
+
+
+    /// <summary>
+    /// Returns bytes based on the value provided.
+    /// </summary>
+    /// <param name="value">Value.</param>
+    public static byte[] GetBytes(DateTime value) {
+        if ((value < DateTime.UnixEpoch) || (value > DateTime.UnixEpoch.AddSeconds(uint.MaxValue))) { throw new ArgumentNullException(nameof(value), "Time outside of allowable range."); }
+        var seconds = (uint)((value.ToUniversalTime() - DateTime.UnixEpoch).TotalSeconds);
+        var bytes = new byte[4];
+        BinaryPrimitives.WriteUInt32LittleEndian(bytes, seconds);
+        return bytes;
     }
 
 }

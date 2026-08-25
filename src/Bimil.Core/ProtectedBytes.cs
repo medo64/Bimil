@@ -41,16 +41,16 @@ public sealed class ProtectedBytes {
         return buffer;
     });
 
-
     private byte[] Bytes = [];
+    private int BytesLength;
+    private int BytesHashCode;
+
 
     /// <summary>
     /// Sets bytes.
     /// </summary>
     /// <param name="bytes">Bytes.</param>
     public void SetBytes(byte[] bytes) {
-        ArgumentNullException.ThrowIfNull(bytes);
-
         SetBytes(bytes, zeroBytes: false);
     }
 
@@ -65,6 +65,12 @@ public sealed class ProtectedBytes {
         try {
             Bytes = ProtectData(bytes, RandomIV.Value);
             Length = bytes.Length;
+
+            var newHashCode = bytes.Length;
+            foreach (var b in Bytes) {
+                newHashCode = HashCode.Combine(newHashCode, b);
+            }
+            BytesHashCode = newHashCode;
         } finally {
             if (zeroBytes) { CryptographicOperations.ZeroMemory(bytes); }
         }
@@ -78,7 +84,6 @@ public sealed class ProtectedBytes {
     }
 
 
-    private int BytesLength;
     /// <summary>
     /// Gets length of stored bytes.
     /// </summary>
@@ -99,8 +104,9 @@ public sealed class ProtectedBytes {
             BinaryPrimitives.ReadInt32BigEndian(iv[0..4]),
             BinaryPrimitives.ReadInt32BigEndian(iv[4..8]),
             BinaryPrimitives.ReadInt32BigEndian(iv[8..12]),
-            BinaryPrimitives.ReadInt32BigEndian(iv[12..16])
-        );  // we're not including actual bytes into this
+            BinaryPrimitives.ReadInt32BigEndian(iv[12..16]),
+            BytesHashCode
+        );
     }
 
 

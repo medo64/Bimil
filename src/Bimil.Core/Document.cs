@@ -13,7 +13,7 @@ using System.Text;
 public sealed partial class Document {
 
     /// <summary>
-    /// Creates a new document.
+    /// Creates a new document using database V3 format.
     /// </summary>
     public Document()
         : this(DatabaseVersion.V3) {
@@ -23,26 +23,45 @@ public sealed partial class Document {
     /// Creates a new document.
     /// </summary>
     /// <param name="databaseVersion">Database version.</param>
+    /// <exception cref="ArgumentOutOfRangeException">Invalid database version.</exception>
     public Document(DatabaseVersion databaseVersion) {
         DatabaseVersion = databaseVersion;
-        IterationCount = 2 * 262144;
-        Headers = new HeaderCollection([]);
+
+        var salt = new byte[32]; RandomNumberGenerator.Fill(salt);
+        var keyK = new byte[32]; RandomNumberGenerator.Fill(keyK);
+        var keyL = new byte[32]; RandomNumberGenerator.Fill(keyL);
+        ActiveKeyBlock = KeyBlock.Create(salt, KeyBlock.DefaultIterationCount, keyK, keyL, passphrase: null, zeroBytes: true);
+
+        var versionField = databaseVersion switch {
+            DatabaseVersion.V3 => Header.Create(HeaderType.Version, VersionHeader.GetBytes(DefaultVersion3), zeroBytes: true),
+            DatabaseVersion.V4 => Header.Create(HeaderType.Version, VersionHeader.GetBytes(DefaultVersion4), zeroBytes: true),
+            _ => throw new ArgumentOutOfRangeException(nameof(databaseVersion), "Invalid database version."),
+        };
+        var uuidField = Header.Create(HeaderType.Uuid, UuidHeader.GetBytes(Guid.CreateVersion7()));
+
+        KeyBlocks = new KeyBlockCollection(this, [ActiveKeyBlock]);
+        Headers = new HeaderCollection(databaseVersion, [versionField, uuidField]);
         Records = new RecordCollection([]);
     }
 
     /// <summary>
-    /// Creates a new instance
+    /// Creates a new instance.
     /// </summary>
     /// <param name="databaseVersion">Database version.</param>
-    /// <param name="iterationCount">Iteration count.</param>
+    /// <param name="keyBlocks">Key blocks.</param>
     /// <param name="headers">Header fields.</param>
     /// <param name="records">Records.</param>
-    private Document(DatabaseVersion databaseVersion, uint iterationCount, ICollection<Header> headers, ICollection<Record> records) {
+    private Document(DatabaseVersion databaseVersion, KeyBlock activeKeyBlock, ICollection<KeyBlock> keyBlocks, ICollection<Header> headers, ICollection<Record> records) {
         DatabaseVersion = databaseVersion;
-        IterationCount = iterationCount;
-        Headers = new HeaderCollection(headers);
+        ActiveKeyBlock = activeKeyBlock;
+        KeyBlocks = new KeyBlockCollection(this, keyBlocks);
+        Headers = new HeaderCollection(databaseVersion, headers);
         Records = new RecordCollection(records);
     }
+
+
+    private static readonly Version DefaultVersion3 = new(3, 17, 0, 0);
+    private static readonly Version DefaultVersion4 = new(4, 2, 0, 0);
 
 
     #region Properties
@@ -53,15 +72,9 @@ public sealed partial class Document {
     public DatabaseVersion DatabaseVersion { get; private set; }
 
     /// <summary>
-    /// Gets/sets iteration count.
+    /// Gets active key.
     /// </summary>
-    public uint IterationCount {
-        get;
-        set {
-            if (value < 262144) { value = 262144; }
-            field = value;
-        }
-    }
+    public KeyBlock ActiveKeyBlock { get; private set; }
 
     /// <summary>
     /// Gets file name used for the last save.
@@ -69,47 +82,23 @@ public sealed partial class Document {
     /// </summary>
     public FileInfo? File { get; private set; }
 
-    private ProtectedBytes? PassphraseBytes;
-    /// <summary>
-    /// Returns last used passphrase.
-    /// </summary>
-    public byte[]? GetPassphrase() {
-        if (PassphraseBytes == null) { return null; }
-        return PassphraseBytes.GetBytes();
-    }
-
-    /// <summary>
-    /// Sets passphrase.
-    /// </summary>
-    /// <param name="passphrase">Passphrase bytes.</param>
-    public void SetPassphrase(byte[] passphrase) {
-        ArgumentNullException.ThrowIfNull(passphrase);
-        PassphraseBytes = new ProtectedBytes(passphrase);
-    }
-
-    /// <summary>
-    /// Sets passphrase.
-    /// </summary>
-    /// <param name="passphrase">Passphrase.</param>
-    public void SetPassphrase(string passphrase) {
-        ArgumentNullException.ThrowIfNull(passphrase);
-        var passphraseBytes = Encoding.UTF8.GetBytes(passphrase);
-        PassphraseBytes = new ProtectedBytes(passphraseBytes, zeroBytes: true);
-    }
-
     #endregion Properties
 
     #region Hash
 
     /// <inheritdoc />
     public override int GetHashCode() {
-        var hashCode = HashCode.Combine((int)DatabaseVersion, File?.GetHashCode(), PassphraseBytes?.GetHashCode());
+        var hashCode = HashCode.Combine((int)DatabaseVersion, File?.GetHashCode(), ActiveKeyBlock.Passphrase.GetHashCode());
 
         foreach (var field in Headers) {
             hashCode = HashCode.Combine(hashCode, (int)field.Type, field.Data.GetHashCode());
         }
 
-        //TODO: include other fields
+        foreach (var record in Records) {
+            foreach (var field in record.Fields) {
+                hashCode = HashCode.Combine(hashCode, (int)field.Type, field.Data.GetHashCode());
+            }
+        }
 
         return hashCode;
     }
@@ -195,16 +184,27 @@ public sealed partial class Document {
         var v3Tag = BinaryPrimitives.ReadUInt32BigEndian(bytes[0..4]);
         var v3EofTag = BinaryPrimitives.ReadUInt128BigEndian(bytes[(bytes.Length - 48)..(bytes.Length - 32)]);
 
-        Document doc;
+        Document? doc = null;
         if ((v3Tag == Tag) && (v3EofTag == TagEof)) {
             doc = LoadCoreV3(bytes, passphrase);
         } else {  // anything not v3 is assumed to be v4
-            doc = LoadCoreV4(bytes, passphrase);
+            var nonce = new byte[32];
+            Buffer.BlockCopy(bytes, 0, nonce, 0, 32);
+            var nonceSha = SHA256.HashData(nonce);
+
+            for (var i = 32; i < bytes.Length - 116; i += 116) {
+                var isSame = true;
+                for (var j = 0; j < 32; j++) {
+                    if (bytes[i + j] != nonceSha[j]) { isSame = false; break; }
+                }
+                if (isSame) { doc = LoadCoreV4(bytes, passphrase); break; }
+            }
+            if (doc == null) { throw new FormatException("Unrecognized file format."); }
         }
 
         // Update properties
         doc.File = originalFile;
-        doc.PassphraseBytes = new ProtectedBytes(passphrase);
+        doc.ActiveKeyBlock.Passphrase.SetBytes(passphrase);
         doc.ResetChanges();
 
         return doc;
@@ -219,9 +219,9 @@ public sealed partial class Document {
     /// </summary>
     public void Save() {
         if (File == null) { throw new InvalidOperationException("File not specified."); }
-        if (PassphraseBytes == null) { throw new InvalidOperationException("Passphrase not specified."); }
+        if (!ActiveKeyBlock.HasPassphrase) { throw new InvalidOperationException("Passphrase not specified."); }
 
-        var passphraseBytes = GetPassphrase()!;  // passphrase is not null due to internal check above
+        var passphraseBytes = ActiveKeyBlock.Passphrase.GetBytes()!;  // passphrase is not null due to internal check above
         try {
             Save(File, passphraseBytes);
         } finally {
@@ -236,9 +236,9 @@ public sealed partial class Document {
     /// <param name="passphrase">Passphrase.</param>
     public void Save(FileInfo file) {
         ArgumentNullException.ThrowIfNull(file);
-        if (PassphraseBytes == null) { throw new InvalidOperationException("Passphrase not specified."); }
+        if (!ActiveKeyBlock.HasPassphrase) { throw new InvalidOperationException("Passphrase not specified."); }
 
-        var passphraseBytes = GetPassphrase()!;  // passphrase is not null due to internal check above
+        var passphraseBytes = ActiveKeyBlock.Passphrase.GetBytes()!;  // passphrase is not null due to internal check above
         try {
             Save(file, passphraseBytes);
         } finally {
@@ -283,9 +283,9 @@ public sealed partial class Document {
     /// <param name="stream">Stream.</param>
     public void Save(Stream stream) {
         ArgumentNullException.ThrowIfNull(stream);
-        if (PassphraseBytes == null) { throw new InvalidOperationException("Passphrase not specified."); }
+        if (!ActiveKeyBlock.HasPassphrase) { throw new InvalidOperationException("Passphrase not specified."); }
 
-        var passphraseBytes = GetPassphrase()!;  // passphrase is not null due to internal check above
+        var passphraseBytes = ActiveKeyBlock.Passphrase.GetBytes();  // passphrase is not null due to internal check above
         try {
             Save(stream, passphraseBytes);
         } finally {
@@ -342,7 +342,7 @@ public sealed partial class Document {
 
         // Update properties
         File = originalFile;
-        PassphraseBytes = new ProtectedBytes(passphrase);
+        ActiveKeyBlock.Passphrase.SetBytes(passphrase);
         ResetChanges();
 
     }

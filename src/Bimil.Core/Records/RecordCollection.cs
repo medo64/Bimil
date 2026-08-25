@@ -14,7 +14,7 @@ public class RecordCollection : IList<Record> {
     /// <summary>
     /// Create a new instance.
     /// </summary>
-    /// <param name="records">Field collection.</param>
+    /// <param name="records">Record collection.</param>
     internal RecordCollection(ICollection<Record> records)
         : this(records, isReadOnly: false) {
     }
@@ -22,11 +22,11 @@ public class RecordCollection : IList<Record> {
     /// <summary>
     /// Create a new instance.
     /// </summary>
-    /// <param name="records">Field collection.</param>
+    /// <param name="records">Record collection.</param>
     /// <param name="isReadOnly">If true, collection is readonly.</param>
     internal RecordCollection(ICollection<Record> records, bool isReadOnly) {
         if ((records != null) && (records.Count > 0)) { BaseCollection.AddRange(records); }
-        _IsReadOnly = isReadOnly;
+        IsReadOnly = isReadOnly;
 
     }
 
@@ -123,12 +123,12 @@ public class RecordCollection : IList<Record> {
         BaseCollection.Insert(index, item);
     }
 
-    private readonly bool _IsReadOnly;
     /// <summary>
     /// Gets a value indicating whether the collection is read-only.
     /// </summary>
     public bool IsReadOnly {
-        get { return _IsReadOnly; }
+        get;
+        private set;
     }
 
     /// <summary>
@@ -195,5 +195,50 @@ public class RecordCollection : IList<Record> {
     }
 
     #endregion
+
+
+    /// <summary>
+    /// Returns entry record if one is found or null.
+    /// </summary>
+    /// <param name="uuid">UUID.</param>
+    public EntryRecord? FindEntryRecord(Guid uuid) {
+        foreach (var record in this) {
+            if (record is EntryRecord entryRecord && (entryRecord.Uuid == uuid)) { return entryRecord; }
+        }
+        return null;
+    }
+
+    /// <summary>
+    /// Returns alias record if one is found or null.
+    /// </summary>
+    /// <param name="uuid">UUID.</param>
+    public AliasRecord? FindAliasRecord(Guid uuid) {
+        foreach (var record in this) {
+            if (record is AliasRecord aliasRecord && (aliasRecord.Uuid == uuid)) { return aliasRecord; }
+        }
+        return null;
+    }
+
+    /// <summary>
+    /// Returns shortcut record if one is found or null.
+    /// </summary>
+    /// <param name="uuid">UUID.</param>
+    public ShortcutRecord? FindShortcutRecord(Guid uuid) {
+        foreach (var record in this) {
+            if (record is ShortcutRecord shortcutRecord && (shortcutRecord.Uuid == uuid)) { return shortcutRecord; }
+        }
+        return null;
+    }
+
+    /// <summary>
+    /// Returns attachment record if one is found or null.
+    /// </summary>
+    /// <param name="uuid">UUID.</param>
+    public AttachmentRecord? FindAttachemntRecord(Guid uuid) {
+        foreach (var record in this) {
+            if (record is AttachmentRecord attachmentRecord && (attachmentRecord.Uuid == uuid)) { return attachmentRecord; }
+        }
+        return null;
+    }
 
 }

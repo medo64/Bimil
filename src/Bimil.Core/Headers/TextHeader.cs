@@ -32,9 +32,17 @@ public sealed class TextHeader : Header {
             }
         }
         set {
-            var bytes = Encoding.UTF8.GetBytes(value);
-            Data.SetBytes(bytes, zeroBytes: true);
+            Data.SetBytes(GetBytes(value), zeroBytes: true);
         }
+    }
+
+
+    /// <summary>
+    /// Returns bytes based on the value provided.
+    /// </summary>
+    /// <param name="value">Value.</param>
+    public static byte[] GetBytes(string value) {
+        return Encoding.UTF8.GetBytes(value ?? "");
     }
 
 }

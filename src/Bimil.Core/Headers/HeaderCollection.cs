@@ -15,29 +15,40 @@ public class HeaderCollection : IList<Header> {
     /// <summary>
     /// Create a new instance.
     /// </summary>
+    /// <param name="databaseVersion">Database version</param>
     /// <param name="headers">Header field collection.</param>
-    internal HeaderCollection(ICollection<Header> headers)
-        : this(headers, isReadOnly: false) {
+    internal HeaderCollection(DatabaseVersion databaseVersion, ICollection<Header> headers)
+        : this(databaseVersion, headers, isReadOnly: false) {
     }
 
     /// <summary>
     /// Create a new instance.
     /// </summary>
+    /// <param name="databaseVersion">Database version</param>
     /// <param name="headers">Header field collection.</param>
     /// <param name="isReadOnly">If true, collection is readonly.</param>
-    internal HeaderCollection(ICollection<Header> headers, bool isReadOnly) {
+    internal HeaderCollection(DatabaseVersion databaseVersion, ICollection<Header> headers, bool isReadOnly) {
         if ((headers != null) && (headers.Count > 0)) { BaseCollection.AddRange(headers); }
-        _IsReadOnly = isReadOnly;
+        IsReadOnly = isReadOnly;
 
         // ensure first field is always Version
         if (this[HeaderType.Version] is VersionHeader versionField) {
+            if (versionField.Version.Major != (int)databaseVersion) {
+                throw new ArgumentOutOfRangeException(nameof(headers), $"Major version mismatch ({(int)databaseVersion}.x expected, {versionField.Version.Major}.{versionField.Version.Minor} found).");
+            }
             var versionIndex = IndexOf(versionField);
             if (versionIndex > 0) {
                 BaseCollection.RemoveAt(versionIndex);
                 BaseCollection.Insert(0, versionField);
             }
         } else {
-            throw new ArgumentOutOfRangeException(nameof(headers), "Version field is missing.");
+            var newVersionField = (VersionHeader)Header.Create(HeaderType.Version);
+            newVersionField.Version = databaseVersion switch {
+                DatabaseVersion.V3 => new Version(3, 0, 0, 0),  // dummy field since version is missing
+                DatabaseVersion.V4 => new Version(4, 0, 0, 0),  // dummy field since version is missing
+                _ => throw new ArgumentOutOfRangeException(nameof(headers), "Version field is missing."),
+            };
+            BaseCollection.Add(newVersionField);
         }
     }
 
@@ -59,7 +70,7 @@ public class HeaderCollection : IList<Header> {
         if (item == null) { throw new ArgumentNullException(nameof(item), "Item cannot be null."); }
         if (IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
         if (item.Type is HeaderType.EndOfEntry) { throw new NotSupportedException("Cannot add EndOfEntry header field."); }
-        if (item.Type is HeaderType.Version) { throw new NotSupportedException("Cannot have multiple Version header fields."); }
+        if (item.Type is HeaderType.Version) { throw new InvalidOperationException("Cannot add Version header field."); }
 
         BaseCollection.Add(item);
     }
@@ -77,6 +88,7 @@ public class HeaderCollection : IList<Header> {
 
         foreach (var item in items) {
             if (item.Type is HeaderType.EndOfEntry) { throw new NotSupportedException("Cannot add EndOfEntry header field."); }
+            if (item.Type is HeaderType.Version) { throw new InvalidOperationException("Cannot add Version header field."); }
         }
 
         BaseCollection.AddRange(items);
@@ -139,17 +151,18 @@ public class HeaderCollection : IList<Header> {
         if (item == null) { throw new ArgumentNullException(nameof(item), "Item cannot be null."); }
         if (IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
         if (item.Type is HeaderType.EndOfEntry) { throw new NotSupportedException("Cannot add EndOfEntry header field."); }
-        if ((index == 0) && (item.Type != HeaderType.Version)) { throw new ArgumentOutOfRangeException(nameof(index), "Version must be the first header field."); }
+        if (item.Type is HeaderType.Version) { throw new InvalidOperationException("Cannot add Version header field."); }
+        if (index == 0) { throw new InvalidOperationException("Cannot add new field at index 0."); }
 
         BaseCollection.Insert(index, item);
     }
 
-    private readonly bool _IsReadOnly;
     /// <summary>
     /// Gets a value indicating whether the collection is read-only.
     /// </summary>
     public bool IsReadOnly {
-        get { return _IsReadOnly; }
+        get;
+        private set;
     }
 
     /// <summary>
@@ -161,7 +174,7 @@ public class HeaderCollection : IList<Header> {
     public bool Remove(Header item) {
         if (item == null) { throw new ArgumentNullException(nameof(item), "Item cannot be null."); }
         if (IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
-        if ((item.Type == HeaderType.Version) && BaseCollection.IndexOf(item) == 0) { throw new ArgumentOutOfRangeException(nameof(item), "Cannot remove the first version header field."); }
+        if ((item.Type == HeaderType.Version) && BaseCollection.IndexOf(item) == 0) { throw new InvalidOperationException("Cannot remove the version header field."); }
 
         return BaseCollection.Remove(item);
     }
@@ -174,7 +187,7 @@ public class HeaderCollection : IList<Header> {
     /// <exception cref="NotSupportedException">Collection is read-only.</exception>
     public void RemoveAt(int index) {
         if (IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
-        if (index == 0) { throw new ArgumentOutOfRangeException(nameof(index), "Cannot remove the first version header field."); }
+        if (index == 0) { throw new InvalidOperationException("Cannot remove the first version header field."); }
 
         var item = this[index];
         BaseCollection.Remove(item);
@@ -211,7 +224,7 @@ public class HeaderCollection : IList<Header> {
             if (IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
             if (Contains(value)) { throw new ArgumentOutOfRangeException(nameof(value), "Duplicate item in collection."); }
             if (value.Type is HeaderType.EndOfEntry) { throw new NotSupportedException("Cannot add EndOfEntry header field."); }
-            if ((index == 0) && (value.Type != HeaderType.Version)) { throw new ArgumentOutOfRangeException(nameof(value), "Version must be the first header field."); }
+            if ((index == 0) && (value.Type != HeaderType.Version)) { throw new InvalidOperationException("Version must be the first header field."); }
 
             var item = BaseCollection[index];
             BaseCollection.RemoveAt(index);

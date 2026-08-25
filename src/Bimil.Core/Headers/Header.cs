@@ -42,7 +42,7 @@ public abstract class Header {
 
     /// <summary>
     /// Returns header field based on type.
-    /// </summary>    
+    /// </summary>
     /// <param name="type">Type.</param>
     public static Header Create(HeaderType type) {
         return Create(type, new ProtectedBytes());
@@ -50,7 +50,27 @@ public abstract class Header {
 
     /// <summary>
     /// Returns header field based on type.
-    /// </summary>    
+    /// </summary>
+    /// <param name="type">Type.</param>
+    /// <param name="bytes">Bytes.</param>
+    public static Header Create(HeaderType type, byte[] bytes) {
+        return Create(type, new ProtectedBytes(bytes));
+    }
+
+    /// <summary>
+    /// Returns header field based on type.
+    /// </summary>
+    /// <param name="type">Type.</param>
+    /// <param name="bytes">Bytes.</param>
+    /// <param name="zeroBytes">If true, input bytes will be zeroed after protection.</param>
+    public static Header Create(HeaderType type, byte[] bytes, bool zeroBytes) {
+        return Create(type, new ProtectedBytes(bytes, zeroBytes));
+    }
+
+
+    /// <summary>
+    /// Returns header field based on type.
+    /// </summary>
     /// <param name="type">Type.</param>
     /// <param name="data">Data.</param>
     internal static Header Create(HeaderType type, ProtectedBytes data) {
@@ -65,7 +85,7 @@ public abstract class Header {
 #pragma warning restore CS0612 // Type or member is obsolete
             HeaderType.WhatPerformedLastSave => new TextHeader(type, data, "What performed last save"),
             HeaderType.LastSavedByUser => new TextHeader(type, data, "Last saved by user"),
-            HeaderType.LastSavedOnHost => new TextHeader(type, data,"Last saved on host"),
+            HeaderType.LastSavedOnHost => new TextHeader(type, data, "Last saved on host"),
             HeaderType.DatabaseName => new TextHeader(type, data, "Database name"),
             HeaderType.DatabaseDescription => new TextHeader(type, data, "Database description"),
             HeaderType.DatabaseFilters => new TextHeader(type, data, "Database filters"),

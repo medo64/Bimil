@@ -16,7 +16,6 @@ public class FieldCollection : IList<Field> {
     /// Create a new instance.
     /// </summary>
     /// <param name="fields">Field collection.</param>
-    /// <param name="isReadOnly">If true, collection is readonly.</param>
     internal FieldCollection(ICollection<Field> fields)
         : this(fields, isReadOnly: false) {
     }
@@ -28,12 +27,48 @@ public class FieldCollection : IList<Field> {
     /// <param name="isReadOnly">If true, collection is readonly.</param>
     internal FieldCollection(ICollection<Field> fields, bool isReadOnly) {
         if ((fields != null) && (fields.Count > 0)) { BaseCollection.AddRange(fields); }
-        _IsReadOnly = isReadOnly;
+        IsReadOnly = isReadOnly;
+    }
+
+    /// <summary>
+    /// Create a new instance.
+    /// </summary>
+    /// <param name="fields">Field collection.</param>
+    /// <param name="firstUuidType">UUID type.</param>
+    internal FieldCollection(ICollection<Field> fields, FieldType firstUuidType)
+        : this(fields, firstUuidType, isReadOnly: false) {
+    }
+
+    /// <summary>
+    /// Create a new instance.
+    /// </summary>
+    /// <param name="fields">Field collection.</param>
+    /// <param name="isReadOnly">If true, collection is readonly.</param>
+    internal FieldCollection(ICollection<Field> fields, FieldType firstUuidType, bool isReadOnly)
+        : this(fields, isReadOnly) {
+        var newField = Field.Create(firstUuidType);
+        if (newField is not UuidField newUuidField) { throw new ArgumentOutOfRangeException(nameof(firstUuidType), "Unrecognized UUID type."); }  // try create uuid
+        if (firstUuidType is FieldType.BaseUuid) { throw new ArgumentOutOfRangeException(nameof(firstUuidType), "Invalid UUID type."); }
+        FirstUuidType = firstUuidType;
+
+        var uuid = this[firstUuidType];
+        if (uuid == null) {
+            newUuidField.Uuid = Guid.CreateVersion7();
+            BaseCollection.Insert(0, newUuidField);
+        } else {
+            var uuidIndex = IndexOf(uuid);
+            if (uuidIndex > 0) {
+                BaseCollection.RemoveAt(uuidIndex);
+                BaseCollection.Insert(0, uuid);
+            }
+        }
     }
 
 
     [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
     private readonly List<Field> BaseCollection = [];
+
+    private readonly FieldType? FirstUuidType;
 
 
     #region ICollection
@@ -78,7 +113,14 @@ public class FieldCollection : IList<Field> {
     public void Clear() {
         if (IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
 
-        BaseCollection.Clear();
+        if (FirstUuidType == null) {
+            BaseCollection.Clear();
+        } else {
+            for (var i = BaseCollection.Count - 1; i > 0; i--) {  // remove all except the first field (UUID)
+                BaseCollection.RemoveAt(i);
+            }
+        }
+
     }
 
     /// <summary>
@@ -127,15 +169,19 @@ public class FieldCollection : IList<Field> {
         if (IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
         if (item.Type is FieldType.EndOfEntry) { throw new NotSupportedException("Cannot add EndOfEntry field."); }
 
-        BaseCollection.Insert(index, item);
+        if (FirstUuidType == null) {
+            BaseCollection.Insert(index, item);
+        } else {
+            if (index == 0) { throw new InvalidOperationException("Cannot add new field at index 0."); }
+        }
     }
 
-    private readonly bool _IsReadOnly;
     /// <summary>
     /// Gets a value indicating whether the collection is read-only.
     /// </summary>
     public bool IsReadOnly {
-        get { return _IsReadOnly; }
+        get;
+        private set;
     }
 
     /// <summary>
@@ -147,6 +193,9 @@ public class FieldCollection : IList<Field> {
     public bool Remove(Field item) {
         if (item == null) { throw new ArgumentNullException(nameof(item), "Item cannot be null."); }
         if (IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
+        if (FirstUuidType != null) {
+            if ((item.Type == FirstUuidType) && BaseCollection.IndexOf(item) == 0) { throw new InvalidOperationException("Cannot remove the UUID field."); }
+        }
 
         return BaseCollection.Remove(item);
     }
@@ -159,6 +208,9 @@ public class FieldCollection : IList<Field> {
     /// <exception cref="NotSupportedException">Collection is read-only.</exception>
     public void RemoveAt(int index) {
         if (IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
+        if (FirstUuidType != null) {
+            if (index == 0) { throw new InvalidOperationException("Cannot remove the first UUID header field."); }
+        }
 
         var item = this[index];
         BaseCollection.Remove(item);

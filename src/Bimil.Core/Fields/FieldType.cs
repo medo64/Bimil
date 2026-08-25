@@ -183,27 +183,27 @@ public enum FieldType : byte {
     /// <summary>
     /// Attachment title.
     /// </summary>
-    AttachmentTitle = 0x25,
+    Attachment3Title = 0x25,
 
     /// <summary>
     /// Attachment media type.
     /// </summary>
-    AttachmentMediaType = 0x26,
+    Attachment3MediaType = 0x26,
 
     /// <summary>
     /// Attachment file name.
     /// </summary>
-    AttachmentFileName = 0x27,
+    Attachment3FileName = 0x27,
 
     /// <summary>
     /// Attachment modification time.
     /// </summary>
-    AttachmentModificationTime = 0x28,
+    Attachment3ModificationTime = 0x28,
 
     /// <summary>
     /// Attachment content.
     /// </summary>
-    AttachmentContent = 0x29,
+    Attachment3Content = 0x29,
 
     /// <summary>
     /// Passkey credential ID.
@@ -254,6 +254,76 @@ public enum FieldType : byte {
     /// Shortcut UUID.
     /// </summary>
     ShortcutUuid = 0x43,
+
+    /// <summary>
+    /// Attachment UUID.
+    /// </summary>
+    Attachment4Uuid = 0x60,
+
+    /// <summary>
+    /// Attachment title.
+    /// </summary>
+    Attachment4Title = 0x61,
+    /// <summary>
+    /// Attachment creation time.
+    /// </summary>
+    Attachment4CreationTime = 0x62,
+
+    /// <summary>
+    /// Attachment media type.
+    /// </summary>
+    Attachment4MediaType = 0x63,
+
+    /// <summary>
+    /// Attachment file name.
+    /// </summary>
+    Attachment4FileName = 0x64,
+
+    /// <summary>
+    /// Attachment file path.
+    /// </summary>
+    Attachment4FilePath = 0x65,
+
+    /// <summary>
+    /// Attachment file creation time.
+    /// </summary>
+    Attachment4FileCreationTime = 0x66,
+
+    /// <summary>
+    /// Attachment file modification time.
+    /// </summary>
+    Attachment4FileModificationTime = 0x67,
+
+    /// <summary>
+    /// Attachment file access time.
+    /// </summary>
+    Attachment4FileAccessTime = 0x68,
+
+    /// <summary>
+    /// Attachment encryption key.
+    /// </summary>
+    Attachment4EK = 0x70,
+
+    /// <summary>
+    /// Attachment authentication key.
+    /// </summary>
+    Attachment4AK = 0x71,
+
+    /// <summary>
+    /// Attachment initialization vector.
+    /// </summary>
+    Attachment4IV = 0x72,
+
+    /// <summary>
+    /// Attachment content.
+    /// </summary>
+    Attachment4Content = 0x73,
+
+    /// <summary>
+    /// Attachment content HMAC.
+    /// </summary>
+    Attachment4ContentHMAC = 0x74,
+
 
     /// <summary>
     /// End of entries.

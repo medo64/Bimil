@@ -34,9 +34,17 @@ public sealed class UuidField : Field {
             }
         }
         set {
-            var bytes = value.ToByteArray();
-            Data.SetBytes(bytes, zeroBytes: true);
+            Data.SetBytes(GetBytes(value), zeroBytes: true);
         }
+    }
+
+
+    /// <summary>
+    /// Returns bytes based on the value provided.
+    /// </summary>
+    /// <param name="value">Value.</param>
+    public static byte[] GetBytes(Guid value) {
+        return value.ToByteArray();;
     }
 
 }

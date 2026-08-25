@@ -4,7 +4,6 @@ using System.IO;
 using System.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-[TestClass]
 public partial class DocumentTests {
 
     private static Stream GetResourceStream(string fileName) {

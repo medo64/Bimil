@@ -1,18 +1,24 @@
 namespace Bimil;
 
 using System;
+using System.Collections.Generic;
 
 public sealed partial class Document {
 
     /// <summary>
+    /// Gets key blocks.
+    /// </summary>
+    public KeyBlockCollection KeyBlocks { get; }
+
+    /// <summary>
     /// Gets all headers.
     /// </summary>
-    public HeaderCollection Headers;
+    public HeaderCollection Headers { get; }
 
     /// <summary>
     /// Gets all records.
     /// </summary>
-    public RecordCollection Records;
+    public RecordCollection Records { get; }
 
 
     /// <summary>
@@ -160,7 +166,7 @@ public sealed partial class Document {
 
 
     /// <summary>
-    /// Updates last save timestamp
+    /// Clears any identity data that is present.
     /// </summary>
     public void ClearIdentityData() {
         for (var i = Headers.Count - 1; i >= 0; i--) {
@@ -170,6 +176,18 @@ public sealed partial class Document {
                 Headers.RemoveAt(i);
             }
 #pragma warning restore CS0612 // Type or member is obsolete
+        }
+    }
+
+    /// <summary>
+    /// Clears any timestamps that are present.
+    /// </summary>
+    public void ClearTimestamps() {
+        for (var i = Headers.Count - 1; i >= 0; i--) {
+            var header = Headers[i];
+            if (header.Type is HeaderType.TimestampOfLastSave or HeaderType.TimestampOfLastMasterPasswordChange) {
+                Headers.RemoveAt(i);
+            }
         }
     }
 

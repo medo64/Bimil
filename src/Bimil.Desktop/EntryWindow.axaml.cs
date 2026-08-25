@@ -33,6 +33,7 @@ internal partial class EntryWindow : Window {
     public EntryWindow(State state, Entry entry, bool readOnly = false) {
         InitializeComponent();
         State = state;
+        Entry = entry;
 
         Replenishment.FillGroups(state, cmbGroups);
 
@@ -113,6 +114,7 @@ internal partial class EntryWindow : Window {
         }
     }
 
+    private readonly Entry? Entry;
 
     public void btnOK_Click(object sender, RoutedEventArgs e) {
     }
@@ -124,7 +126,10 @@ internal partial class EntryWindow : Window {
     public void btnAutoType_Click(object sender, RoutedEventArgs e) {
     }
 
-    public void btnFields_Click(object sender, RoutedEventArgs e) {
+    public async void btnFields_Click(object sender, RoutedEventArgs e) {
+        //var records = Entry != null ? Entry.Records.ToArray() : [];
+        //var frm = new FieldsWindow(records);
+        //await frm.ShowDialog(this);
     }
 
 

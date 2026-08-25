@@ -12,10 +12,11 @@ public abstract class Record {
     /// Creates a new instance.
     /// </summary>
     /// <param name="fields">Fields.</param>
-    private protected Record(ICollection<Field> fields) {
+    private protected Record(FieldCollection fields) {
         ArgumentNullException.ThrowIfNull(fields);
-        Fields = new FieldCollection(fields);
+        Fields = fields;
     }
+
 
     /// <summary>
     /// Returns record based on type.
@@ -24,6 +25,12 @@ public abstract class Record {
         foreach (var field in fields) {
             if (field.Type == FieldType.Uuid) {
                 return new EntryRecord(fields);
+            } else if (field.Type == FieldType.AliasUuid) {
+                return new AliasRecord(fields);
+            } else if (field.Type == FieldType.ShortcutUuid) {
+                return new AliasRecord(fields);
+            } else if (field.Type == FieldType.Attachment4Uuid) {
+                return new AttachmentRecord(fields);
             }
         }
         return new UnknownRecord(fields);

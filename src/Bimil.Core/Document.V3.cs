@@ -23,6 +23,8 @@ public sealed partial class Document {
             keyK = DecryptKey(stretchedKey, bytes, 72);
             keyL = DecryptKey(stretchedKey, bytes, 104);
 
+            var keyBlock = KeyBlock.Create(salt, iter, keyK, keyL, passphraseBytes, zeroBytes: false);
+
             var iv = bytes[136..152];
             Buffer.BlockCopy(bytes, 136, iv, 0, iv.Length);
 
@@ -45,7 +47,7 @@ public sealed partial class Document {
                     dataHash.TransformBlock(fieldData, 0, fieldData.Length, null, 0);  // not hashing length nor type - wtf?
                     if (fieldType == HeaderType.EndOfEntry) { break; }
 
-                    var field = Header.Create(fieldType, new ProtectedBytes(fieldData, zeroBytes: true));
+                    var field = Header.Create(fieldType, fieldData, zeroBytes: true);
                     headerFields.Add(field);
                 } finally {
                     CryptographicOperations.ZeroMemory(fieldData);
@@ -92,7 +94,7 @@ public sealed partial class Document {
             }
 
             //return new Document(passphraseBuffer, (int)iter, headerFields, [.. recordFields]);
-            var doc = new Document(DatabaseVersion.V3, iter, headerFields, records);
+            var doc = new Document(DatabaseVersion.V3, keyBlock, [keyBlock], headerFields, records);
             return doc;
         } catch (CryptographicException ex) {
             throw new FormatException(ex.Message, ex);
@@ -119,10 +121,10 @@ public sealed partial class Document {
             stream.Write(salt);
 
             var iter = new byte[4];
-            BinaryPrimitives.WriteUInt32LittleEndian(iter, IterationCount);
+            BinaryPrimitives.WriteUInt32LittleEndian(iter, ActiveKeyBlock.IterationCount);
             stream.Write(iter, 0, 4);
 
-            stretchedKey = GetStretchedKey(passphrase, salt, IterationCount);
+            stretchedKey = GetStretchedKey(passphrase, salt, ActiveKeyBlock.IterationCount);
             stream.Write(GetSha256Hash(stretchedKey), 0, 32);
 
             RandomNumberGenerator.Fill(keyK);

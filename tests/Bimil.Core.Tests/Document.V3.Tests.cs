@@ -35,7 +35,8 @@ public partial class DocumentTests {
         Assert.AreEqual("0153caff65334548a48f376775f0dd2534", ((TextHeader)doc.Headers[8]).Text);
 
         Assert.AreEqual(DatabaseVersion.V3, doc.DatabaseVersion);
-        Assert.AreEqual(327680U, doc.IterationCount);
+        Assert.AreEqual(1, doc.KeyBlocks.Count);
+        Assert.AreEqual(327680U, doc.ActiveKeyBlock.IterationCount);
 
         Assert.AreEqual(new Version(3, 17, 0, 0), doc.Version);
         Assert.AreEqual(Guid.Parse("7f8dc27f-8e80-424d-8561-4e1ff54a366e"), doc.Uuid);
@@ -76,7 +77,7 @@ public partial class DocumentTests {
         var doc = Document.Load(ms, Encoding.UTF8.GetBytes("changeme"));
 
         Assert.AreEqual(DatabaseVersion.V3, doc.DatabaseVersion);
-        Assert.AreEqual(327680U, doc.IterationCount);
+        Assert.AreEqual(327680U, doc.ActiveKeyBlock.IterationCount);
 
         Assert.AreEqual(new Version(3, 17, 0, 0), doc.Version);
         Assert.AreEqual(Guid.Parse("7f8dc27f-8e80-424d-8561-4e1ff54a366e"), doc.Uuid);

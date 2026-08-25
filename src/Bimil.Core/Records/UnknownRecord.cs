@@ -13,7 +13,7 @@ public sealed class UnknownRecord : Record {
     /// </summary>
     /// <param name="fields">Fields.</param>
     internal UnknownRecord(ICollection<Field> fields)
-        : base(fields) {
+        : base(new FieldCollection(fields)) {
     }
 
 }

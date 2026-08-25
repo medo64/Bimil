@@ -44,9 +44,29 @@ public abstract class Field {
     /// Returns record field based on type.
     /// </summary>
     /// <param name="type">Type.</param>
-    internal static Field Create(FieldType type) {
+    public static Field Create(FieldType type) {
         return Create(type, new ProtectedBytes());
     }
+
+    /// <summary>
+    /// Returns record field based on type.
+    /// </summary>
+    /// <param name="type">Type.</param>
+    /// <param name="bytes">Bytes.</param>
+    public static Field Create(FieldType type, byte[] bytes) {
+        return Create(type, new ProtectedBytes(bytes));
+    }
+
+    /// <summary>
+    /// Returns record field based on type.
+    /// </summary>
+    /// <param name="type">Type.</param>
+    /// <param name="bytes">Bytes.</param>
+    /// <param name="zeroBytes">If true, input bytes will be zeroed after protection.</param>
+    public static Field Create(FieldType type, byte[] bytes, bool zeroBytes) {
+        return Create(type, new ProtectedBytes(bytes, zeroBytes));
+    }
+
 
     /// <summary>
     /// Returns record field based on type.
@@ -89,11 +109,11 @@ public abstract class Field {
             FieldType.TotpLength => new UnknownField(type, data, "TOTP length"),
             FieldType.TotpTimeStep => new UnknownField(type, data, "TOTP time step"),
             FieldType.TotpStartTime => new TimestampField(type, data, "TOTP start time"),
-            FieldType.AttachmentTitle => new TextField(type, data, "Attachment title"),
-            FieldType.AttachmentMediaType => new TextField(type, data, "Attachment media type"),
-            FieldType.AttachmentFileName => new TextField(type, data, "Attachment file name"),
-            FieldType.AttachmentModificationTime => new TimestampField(type, data, "Attachment modification time"),
-            FieldType.AttachmentContent => new BinaryField(type, data, "Attachment content"),
+            FieldType.Attachment3Title => new TextField(type, data, "Attachment title"),
+            FieldType.Attachment3MediaType => new TextField(type, data, "Attachment media type"),
+            FieldType.Attachment3FileName => new TextField(type, data, "Attachment file name"),
+            FieldType.Attachment3ModificationTime => new TimestampField(type, data, "Attachment modification time"),
+            FieldType.Attachment3Content => new BinaryField(type, data, "Attachment content"),
             FieldType.PasskeyCredentialID => new BinaryField(type, data, "Passkey credential ID"),
             FieldType.PasskeyRelyingPartyID => new TextField(type, data, "Passkey relying party ID"),
             FieldType.PasskeyUserHandle => new BinaryField(type, data, "Passkey user handle"),
@@ -104,6 +124,20 @@ public abstract class Field {
             FieldType.BaseUuid => new UuidField(type, data, "Base UUID"),
             FieldType.AliasUuid => new UuidField(type, data, "Alias UUID"),
             FieldType.ShortcutUuid => new UuidField(type, data, "Shortcut UUID"),
+            FieldType.Attachment4Uuid => new UuidField(type, data, "Attachment UUID"),
+            FieldType.Attachment4Title => new TextField(type, data, "Attachment title"),
+            FieldType.Attachment4CreationTime => new TimestampField(type, data, "Attachment creation time"),
+            FieldType.Attachment4MediaType => new TextField(type, data, "Attachment media type"),
+            FieldType.Attachment4FileName => new TextField(type, data, "Attachment file name"),
+            FieldType.Attachment4FilePath => new TextField(type, data, "Attachment file path"),
+            FieldType.Attachment4FileCreationTime => new TimestampField(type, data, "Attachment file creation time"),
+            FieldType.Attachment4FileModificationTime => new TimestampField(type, data, "Attachment file modification time"),
+            FieldType.Attachment4FileAccessTime => new TimestampField(type, data, "Attachment file access time"),
+            FieldType.Attachment4EK => new UnknownField(type, data, "Attachment encryption key"),
+            FieldType.Attachment4AK => new UnknownField(type, data, "Attachment authentication key"),
+            FieldType.Attachment4IV => new UnknownField(type, data, "Attachment initialization vector"),
+            FieldType.Attachment4Content => new BinaryField(type, data, "Attachment content"),
+            FieldType.Attachment4ContentHMAC => new UnknownField(type, data, "Attachment content HMAC"),
             FieldType.EndOfEntry => throw new NotSupportedException("Cannot create EndOfEntry field."),
             _ => new UnknownField(type, data, string.Empty),
         };

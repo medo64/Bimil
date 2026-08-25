@@ -14,7 +14,7 @@ public sealed class EntryRecord : Record {
     /// </summary>
     /// <param name="fields">Fields.</param>
     internal EntryRecord(ICollection<Field> fields)
-        : base(fields) {
+        : base(new FieldCollection(fields, FieldType.Uuid)) {
     }
 
 
@@ -30,10 +30,7 @@ public sealed class EntryRecord : Record {
         }
         set {
             var @field = Fields[FieldType.Uuid];
-            if (@field is not UuidField uuidField) {
-                uuidField = (UuidField)Field.Create(FieldType.Uuid);
-                Fields.Insert(0, uuidField);
-            }
+            if (@field is not UuidField uuidField || @field.Type is not FieldType.Uuid) { throw new InvalidOperationException("Missing Uuid field"); }
             uuidField.Uuid = value;
         }
     }
