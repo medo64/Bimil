@@ -79,10 +79,10 @@ public class FieldCollection : IList<Field> {
     /// <param name="item">Item.</param>
     /// <exception cref="ArgumentNullException">Item cannot be null.</exception>
     /// <exception cref="ArgumentOutOfRangeException">Item cannot be in other collection.</exception>
-    /// <exception cref="NotSupportedException">Collection is read-only.</exception>
+    /// <exception cref="InvalidOperationException">Collection is read-only.</exception>
     public void Add(Field item) {
         if (item == null) { throw new ArgumentNullException(nameof(item), "Item cannot be null."); }
-        if (IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
+        if (IsReadOnly) { throw new InvalidOperationException("Collection is read-only."); }
         if (item.Type is FieldType.EndOfEntry) { throw new NotSupportedException("Cannot add EndOfEntry field."); }
 
         BaseCollection.Add(item);
@@ -94,10 +94,10 @@ public class FieldCollection : IList<Field> {
     /// <param name="items">Item.</param>
     /// <exception cref="ArgumentNullException">Items cannot be null.</exception>
     /// <exception cref="ArgumentOutOfRangeException">Item cannot be in other collection.</exception>
-    /// <exception cref="NotSupportedException">Collection is read-only.</exception>
+    /// <exception cref="InvalidOperationException">Collection is read-only.</exception>
     public void AddRange(IEnumerable<Field> items) {
         if (items == null) { throw new ArgumentNullException(nameof(items), "Item cannot be null."); }
-        if (IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
+        if (IsReadOnly) { throw new InvalidOperationException("Collection is read-only."); }
 
         foreach (var item in items) {
             if (item.Type is FieldType.EndOfEntry) { throw new NotSupportedException("Cannot add EndOfEntry field."); }
@@ -109,9 +109,9 @@ public class FieldCollection : IList<Field> {
     /// <summary>
     /// Removes all items.
     /// </summary>
-    /// <exception cref="NotSupportedException">Collection is read-only.</exception>
+    /// <exception cref="InvalidOperationException">Collection is read-only.</exception>
     public void Clear() {
-        if (IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
+        if (IsReadOnly) { throw new InvalidOperationException("Collection is read-only."); }
 
         if (FirstUuidType == null) {
             BaseCollection.Clear();
@@ -163,10 +163,10 @@ public class FieldCollection : IList<Field> {
     /// <param name="item">The item to insert.</param>
     /// <exception cref="ArgumentNullException">Item cannot be null.</exception>
     /// <exception cref="ArgumentOutOfRangeException">Index is less than 0. -or- Index is greater than collection count.</exception>
-    /// <exception cref="NotSupportedException">Collection is read-only.</exception>
+    /// <exception cref="InvalidOperationException">Collection is read-only.</exception>
     public void Insert(int index, Field item) {
         if (item == null) { throw new ArgumentNullException(nameof(item), "Item cannot be null."); }
-        if (IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
+        if (IsReadOnly) { throw new InvalidOperationException("Collection is read-only."); }
         if (item.Type is FieldType.EndOfEntry) { throw new NotSupportedException("Cannot add EndOfEntry field."); }
 
         if (FirstUuidType == null) {
@@ -181,7 +181,12 @@ public class FieldCollection : IList<Field> {
     /// </summary>
     public bool IsReadOnly {
         get;
-        private set;
+        internal set {
+            field = value;
+            foreach (var item in this) {
+                item.IsReadOnly = value;
+            }
+        }
     }
 
     /// <summary>
@@ -189,10 +194,10 @@ public class FieldCollection : IList<Field> {
     /// </summary>
     /// <param name="item">The item to remove.</param>
     /// <exception cref="ArgumentNullException">Item cannot be null.</exception>
-    /// <exception cref="NotSupportedException">Collection is read-only.</exception>
+    /// <exception cref="InvalidOperationException">Collection is read-only.</exception>
     public bool Remove(Field item) {
         if (item == null) { throw new ArgumentNullException(nameof(item), "Item cannot be null."); }
-        if (IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
+        if (IsReadOnly) { throw new InvalidOperationException("Collection is read-only."); }
         if (FirstUuidType != null) {
             if ((item.Type == FirstUuidType) && BaseCollection.IndexOf(item) == 0) { throw new InvalidOperationException("Cannot remove the UUID field."); }
         }
@@ -205,9 +210,9 @@ public class FieldCollection : IList<Field> {
     /// </summary>
     /// <param name="index">The zero-based index of the item to remove.</param>
     /// <exception cref="ArgumentOutOfRangeException">Index is less than 0. -or- Index is equal to or greater than collection count.</exception>
-    /// <exception cref="NotSupportedException">Collection is read-only.</exception>
+    /// <exception cref="InvalidOperationException">Collection is read-only.</exception>
     public void RemoveAt(int index) {
-        if (IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
+        if (IsReadOnly) { throw new InvalidOperationException("Collection is read-only."); }
         if (FirstUuidType != null) {
             if (index == 0) { throw new InvalidOperationException("Cannot remove the first UUID header field."); }
         }
@@ -239,12 +244,12 @@ public class FieldCollection : IList<Field> {
     /// <param name="index">The zero-based index of the element to get or set.</param>
     /// <exception cref="ArgumentNullException">Value cannot be null.</exception>
     /// <exception cref="ArgumentOutOfRangeException">Index is less than 0. -or- Index is equal to or greater than collection count. -or- Duplicate name in collection.</exception>
-    /// <exception cref="NotSupportedException">Collection is read-only.</exception>
+    /// <exception cref="InvalidOperationException">Collection is read-only.</exception>
     public Field this[int index] {
         get { return BaseCollection[index]; }
         set {
             if (value == null) { throw new ArgumentNullException(nameof(value), "Value cannot be null."); }
-            if (IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
+            if (IsReadOnly) { throw new InvalidOperationException("Collection is read-only."); }
             if (Contains(value)) { throw new ArgumentOutOfRangeException(nameof(value), "Duplicate item in collection."); }
             if (value.Type is FieldType.EndOfEntry) { throw new NotSupportedException("Cannot add EndOfEntry field."); }
 

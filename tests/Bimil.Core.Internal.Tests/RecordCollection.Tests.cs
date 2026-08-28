@@ -27,4 +27,18 @@ public class RecordCollectionTests {
         Assert.AreEqual(0, records.Count);
     }
 
+    [TestMethod]
+    public void Header_ReadOnly() {
+        var records = new RecordCollection([Record.Create([Field.Create(FieldType.Uuid)])]);
+
+        records.IsReadOnly = true;
+        Assert.ThrowsException<InvalidOperationException>(() =>
+            records.Add(Record.Create([Field.Create(FieldType.Uuid)]))
+        );
+
+        records.IsReadOnly = false;
+        records.Add(Record.Create([Field.Create(FieldType.Uuid)]));
+        Assert.AreEqual(2, records.Count);
+    }
+
 }

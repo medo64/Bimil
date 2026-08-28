@@ -96,4 +96,31 @@ public class FieldCollectionTests {
         );
     }
 
+    [TestMethod]
+    public void FieldCollection_ReadOnly() {
+        var field = Field.Create(FieldType.Uuid, UuidField.GetBytes(Guid.AllBitsSet));
+        var fields = new FieldCollection([field]);
+        Assert.AreEqual(1, fields.Count);
+
+        fields.IsReadOnly = true;
+        Assert.IsTrue(fields[0].IsReadOnly);
+        Assert.ThrowsException<InvalidOperationException>(() =>
+            fields[0].Data.SetBytes([])
+        );
+        Assert.ThrowsException<InvalidOperationException>(() =>
+            fields.Add(Field.Create(FieldType.Attachment3MediaType))
+        );
+        Assert.ThrowsException<InvalidOperationException>(() =>
+            fields.Remove(Field.Create(FieldType.Attachment3MediaType))
+        );
+        Assert.ThrowsException<InvalidOperationException>(() =>
+            fields.Insert(0, Field.Create(FieldType.Attachment3MediaType))
+        );
+        Assert.AreEqual(Convert.ToHexString(UuidField.GetBytes(Guid.AllBitsSet)), Convert.ToHexString(fields[0].Data.GetBytes()));
+
+        fields.IsReadOnly = false;
+        field.Data.SetBytes(UuidField.GetBytes(Guid.Empty));
+        Assert.AreEqual(Convert.ToHexString(UuidField.GetBytes(Guid.Empty)), Convert.ToHexString(fields[0].Data.GetBytes()));
+    }
+
 }

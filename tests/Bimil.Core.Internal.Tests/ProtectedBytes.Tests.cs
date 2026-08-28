@@ -57,7 +57,17 @@ public class ProtectedBytesTests {
         var bytes2PT = ProtectedBytes.UnprotectData(bytes2CT);
         Assert.AreEqual(Convert.ToHexString(bytes1CT), Convert.ToHexString(bytes2CT));
         Assert.AreEqual(Convert.ToHexString(bytes), Convert.ToHexString(bytes2PT));
+    }
 
+    [TestMethod]
+    public void ProtectedBytes_ReadOnly() {
+        var bytes = Encoding.UTF8.GetBytes("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
+        var pb = new ProtectedBytes(bytes);
+        pb.IsReadOnly = true;
+        Assert.ThrowsException<InvalidOperationException>(() =>
+            pb.SetBytes([])
+        );
+        Assert.AreEqual(Convert.ToHexString(bytes), Convert.ToHexString(pb.GetBytes()));
     }
 
 }

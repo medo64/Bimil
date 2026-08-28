@@ -60,6 +60,7 @@ public sealed class ProtectedBytes {
     /// <param name="bytes">Bytes.</param>
     /// <param name="zeroBytes">If true, input bytes will be zeroed after protection.</param>
     public void SetBytes(byte[] bytes, bool zeroBytes) {
+        if (IsReadOnly) { throw new InvalidOperationException("Cannot set read-only value."); }
         ArgumentNullException.ThrowIfNull(bytes);
 
         try {
@@ -83,7 +84,6 @@ public sealed class ProtectedBytes {
         return UnprotectData(Bytes, RandomIV.Value);
     }
 
-
     /// <summary>
     /// Gets length of stored bytes.
     /// </summary>
@@ -94,6 +94,15 @@ public sealed class ProtectedBytes {
         private set {
             BytesLength = value ^ BinaryPrimitives.ReadInt32BigEndian(RandomIV.Value);  // just a bit of obfuscation
         }
+    }
+
+
+    /// <summary>
+    /// Gets if values are read-only.
+    /// </summary>
+    public bool IsReadOnly {
+        get;
+        internal set;
     }
 
 

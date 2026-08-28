@@ -82,6 +82,18 @@ public sealed partial class Document {
     /// </summary>
     public FileInfo? File { get; private set; }
 
+    /// <summary>
+    /// Gets a value indicating whether the document is read-only.
+    /// </summary>
+    public bool IsReadOnly {
+        get;
+        internal set {
+            field = value;
+            Headers.IsReadOnly = value;
+            Records.IsReadOnly = value;
+        }
+    }
+
     #endregion Properties
 
     #region Hash

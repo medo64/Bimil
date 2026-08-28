@@ -41,6 +41,18 @@ public abstract class Header {
 
 
     /// <summary>
+    /// Gets if values are read-only.
+    /// </summary>
+    public virtual bool IsReadOnly {
+        get;
+        internal set {
+            field = value;
+            Data.IsReadOnly = value;
+        }
+    }
+
+
+    /// <summary>
     /// Returns header field based on type.
     /// </summary>
     /// <param name="type">Type.</param>

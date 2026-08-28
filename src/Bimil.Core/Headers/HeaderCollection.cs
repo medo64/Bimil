@@ -48,7 +48,7 @@ public class HeaderCollection : IList<Header> {
                 DatabaseVersion.V4 => new Version(4, 0, 0, 0),  // dummy field since version is missing
                 _ => throw new ArgumentOutOfRangeException(nameof(headers), "Version field is missing."),
             };
-            BaseCollection.Add(newVersionField);
+            BaseCollection.Insert(0, newVersionField);
         }
     }
 
@@ -65,10 +65,10 @@ public class HeaderCollection : IList<Header> {
     /// <param name="item">Item.</param>
     /// <exception cref="ArgumentNullException">Item cannot be null.</exception>
     /// <exception cref="ArgumentOutOfRangeException">Item cannot be in other collection.</exception>
-    /// <exception cref="NotSupportedException">Collection is read-only.</exception>
+    /// <exception cref="InvalidOperationException">Collection is read-only.</exception>
     public void Add(Header item) {
         if (item == null) { throw new ArgumentNullException(nameof(item), "Item cannot be null."); }
-        if (IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
+        if (IsReadOnly) { throw new InvalidOperationException("Collection is read-only."); }
         if (item.Type is HeaderType.EndOfEntry) { throw new NotSupportedException("Cannot add EndOfEntry header field."); }
         if (item.Type is HeaderType.Version) { throw new InvalidOperationException("Cannot add Version header field."); }
 
@@ -81,10 +81,10 @@ public class HeaderCollection : IList<Header> {
     /// <param name="items">Item.</param>
     /// <exception cref="ArgumentNullException">Items cannot be null.</exception>
     /// <exception cref="ArgumentOutOfRangeException">Item cannot be in other collection.</exception>
-    /// <exception cref="NotSupportedException">Collection is read-only.</exception>
+    /// <exception cref="InvalidOperationException">Collection is read-only.</exception>
     public void AddRange(IEnumerable<Header> items) {
         if (items == null) { throw new ArgumentNullException(nameof(items), "Item cannot be null."); }
-        if (IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
+        if (IsReadOnly) { throw new InvalidOperationException("Collection is read-only."); }
 
         foreach (var item in items) {
             if (item.Type is HeaderType.EndOfEntry) { throw new NotSupportedException("Cannot add EndOfEntry header field."); }
@@ -97,9 +97,9 @@ public class HeaderCollection : IList<Header> {
     /// <summary>
     /// Removes all items except for Version field.
     /// </summary>
-    /// <exception cref="NotSupportedException">Collection is read-only.</exception>
+    /// <exception cref="InvalidOperationException">Collection is read-only.</exception>
     public void Clear() {
-        if (IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
+        if (IsReadOnly) { throw new InvalidOperationException("Collection is read-only."); }
 
         for (var i = BaseCollection.Count - 1; i > 0; i--) {  // remove all except the first field (Version)
             BaseCollection.RemoveAt(i);
@@ -149,7 +149,7 @@ public class HeaderCollection : IList<Header> {
     /// <exception cref="NotSupportedException">Collection is read-only.</exception>
     public void Insert(int index, Header item) {
         if (item == null) { throw new ArgumentNullException(nameof(item), "Item cannot be null."); }
-        if (IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
+        if (IsReadOnly) { throw new InvalidOperationException("Collection is read-only."); }
         if (item.Type is HeaderType.EndOfEntry) { throw new NotSupportedException("Cannot add EndOfEntry header field."); }
         if (item.Type is HeaderType.Version) { throw new InvalidOperationException("Cannot add Version header field."); }
         if (index == 0) { throw new InvalidOperationException("Cannot add new field at index 0."); }
@@ -162,7 +162,12 @@ public class HeaderCollection : IList<Header> {
     /// </summary>
     public bool IsReadOnly {
         get;
-        private set;
+        internal set {
+            field = value;
+            foreach (var item in this) {
+                item.IsReadOnly = value;
+            }
+        }
     }
 
     /// <summary>
@@ -170,10 +175,10 @@ public class HeaderCollection : IList<Header> {
     /// </summary>
     /// <param name="item">The item to remove.</param>
     /// <exception cref="ArgumentNullException">Item cannot be null.</exception>
-    /// <exception cref="NotSupportedException">Collection is read-only.</exception>
+    /// <exception cref="InvalidOperationException">Collection is read-only.</exception>
     public bool Remove(Header item) {
         if (item == null) { throw new ArgumentNullException(nameof(item), "Item cannot be null."); }
-        if (IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
+        if (IsReadOnly) { throw new InvalidOperationException("Collection is read-only."); }
         if ((item.Type == HeaderType.Version) && BaseCollection.IndexOf(item) == 0) { throw new InvalidOperationException("Cannot remove the version header field."); }
 
         return BaseCollection.Remove(item);
@@ -184,9 +189,9 @@ public class HeaderCollection : IList<Header> {
     /// </summary>
     /// <param name="index">The zero-based index of the item to remove.</param>
     /// <exception cref="ArgumentOutOfRangeException">Index is less than 0. -or- Index is equal to or greater than collection count.</exception>
-    /// <exception cref="NotSupportedException">Collection is read-only.</exception>
+    /// <exception cref="InvalidOperationException">Collection is read-only.</exception>
     public void RemoveAt(int index) {
-        if (IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
+        if (IsReadOnly) { throw new InvalidOperationException("Collection is read-only."); }
         if (index == 0) { throw new InvalidOperationException("Cannot remove the first version header field."); }
 
         var item = this[index];
@@ -216,12 +221,12 @@ public class HeaderCollection : IList<Header> {
     /// <param name="index">The zero-based index of the element to get or set.</param>
     /// <exception cref="ArgumentNullException">Value cannot be null.</exception>
     /// <exception cref="ArgumentOutOfRangeException">Index is less than 0. -or- Index is equal to or greater than collection count. -or- Duplicate name in collection.</exception>
-    /// <exception cref="NotSupportedException">Collection is read-only.</exception>
+    /// <exception cref="InvalidOperationException">Collection is read-only.</exception>
     public Header this[int index] {
         get { return BaseCollection[index]; }
         set {
             if (value == null) { throw new ArgumentNullException(nameof(value), "Value cannot be null."); }
-            if (IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
+            if (IsReadOnly) { throw new InvalidOperationException("Collection is read-only."); }
             if (Contains(value)) { throw new ArgumentOutOfRangeException(nameof(value), "Duplicate item in collection."); }
             if (value.Type is HeaderType.EndOfEntry) { throw new NotSupportedException("Cannot add EndOfEntry header field."); }
             if ((index == 0) && (value.Type != HeaderType.Version)) { throw new InvalidOperationException("Version must be the first header field."); }
@@ -269,9 +274,9 @@ public class HeaderCollection : IList<Header> {
     /// Removes the item from the collection.
     /// </summary>
     /// <param name="type">Header field type.</param>
-    /// <exception cref="NotSupportedException">Collection is read-only.</exception>
+    /// <exception cref="InvalidOperationException">Collection is read-only.</exception>
     public bool Remove(HeaderType type) {
-        if (IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
+        if (IsReadOnly) { throw new InvalidOperationException("Collection is read-only."); }
 
         Header? fieldToRemove = null;
         foreach (var field in BaseCollection) {

@@ -43,10 +43,10 @@ public class RecordCollection : IList<Record> {
     /// <param name="item">Item.</param>
     /// <exception cref="ArgumentNullException">Item cannot be null.</exception>
     /// <exception cref="ArgumentOutOfRangeException">Item cannot be in other collection.</exception>
-    /// <exception cref="NotSupportedException">Collection is read-only.</exception>
+    /// <exception cref="InvalidOperationException">Collection is read-only.</exception>
     public void Add(Record item) {
         if (item == null) { throw new ArgumentNullException(nameof(item), "Item cannot be null."); }
-        if (IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
+        if (IsReadOnly) { throw new InvalidOperationException("Collection is read-only."); }
 
         BaseCollection.Add(item);
     }
@@ -57,10 +57,10 @@ public class RecordCollection : IList<Record> {
     /// <param name="items">Item.</param>
     /// <exception cref="ArgumentNullException">Items cannot be null.</exception>
     /// <exception cref="ArgumentOutOfRangeException">Item cannot be in other collection.</exception>
-    /// <exception cref="NotSupportedException">Collection is read-only.</exception>
+    /// <exception cref="InvalidOperationException">Collection is read-only.</exception>
     public void AddRange(IEnumerable<Record> items) {
         if (items == null) { throw new ArgumentNullException(nameof(items), "Item cannot be null."); }
-        if (IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
+        if (IsReadOnly) { throw new InvalidOperationException("Collection is read-only."); }
 
         BaseCollection.AddRange(items);
     }
@@ -68,9 +68,9 @@ public class RecordCollection : IList<Record> {
     /// <summary>
     /// Removes all items.
     /// </summary>
-    /// <exception cref="NotSupportedException">Collection is read-only.</exception>
+    /// <exception cref="InvalidOperationException">Collection is read-only.</exception>
     public void Clear() {
-        if (IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
+        if (IsReadOnly) { throw new InvalidOperationException("Collection is read-only."); }
 
         BaseCollection.Clear();
     }
@@ -115,10 +115,10 @@ public class RecordCollection : IList<Record> {
     /// <param name="item">The item to insert.</param>
     /// <exception cref="ArgumentNullException">Item cannot be null.</exception>
     /// <exception cref="ArgumentOutOfRangeException">Index is less than 0. -or- Index is greater than collection count.</exception>
-    /// <exception cref="NotSupportedException">Collection is read-only.</exception>
+    /// <exception cref="InvalidOperationException">Collection is read-only.</exception>
     public void Insert(int index, Record item) {
         if (item == null) { throw new ArgumentNullException(nameof(item), "Item cannot be null."); }
-        if (IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
+        if (IsReadOnly) { throw new InvalidOperationException("Collection is read-only."); }
 
         BaseCollection.Insert(index, item);
     }
@@ -128,7 +128,12 @@ public class RecordCollection : IList<Record> {
     /// </summary>
     public bool IsReadOnly {
         get;
-        private set;
+        internal set {
+            field = value;
+            foreach (var item in this) {
+                item.IsReadOnly = value;
+            }
+        }
     }
 
     /// <summary>
@@ -136,10 +141,10 @@ public class RecordCollection : IList<Record> {
     /// </summary>
     /// <param name="item">The item to remove.</param>
     /// <exception cref="ArgumentNullException">Item cannot be null.</exception>
-    /// <exception cref="NotSupportedException">Collection is read-only.</exception>
+    /// <exception cref="InvalidOperationException">Collection is read-only.</exception>
     public bool Remove(Record item) {
         if (item == null) { throw new ArgumentNullException(nameof(item), "Item cannot be null."); }
-        if (IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
+        if (IsReadOnly) { throw new InvalidOperationException("Collection is read-only."); }
 
         return BaseCollection.Remove(item);
     }
@@ -149,9 +154,9 @@ public class RecordCollection : IList<Record> {
     /// </summary>
     /// <param name="index">The zero-based index of the item to remove.</param>
     /// <exception cref="ArgumentOutOfRangeException">Index is less than 0. -or- Index is equal to or greater than collection count.</exception>
-    /// <exception cref="NotSupportedException">Collection is read-only.</exception>
+    /// <exception cref="InvalidOperationException">Collection is read-only.</exception>
     public void RemoveAt(int index) {
-        if (IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
+        if (IsReadOnly) { throw new InvalidOperationException("Collection is read-only."); }
 
         var item = this[index];
         BaseCollection.Remove(item);
@@ -180,12 +185,12 @@ public class RecordCollection : IList<Record> {
     /// <param name="index">The zero-based index of the element to get or set.</param>
     /// <exception cref="ArgumentNullException">Value cannot be null.</exception>
     /// <exception cref="ArgumentOutOfRangeException">Index is less than 0. -or- Index is equal to or greater than collection count. -or- Duplicate name in collection.</exception>
-    /// <exception cref="NotSupportedException">Collection is read-only.</exception>
+    /// <exception cref="InvalidOperationException">Collection is read-only.</exception>
     public Record this[int index] {
         get { return BaseCollection[index]; }
         set {
             if (value == null) { throw new ArgumentNullException(nameof(value), "Value cannot be null."); }
-            if (IsReadOnly) { throw new NotSupportedException("Collection is read-only."); }
+            if (IsReadOnly) { throw new InvalidOperationException("Collection is read-only."); }
             if (Contains(value)) { throw new ArgumentOutOfRangeException(nameof(value), "Duplicate item in collection."); }
 
             var item = BaseCollection[index];

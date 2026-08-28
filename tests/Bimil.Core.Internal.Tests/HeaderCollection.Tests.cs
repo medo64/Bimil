@@ -79,4 +79,32 @@ public class HeaderCollectionTests {
         );
     }
 
+    [TestMethod]
+    public void HeaderCollection_ReadOnly() {
+        var field = Header.Create(HeaderType.Uuid, UuidHeader.GetBytes(Guid.AllBitsSet));
+        var headers = new HeaderCollection(DatabaseVersion.V3, [field]);
+        Assert.AreEqual(2, headers.Count);
+
+        headers.IsReadOnly = true;
+        Assert.IsTrue(headers[0].IsReadOnly);
+        Assert.IsTrue(headers[1].IsReadOnly);
+        Assert.ThrowsException<InvalidOperationException>(() =>
+            headers[1].Data.SetBytes([])
+        );
+        Assert.ThrowsException<InvalidOperationException>(() =>
+            headers.Add(Header.Create(HeaderType.NonDefaultPreferences))
+        );
+        Assert.ThrowsException<InvalidOperationException>(() =>
+            headers.Remove(Header.Create(HeaderType.NonDefaultPreferences))
+        );
+        Assert.ThrowsException<InvalidOperationException>(() =>
+            headers.Insert(0, Header.Create(HeaderType.NonDefaultPreferences))
+        );
+        Assert.AreEqual(Convert.ToHexString(UuidHeader.GetBytes(Guid.AllBitsSet)), Convert.ToHexString(headers[1].Data.GetBytes()));
+
+        headers.IsReadOnly = false;
+        field.Data.SetBytes(UuidHeader.GetBytes(Guid.Empty));
+        Assert.AreEqual(Convert.ToHexString(UuidHeader.GetBytes(Guid.Empty)), Convert.ToHexString(headers[1].Data.GetBytes()));
+    }
+
 }

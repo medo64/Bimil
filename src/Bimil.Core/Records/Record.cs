@@ -19,6 +19,24 @@ public abstract class Record {
 
 
     /// <summary>
+    /// Gets field collection.
+    /// </summary>
+    public FieldCollection Fields { get; }
+
+
+    /// <summary>
+    /// Gets if values are read-only.
+    /// </summary>
+    public virtual bool IsReadOnly {
+        get;
+        internal set {
+            field = value;
+            Fields.IsReadOnly = value;
+        }
+    }
+
+
+    /// <summary>
     /// Returns record based on type.
     /// </summary>    
     public static Record Create(ICollection<Field> fields) {
@@ -35,11 +53,5 @@ public abstract class Record {
         }
         return new UnknownRecord(fields);
     }
-
-
-    /// <summary>
-    /// Gets field collection.
-    /// </summary>
-    public FieldCollection Fields { get; }
 
 }
