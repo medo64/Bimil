@@ -9,7 +9,7 @@ public sealed partial class Document {
         throw new NotImplementedException();
     }
 
-    private void SaveCoreV4(Stream stream, byte[] passphrase) {
+    private void SaveCoreV4(Stream stream) {
         throw new NotImplementedException();
     }
 

@@ -216,7 +216,6 @@ public sealed partial class Document {
 
         // Update properties
         doc.File = originalFile;
-        doc.ActiveKeyBlock.Passphrase.SetBytes(passphrase);
         doc.ResetChanges();
 
         return doc;
@@ -233,46 +232,7 @@ public sealed partial class Document {
         if (File == null) { throw new InvalidOperationException("File not specified."); }
         if (!ActiveKeyBlock.HasPassphrase) { throw new InvalidOperationException("Passphrase not specified."); }
 
-        var passphraseBytes = ActiveKeyBlock.Passphrase.GetBytes()!;  // passphrase is not null due to internal check above
-        try {
-            Save(File, passphraseBytes);
-        } finally {
-            CryptographicOperations.ZeroMemory(passphraseBytes);
-        }
-    }
-
-    /// <summary>
-    /// Saves document to provided file using previous passphrase.
-    /// </summary>
-    /// <param name="file">File.</param>
-    /// <param name="passphrase">Passphrase.</param>
-    public void Save(FileInfo file) {
-        ArgumentNullException.ThrowIfNull(file);
-        if (!ActiveKeyBlock.HasPassphrase) { throw new InvalidOperationException("Passphrase not specified."); }
-
-        var passphraseBytes = ActiveKeyBlock.Passphrase.GetBytes()!;  // passphrase is not null due to internal check above
-        try {
-            Save(file, passphraseBytes);
-        } finally {
-            CryptographicOperations.ZeroMemory(passphraseBytes);
-        }
-    }
-
-    /// <summary>
-    /// Saves document to provided file using provided passphrase.
-    /// </summary>
-    /// <param name="file">File.</param>
-    /// <param name="passphrase">Passphrase.</param>
-    public void Save(FileInfo file, string passphrase) {
-        ArgumentNullException.ThrowIfNull(file);
-        ArgumentNullException.ThrowIfNull(passphrase);
-
-        var passphraseBytes = Encoding.UTF8.GetBytes(passphrase);
-        try {
-            Save(file, passphraseBytes);
-        } finally {
-            CryptographicOperations.ZeroMemory(passphraseBytes);
-        }
+        Save(File);
     }
 
     /// <summary>
@@ -280,44 +240,25 @@ public sealed partial class Document {
     /// </summary>
     /// <param name="file">File.</param>
     /// <param name="passphrase">Passphrase bytes.</param>
-    public void Save(FileInfo file, byte[] passphrase) {
+    public void Save(FileInfo file) {
         ArgumentNullException.ThrowIfNull(file);
-        ArgumentNullException.ThrowIfNull(passphrase);
 
         using var stream = file.OpenWrite();
         stream.SetLength(0);
-        SaveCore(stream, passphrase, file);
-    }
-
-    /// <summary>
-    /// Saves document to provided file using provided passphrase.
-    /// </summary>
-    /// <param name="stream">Stream.</param>
-    public void Save(Stream stream) {
-        ArgumentNullException.ThrowIfNull(stream);
-        if (!ActiveKeyBlock.HasPassphrase) { throw new InvalidOperationException("Passphrase not specified."); }
-
-        var passphraseBytes = ActiveKeyBlock.Passphrase.GetBytes();  // passphrase is not null due to internal check above
-        try {
-            Save(stream, passphraseBytes);
-        } finally {
-            CryptographicOperations.ZeroMemory(passphraseBytes);
-        }
+        SaveCore(stream, file);
     }
 
     /// <summary>
     /// Saves document to the provided stream using provided passphrase.
     /// </summary>
     /// <param name="stream">Stream.</param>
-    /// <param name="passphrase">Passphrase bytes.</param>
-    public void Save(Stream stream, byte[] passphrase) {
+    public void Save(Stream stream) {
         ArgumentNullException.ThrowIfNull(stream);
-        ArgumentNullException.ThrowIfNull(passphrase);
 
-        SaveCore(stream, passphrase, originalFile: null);
+        SaveCore(stream, originalFile: null);
     }
 
-    private void SaveCore(Stream stream, byte[] passphrase, FileInfo? originalFile) {
+    private void SaveCore(Stream stream, FileInfo? originalFile) {
         // update headers - but only ones that exist
         var insertUser = false;
         for (var i = Headers.Count - 1; i >= 0; i--) {
@@ -345,16 +286,15 @@ public sealed partial class Document {
         }
 
         if (DatabaseVersion == DatabaseVersion.V3) {
-            SaveCoreV3(stream, passphrase);
+            SaveCoreV3(stream);
         } else if (DatabaseVersion == DatabaseVersion.V4) {
-            SaveCoreV4(stream, passphrase);
+            SaveCoreV4(stream);
         } else {
             throw new InvalidOperationException("Unknown version.");
         }
 
         // Update properties
         File = originalFile;
-        ActiveKeyBlock.Passphrase.SetBytes(passphrase);
         ResetChanges();
 
     }

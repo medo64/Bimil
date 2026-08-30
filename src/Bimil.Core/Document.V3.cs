@@ -105,8 +105,12 @@ public sealed partial class Document {
         }
     }
 
-    private void SaveCoreV3(Stream stream, byte[] passphrase) {
-        byte[]? stretchedKey = null;
+    private void SaveCoreV3(Stream stream) {
+        if (!ActiveKeyBlock.HasPassphrase) { throw new InvalidOperationException("Active key block contains no passphrase."); }
+        if (!ActiveKeyBlock.HasKeys) { throw new InvalidOperationException("Active key block contains no keys."); }
+
+        var passphrase = Array.Empty<byte>();
+        var stretchedKey = Array.Empty<byte>();
         var keyK = ActiveKeyBlock.KeyK.GetBytes();
         var keyL = ActiveKeyBlock.KeyL.GetBytes();
         var salt = ActiveKeyBlock.Salt.GetBytes();
@@ -121,6 +125,7 @@ public sealed partial class Document {
             BinaryPrimitives.WriteUInt32LittleEndian(iter, ActiveKeyBlock.IterationCount);
             stream.Write(iter, 0, 4);
 
+            passphrase = ActiveKeyBlock.Passphrase.GetBytes();
             stretchedKey = GetStretchedKey(passphrase, salt, ActiveKeyBlock.IterationCount);
             stream.Write(GetSha256Hash(stretchedKey), 0, 32);
 
@@ -162,7 +167,8 @@ public sealed partial class Document {
             if (dataHash.Hash == null) { throw new InvalidOperationException("Cannot compute hash."); }  // newer happens actually
             stream.Write(dataHash.Hash);
         } finally {
-            if (stretchedKey != null) { CryptographicOperations.ZeroMemory(stretchedKey); }
+            CryptographicOperations.ZeroMemory(passphrase);
+            CryptographicOperations.ZeroMemory(stretchedKey);
             CryptographicOperations.ZeroMemory(keyK);
             CryptographicOperations.ZeroMemory(keyL);
             CryptographicOperations.ZeroMemory(salt);
