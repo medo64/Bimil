@@ -106,7 +106,7 @@ public sealed class KeyBlock {
     /// <param name="authenticationKey">Authentication key.</param>
     /// <param name="passphrase">Passphrase.</param>
     /// <param name="zeroBytes">If true, bytes will be zeroed.</param>
-    public static KeyBlock Create(byte[] salt, uint iterationCount, byte[] encryptionKey, byte[] authenticationKey, byte[]? passphrase, bool zeroBytes) {
+    internal static KeyBlock Create(byte[] salt, uint iterationCount, byte[] encryptionKey, byte[] authenticationKey, byte[]? passphrase, bool zeroBytes) {
         ArgumentNullException.ThrowIfNull(salt);
         ArgumentNullException.ThrowIfNull(encryptionKey);
         ArgumentNullException.ThrowIfNull(authenticationKey);
@@ -114,7 +114,7 @@ public sealed class KeyBlock {
         if (salt.Length != 32) { throw new ArgumentOutOfRangeException(nameof(salt), "Salt must be 32 bytes."); }
         if (iterationCount < 1) { throw new ArgumentOutOfRangeException(nameof(iterationCount), "Iteration count must be a positive number."); }
         if (encryptionKey.Length != 32) { throw new ArgumentOutOfRangeException(nameof(encryptionKey), "Encryption key must be 32 bytes."); }
-        if (authenticationKey.Length != 32) { throw new ArgumentOutOfRangeException(nameof(authenticationKey), "Authentication key must be 32 bytes."); }
+        if (authenticationKey.Length is not 32 and not 0) { throw new ArgumentOutOfRangeException(nameof(authenticationKey), "Authentication key must be 32 bytes or empty."); }
 
         return new KeyBlock(salt, iterationCount, encryptionKey, authenticationKey, passphrase, zeroBytes);
     }

@@ -197,22 +197,28 @@ public sealed partial class Document {
         var v3EofTag = BinaryPrimitives.ReadUInt128BigEndian(bytes[(bytes.Length - 48)..(bytes.Length - 32)]);
 
         Document? doc = null;
-        if ((v3Tag == Tag) && (v3EofTag == TagEof)) {
-            doc = LoadCoreV3(bytes, passphrase);
-        } else {  // anything not v3 is assumed to be v4
-            var nonce = new byte[32];
-            Buffer.BlockCopy(bytes, 0, nonce, 0, 32);
-            var nonceSha = SHA256.HashData(nonce);
+        try {
+            if ((v3Tag == Tag) && (v3EofTag == TagEof)) {
+                doc = LoadCoreV3(bytes, passphrase);
+            } else {  // anything not v3 is assumed to be v4
+                var nonce = new byte[32];
+                Buffer.BlockCopy(bytes, 0, nonce, 0, 32);
+                var nonceSha = SHA256.HashData(nonce);
 
-            for (var i = 32; i < bytes.Length - 116; i += 116) {
-                var isSame = true;
-                for (var j = 0; j < 32; j++) {
-                    if (bytes[i + j] != nonceSha[j]) { isSame = false; break; }
+                for (var i = 32; i < bytes.Length - 116; i += 116) {
+                    var isSame = true;
+                    for (var j = 0; j < 32; j++) {
+                        if (bytes[i + j] != nonceSha[j]) { isSame = false; break; }
+                    }
+                    if (isSame) { doc = LoadCoreV4(bytes, passphrase); break; }
                 }
-                if (isSame) { doc = LoadCoreV4(bytes, passphrase); break; }
             }
-            if (doc == null) { throw new FormatException("Unrecognized file format."); }
+        } catch (CryptographicException ex) {
+            throw new FormatException(ex.Message, ex);
+        } catch (FormatException) {
+            throw;
         }
+        if (doc == null) { throw new FormatException("Unrecognized file format."); }
 
         // Update properties
         doc.File = originalFile;
@@ -259,12 +265,16 @@ public sealed partial class Document {
     }
 
     private void SaveCore(Stream stream, FileInfo? originalFile) {
+        if (!ActiveKeyBlock.HasPassphrase) { throw new InvalidOperationException("Active key block contains no passphrase."); }
+        if (!ActiveKeyBlock.HasKeys) { throw new InvalidOperationException("Active key block contains no keys."); }
+
         // update headers - but only ones that exist
         var insertUser = false;
         for (var i = Headers.Count - 1; i >= 0; i--) {
             var header = Headers[i];
 #pragma warning disable CS0612 // Type or member is obsolete
             if (header.Type is HeaderType.WhoPerformedLastSave) {
+#pragma warning restore CS0612 // Type or member is obsolete
                 Headers.RemoveAt(i);
                 insertUser = true;
             } else if (header.Type == HeaderType.TimestampOfLastSave && header is TimestampHeader saveHeader) {
@@ -277,7 +287,6 @@ public sealed partial class Document {
             } else if (header.Type == HeaderType.LastSavedOnHost && header is TextHeader hostHeader) {
                 hostHeader.Text = Environment.MachineName;
             }
-#pragma warning restore CS0612 // Type or member is obsolete
         }
         if (insertUser) {
             var userHeader = (TextHeader)Header.Create(HeaderType.LastSavedByUser);

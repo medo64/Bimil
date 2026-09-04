@@ -15,13 +15,24 @@ public sealed partial class Document {
         var iter = BinaryPrimitives.ReadUInt32LittleEndian(bytesSpan[36..40]);
 
         byte[]? stretchedKey = null, keyK = null, keyL = null, data = null;
+        byte[]? forcedKey = null;
         try {
             stretchedKey = GetStretchedKey(passphrase, salt, iter);
             if (!AreBytesTheSame(GetSha256Hash(stretchedKey), bytes, 40)) {
-                throw new CryptographicException("Password mismatch.");
+                try {
+                    forcedKey = Convert.FromHexString(passphrase);  // try converting to bytes
+                    if (forcedKey.Length != 32) { forcedKey = null; }  // key must be 32 bytes
+                } catch (FormatException) { }
+                if (forcedKey == null) { throw new CryptographicException("Passphrase mismatch."); }
             }
-            keyK = DecryptKey(stretchedKey, bytes, 72);
-            keyL = DecryptKey(stretchedKey, bytes, 104);
+            if (forcedKey == null) {  // opened using passphrase
+                keyK = DecryptKey(stretchedKey, bytes, 72);
+                keyL = DecryptKey(stretchedKey, bytes, 104);
+            } else {  // opened using key directly
+                keyK = forcedKey;
+                keyL = [];
+                passphrase = [];
+            }
 
             var keyBlock = KeyBlock.Create(salt, iter, keyK, keyL, passphrase, zeroBytes: false);
 
@@ -47,6 +58,9 @@ public sealed partial class Document {
 
                     var field = Header.Create(fieldType, fieldData, zeroBytes: true);
                     headerFields.Add(field);
+                } catch (Exception) {
+                    if (forcedKey != null) { throw new CryptographicException("Key mismatch."); }  // any error when opening using key is assumed to be due to key mismatch.
+                    throw;  // if not forcing a key, this shouldn't happen so just throw
                 } finally {
                     CryptographicOperations.ZeroMemory(fieldData);
                 }
@@ -88,14 +102,12 @@ public sealed partial class Document {
             dataHash.TransformFinalBlock([], 0, 0);
 
             if (!AreBytesTheSame(dataHash.Hash, bytes, bytes.Length - 32)) {
-                throw new CryptographicException("Authentication mismatch.");
+                if (forcedKey == null) { throw new CryptographicException("Authentication mismatch."); }  // if we open by key only, we cannot really authenticate
             }
 
             //return new Document(passphraseBuffer, (int)iter, headerFields, [.. recordFields]);
             var doc = new Document(DatabaseVersion.V3, keyBlock, [keyBlock], headerFields, records);
             return doc;
-        } catch (CryptographicException ex) {
-            throw new FormatException(ex.Message, ex);
         } finally { //best effort to sanitize memory
             if (stretchedKey != null) { CryptographicOperations.ZeroMemory(stretchedKey); }
             if (keyK != null) { CryptographicOperations.ZeroMemory(keyK); }
@@ -106,9 +118,6 @@ public sealed partial class Document {
     }
 
     private void SaveCoreV3(Stream stream) {
-        if (!ActiveKeyBlock.HasPassphrase) { throw new InvalidOperationException("Active key block contains no passphrase."); }
-        if (!ActiveKeyBlock.HasKeys) { throw new InvalidOperationException("Active key block contains no keys."); }
-
         var passphrase = Array.Empty<byte>();
         var stretchedKey = Array.Empty<byte>();
         var keyK = ActiveKeyBlock.KeyK.GetBytes();
