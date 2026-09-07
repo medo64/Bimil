@@ -43,7 +43,7 @@ public sealed class KeyBlock {
     /// Gets if block has key information present.
     /// For example, key L might not be present if no passphrase was used for opening.
     /// </summary>
-    public bool HasKeys {
+    public bool HasAllKeys {
         get { return (Salt.Length > 0) && (KeyK.Length > 0) && (KeyL.Length > 0); }
     }
 

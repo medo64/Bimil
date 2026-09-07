@@ -37,6 +37,7 @@ public partial class DocumentTests {
         Assert.AreEqual(DatabaseVersion.V3, doc.DatabaseVersion);
         Assert.AreEqual(1, doc.KeyBlocks.Count);
         Assert.AreEqual(327680U, doc.ActiveKeyBlock.IterationCount);
+        Assert.IsFalse(doc.IsReadOnly);
 
         Assert.AreEqual(new Version(3, 17, 0, 0), doc.Version);
         Assert.AreEqual(Guid.Parse("7f8dc27f-8e80-424d-8561-4e1ff54a366e"), doc.Uuid);
@@ -113,6 +114,7 @@ public partial class DocumentTests {
         Assert.AreEqual(327680U, doc.ActiveKeyBlock.IterationCount);
         Assert.AreEqual("323C8AEB9DADA7EB304A4632CE6E84F863A95FB61AA4E23BA507D6D0EE49658F", Convert.ToHexString(doc.ActiveKeyBlock.KeyK.GetBytes()));
         Assert.AreEqual("", Convert.ToHexString(doc.ActiveKeyBlock.KeyL.GetBytes()));
+        Assert.IsTrue(doc.IsReadOnly);
 
         Assert.AreEqual(new Version(3, 17, 0, 0), ((VersionHeader)doc.Headers[0]).Version);
         Assert.AreEqual(Guid.Parse("7f8dc27f-8e80-424d-8561-4e1ff54a366e"), ((UuidHeader)doc.Headers[1]).Uuid);

@@ -57,6 +57,7 @@ public sealed partial class Document {
         KeyBlocks = new KeyBlockCollection(this, keyBlocks);
         Headers = new HeaderCollection(databaseVersion, headers);
         Records = new RecordCollection(records);
+        IsReadOnly = !ActiveKeyBlock.HasPassphrase || !ActiveKeyBlock.HasAllKeys;
     }
 
 
@@ -266,7 +267,7 @@ public sealed partial class Document {
 
     private void SaveCore(Stream stream, FileInfo? originalFile) {
         if (!ActiveKeyBlock.HasPassphrase) { throw new InvalidOperationException("Active key block contains no passphrase."); }
-        if (!ActiveKeyBlock.HasKeys) { throw new InvalidOperationException("Active key block contains no keys."); }
+        if (!ActiveKeyBlock.HasAllKeys) { throw new InvalidOperationException("Active key block contains no keys."); }
 
         // update headers - but only ones that exist
         var insertUser = false;
