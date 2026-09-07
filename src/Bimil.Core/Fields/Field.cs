@@ -1,6 +1,7 @@
 namespace Bimil;
 
 using System;
+using System.Runtime.InteropServices;
 
 /// <summary>
 /// Record field.

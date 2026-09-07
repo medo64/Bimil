@@ -16,7 +16,6 @@ using Avalonia.Threading;
 using Medo;
 using Medo.Avalonia;
 using Medo.Diagnostics;
-using Medo.Security.Cryptography.PasswordSafe;
 
 internal partial class MainWindow : Window {
 
@@ -59,9 +58,6 @@ internal partial class MainWindow : Window {
 
         // State update
         AvaloniaHelpers.DisableTab(mnu);
-        State.DocumentChanged += (_, _) => { ReplenishDocument(); };
-        State.GroupsChanged += (_, _) => { Replenishment.FillGroups(State, cmbGroups, includeAnyGroup: true); };
-        State.ItemsChanged += (_, _) => { ReplenishEntries(); };
         ReplenishDocument();
 
         // attach events
@@ -69,7 +65,7 @@ internal partial class MainWindow : Window {
         cmbGroups.SelectionChanged += (_, _) => { ReplenishEntries(); };
     }
 
-    public readonly State State = new();
+    public Document Document = new();
 
 
     protected override async void OnOpened(EventArgs e) {
@@ -209,7 +205,8 @@ internal partial class MainWindow : Window {
             await frm.ShowDialog(this);
             try {
                 if (frm.ExistingPassword != null) {
-                    State.OpenFile(file, frm.ExistingPassword, @readonly);
+                    Document = Document.Load(file, frm.ExistingPassword);
+                    Document.IsReadOnly = @readonly;
                 }
                 break;
             } catch (Exception ex) {
@@ -229,7 +226,8 @@ internal partial class MainWindow : Window {
         var frm = PasswordWindow.GetNewPasswordWindow("Select password");
         await frm.ShowDialog(this);
         if (frm.NewPassword != null) {
-            State.NewFile(frm.NewPassword);
+            Document = new Document();
+            Document.ChangePassphrase("", frm.NewPassword);
         }
     }
 
@@ -282,9 +280,9 @@ internal partial class MainWindow : Window {
     public void mnuFileSave_Click(object sender, RoutedEventArgs e) {
         if (mnuFileSave.IsEnabled == false) { return; }
 
-        if (State.File != null) {
+        if (Document.File != null) {
             try {
-                State.SaveFile();
+                Document.Save();
             } catch (Exception ex) {
                 MessageBox.ShowErrorDialog(this, "Save file", ex.Message);
             }
@@ -305,9 +303,9 @@ internal partial class MainWindow : Window {
             DefaultExtension = ".bimil",
             ShowOverwritePrompt = false,
         };
-        if (State.File != null) {
-            filePickerOptions.SuggestedStartLocation = await StorageProvider.TryGetFolderFromPathAsync(State.File.DirectoryName!);
-            filePickerOptions.SuggestedFileName = State.File.Name;
+        if (Document.File != null) {
+            filePickerOptions.SuggestedStartLocation = await StorageProvider.TryGetFolderFromPathAsync(Document.File.DirectoryName!);
+            filePickerOptions.SuggestedFileName = Document.File.Name;
         } else if (Config.Recent.Files.TryGet(0, out var recentFile) && (recentFile.DirectoryName != null)) {
             filePickerOptions.SuggestedStartLocation = await StorageProvider.TryGetFolderFromPathAsync(recentFile.DirectoryName);
         }
@@ -316,7 +314,7 @@ internal partial class MainWindow : Window {
         if (file != null) {
             var fileInfo = new FileInfo(Uri.UnescapeDataString(file.Path.AbsolutePath));
             try {
-                State.SaveFile(fileInfo);
+                Document.Save(fileInfo);
             } catch (Exception ex) {
                 MessageBox.ShowErrorDialog(this, "Save file", ex.Message);
             }
@@ -324,7 +322,7 @@ internal partial class MainWindow : Window {
     }
 
     public void mnuFileProperties_SubmenuOpened(object sender, RoutedEventArgs e) {
-        mnuFilePropertiesReadonly.Header = (State.Document?.IsReadOnly ?? false)
+        mnuFilePropertiesReadonly.Header = (Document.IsReadOnly)
                                          ? "Make read/write"
                                          : "Make read-only";
     }
@@ -332,45 +330,37 @@ internal partial class MainWindow : Window {
     public async void mnuFileProperties_Click(object sender, RoutedEventArgs e) {
         if (mnuFileProperties.IsEnabled == false) { return; }
 
-        if (State.Document != null) {
-            var frm = new PropertiesWindow(State);
-            await frm.ShowDialog(this);
-        }
+        var frm = new PropertiesWindow(Document);
+        await frm.ShowDialog(this);
     }
 
     public async void mnuFilePropertiesPassword_Click(object sender, RoutedEventArgs e) {
-        if (State.Document != null) {
-            var title = (State.File != null) ? $"Change password ({State.File.Name})" : $"Change password";
-            while (true) {  // repeat until successful or given up
-                var frm = PasswordWindow.GetChangePasswordWindow(title, hasFile: true);
-                await frm.ShowDialog(this);
-                if ((frm.ExistingPassword != null) && (frm.NewPassword != null)) {
-                    try {
-                        if (State.Document!.ValidatePassphrase(frm.ExistingPassword) == false) { throw new InvalidOperationException("Cannot verify existing password."); }
-                        State.Document!.ChangePassphrase(frm.NewPassword);
-                        break;
-                    } catch (Exception ex) {
-                        MessageBox.ShowErrorDialog(this, "Error changing password", ex.Message);
-                    }
-                } else {
+        var title = (Document.File != null) ? $"Change password ({Document.File.Name})" : $"Change password";
+        while (true) {  // repeat until successful or given up
+            var frm = PasswordWindow.GetChangePasswordWindow(title, hasFile: true);
+            await frm.ShowDialog(this);
+            if ((frm.ExistingPassword != null) && (frm.NewPassword != null)) {
+                try {
+                    Document.ChangePassphrase(frm.ExistingPassword, frm.NewPassword);
                     break;
+                } catch (Exception ex) {
+                    MessageBox.ShowErrorDialog(this, "Error changing password", ex.Message);
                 }
+            } else {
+                break;
             }
         }
     }
 
     public void mnuFilePropertiesReadonly_Click(object sender, RoutedEventArgs e) {
-        if (State.Document != null) {
-            State.Document.IsReadOnly = !State.Document.IsReadOnly;
-            State.RaiseDocumentChange();  // state doesn't get automatically updated for this one
-        }
+        Document.IsReadOnly = !Document.IsReadOnly;
     }
 
 
     public async void mnuItemAdd_Click(object sender, RoutedEventArgs e) {
         if (mnuItemAdd.IsEnabled == false) { return; }
 
-        var frm = new EntryWindow(State);
+        var frm = new EntryWindow(Document);
         await frm.ShowDialog(this);
     }
 
@@ -381,8 +371,8 @@ internal partial class MainWindow : Window {
             return;
         }
 
-        if (lsbEntries.SelectedItem is ListBoxItem { Tag: Entry selectedEntry }) {
-            var frm = new EntryWindow(State, selectedEntry);
+        if (lsbEntries.SelectedItem is ListBoxItem { Tag: EntryRecord selectedEntry }) {
+            var frm = new EntryWindow(Document, selectedEntry);
             await frm.ShowDialog(this);
         }
     }
@@ -390,8 +380,8 @@ internal partial class MainWindow : Window {
     public async void mnuItemView_Click(object sender, RoutedEventArgs e) {
         if (mnuItemView.IsEnabled == false) { return; }
 
-        if (lsbEntries.SelectedItem is ListBoxItem { Tag: Entry selectedEntry }) {
-            var frm = new EntryWindow(State, selectedEntry, readOnly: true);
+        if (lsbEntries.SelectedItem is ListBoxItem { Tag: EntryRecord selectedEntry }) {
+            var frm = new EntryWindow(Document, selectedEntry, readOnly: true);
             await frm.ShowDialog(this);
         }
     }
@@ -399,7 +389,7 @@ internal partial class MainWindow : Window {
     public void mnuItemRemove_Click(object sender, RoutedEventArgs e) {
         if (mnuItemRemove.IsEnabled == false) { return; }
 
-        if (lsbEntries.SelectedItem is ListBoxItem { Tag: Entry selectedEntry }) {
+        if (lsbEntries.SelectedItem is ListBoxItem { Tag: EntryRecord selectedEntry }) {
             if (MessageBox.ShowQuestionDialog(this, "Remove entry", $"Do you really want to remove entry '{selectedEntry.Title}'?", "Yes", "No") == 0) {
                 var index = lsbEntries.Items.IndexOf(lsbEntries.SelectedItem);
                 if (index + 1 < lsbEntries.Items.Count) {
@@ -407,7 +397,7 @@ internal partial class MainWindow : Window {
                 } else if (index > 0) {
                     lsbEntries.SelectedItem = lsbEntries.Items[index - 1];
                 }
-                State?.Document?.Entries.Remove(selectedEntry);
+                Document?.Records.Remove(selectedEntry);
                 ReplenishEntries();
             }
         }
@@ -478,46 +468,48 @@ internal partial class MainWindow : Window {
 
 
     public void mnuEntry_Opening(object? sender, CancelEventArgs e) {
-        var canPaste = Entry.TryImportFromJson(PTClipboard.GetText(), out _);
-        var canCopy = (lsbEntries.SelectedItem as ListBoxItem)?.Tag is Entry;
-        mnuEntryCut.IsEnabled = canCopy;
-        mnuEntryCopy.IsEnabled = canCopy;
-        mnuEntryPaste.IsEnabled = canPaste;
+        // TODO Json
+        // var canPaste = EntryRecord.TryImportFromJson(PTClipboard.GetText(), out _);
+        // var canCopy = (lsbEntries.SelectedItem as ListBoxItem)?.Tag is EntryRecord;
+        // mnuEntryCut.IsEnabled = canCopy;
+        // mnuEntryCopy.IsEnabled = canCopy;
+        // mnuEntryPaste.IsEnabled = canPaste;
     }
 
     public void mnuEntryCut_Click(object? sender, RoutedEventArgs e) {
-        if ((lsbEntries.SelectedItem as ListBoxItem)?.Tag is not Entry entry) { return; }
+        if ((lsbEntries.SelectedItem as ListBoxItem)?.Tag is not EntryRecord entry) { return; }
         var json = entry.ExportToJson();
         PTClipboard.SetText(json);
         lsbEntries.Items.Remove(lsbEntries.SelectedItem);
-        State?.Document?.Entries.Remove(entry);
+        Document?.Records.Remove(entry);
     }
 
     public void mnuEntryCopy_Click(object? sender, RoutedEventArgs e) {
-        if ((lsbEntries.SelectedItem as ListBoxItem)?.Tag is not Entry entry) { return; }
+        if ((lsbEntries.SelectedItem as ListBoxItem)?.Tag is not EntryRecord entry) { return; }
         var json = entry.ExportToJson();
         PTClipboard.SetText(json);
     }
 
     public void mnuEntryPaste_Click(object? sender, RoutedEventArgs e) {
-        var document = State?.Document;
-        if (document == null) { return; }
-
         var text = PTClipboard.GetText();
-        if (Entry.TryImportFromJson(text, out var pastedEntry)) {
-            var foundUuid = false;
-            foreach (var entry in document.Entries) {
-                if (entry.Uuid == pastedEntry.Uuid) {
-                    foundUuid = true;
-                    break;
+        if (Record.TryImportFromJson(text, out var pasted)) {
+            if (pasted is EntryRecord pastedEntry) {
+                var foundUuid = false;
+                foreach (var record in Document.Records) {
+                    if (record is EntryRecord entry) {
+                        if (entry.Uuid == pastedEntry.Uuid) {
+                            foundUuid = true;
+                            break;
+                        }
+                    }
                 }
+                if (foundUuid) {
+                    Trace.WriteLine("Updated pasted UUID");
+                    pastedEntry.Uuid = Guid.NewGuid();
+                }
+                Document.Records.Add(pastedEntry);
+                ReplenishEntries(pastedEntry);
             }
-            if (foundUuid) {
-                Trace.WriteLine("Updated pasted UUID");
-                pastedEntry.Uuid = Guid.NewGuid();
-            }
-            document.Entries.Add(pastedEntry);
-            ReplenishEntries(pastedEntry);
         }
     }
 
@@ -526,7 +518,7 @@ internal partial class MainWindow : Window {
     #region Events
 
     public void lsbEntries_SelectionChanged(object sender, SelectionChangedEventArgs e) {
-        var selectedEntry = (lsbEntries.SelectedItem as ListBoxItem)?.Tag as Entry;
+        var selectedEntry = (lsbEntries.SelectedItem as ListBoxItem)?.Tag as EntryRecord;
         mnuItemView.IsEnabled = (selectedEntry != null);
         mnuItemEdit.IsEnabled = (selectedEntry != null);
         mnuItemRemove.IsEnabled = (selectedEntry != null);
@@ -539,7 +531,7 @@ internal partial class MainWindow : Window {
     #endregion
 
     private void ReplenishDocument() {
-        var file = State.File;
+        var file = Document.File;
         if (file != null) {
             Title = file.Name;
             Config.Recent.Files.Add(file);
@@ -547,68 +539,67 @@ internal partial class MainWindow : Window {
             Title = "Bimil";
         }
 
-        var hasDocument = (State.Document != null);
-        var isReadWrite = !(State.Document?.IsReadOnly ?? true);
-        mnuFileSave.IsEnabled = hasDocument;
-        mnuFileProperties.IsEnabled = hasDocument;
+        var isReadWrite = !(Document?.IsReadOnly ?? true);
+        mnuFileSave.IsEnabled = true;
+        mnuFileProperties.IsEnabled = true;
         mnuFilePropertiesPassword.IsEnabled = isReadWrite;
-        mnuItemAdd.IsEnabled = hasDocument && isReadWrite;
+        mnuItemAdd.IsEnabled = true && isReadWrite;
         mnuItemView.IsEnabled = false;  // will enable when item is selected
         mnuItemEdit.IsEnabled = false;
         mnuItemRemove.IsEnabled = false;
-        mnuFind.IsEnabled = hasDocument;
+        mnuFind.IsEnabled = true;
 
-        txtFilter.IsVisible = hasDocument;
-        cmbGroups.IsVisible = hasDocument;
-        lsbEntries.IsVisible = hasDocument;
+        txtFilter.IsVisible = true;
+        cmbGroups.IsVisible = true;
+        lsbEntries.IsVisible = true;
 
         ThemeImageResources.Update();  // enable/disable buttons
 
         txtFilter.Text = "";
         cmbGroups.SelectedItem = null;
 
-        Replenishment.FillGroups(State, cmbGroups, includeAnyGroup: true);
+        Replenishment.FillGroups(Document!, cmbGroups, includeAnyGroup: true);
         ReplenishEntries();
     }
 
-    private void ReplenishEntries(Entry? selectedEntry = null) {
+    private void ReplenishEntries(EntryRecord? selectedEntry = null) {
         if (selectedEntry == null) {
-            if (lsbEntries.SelectedItem is ListBoxItem { Tag: Entry entry }) {
+            if (lsbEntries.SelectedItem is ListBoxItem { Tag: EntryRecord entry }) {
                 selectedEntry = entry;
             }
         }
 
         lsbEntries.Items.Clear();
-        if (State.Document != null) {
-            var filter = txtFilter.Text ?? "";
-            var group = (cmbGroups.SelectedItem as ComboBoxItem)?.Tag as string;
-            var items = State.GetEntries(filter, group);
-            foreach (var item in items) {
-                var titleBlock = new TextBlock() {
-                    Text = item.Title,
-                    FontSize = FontSize * 1.25,
-                    HorizontalAlignment = HorizontalAlignment.Stretch,
-                    VerticalAlignment = VerticalAlignment.Center,
-                };
-                var groupBlock = new TextBlock() {
-                    Text = !string.IsNullOrEmpty(item.Group) ? item.Group : "(no group)",
-                    TextAlignment = TextAlignment.Right,
-                    FontSize = FontSize * 0.75,
-                    VerticalAlignment = VerticalAlignment.Center,
-                };
-                var dock = new DockPanel();
-                dock.Children.Add(titleBlock);
-                dock.Children.Add(groupBlock);
-                DockPanel.SetDock(titleBlock, Dock.Left);
-                DockPanel.SetDock(groupBlock, Dock.Right);
 
-                var newLBItem = new ListBoxItem { Content = dock, Tag = item };
-                lsbEntries.Items.Add(newLBItem);
-                if (item == selectedEntry) {
-                    lsbEntries.SelectedItem = newLBItem;
-                }
+        var filter = txtFilter.Text ?? "";
+        var group = (cmbGroups.SelectedItem as ComboBoxItem)?.Tag as string;
+        var items = Document.GetEntryList(filter, group);
+        foreach (var item in items) {
+            var titleBlock = new TextBlock() {
+                Text = item.Title,
+                FontSize = FontSize * 1.25,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Center,
+            };
+            var groupBlock = new TextBlock() {
+                Text = !string.IsNullOrEmpty(item.Group) ? item.Group : "(no group)",
+                TextAlignment = TextAlignment.Right,
+                FontSize = FontSize * 0.75,
+                VerticalAlignment = VerticalAlignment.Center,
+            };
+            var dock = new DockPanel();
+            dock.Children.Add(titleBlock);
+            dock.Children.Add(groupBlock);
+            DockPanel.SetDock(titleBlock, Dock.Left);
+            DockPanel.SetDock(groupBlock, Dock.Right);
+
+            var newLBItem = new ListBoxItem { Content = dock, Tag = item };
+            lsbEntries.Items.Add(newLBItem);
+            if (item == selectedEntry) {
+                lsbEntries.SelectedItem = newLBItem;
             }
         }
+
         if ((lsbEntries.SelectedIndex < 0) && (lsbEntries.Items.Count > 0)) {
             lsbEntries.SelectedIndex = 0;
         }

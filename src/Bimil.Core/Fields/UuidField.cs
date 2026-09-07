@@ -44,7 +44,7 @@ public sealed class UuidField : Field {
     /// </summary>
     /// <param name="value">Value.</param>
     public static byte[] GetBytes(Guid value) {
-        return value.ToByteArray();;
+        return value.ToByteArray(); ;
     }
 
 }

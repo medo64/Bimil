@@ -4,54 +4,41 @@ using System;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using Medo.Security.Cryptography.PasswordSafe;
 
 internal partial class PropertiesWindow : Window {
 
-    public PropertiesWindow(State state) {
+    public PropertiesWindow(Document document) {
         InitializeComponent();
         AvaloniaHelpers.SetupDialog(this);
 
-        Document = state.Document;
+        Document = document;
 
-        txtFileName.Text = state.File?.FullName ?? "";
+        txtFileName.Text = document.File?.FullName ?? "";
 
-        txtID.Text = state.Document?.Uuid.ToString() ?? "";
-        txtName.Text = state.Document?.Name ?? "";
-        txtDescription.Text = state.Document?.Description ?? "";
+        txtID.Text = document.Uuid.ToString();
+        txtName.Text = document.Name ?? "";
+        txtDescription.Text = document.Description ?? "";
 
-        txtSaveApplication.Text = state.Document?.LastSaveApplication ?? "";
-        txtSaveUser.Text = state.Document?.LastSaveUser ?? "";
-        txtSaveHost.Text = state.Document?.LastSaveHost ?? "";
-        if ((state.Document?.LastSaveTime != null) && (state.Document?.LastSaveTime > DateTime.MinValue)) {
-            txtSaveTime.Text = state.Document.LastSaveTime.ToShortDateString() + " " + state.Document.LastSaveTime.ToLongTimeString();
+        txtSaveApplication.Text = document.LastSaveApplication ?? "";
+        txtSaveUser.Text = document.LastSaveUser ?? "";
+        txtSaveHost.Text = document.LastSaveHost;
+        if (document?.LastSaveTime != null) {
+            txtSaveTime.Text = document.LastSaveTime.Value.ToShortDateString() + " " + document.LastSaveTime.Value.ToLongTimeString();
         }
 
-        var staticKey = StaticKey.GetStaticKeyAsBase58(state.Document);
-        if (staticKey != null) {
-            txtStaticKey.Text = staticKey;
-            chbStaticKeyUse.IsChecked = true;
-        } else {
-            txtStaticKey.Text = "";
-            chbStaticKeyUse.IsChecked = false;
-        }
-        chbStaticKeyUse.IsEnabled = !(Document?.IsReadOnly ?? true);
-        chbStaticKeyUse.IsCheckedChanged += chbStaticKeyUse_IsCheckedChanged;  // assigned late to avoid triggering when set the first time
+     chbShowKey.IsCheckedChanged += chbShowKey_IsCheckedChanged; 
 
         AvaloniaHelpers.FocusControl(btnClose);
     }
 
-    private Document? Document;
+    private Document Document;
 
 
-    private bool hadAnyStaticKeyChanges = false;
-
-    public void chbStaticKeyUse_IsCheckedChanged(object? sender, RoutedEventArgs e) {
-        hadAnyStaticKeyChanges = true;
-        if (chbStaticKeyUse.IsChecked == true) {
-            txtStaticKey.Text = StaticKey.GetNewStaticKeyAsBase58();
+    public void chbShowKey_IsCheckedChanged(object? sender, RoutedEventArgs e) {
+        if (chbShowKey.IsChecked == true) {
+            txtEncryptionKey.Text = Document.ActiveKeyBlock.KeyKAsBase58;
         } else {
-            txtStaticKey.Text = "";
+            txtEncryptionKey.Text = "";
         }
     }
 
@@ -60,16 +47,9 @@ internal partial class PropertiesWindow : Window {
         if (Document != null) {
             Document.Name = txtName.Text ?? "";
             Document.Description = txtDescription.Text ?? "";
-            if (hadAnyStaticKeyChanges) {
-                if (chbStaticKeyUse.IsChecked == true) {
-                    StaticKey.RemoveStaticKey(Document);
-                } else {
-                    StaticKey.SetStaticKey(Document, txtStaticKey.Text);
-                }
-            }
         }
 
-        txtStaticKey.Text = "";
+        txtEncryptionKey.Text = "";
         GC.Collect();
 
         Close();

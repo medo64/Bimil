@@ -88,7 +88,7 @@ public partial class DocumentTests {
         Assert.AreEqual(new DateTime(2026, 8, 16, 22, 48, 20, DateTimeKind.Utc), doc.LastPasswordChangeTime);
         Assert.AreEqual(Environment.UserName, doc.LastSaveUser);
         Assert.AreEqual(Environment.MachineName, doc.LastSaveHost);
-        Assert.AreEqual("Bimil V1.0.0", doc.LastSaveApplication);
+        Assert.AreEqual("Bimil v4.0.0", doc.LastSaveApplication);
 
         Assert.AreEqual(4, doc.Records[0].Fields.Count);
         var record0 = (EntryRecord)(doc.Records[0]);

@@ -50,13 +50,13 @@
             <TextBox Name="txtSaveTime" Grid.Column="2" Grid.Row="16" VerticalAlignment="Center" IsReadOnly="true" />
 
 
-            <Label Content="Static key (less secure)" Grid.Column="0" Grid.Row="18" Margin="0 11 0 0" VerticalAlignment="Center" />
+            <Label Content="Key" Grid.Column="0" Grid.Row="18" Margin="0 11 0 0" VerticalAlignment="Center" />
 
-            <Label Content="Use:" Grid.Column="0" Grid.Row="20" Margin="11 0 0 0" VerticalAlignment="Center" />
-            <CheckBox Name="chbStaticKeyUse" Grid.Column="2" Grid.Row="20" VerticalAlignment="Center" />
+            <Label Content="Show:" Grid.Column="0" Grid.Row="20" Margin="11 0 0 0" VerticalAlignment="Center" />
+            <CheckBox Name="chbShowKey" Grid.Column="2" Grid.Row="20" VerticalAlignment="Center" />
 
-            <Label Content="Static key:" Grid.Column="0" Grid.Row="22" Margin="11 0 0 0" VerticalAlignment="Center" />
-            <TextBox Name="txtStaticKey" Grid.Column="2" Grid.Row="22" VerticalAlignment="Center" IsReadOnly="true" />
+            <Label Content="Encryption Key:" Grid.Column="0" Grid.Row="22" Margin="11 0 0 0" VerticalAlignment="Center" />
+            <TextBox Name="txtEncryptionKey" Grid.Column="2" Grid.Row="22" VerticalAlignment="Center" IsReadOnly="true" />
 
         </Grid>
 

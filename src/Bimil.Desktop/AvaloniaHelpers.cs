@@ -14,7 +14,6 @@ using Avalonia.Styling;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 using Medo;
-using Medo.Security.Cryptography.PasswordSafe;
 
 internal static class AvaloniaHelpers {
 

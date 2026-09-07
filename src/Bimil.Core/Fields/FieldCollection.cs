@@ -283,4 +283,13 @@ public class FieldCollection : IList<Field> {
 
     #endregion
 
+
+    /// <summary>
+    /// Returns all elements in an array.
+    /// </summary>
+    /// <returns></returns>
+    public Field[] ToArray() {
+        return [.. BaseCollection];
+    }
+
 }

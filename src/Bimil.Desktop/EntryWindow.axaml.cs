@@ -10,32 +10,30 @@ using Avalonia.Layout;
 using Avalonia.Media;
 using Medo;
 using Medo.Avalonia;
-using Medo.Security.Cryptography;
-using Medo.Security.Cryptography.PasswordSafe;
 
 internal partial class EntryWindow : Window {
 
-    public EntryWindow(State state) {
+    public EntryWindow(Document document) {
         InitializeComponent();
         AvaloniaHelpers.SetupDialog(this);
 
-        State = state;
+        Document = document;
 
-        Replenishment.FillGroups(state, cmbGroups);
+        Replenishment.FillGroups(document, cmbGroups);
 
         Title = "New";
         AvaloniaHelpers.FocusControl(txtTitle);
     }
 
-    public readonly State State;
+    public readonly Document Document;
 
 
-    public EntryWindow(State state, Entry entry, bool readOnly = false) {
+    public EntryWindow(Document document, EntryRecord entry, bool readOnly = false) {
         InitializeComponent();
-        State = state;
+        Document = document;
         Entry = entry;
 
-        Replenishment.FillGroups(state, cmbGroups);
+        Replenishment.FillGroups(document, cmbGroups);
 
         if (readOnly) {
             Title = "View";
@@ -51,54 +49,71 @@ internal partial class EntryWindow : Window {
         txtTitle.Text = entry.Title;
         cmbGroups.Text = entry.Group;
 
-        foreach (var record in entry.Records) {
-            switch (record.RecordType) {
-                case RecordType.Uuid:
-                case RecordType.Group:
-                case RecordType.Title:
-                case RecordType.CreationTime:
-                case RecordType.LastAccessTime:
-                case RecordType.LastModificationTime:
-                case RecordType.PasswordExpiryTime:
-                case RecordType.PasswordModificationTime:
-                case RecordType.PasswordHistory:
-                case RecordType.Autotype:
+        foreach (var field in entry.Fields) {
+            switch (field.Type) {
+                case FieldType.Uuid:
+                case FieldType.Group:
+                case FieldType.Title:
+                case FieldType.CreationTime:
+                case FieldType.LastAccessTime:
+                case FieldType.LastModificationTime:
+                case FieldType.PasswordExpiryTime:
+                case FieldType.PasswordModificationTime:
+                case FieldType.PasswordHistory:
+                case FieldType.Autotype:
                     continue;
 
-                case RecordType.UserName: {
-                        var control = AddPlainText(record);
-                        AvaloniaHelpers.RegisterForAlternateFont(control);
+                case FieldType.UserName: {
+                        if (field is TextField textField) {
+                            var control = AddPlainText(textField);
+                            AvaloniaHelpers.RegisterForAlternateFont(control);
+                        }
                     }
                     break;
 
-                case RecordType.Password: {
-                        var control = AddPasswordText(record);
-                        AvaloniaHelpers.RegisterForAlternateFont(control);
+                case FieldType.Password: {
+                        if (field is TextField textField) {
+                            var control = AddPasswordText(textField);
+                            AvaloniaHelpers.RegisterForAlternateFont(control);
+                        }
                     }
                     break;
 
-                case RecordType.Url:
-                    AddUrlText(record);
-                    break;
-
-                case RecordType.EmailAddress: {
-                        var control = AddUrlText(record, protocol: "mailto");
-                        AvaloniaHelpers.RegisterForAlternateFont(control);
+                case FieldType.Url: {
+                        if (field is TextField textField) {
+                            AddUrlText(textField);
+                        }
                     }
                     break;
 
-                case RecordType.TwoFactorKey: {
-                        var (textBox, textBoxCode) = AddTwoFactorText(record);
-                        AvaloniaHelpers.RegisterForTwoFactorView(textBox, textBoxCode, record);
+                case FieldType.EmailAddress: {
+                        if (field is TextField textField) {
+                            var control = AddUrlText(textField, protocol: "mailto");
+                            AvaloniaHelpers.RegisterForAlternateFont(control);
+                        }
                     }
                     break;
 
-                case RecordType.Notes:
-                    AddMultilineText(record, Settings.NotesLineCount);
+                case FieldType.TwoFactorKey: {
+                        if (field is BinaryField binaryField) {
+                            var (textBox, textBoxCode) = AddTwoFactorText(binaryField);
+                            AvaloniaHelpers.RegisterForTwoFactorView(textBox, textBoxCode, binaryField);
+                        }
+                    }
                     break;
 
-                default:
-                    AddUnknownText(record);
+                case FieldType.Notes: {
+                        if (field is TextField textField) {
+                            AddMultilineText(textField, Settings.NotesLineCount);
+                        }
+                    }
+                    break;
+
+                default: {
+                        if (field is TextField textField) {
+                            AddUnknownText(textField);
+                        }
+                    }
                     break;
             }
         }
@@ -114,7 +129,7 @@ internal partial class EntryWindow : Window {
         }
     }
 
-    private readonly Entry? Entry;
+    private readonly EntryRecord? Entry;
 
     public void btnOK_Click(object sender, RoutedEventArgs e) {
     }
@@ -127,21 +142,21 @@ internal partial class EntryWindow : Window {
     }
 
     public async void btnFields_Click(object sender, RoutedEventArgs e) {
-        //var records = Entry != null ? Entry.Records.ToArray() : [];
-        //var frm = new FieldsWindow(records);
-        //await frm.ShowDialog(this);
+        var fields = Entry != null ? Entry.Fields.ToArray() : [];
+        var frm = new FieldsWindow(fields);
+        await frm.ShowDialog(this);
     }
 
 
-    private void AddUnknownText(Record record) {
-        var control = AddRow<TextBox>(record.Caption);
-        control.Text = record.Text;
+    private void AddUnknownText(TextField field) {
+        var control = AddRow<TextBox>(field.Caption);
+        control.Text = field.Text;
     }
 
-    private TextBox AddPlainText(Record record) {
+    private TextBox AddPlainText(TextField field) {
         var buttonCopy = GetButton("EditCopy");
-        var control = AddRow<TextBox>(record.Caption, buttonCopy);
-        control.Text = record.Text;
+        var control = AddRow<TextBox>(field.Caption, buttonCopy);
+        control.Text = field.Text;
 
         control.TextChanged += (sender, args) => {
             var hasData = !string.IsNullOrEmpty(control.Text);
@@ -158,12 +173,12 @@ internal partial class EntryWindow : Window {
     }
 
 
-    private TextBox AddPasswordText(Record record) {
+    private TextBox AddPasswordText(TextField text) {
         var buttonView = GetButton("EditView");
         var buttonCopy = GetButton("EditCopy");
-        var control = AddRow<TextBox>(record.Caption, buttonView, buttonCopy);
+        var control = AddRow<TextBox>(text.Caption, buttonView, buttonCopy);
         control.PasswordChar = '•';
-        control.Text = record.Text;
+        control.Text = text.Text;
 
         control.TextChanged += (sender, args) => {
             var hasData = !string.IsNullOrEmpty(control.Text);
@@ -177,18 +192,18 @@ internal partial class EntryWindow : Window {
 
         buttonCopy.Click += (sender, args) => {
             var data = new DataTransfer();
-            data.Add(DataTransferItem.CreateText(record.Text));
+            data.Add(DataTransferItem.CreateText(text.Text));
             Clipboard?.SetDataAsync(data);
         };
 
         return control;
     }
 
-    private TextBox AddUrlText(Record record, string protocol = "http") {
+    private TextBox AddUrlText(TextField field, string protocol = "http") {
         var buttonLink = GetButton("LinkUrl");
         var buttonCopy = GetButton("EditCopy");
-        var control = AddRow<TextBox>(record.Caption, buttonLink, buttonCopy);
-        control.Text = record.Text;
+        var control = AddRow<TextBox>(field.Caption, buttonLink, buttonCopy);
+        control.Text = field.Text;
 
         control.TextChanged += (sender, args) => {
             var hasData = !string.IsNullOrEmpty(control.Text);
@@ -215,9 +230,9 @@ internal partial class EntryWindow : Window {
         return control;
     }
 
-    private (TextBox, TextBox) AddTwoFactorText(Record record) {
+    private (TextBox, TextBox) AddTwoFactorText(BinaryField field) {
         TimeBasedOtp otp;
-        byte[] secret = record?.GetBytes() ?? [];
+        byte[] secret = field?.Data.GetBytes() ?? [];
         try {
             otp = new TimeBasedOtp(secret);
         } finally {
@@ -227,7 +242,7 @@ internal partial class EntryWindow : Window {
         var buttonView = GetButton("EditView");
         var buttonShow = GetButton("LinkCode");
         var buttonCopy = GetButton("EditCopy2FA");
-        var control = AddRow<TextBox>(record?.Caption ?? "", buttonView, buttonShow, buttonCopy);
+        var control = AddRow<TextBox>(field?.Caption ?? "", buttonView, buttonShow, buttonCopy);
 
         var control2FA = new TextBox();
         Grid.SetColumn(control2FA, Grid.GetColumn(control));
@@ -276,13 +291,13 @@ internal partial class EntryWindow : Window {
         return (control, control2FA);
     }
 
-    private TextBox AddMultilineText(Record record, int lineCount) {
-        var control = AddRow<TextBox>(record.Caption);
+    private TextBox AddMultilineText(TextField text, int lineCount) {
+        var control = AddRow<TextBox>(text.Caption);
         control.AcceptsReturn = true;
         control.TextWrapping = TextWrapping.Wrap;
         control.MaxHeight = control.MinHeight * lineCount;
         control.MinHeight = control.MinHeight * (lineCount - 1);
-        control.Text = record.Text;
+        control.Text = text.Text;
         return control;
     }
 

@@ -10,11 +10,10 @@ using Avalonia.Input;
 using Avalonia.Media;
 using Avalonia.Styling;
 using Avalonia.VisualTree;
-using Medo.Security.Cryptography.PasswordSafe;
 
 internal static class Replenishment {
 
-    public static void FillGroups(State state, ComboBox cmbGroups, bool includeAnyGroup = false) {
+    public static void FillGroups(Document document, ComboBox cmbGroups, bool includeAnyGroup = false) {
         var previousGroup = (cmbGroups.SelectedItem as ComboBoxItem)?.Tag as string;
         cmbGroups.Items.Clear();
 
@@ -22,7 +21,7 @@ internal static class Replenishment {
             cmbGroups.Items.Add(new ComboBoxItem { Content = "(any group)", Tag = null });
         }
 
-        var groups = state.GetGroups();
+        var groups = document.GetGroupList();
         if (groups.Count > 0) {
             foreach (var group in groups) {
                 var groupText = (group.Length > 0) ? group : "(no group)";
@@ -38,8 +37,8 @@ internal static class Replenishment {
         }
     }
 
-    public static void FillGroups(State state, AutoCompleteBox cmbGroups) {
-        cmbGroups.ItemsSource = state.GetGroups();
+    public static void FillGroups(Document document, AutoCompleteBox cmbGroups) {
+        cmbGroups.ItemsSource = document.GetGroupList();
     }
 
     public static void SelectGroup(ComboBox cmbGroups, string group) {
