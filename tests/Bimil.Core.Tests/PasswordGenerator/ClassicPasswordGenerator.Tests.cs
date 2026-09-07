@@ -6,7 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Bimil;
 
 [TestClass]
-public class TestClassicPasswordGenerator {
+public class ClassicPasswordGeneratorTests {
 
     [TestMethod]
     public void Generate8() {

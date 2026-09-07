@@ -169,7 +169,7 @@ internal static class WordsLoader {
         var sw = Stopwatch.StartNew();
         try {
             var list = new List<string>();
-            using var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Bimil._Resources." + resourceName);
+            using var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Bimil.Assets." + resourceName);
             if (stream == null) { throw new InvalidOperationException("Missing word list resource named " + resourceName); }
             using var textStream = new StreamReader(stream);
             var words = textStream.ReadToEnd().Split(new string[] { "\r\n", "\n", "\r" }, StringSplitOptions.RemoveEmptyEntries);

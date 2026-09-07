@@ -5,7 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Bimil;
 
 [TestClass]
-public class TestPasswordGenerator {
+public class PasswordGeneratorTests {
 
     [TestMethod]
     public void CalculateCombinationStats() {

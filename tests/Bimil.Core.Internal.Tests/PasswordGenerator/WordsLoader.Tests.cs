@@ -7,7 +7,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Bimil;
 
 [TestClass]
-public class TestWordsLoader {
+public class WordsLoaderTests {
 
     [TestMethod]
     public void All() {

@@ -19,10 +19,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="_Resources/*" />
-  </ItemGroup>
-
-  <ItemGroup>
     <InternalsVisibleTo Include="Bimil.Common.Tests" />
   </ItemGroup>
 
