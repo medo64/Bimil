@@ -118,4 +118,29 @@ public partial class DocumentTests {
         Assert.AreEqual(hc2, hc3);
     }
 
+    [TestMethod]
+    public void Document_NewChangePassphrase() {
+        var doc = new Document();
+        Assert.IsFalse(doc.HasPassphrase);
+        Assert.ThrowsException<InvalidOperationException>(() =>
+            doc.ChangePassphrase("incorrect", "changeme")
+        );
+        doc.ChangePassphrase("", "changeme");
+        Assert.IsTrue(doc.HasPassphrase);
+    }
+
+    [TestMethod]
+    public void Document_ChangePassword() {
+        var stream = GetResourceStream("Empty.psafe3");
+        var doc = Document.Load(stream, Encoding.UTF8.GetBytes("changeme"));
+        Assert.ThrowsException<InvalidOperationException>(() =>
+            doc.ChangePassphrase("incorrect", "changeme")
+        );
+        doc.ChangePassphrase("changeme", "changeme2");
+        Assert.ThrowsException<InvalidOperationException>(() =>
+            doc.ChangePassphrase("changeme", "changeme")
+        );
+        doc.ChangePassphrase("changeme2", "changeme3");
+    }
+
 }

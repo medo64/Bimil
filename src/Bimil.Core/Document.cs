@@ -42,6 +42,7 @@ public sealed partial class Document {
         KeyBlocks = new KeyBlockCollection(this, [ActiveKeyBlock]);
         Headers = new HeaderCollection(databaseVersion, [versionField, uuidField]);
         Records = new RecordCollection([]);
+        IsReadOnly = false;
     }
 
     /// <summary>
@@ -88,7 +89,7 @@ public sealed partial class Document {
     /// </summary>
     public bool IsReadOnly {
         get;
-        internal set {
+        set {
             field = value;
             Headers.IsReadOnly = value;
             Records.IsReadOnly = value;

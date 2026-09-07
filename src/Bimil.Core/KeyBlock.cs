@@ -1,6 +1,9 @@
 namespace Bimil;
 
 using System;
+using System.Collections.Generic;
+using System.Numerics;
+using System.Security.Cryptography;
 using System.Text;
 
 /// <summary>
@@ -14,8 +17,8 @@ public sealed class KeyBlock {
         KeyK = new ProtectedBytes(encryptionKey, zeroBytes) { IsReadOnly = true };
         KeyL = new ProtectedBytes(authenticationKey, zeroBytes) { IsReadOnly = true };
         Passphrase = (passphrase != null)
-                   ? new ProtectedBytes(passphrase, zeroBytes) { IsReadOnly = true }
-                   : new ProtectedBytes() { IsReadOnly = true };
+                   ? new ProtectedBytes(passphrase, zeroBytes)
+                   : new ProtectedBytes();
     }
 
 
@@ -33,6 +36,20 @@ public sealed class KeyBlock {
     /// Gets encryption key.
     /// </summary>
     public ProtectedBytes KeyK { get; }
+
+    /// <summary>
+    /// Gets key in base 58 encoding.
+    /// </summary>
+    public string KeyKAsBase58 {
+        get {
+            var keyKBytes = KeyK.GetBytes();
+            try {
+                return Base58.ToString(keyKBytes);
+            } finally {
+                CryptographicOperations.ZeroMemory(keyKBytes);
+            }
+        }
+    }
 
     /// <summary>
     /// Gets authentication key.
@@ -62,27 +79,27 @@ public sealed class KeyBlock {
     /// Change passphrase for the block.
     /// </summary>
     /// <param name="passphrase">Passphrase.</param>
-    public void ChangePassphrase(string passphrase) {
-        ChangePassphrase(Encoding.UTF8.GetBytes(passphrase), zeroBytes: true);
+    public void SetPassphrase(string passphrase) {
+        SetPassphrase(Encoding.UTF8.GetBytes(passphrase), clearBytes: true);
     }
 
     /// <summary>
     /// Change passphrase for the block.
     /// </summary>
     /// <param name="passphraseBytes">Passphrase bytes.</param>
-    public void ChangePassphrase(byte[] passphraseBytes) {
-        ChangePassphrase(passphraseBytes, zeroBytes: false);
+    public void SetPassphrase(byte[] passphraseBytes) {
+        SetPassphrase(passphraseBytes, clearBytes: false);
     }
 
     /// <summary>
     /// Change passphrase for the block.
     /// </summary>
     /// <param name="passphraseBytes">Passphrase bytes.</param>
-    /// <param name="zeroBytes">If true, bytes will be zeroed after password is set.</param>
-    public void ChangePassphrase(byte[] passphraseBytes, bool zeroBytes) {
+    /// <param name="clearBytes">If true, bytes will be zeroed after password is set.</param>
+    public void SetPassphrase(byte[] passphraseBytes, bool clearBytes) {
         ArgumentNullException.ThrowIfNull(passphraseBytes);
         if (passphraseBytes.Length == 0) { throw new ArgumentOutOfRangeException(nameof(passphraseBytes), "Passphrase cannot be empty."); }
-        Passphrase.SetBytes(passphraseBytes, zeroBytes);
+        Passphrase.SetBytes(passphraseBytes, clearBytes);
     }
 
 

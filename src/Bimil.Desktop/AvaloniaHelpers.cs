@@ -43,7 +43,7 @@ internal static class AvaloniaHelpers {
         }
     }
 
-    public static void RegisterForTwoFactorView(TextBox textBox, TextBox textBoxCode, Record record) {
+    public static void RegisterForTwoFactorView(TextBox textBox, TextBox textBoxCode, BinaryField field) {
         textBoxCode.FontFamily = AlternateFontFamily;
         textBoxCode.FontSize *= 2;
 
@@ -59,7 +59,7 @@ internal static class AvaloniaHelpers {
                     if (timer == null) {
                         textBoxCode.Tag = new Timer(_ => {  // TODO: find clearer way of cleaning this up
                             TimeBasedOtp otp;
-                            byte[] secret = record?.GetBytes() ?? [];
+                            byte[] secret = field?.Data.GetBytes() ?? [];
                             try {
                                 otp = new TimeBasedOtp(secret);
                                 var code = otp.GetCodeAsText(CodeOutputFormat.None);
