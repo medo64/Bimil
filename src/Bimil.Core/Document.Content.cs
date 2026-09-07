@@ -1,7 +1,6 @@
 namespace Bimil;
 
 using System;
-using System.Collections.Generic;
 
 public sealed partial class Document {
 
@@ -62,105 +61,199 @@ public sealed partial class Document {
     }
 
     /// <summary>
+    /// Gets/sets document name.
+    /// </summary>
+    public string? Name {
+        get {
+            if (Headers[HeaderType.DatabaseName] is TextHeader textField) {
+                return textField.Text;
+            }
+            return null;
+        }
+        set {
+            if (value is null) {
+                for (var i = Headers.Count - 1; i >= 0; i--) {
+                    if (Headers[i].Type == HeaderType.DatabaseName) {
+                        Headers.RemoveAt(i);
+                    }
+                }
+            } else {
+                var headerField = Headers[HeaderType.DatabaseName];
+                if (headerField is not TextHeader textField) {
+                    textField = (TextHeader)Header.Create(HeaderType.DatabaseName);
+                    Headers.Add(textField);
+                }
+                textField.Text = value;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Gets/sets document description.
+    /// </summary>
+    public string? Description {
+        get {
+            if (Headers[HeaderType.DatabaseDescription] is TextHeader textField) {
+                return textField.Text;
+            }
+            return null;
+        }
+        set {
+            if (value is null) {
+                for (var i = Headers.Count - 1; i >= 0; i--) {
+                    if (Headers[i].Type == HeaderType.DatabaseDescription) {
+                        Headers.RemoveAt(i);
+                    }
+                }
+            } else {
+                var headerField = Headers[HeaderType.DatabaseDescription];
+                if (headerField is not TextHeader textField) {
+                    textField = (TextHeader)Header.Create(HeaderType.DatabaseDescription);
+                    Headers.Add(textField);
+                }
+                textField.Text = value;
+            }
+        }
+    }
+
+    /// <summary>
     /// Gets/sets last save timestamp.
     /// </summary>
-    public DateTime LastSaveTime {
+    public DateTime? LastSaveTime {
         get {
             if (Headers[HeaderType.TimestampOfLastSave] is not null and TimestampHeader timestampField) {
                 return timestampField.Timestamp;
             }
-            return DateTime.MinValue;
+            return null;
         }
         set {
-            var @field = Headers[HeaderType.TimestampOfLastSave];
-            if (@field is not TimestampHeader timeField) {
-                timeField = (TimestampHeader)Header.Create(HeaderType.TimestampOfLastSave);
-                Headers.Add(timeField);
+            if (value is null) {
+                for (var i = Headers.Count - 1; i >= 0; i--) {
+                    if (Headers[i].Type == HeaderType.TimestampOfLastSave) {
+                        Headers.RemoveAt(i);
+                    }
+                }
+            } else {
+                var @field = Headers[HeaderType.TimestampOfLastSave];
+                if (@field is not TimestampHeader timeField) {
+                    timeField = (TimestampHeader)Header.Create(HeaderType.TimestampOfLastSave);
+                    Headers.Add(timeField);
+                }
+                timeField.Timestamp = value.Value;
             }
-            timeField.Timestamp = value;
         }
     }
 
     /// <summary>
     /// Gets/sets last password change timestamp.
     /// </summary>
-    public DateTime LastPasswordChangeTime {
+    public DateTime? LastPasswordChangeTime {
         get {
             if (Headers[HeaderType.TimestampOfLastMasterPasswordChange] is not null and TimestampHeader timestampField) {
                 return timestampField.Timestamp;
             }
-            return DateTime.MinValue;
+            return null;
         }
         set {
-            var @field = Headers[HeaderType.TimestampOfLastMasterPasswordChange];
-            if (@field is not TimestampHeader timeField) {
-                timeField = (TimestampHeader)Header.Create(HeaderType.TimestampOfLastMasterPasswordChange);
-                Headers.Add(timeField);
+            if (value is null) {
+                for (var i = Headers.Count - 1; i >= 0; i--) {
+                    if (Headers[i].Type == HeaderType.TimestampOfLastMasterPasswordChange) {
+                        Headers.RemoveAt(i);
+                    }
+                }
+            } else {
+                var @field = Headers[HeaderType.TimestampOfLastMasterPasswordChange];
+                if (@field is not TimestampHeader timeField) {
+                    timeField = (TimestampHeader)Header.Create(HeaderType.TimestampOfLastMasterPasswordChange);
+                    Headers.Add(timeField);
+                }
+                timeField.Timestamp = value.Value;
             }
-            timeField.Timestamp = value;
         }
     }
 
     /// <summary>
     /// Gets/sets which user performed last save.
     /// </summary>
-    public string LastSaveUser {
+    public string? LastSaveUser {
         get {
             if (Headers[HeaderType.LastSavedByUser] is not null and TextHeader textField) {
                 return textField.Text;
             }
-            return string.Empty;
+            return null;
         }
         set {
-            ArgumentNullException.ThrowIfNull(value);
-            var @field = Headers[HeaderType.LastSavedByUser];
-            if (@field is not TextHeader textField) {
-                textField = (TextHeader)Header.Create(HeaderType.LastSavedByUser);
-                Headers.Add(textField);
+            if (value is null) {
+                for (var i = Headers.Count - 1; i >= 0; i--) {
+                    if (Headers[i].Type == HeaderType.LastSavedByUser) {
+                        Headers.RemoveAt(i);
+                    }
+                }
+            } else {
+                var @field = Headers[HeaderType.LastSavedByUser];
+                if (@field is not TextHeader textField) {
+                    textField = (TextHeader)Header.Create(HeaderType.LastSavedByUser);
+                    Headers.Add(textField);
+                }
+                textField.Text = value;
             }
-            textField.Text = value;
         }
     }
 
     /// <summary>
     /// Gets/sets on which host the last save was performed.
     /// </summary>
-    public string LastSaveHost {
+    public string? LastSaveHost {
         get {
             if (Headers[HeaderType.LastSavedOnHost] is not null and TextHeader textField) {
                 return textField.Text;
             }
-            return string.Empty;
+            return null;
         }
         set {
-            ArgumentNullException.ThrowIfNull(value);
-            var @field = Headers[HeaderType.LastSavedOnHost];
-            if (@field is not TextHeader textField) {
-                textField = (TextHeader)Header.Create(HeaderType.LastSavedOnHost);
-                Headers.Add(textField);
+            if (value is null) {
+                for (var i = Headers.Count - 1; i >= 0; i--) {
+                    if (Headers[i].Type == HeaderType.LastSavedOnHost) {
+                        Headers.RemoveAt(i);
+                    }
+                }
+            } else {
+                var @field = Headers[HeaderType.LastSavedOnHost];
+                if (@field is not TextHeader textField) {
+                    textField = (TextHeader)Header.Create(HeaderType.LastSavedOnHost);
+                    Headers.Add(textField);
+                }
+                textField.Text = value;
             }
-            textField.Text = value;
         }
     }
 
     /// <summary>
     /// Gets/sets what performed last save.
     /// </summary>
-    public string LastSaveApplication {
+    public string? LastSaveApplication {
         get {
             if (Headers[HeaderType.WhatPerformedLastSave] is not null and TextHeader textField) {
                 return textField.Text;
             }
-            return string.Empty;
+            return null;
         }
         set {
-            ArgumentNullException.ThrowIfNull(value);
-            var @field = Headers[HeaderType.WhatPerformedLastSave];
-            if (@field is not TextHeader textField) {
-                textField = (TextHeader)Header.Create(HeaderType.WhatPerformedLastSave);
-                Headers.Add(textField);
+            if (value is null) {
+                for (var i = Headers.Count - 1; i >= 0; i--) {
+                    if (Headers[i].Type == HeaderType.WhatPerformedLastSave) {
+                        Headers.RemoveAt(i);
+                    }
+                }
+            } else {
+                ArgumentNullException.ThrowIfNull(value);
+                var @field = Headers[HeaderType.WhatPerformedLastSave];
+                if (@field is not TextHeader textField) {
+                    textField = (TextHeader)Header.Create(HeaderType.WhatPerformedLastSave);
+                    Headers.Add(textField);
+                }
+                textField.Text = value;
             }
-            textField.Text = value;
         }
     }
 

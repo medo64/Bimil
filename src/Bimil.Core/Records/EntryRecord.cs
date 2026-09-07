@@ -78,60 +78,84 @@ public sealed class EntryRecord : Record {
     /// <summary>
     /// Gets/sets creation time.
     /// </summary>
-    public DateTime CreationTime {
+    public DateTime? CreationTime {
         get {
             if (Fields[FieldType.CreationTime] is TimestampField timeField) {
                 return timeField.Timestamp;
             }
-            return DateTime.MinValue;
+            return null;
         }
         set {
-            var @field = Fields[FieldType.CreationTime];
-            if (@field is not TimestampField timeField) {
-                timeField = (TimestampField)Field.Create(FieldType.CreationTime);
-                Fields.Add(timeField);
+            if (value is null) {
+                for (var i = Fields.Count - 1; i >= 0; i--) {
+                    if (Fields[i].Type == FieldType.CreationTime) {
+                        Fields.RemoveAt(i);
+                    }
+                }
+            } else {
+                var @field = Fields[FieldType.CreationTime];
+                if (@field is not TimestampField timeField) {
+                    timeField = (TimestampField)Field.Create(FieldType.CreationTime);
+                    Fields.Add(timeField);
+                }
+                timeField.Timestamp = value.Value;
             }
-            timeField.Timestamp = value;
         }
     }
 
     /// <summary>
     /// Gets/sets modification time.
     /// </summary>
-    public DateTime ModificationTime {
+    public DateTime? ModificationTime {
         get {
             if (Fields[FieldType.LastModificationTime] is TimestampField timeField) {
                 return timeField.Timestamp;
             }
-            return DateTime.MinValue;
+            return null;
         }
         set {
-            var @field = Fields[FieldType.LastModificationTime];
-            if (@field is not TimestampField timeField) {
-                timeField = (TimestampField)Field.Create(FieldType.LastModificationTime);
-                Fields.Add(timeField);
+            if (value is null) {
+                for (var i = Fields.Count - 1; i >= 0; i--) {
+                    if (Fields[i].Type == FieldType.LastModificationTime) {
+                        Fields.RemoveAt(i);
+                    }
+                }
+            } else {
+                var @field = Fields[FieldType.LastModificationTime];
+                if (@field is not TimestampField timeField) {
+                    timeField = (TimestampField)Field.Create(FieldType.LastModificationTime);
+                    Fields.Add(timeField);
+                }
+                timeField.Timestamp = value.Value;
             }
-            timeField.Timestamp = value;
         }
     }
 
     /// <summary>
     /// Gets/sets access time.
     /// </summary>
-    public DateTime AccessTime {
+    public DateTime? AccessTime {
         get {
             if (Fields[FieldType.LastAccessTime] is TimestampField timeField) {
                 return timeField.Timestamp;
             }
-            return DateTime.MinValue;
+            return null;
         }
         set {
-            var @field = Fields[FieldType.LastAccessTime];
-            if (@field is not TimestampField timeField) {
-                timeField = (TimestampField)Field.Create(FieldType.LastAccessTime);
-                Fields.Add(timeField);
+            if (value is null) {
+                for (var i = Fields.Count - 1; i >= 0; i--) {
+                    if (Fields[i].Type == FieldType.LastAccessTime) {
+                        Fields.RemoveAt(i);
+                    }
+                }
+            } else {
+                var @field = Fields[FieldType.LastAccessTime];
+                if (@field is not TimestampField timeField) {
+                    timeField = (TimestampField)Field.Create(FieldType.LastAccessTime);
+                    Fields.Add(timeField);
+                }
+                timeField.Timestamp = value.Value;
             }
-            timeField.Timestamp = value;
         }
     }
 
@@ -150,7 +174,7 @@ public sealed class EntryRecord : Record {
     /// </summary>
     public void UpdateModificationTime() {
         ModificationTime = DateTime.UtcNow;
-        if (CreationTime == DateTime.MinValue) { CreationTime = ModificationTime; }
+        if (CreationTime == null) { CreationTime = ModificationTime; }
     }
 
 

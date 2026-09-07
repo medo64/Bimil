@@ -46,9 +46,9 @@ public partial class DocumentTests {
         Assert.AreEqual(Guid.Parse("7f8dc27f-8e80-424d-8561-4e1ff54a366e"), doc.Uuid);
         Assert.AreEqual(new DateTime(2026, 8, 16, 22, 50, 21, DateTimeKind.Utc), doc.LastSaveTime);
         Assert.AreEqual(new DateTime(2026, 8, 16, 22, 48, 20, DateTimeKind.Utc), doc.LastPasswordChangeTime);
-        Assert.AreEqual("", doc.LastSaveUser);
-        Assert.AreEqual("", doc.LastSaveHost);
-        Assert.AreEqual("", doc.LastSaveApplication);
+        Assert.AreEqual(null, doc.LastSaveUser);
+        Assert.AreEqual(null, doc.LastSaveHost);
+        Assert.AreEqual(null, doc.LastSaveApplication);
     }
 
     [TestMethod]
@@ -61,8 +61,8 @@ public partial class DocumentTests {
 
         Assert.AreEqual(new Version(3, 17, 0, 0), doc.Version);
         Assert.AreEqual(Guid.Parse("7f8dc27f-8e80-424d-8561-4e1ff54a366e"), doc.Uuid);
-        Assert.AreEqual(DateTime.MinValue, doc.LastSaveTime);
-        Assert.AreEqual(DateTime.MinValue, doc.LastPasswordChangeTime);
+        Assert.AreEqual(null, doc.LastSaveTime);
+        Assert.AreEqual(null, doc.LastPasswordChangeTime);
         Assert.AreEqual("Josip", doc.LastSaveUser);
         Assert.AreEqual("WANDALF", doc.LastSaveHost);
         Assert.AreEqual("Password Safe V3.72.1", doc.LastSaveApplication);
