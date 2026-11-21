@@ -616,6 +616,17 @@ internal partial class MainWindow : Window {
         if ((lsbEntries.SelectedIndex < 0) && (lsbEntries.Items.Count > 0)) {
             lsbEntries.SelectedIndex = 0;
         }
+
+        if (Document.File != null) {
+            var newTitle = Document.File.Name;
+            if (Document.HasChanged) { newTitle += "*"; }
+            newTitle += " - Bimil";
+            Title = newTitle;
+        } else if (lsbEntries.Items.Count > 0) {
+            Title = "[Untitled] - Bimil";
+        } else {
+            Title = "Bimil";
+        }
     }
 
 }
