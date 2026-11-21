@@ -52,7 +52,7 @@ public class ClassicPasswordGeneratorTests {
         Assert.AreEqual(14, gen.PasswordLength);
         Assert.AreEqual(0, gen.GetEstimatedCombinationCount());
         Assert.AreEqual(0, gen.GetEstimatedEntropyInBits());
-        Assert.ThrowsException<InvalidOperationException>(() => {
+        Assert.ThrowsExactly<InvalidOperationException>(() => {
             _ = gen.GetNewPassword();
         });
 

@@ -4,6 +4,7 @@ using System;
 using Bimil;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+[TestClass]
 public class KeyBlockCollectionTests {
 
     [TestMethod]
@@ -33,7 +34,7 @@ public class KeyBlockCollectionTests {
     [TestMethod]
     public void KeyBlockCollection_CannotAppendV3() {
         var doc = new Document(DatabaseVersion.V3);
-        Assert.ThrowsException<InvalidOperationException>(() => {
+        Assert.ThrowsExactly<NotSupportedException>(() => {
             doc.KeyBlocks.AppendNew([1]);
         });
     }

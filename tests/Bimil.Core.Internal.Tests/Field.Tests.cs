@@ -12,7 +12,7 @@ public class FieldTests {
         var field = Field.Create(FieldType.Uuid, UuidField.GetBytes(Guid.AllBitsSet));
 
         field.IsReadOnly = true;
-        Assert.ThrowsException<InvalidOperationException>(() =>
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
             field.Data.SetBytes([])
         );
         Assert.AreEqual(Convert.ToHexString(UuidField.GetBytes(Guid.AllBitsSet)), Convert.ToHexString(field.Data.GetBytes()));

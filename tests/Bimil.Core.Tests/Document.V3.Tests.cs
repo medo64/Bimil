@@ -145,7 +145,7 @@ public partial class DocumentTests {
         Assert.AreEqual(new DateTime(2026, 8, 16, 22, 50, 16, DateTimeKind.Utc), ((EntryRecord)(doc.Records[0])).CreationTime);
 
         using var ms = new MemoryStream();
-        Assert.ThrowsException<InvalidOperationException>(() =>  // cannot save because passphrase + key L is missing
+        Assert.ThrowsExactly<InvalidOperationException>(() =>  // cannot save because passphrase + key L is missing
             doc.Save(ms)
         );
     }
@@ -154,7 +154,7 @@ public partial class DocumentTests {
     [TestMethod]
     public void Document_V3_LoadIncorrectPassphrase() {
         var stream = GetResourceStream("Empty.psafe3");
-        var ex = Assert.ThrowsException<FormatException>(() => {
+        var ex = Assert.ThrowsExactly<FormatException>(() => {
             var doc = Document.Load(stream, Encoding.UTF8.GetBytes("dontchangeme"));
         });
         Assert.AreEqual("Passphrase mismatch.", ex.Message);
@@ -163,7 +163,7 @@ public partial class DocumentTests {
     [TestMethod]
     public void Document_V3_LoadIncorrectKey() {
         var stream = GetResourceStream("Empty.psafe3");
-        var ex = Assert.ThrowsException<FormatException>(() => {
+        var ex = Assert.ThrowsExactly<FormatException>(() => {
             var doc = Document.Load(stream, Encoding.UTF8.GetBytes("0000000000000000000000000000000000000000000000000000000000000000"));
         });
         Assert.AreEqual("Key mismatch.", ex.Message);

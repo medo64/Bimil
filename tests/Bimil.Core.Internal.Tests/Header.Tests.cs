@@ -12,7 +12,7 @@ public class HeaderTests {
         var field = Header.Create(HeaderType.Uuid, UuidHeader.GetBytes(Guid.AllBitsSet));
 
         field.IsReadOnly = true;
-        Assert.ThrowsException<InvalidOperationException>(() =>
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
             field.Data.SetBytes([])
         );
         Assert.AreEqual(Convert.ToHexString(UuidHeader.GetBytes(Guid.AllBitsSet)), Convert.ToHexString(field.Data.GetBytes()));

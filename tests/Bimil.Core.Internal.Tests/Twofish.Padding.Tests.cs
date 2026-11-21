@@ -9,7 +9,7 @@ using Bimil;
 
 public partial class TwofishTests {
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(PaddingMode.None)]
     [DataRow(PaddingMode.PKCS7)]
     [DataRow(PaddingMode.Zeros)]
@@ -28,7 +28,7 @@ public partial class TwofishTests {
         Assert.AreEqual(BitConverter.ToString(data), BitConverter.ToString(pt));
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(PaddingMode.PKCS7)]
     [DataRow(PaddingMode.Zeros)]
     [DataRow(PaddingMode.ANSIX923)]
@@ -48,7 +48,7 @@ public partial class TwofishTests {
 
 
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(PaddingMode.None)]
     [DataRow(PaddingMode.PKCS7)]
     [DataRow(PaddingMode.Zeros)]
@@ -74,7 +74,7 @@ public partial class TwofishTests {
         Assert.AreEqual(text, Encoding.ASCII.GetString(pt));
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(PaddingMode.None)]
     [DataRow(PaddingMode.PKCS7)]
     [DataRow(PaddingMode.Zeros)]

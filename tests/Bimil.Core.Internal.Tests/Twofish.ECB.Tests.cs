@@ -62,7 +62,7 @@ public partial class TwofishTests {
     }
 
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(PaddingMode.None)]
     [DataRow(PaddingMode.PKCS7)]
     [DataRow(PaddingMode.Zeros)]
@@ -91,7 +91,7 @@ public partial class TwofishTests {
         }
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(PaddingMode.None)]
     [DataRow(PaddingMode.PKCS7)]
     [DataRow(PaddingMode.Zeros)]

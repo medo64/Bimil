@@ -64,7 +64,7 @@ public class ProtectedBytesTests {
         var bytes = Encoding.UTF8.GetBytes("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
         var pb = new ProtectedBytes(bytes);
         pb.IsReadOnly = true;
-        Assert.ThrowsException<InvalidOperationException>(() =>
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
             pb.SetBytes([])
         );
         Assert.AreEqual(Convert.ToHexString(bytes), Convert.ToHexString(pb.GetBytes()));

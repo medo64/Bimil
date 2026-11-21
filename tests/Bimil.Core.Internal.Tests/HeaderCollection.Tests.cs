@@ -46,14 +46,14 @@ public class HeaderCollectionTests {
 
     [TestMethod]
     public void HeaderCollection_New_Unknown() {
-        Assert.ThrowsException<ArgumentOutOfRangeException>(() => {
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => {
             var headers = new HeaderCollection((DatabaseVersion)5, []);
         });
     }
 
     [TestMethod]
     public void HeaderCollection_CannotUseWrongMainVersion() {
-        Assert.ThrowsException<ArgumentOutOfRangeException>(() => {
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => {
             var headers = new HeaderCollection(DatabaseVersion.V4, [
                 Header.Create(HeaderType.Uuid, UuidHeader.GetBytes(Guid.AllBitsSet)),
                 Header.Create(HeaderType.Version, VersionHeader.GetBytes(new Version(3, 0, 0, 0))),
@@ -68,13 +68,13 @@ public class HeaderCollectionTests {
             version,
             Header.Create(HeaderType.Uuid, UuidHeader.GetBytes(Guid.AllBitsSet)),
         ]);
-        Assert.ThrowsException<InvalidOperationException>(() =>
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
             headers.RemoveAt(0)
         );
-        Assert.ThrowsException<InvalidOperationException>(() =>
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
             headers.Remove(version)
         );
-        Assert.ThrowsException<InvalidOperationException>(() =>
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
             headers.Remove(HeaderType.Version)
         );
     }
@@ -88,16 +88,16 @@ public class HeaderCollectionTests {
         headers.IsReadOnly = true;
         Assert.IsTrue(headers[0].IsReadOnly);
         Assert.IsTrue(headers[1].IsReadOnly);
-        Assert.ThrowsException<InvalidOperationException>(() =>
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
             headers[1].Data.SetBytes([])
         );
-        Assert.ThrowsException<InvalidOperationException>(() =>
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
             headers.Add(Header.Create(HeaderType.NonDefaultPreferences))
         );
-        Assert.ThrowsException<InvalidOperationException>(() =>
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
             headers.Remove(Header.Create(HeaderType.NonDefaultPreferences))
         );
-        Assert.ThrowsException<InvalidOperationException>(() =>
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
             headers.Insert(0, Header.Create(HeaderType.NonDefaultPreferences))
         );
         Assert.AreEqual(Convert.ToHexString(UuidHeader.GetBytes(Guid.AllBitsSet)), Convert.ToHexString(headers[1].Data.GetBytes()));

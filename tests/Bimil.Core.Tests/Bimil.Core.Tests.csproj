@@ -1,4 +1,4 @@
-<Project Sdk="MSTest.Sdk/3.7.3">
+<Project Sdk="MSTest.Sdk/4.5.2">
 
   <PropertyGroup>
     <AssemblyName>bimil.core.tests</AssemblyName>

@@ -32,7 +32,7 @@ public class RecordCollectionTests {
         var records = new RecordCollection([Record.Create([Field.Create(FieldType.Uuid)])]);
 
         records.IsReadOnly = true;
-        Assert.ThrowsException<InvalidOperationException>(() =>
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
             records.Add(Record.Create([Field.Create(FieldType.Uuid)]))
         );
 

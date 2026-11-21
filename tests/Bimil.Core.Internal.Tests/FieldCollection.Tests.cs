@@ -69,14 +69,14 @@ public class FieldCollectionTests {
 
     [TestMethod]
     public void FieldCollection_NewCannotUseFirstBaseUuid() {
-        Assert.ThrowsException<ArgumentOutOfRangeException>(() => {
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => {
             var fields = new FieldCollection([], FieldType.BaseUuid);
         });
     }
 
     [TestMethod]
     public void FieldCollection_NewCannotUseFirstNonUuidField() {
-        Assert.ThrowsException<ArgumentOutOfRangeException>(() => {
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => {
             var fields = new FieldCollection([], FieldType.Title);
         });
     }
@@ -88,10 +88,10 @@ public class FieldCollectionTests {
         };
         Assert.AreEqual(2, fields.Count);
 
-        Assert.ThrowsException<InvalidOperationException>(() =>
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
             fields.RemoveAt(0)
         );
-        Assert.ThrowsException<InvalidOperationException>(() =>
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
             fields.Remove(fields[FieldType.Uuid])
         );
     }
@@ -104,16 +104,16 @@ public class FieldCollectionTests {
 
         fields.IsReadOnly = true;
         Assert.IsTrue(fields[0].IsReadOnly);
-        Assert.ThrowsException<InvalidOperationException>(() =>
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
             fields[0].Data.SetBytes([])
         );
-        Assert.ThrowsException<InvalidOperationException>(() =>
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
             fields.Add(Field.Create(FieldType.Attachment3MediaType))
         );
-        Assert.ThrowsException<InvalidOperationException>(() =>
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
             fields.Remove(Field.Create(FieldType.Attachment3MediaType))
         );
-        Assert.ThrowsException<InvalidOperationException>(() =>
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
             fields.Insert(0, Field.Create(FieldType.Attachment3MediaType))
         );
         Assert.AreEqual(Convert.ToHexString(UuidField.GetBytes(Guid.AllBitsSet)), Convert.ToHexString(fields[0].Data.GetBytes()));
