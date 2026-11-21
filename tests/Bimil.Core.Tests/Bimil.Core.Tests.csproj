@@ -13,6 +13,11 @@
     <EnableNETAnalyzers>false</EnableNETAnalyzers>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <Product>BimilTest</Product>
+    <Version>1.2.3</Version>
+  </PropertyGroup>
+
   <ItemGroup>
     <EmbeddedResource Include="Assets/*" />
   </ItemGroup>

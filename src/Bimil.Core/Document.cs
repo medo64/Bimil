@@ -4,6 +4,7 @@ using System;
 using System.Buffers.Binary;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -282,7 +283,7 @@ public sealed partial class Document {
             } else if (header.Type == HeaderType.TimestampOfLastSave && header is TimestampHeader saveHeader) {
                 saveHeader.Timestamp = DateTime.UtcNow;
             } else if (header.Type == HeaderType.WhatPerformedLastSave && header is TextHeader appHeader) {
-                appHeader.Text = "Bimil V4.0.0";
+                appHeader.Text = GetApplicationSaveText();
             } else if (header.Type == HeaderType.LastSavedByUser && header is TextHeader userHeader) {
                 userHeader.Text = Environment.UserName;
                 insertUser = false;
@@ -308,6 +309,26 @@ public sealed partial class Document {
         File = originalFile;
         ResetChanges();
 
+    }
+
+    private static string GetApplicationSaveText() {
+        var assembly = (Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly());
+        string title;
+        var productAttributes = assembly.GetCustomAttributes(typeof(AssemblyProductAttribute), true);
+        if ((productAttributes != null) && (productAttributes.Length >= 1)) {
+            title = ((AssemblyProductAttribute)productAttributes[^1]).Product;
+        } else {
+            var titleAttributes = assembly.GetCustomAttributes(typeof(AssemblyTitleAttribute), true);
+            if ((titleAttributes != null) && (titleAttributes.Length >= 1)) {
+                title = ((AssemblyTitleAttribute)titleAttributes[^1]).Title;
+            } else {
+                title = assembly.GetName().Name ?? "";
+            }
+        }
+        var assemblyVersion = assembly.GetName().Version;
+        var version = assemblyVersion != null ? assemblyVersion.ToString(fieldCount: 3) : "0.0.0";
+        var applicationName = title + " V" + version;
+        return applicationName;
     }
 
     #endregion Save
