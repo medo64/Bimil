@@ -450,11 +450,12 @@ make_test() {
         ANYTHING_DONE=1
         echo "${ANSI_MAGENTA}$(basename $PROJECT_FILE)${ANSI_RESET}"
 
-        dotnet test                                 \
-            -p:TestingPlatformCaptureOutput=false   \
-            -p:TestingPlatformShowTestsFailure=true \
-            -p:EnableNETAnalyzers=false             \
-            --verbosity minimal                     \
+        DOTNET_TEST_RUNNER=Microsoft.Testing.Platform \
+        dotnet test                                   \
+            -p:TestingPlatformCaptureOutput=false     \
+            -p:TestingPlatformShowTestsFailure=true   \
+            -p:EnableNETAnalyzers=false               \
+            --verbosity minimal                       \
             "$PROJECT_FILE" || exit 113
 
         echo
@@ -881,8 +882,13 @@ make_publish() {
     ANYTHING_DONE=0
     GITHUB_UPLOAD_FILES=
 
+    SHOULD_VERSION=0
+    if [ "$GIT_VERSION" != "" ]; then SHOULD_VERSION=1; fi  # if we have version
+    SHOULD_VERSION_PUBLISH=$SHOULD_VERSION
+    if [ "$HAS_CHANGES" -ne 0 ]; then SHOULD_VERSION_PUBLISH=0; fi  # if we have uncommitted changes
+
     if [ "$PUBLISH_LINUX_ARCHIVE" != "" ]; then
-        if [ "$GIT_VERSION" != "" ]; then
+        if [ "$SHOULD_VERSION" -ne 0 ]; then
             for RUNTIME in $PUBLISH_RUNTIMES; do
                 case $RUNTIME in
                     current) continue ;;
@@ -894,8 +900,12 @@ make_publish() {
                 echo "${ANSI_MAGENTA}Published archive $ARCHIVE_NAME_CURR ($RUNTIME)${ANSI_RESET}"
                 GITHUB_UPLOAD_FILES="$GITHUB_UPLOAD_FILES dist/$ARCHIVE_NAME_CURR"
 
-                rsync --no-g --no-o --progress --chmod=D755,F644  "dist/$ARCHIVE_NAME_CURR" $PUBLISH_LINUX_ARCHIVE || exit 113
-                echo "${ANSI_CYAN}$PUBLISH_LINUX_ARCHIVE/$ARCHIVE_NAME_CURR${ANSI_RESET}"
+                if [ "$SHOULD_VERSION_PUBLISH" -ne 0 ]; then
+                    rsync --no-g --no-o --progress --chmod=D755,F644  "dist/$ARCHIVE_NAME_CURR" $PUBLISH_LINUX_ARCHIVE || exit 113
+                    echo "${ANSI_CYAN}$PUBLISH_LINUX_ARCHIVE/$ARCHIVE_NAME_CURR${ANSI_RESET}"
+                else
+                    echo "${ANSI_YELLOW}Not publishing versioned archive because of uncommitted changes${ANSI_RESET}" >&2
+                fi
                 echo
             done
         else
@@ -915,14 +925,18 @@ make_publish() {
             echo "${ANSI_MAGENTA}Published appimage ($RUNTIME)${ANSI_RESET}"
             GITHUB_UPLOAD_FILES="$GITHUB_UPLOAD_FILES dist/$APPIMAGE_NAME_CURR"
 
-            rsync --no-g --no-o --progress --chmod=D755,F644  "dist/$APPIMAGE_NAME_CURR" $PUBLISH_LINUX_APPIMAGE || exit 113
-            echo "${ANSI_CYAN}$PUBLISH_LINUX_APPIMAGE${ANSI_RESET}"
+            if [ "$SHOULD_VERSION_PUBLISH" -ne 0 ]; then
+                rsync --no-g --no-o --progress --chmod=D755,F644  "dist/$APPIMAGE_NAME_CURR" $PUBLISH_LINUX_APPIMAGE || exit 113
+                echo "${ANSI_CYAN}$PUBLISH_LINUX_APPIMAGE${ANSI_RESET}"
+            else
+                echo "${ANSI_YELLOW}Not publishing versioned archive because of uncommitted changes${ANSI_RESET}" >&2
+            fi
             echo
         done
     fi
 
     if [ "$PUBLISH_LINUX_DEB" != "" ]; then
-        if [ "$PACKAGE_NUGET_VERSION" != "" ] && [ "$PACKAGE_NUGET_VERSION" != "0.0.0" ]; then
+        if [ "$DEB_VERSION" != "" ] && [ "$DEB_VERSION" != "0.0.0" ]; then
             for RUNTIME in $PUBLISH_RUNTIMES; do
                 case $RUNTIME in
                     linux-x64)   DEB_ARCHITECTURE=amd64 ; DEB_PACKAGE_CURR=$DEB_PACKAGE_AMD64 ;;
@@ -936,8 +950,12 @@ make_publish() {
 
                 PUBLISH_LINUX_DEB_CURR="$( echo "$PUBLISH_LINUX_DEB" | sed "s/<DEB_ARCHITECTURE>/$DEB_ARCHITECTURE/g" )"
 
-                rsync --no-g --no-o --progress "dist/$DEB_PACKAGE_CURR" $PUBLISH_LINUX_DEB_CURR || exit 113
-                echo "${ANSI_CYAN}$PUBLISH_LINUX_DEB_CURR${ANSI_RESET}"
+                if [ "$SHOULD_VERSION_PUBLISH" -ne 0 ]; then
+                    rsync --no-g --no-o --progress "dist/$DEB_PACKAGE_CURR" $PUBLISH_LINUX_DEB_CURR || exit 113
+                    echo "${ANSI_CYAN}$PUBLISH_LINUX_DEB_CURR${ANSI_RESET}"
+                else
+                    echo "${ANSI_YELLOW}Not publishing versioned archive because of uncommitted changes${ANSI_RESET}" >&2
+                fi
                 echo
             done
         else
@@ -954,21 +972,26 @@ make_publish() {
         fi
 
         if [ "$GIT_VERSION" != "" ]; then
-            docker tag                                            \
-                $PACKAGE_LINUX_DOCKER:$GIT_VERSION                \
-                $DOCKER_IMAGE_ID/$DOCKER_IMAGE_NAME:$GIT_VERSION || exit 113
-            docker $DOCKER_CONFIG_ARGS push                       \
-                $DOCKER_IMAGE_ID/$DOCKER_IMAGE_NAME:$GIT_VERSION || exit 113
-            echo "${ANSI_CYAN}$DOCKER_IMAGE_ID/$DOCKER_IMAGE_NAME:$GIT_VERSION${ANSI_RESET}"
-            echo
+            if [ "$SHOULD_VERSION_PUBLISH" -ne 0 ]; then
+                docker tag                                            \
+                    $PACKAGE_LINUX_DOCKER:$GIT_VERSION                \
+                    $DOCKER_IMAGE_ID/$DOCKER_IMAGE_NAME:$GIT_VERSION || exit 113
+                docker $DOCKER_CONFIG_ARGS push                       \
+                    $DOCKER_IMAGE_ID/$DOCKER_IMAGE_NAME:$GIT_VERSION || exit 113
+                echo "${ANSI_CYAN}$DOCKER_IMAGE_ID/$DOCKER_IMAGE_NAME:$GIT_VERSION${ANSI_RESET}"
+                echo
 
-            docker tag                                      \
-                $PACKAGE_LINUX_DOCKER:latest                \
-                $DOCKER_IMAGE_ID/$DOCKER_IMAGE_NAME:latest || exit 113
-            docker $DOCKER_CONFIG_ARGS push                 \
-                $DOCKER_IMAGE_ID/$DOCKER_IMAGE_NAME:latest || exit 113
-            echo "${ANSI_CYAN}$DOCKER_IMAGE_ID/$DOCKER_IMAGE_NAME:latest${ANSI_RESET}"
-            echo
+                docker tag                                      \
+                    $PACKAGE_LINUX_DOCKER:latest                \
+                    $DOCKER_IMAGE_ID/$DOCKER_IMAGE_NAME:latest || exit 113
+                docker $DOCKER_CONFIG_ARGS push                 \
+                    $DOCKER_IMAGE_ID/$DOCKER_IMAGE_NAME:latest || exit 113
+                echo "${ANSI_CYAN}$DOCKER_IMAGE_ID/$DOCKER_IMAGE_NAME:latest${ANSI_RESET}"
+                echo
+            else
+                echo "${ANSI_YELLOW}Not publishing versioned archive because of uncommitted changes${ANSI_RESET}" >&2
+                echo
+            fi
         fi
 
         docker tag                                        \
@@ -982,15 +1005,20 @@ make_publish() {
 
     if [ "$PUBLISH_NUGET_KEY" != "" ]; then
         if [ "$PACKAGE_NUGET_VERSION" != "" ] && [ "$PACKAGE_NUGET_VERSION" != "0.0.0" ]; then
-            dotnet nuget push   \
-                --source "https://api.nuget.org/v3/index.json"           \
-                --api-key "$PUBLISH_NUGET_KEY"                           \
-                --symbol-api-key "$PUBLISH_NUGET_KEY"                    \
-                "./dist/$PACKAGE_NUGET_ID.$PACKAGE_NUGET_VERSION.nupkg" || return 1
-            ANYTHING_DONE=1
-            PACKAGE_NUGET_FILENAME=$PACKAGE_NUGET_ID-$PACKAGE_NUGET_VERSION.nupkg
-            echo "${ANSI_GREEN}Sent ${ANSI_CYAN}dist/$PACKAGE_NUGET_FILENAME${ANSI_RESET}"
-            GITHUB_UPLOAD_FILES="$GITHUB_UPLOAD_FILES dist/$PACKAGE_NUGET_FILENAME"
+            if [ "$SHOULD_VERSION_PUBLISH" -ne 0 ]; then
+                echo "${ANSI_CYAN}Pushing to NuGet $PACKAGE_NUGET_ID.$PACKAGE_NUGET_VERSION${ANSI_RESET}" >&2
+                PACKAGE_NUGET_FILENAME=$PACKAGE_NUGET_ID.$PACKAGE_NUGET_VERSION.nupkg
+                dotnet nuget push   \
+                    --source "https://api.nuget.org/v3/index.json"           \
+                    --api-key "$PUBLISH_NUGET_KEY"                           \
+                    --symbol-api-key "$PUBLISH_NUGET_KEY"                    \
+                    "./dist/$PACKAGE_NUGET_FILENAME"                        || return 1
+                ANYTHING_DONE=1
+                echo "${ANSI_GREEN}Sent ${ANSI_CYAN}dist/$PACKAGE_NUGET_FILENAME${ANSI_RESET}"
+                GITHUB_UPLOAD_FILES="$GITHUB_UPLOAD_FILES dist/$PACKAGE_NUGET_FILENAME"
+            else
+                echo "${ANSI_YELLOW}Not publishing versioned archive because of uncommitted changes${ANSI_RESET}" >&2
+            fi
             echo
         else
             echo "${ANSI_RED}Not pushing to NuGET without a version${ANSI_RESET}" >&2
@@ -1001,44 +1029,48 @@ make_publish() {
         if [ "$GIT_VERSION" != "" ] && [ "$GIT_VERSION" != "0.0.0" ]; then
             PUBLISH_GITHUB_OWNER=$( echo "$PUBLISH_GITHUB_URL" | cut -d/ -f4 )
             PUBLISH_GITHUB_REPO=$( echo "$PUBLISH_GITHUB_URL" | cut -d/ -f5 )
-            echo "${ANSI_CYAN}Pusing to $PUBLISH_GITHUB_OWNER:$PUBLISH_GITHUB_REPO${ANSI_RESET}" >&2
+            echo "${ANSI_CYAN}Pushing to GitHub $PUBLISH_GITHUB_OWNER:$PUBLISH_GITHUB_REPO${ANSI_RESET}" >&2
 
             if [ "$GITHUB_UPLOAD_FILES" != "" ]; then
-                PUBLISH_GITHUB_EXISTING_RELEASE_ID=$( curl -s https://api.github.com/repos/$PUBLISH_GITHUB_OWNER/$PUBLISH_GITHUB_REPO/releases \
-                                                              -H "Authorization: Bearer $PUBLISH_GITHUB_KEY" \
-                                                      | jq -r ".[] | select(.tag_name==\"v$GIT_VERSION\") | .id" 2>/dev/null )
-                if [ "$PUBLISH_GITHUB_EXISTING_RELEASE_ID" != "" ]; then
-                    echo "${ANSI_YELLOW}Release with tag $GIT_VERSION already exists, deleting it first${ANSI_RESET}" >&2
-                    curl -X DELETE https://api.github.com/repos/$PUBLISH_GITHUB_OWNER/$PUBLISH_GITHUB_REPO/releases/$PUBLISH_GITHUB_EXISTING_RELEASE_ID \
-                                   -H "Authorization: Bearer $PUBLISH_GITHUB_KEY" >/dev/null 2>&1 || true
-                fi
+                if [ "$SHOULD_VERSION_PUBLISH" -ne 0 ]; then
+                    PUBLISH_GITHUB_EXISTING_RELEASE_ID=$( curl -s https://api.github.com/repos/$PUBLISH_GITHUB_OWNER/$PUBLISH_GITHUB_REPO/releases \
+                                                                -H "Authorization: Bearer $PUBLISH_GITHUB_KEY" \
+                                                        | jq -r ".[] | select(.tag_name==\"v$GIT_VERSION\") | .id" 2>/dev/null )
+                    if [ "$PUBLISH_GITHUB_EXISTING_RELEASE_ID" != "" ]; then
+                        echo "${ANSI_YELLOW}Release with tag $GIT_VERSION already exists, deleting it first${ANSI_RESET}" >&2
+                        curl -X DELETE https://api.github.com/repos/$PUBLISH_GITHUB_OWNER/$PUBLISH_GITHUB_REPO/releases/$PUBLISH_GITHUB_EXISTING_RELEASE_ID \
+                                    -H "Authorization: Bearer $PUBLISH_GITHUB_KEY" >/dev/null 2>&1 || true
+                    fi
 
-                PUBLISH_GITHUB_RELEASE_ID=$( curl -X POST https://api.github.com/repos/$PUBLISH_GITHUB_OWNER/$PUBLISH_GITHUB_REPO/releases \
-                                                          -H "Authorization: Bearer $PUBLISH_GITHUB_KEY" \
-                                                          -H "Accept: application/vnd.github+json" \
-                                                          -d "{
-                                                              \"tag_name\": \"v$GIT_VERSION\",
-                                                              \"name\": \"$GIT_VERSION\",
-                                                              \"body\": \"\",
-                                                              \"draft\": false,
-                                                              \"prerelease\": false
-                                                          }" 2>/dev/null | jq -r .id )
-                if [ "$PUBLISH_GITHUB_RELEASE_ID" = "" ] || [ "$PUBLISH_GITHUB_RELEASE_ID" = "null" ]; then
-                    echo "${ANSI_RED}Failed to create GitHub release for version $GIT_VERSION${ANSI_RESET}" >&2
-                    return 1
-                fi
-                echo "${ANSI_CYAN}Created release $GIT_VERSION ($PUBLISH_GITHUB_RELEASE_ID)${ANSI_RESET}" >&2
+                    PUBLISH_GITHUB_RELEASE_ID=$( curl -X POST https://api.github.com/repos/$PUBLISH_GITHUB_OWNER/$PUBLISH_GITHUB_REPO/releases \
+                                                            -H "Authorization: Bearer $PUBLISH_GITHUB_KEY" \
+                                                            -H "Accept: application/vnd.github+json" \
+                                                            -d "{
+                                                                \"tag_name\": \"v$GIT_VERSION\",
+                                                                \"name\": \"$GIT_VERSION\",
+                                                                \"body\": \"\",
+                                                                \"draft\": false,
+                                                                \"prerelease\": false
+                                                            }" 2>/dev/null | jq -r .id )
+                    if [ "$PUBLISH_GITHUB_RELEASE_ID" = "" ] || [ "$PUBLISH_GITHUB_RELEASE_ID" = "null" ]; then
+                        echo "${ANSI_RED}Failed to create GitHub release for version $GIT_VERSION${ANSI_RESET}" >&2
+                        return 1
+                    fi
+                    echo "${ANSI_CYAN}Created release $GIT_VERSION ($PUBLISH_GITHUB_RELEASE_ID)${ANSI_RESET}" >&2
 
-                for GITHUB_UPLOAD_FILE in $GITHUB_UPLOAD_FILES ; do
-                    GITHUB_UPLOAD_FILENAME=$( basename "$GITHUB_UPLOAD_FILE" )
-                    echo "${ANSI_CYAN}Uploading $GITHUB_UPLOAD_FILE${ANSI_RESET}"
-                    curl -X POST "https://uploads.github.com/repos/$PUBLISH_GITHUB_OWNER/$PUBLISH_GITHUB_REPO/releases/$PUBLISH_GITHUB_RELEASE_ID/assets?name=$GITHUB_UPLOAD_FILENAME" \
-                                  -H "Authorization: Bearer $PUBLISH_GITHUB_KEY" \
-                                  -H "Content-Type: application/octet-stream" \
-                                  --data-binary @$GITHUB_UPLOAD_FILE >/dev/null 2>&1 || return 1
-                    ANYTHING_DONE=1
-                    echo "${ANSI_GREEN}Pushed $GITHUB_UPLOAD_FILE${ANSI_RESET}" >&2
-                done
+                    for GITHUB_UPLOAD_FILE in $GITHUB_UPLOAD_FILES ; do
+                        GITHUB_UPLOAD_FILENAME=$( basename "$GITHUB_UPLOAD_FILE" )
+                        echo "${ANSI_CYAN}Uploading $GITHUB_UPLOAD_FILE${ANSI_RESET}"
+                        curl -X POST "https://uploads.github.com/repos/$PUBLISH_GITHUB_OWNER/$PUBLISH_GITHUB_REPO/releases/$PUBLISH_GITHUB_RELEASE_ID/assets?name=$GITHUB_UPLOAD_FILENAME" \
+                                    -H "Authorization: Bearer $PUBLISH_GITHUB_KEY" \
+                                    -H "Content-Type: application/octet-stream" \
+                                    --data-binary @$GITHUB_UPLOAD_FILE >/dev/null 2>&1 || return 1
+                        ANYTHING_DONE=1
+                        echo "${ANSI_GREEN}Pushed $GITHUB_UPLOAD_FILE${ANSI_RESET}" >&2
+                    done
+                else
+                    echo "${ANSI_YELLOW}Not publishing versioned archive because of uncommitted changes${ANSI_RESET}" >&2
+                fi
             fi
         else
             echo "${ANSI_RED}Not pushing to GitHub without a version${ANSI_RESET}" >&2
