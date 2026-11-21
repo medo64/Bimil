@@ -481,12 +481,11 @@ internal partial class MainWindow : Window {
 
 
     public void mnuEntry_Opening(object? sender, CancelEventArgs e) {
-        // TODO Json
-        // var canPaste = EntryRecord.TryImportFromJson(PTClipboard.GetText(), out _);
-        // var canCopy = (lsbEntries.SelectedItem as ListBoxItem)?.Tag is EntryRecord;
-        // mnuEntryCut.IsEnabled = canCopy;
-        // mnuEntryCopy.IsEnabled = canCopy;
-        // mnuEntryPaste.IsEnabled = canPaste;
+        var canPaste = EntryRecord.TryImportFromJson(PTClipboard.GetText(), out _);
+        var canCopy = (lsbEntries.SelectedItem as ListBoxItem)?.Tag is EntryRecord;
+        mnuEntryCut.IsEnabled = canCopy;
+        mnuEntryCopy.IsEnabled = canCopy;
+        mnuEntryPaste.IsEnabled = canPaste;
     }
 
     public void mnuEntryCut_Click(object? sender, RoutedEventArgs e) {
