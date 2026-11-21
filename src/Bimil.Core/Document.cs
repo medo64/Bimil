@@ -125,7 +125,7 @@ public sealed partial class Document {
     /// Notice that operation might take some time since access will traverse all records.
     /// This functionality depends on GetHashCode in each record.
     /// </summary>
-    public bool? HasChanged {
+    public bool HasChanged {
         get {
             var currHashCode = GetHashCode();
             return (LastHashCode != currHashCode);

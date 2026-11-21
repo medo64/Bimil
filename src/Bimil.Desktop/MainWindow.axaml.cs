@@ -68,6 +68,18 @@ internal partial class MainWindow : Window {
     public Document Document = new();
 
 
+    protected override async void OnClosing(WindowClosingEventArgs e) {
+        if (Document.HasChanged) {
+            switch (MessageBox.ShowQuestionDialog(this, "Save File", "File has been modified.\nDo you want to save the changes?", "Yes", "No", "Cancel")) {
+                case 0: mnuFileSave_Click(this, new RoutedEventArgs()); break;
+                case 1: return;
+                default: break;
+            }
+        }
+        if (Document.HasChanged) { e.Cancel = true; }
+        base.OnClosing(e);
+    }
+
     protected override async void OnOpened(EventArgs e) {
         base.OnOpened(e);
 
