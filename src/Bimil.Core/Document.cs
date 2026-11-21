@@ -282,7 +282,7 @@ public sealed partial class Document {
             } else if (header.Type == HeaderType.TimestampOfLastSave && header is TimestampHeader saveHeader) {
                 saveHeader.Timestamp = DateTime.UtcNow;
             } else if (header.Type == HeaderType.WhatPerformedLastSave && header is TextHeader appHeader) {
-                appHeader.Text = "Bimil V1.0.0";
+                appHeader.Text = "Bimil V4.0.0";
             } else if (header.Type == HeaderType.LastSavedByUser && header is TextHeader userHeader) {
                 userHeader.Text = Environment.UserName;
                 insertUser = false;
