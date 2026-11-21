@@ -519,6 +519,7 @@ internal partial class MainWindow : Window {
                 if (foundUuid) {
                     Trace.WriteLine("Updated pasted UUID");
                     pastedEntry.Uuid = Guid.NewGuid();
+                    pastedEntry.Title += " - Copy";
                 }
                 Document.Records.Add(pastedEntry);
                 ReplenishEntries(pastedEntry);
