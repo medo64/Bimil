@@ -421,8 +421,9 @@ internal partial class MainWindow : Window {
     }
 
 
-    public void mnuFind_Click(object sender, RoutedEventArgs e) {
-
+    public async void mnuFind_Click(object sender, RoutedEventArgs e) {
+        var frm = new FindWindow(Document);
+        await frm.ShowDialog(this);
     }
 
     public async void mnuPasswordGenerator_Click(object sender, RoutedEventArgs e) {

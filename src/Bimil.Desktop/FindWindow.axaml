@@ -1,0 +1,35 @@
+<Window xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="600"
+    x:Class="Bimil.FindWindow"
+    Width="500" Height="600"
+    WindowStartupLocation="CenterOwner"
+    CanResize="false"
+    Title="Search">
+
+    <DockPanel Margin="7" VerticalAlignment="Stretch">
+        <DockPanel Margin="0 11 0 0" DockPanel.Dock="Bottom" VerticalAlignment="Bottom" LastChildFill="true">
+            <DockPanel.Styles>
+                <Style Selector="Button">
+                    <Setter Property="Width" Value="129" />
+                    <Setter Property="Height" Value="33" />
+                    <Setter Property="HorizontalContentAlignment" Value="Center" />
+                    <Setter Property="VerticalContentAlignment" Value="Center" />
+                </Style>
+            </DockPanel.Styles>
+            <Grid ColumnDefinitions="*,Auto" DockPanel.Dock="Right" HorizontalAlignment="Stretch">
+                <CheckBox Name="chbSearchSensitive" Content="Search sensitive fields" Grid.Row="0" Grid.Column="0" ToolTip.Tip="If set, password fields will be included in the search." />
+                <Button Name="btnClose" Content="_Close" Grid.Row="0" Grid.Column="1" />
+            </Grid>
+        </DockPanel>
+
+        <StackPanel>
+            <TextBox Name="txtFilter" PlaceholderText="Search..." Margin="5" />
+            <ListBox Name="lsbEntries" Background="{DynamicResource SystemAltMediumLowColor}" />
+        </StackPanel>
+
+    </DockPanel>
+
+</Window>
