@@ -53,13 +53,13 @@ internal partial class OptionsWindow : Window {
 
     public void btnDefaults_Click(object sender, RoutedEventArgs e) {
         // Behavior
-        chbCloseOnEscape.IsChecked = Settings.Defaults.CloseOnEscape;
-        chbLoadLast.IsChecked = Settings.Defaults.LoadLast;
-        chbShowStart.IsChecked = Settings.Defaults.ShowStart;;
-        chbSyncPrimaryClipboard.IsChecked = Settings.Defaults.SyncPrimaryClipboard;
+        chbCloseOnEscape.IsChecked = Settings.FindDefault<bool>(nameof(Settings.Current.CloseOnEscape));
+        chbLoadLast.IsChecked = Settings.FindDefault<bool>(nameof(Settings.Current.LoadLast));
+        chbShowStart.IsChecked = Settings.FindDefault<bool>(nameof(Settings.Current.ShowStart));
+        chbSyncPrimaryClipboard.IsChecked = Settings.FindDefault<bool>(nameof(Settings.Current.SyncPrimaryClipboard));
 
         // UI
-        cmbTheme.SelectedIndex = (int)Settings.Defaults.Theme;
+        cmbTheme.SelectedIndex = (int)Settings.FindDefault<Settings.ThemeVariant>(nameof(Settings.Current.Theme));
     }
 
     public void btnSave_Click(object sender, RoutedEventArgs e) {

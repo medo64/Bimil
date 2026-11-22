@@ -3,23 +3,13 @@ namespace Bimil;
 using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using Avalonia.Utilities;
 using Medo;
 using PropertyModels.ComponentModel.DataAnnotations;
 
 internal class Settings {
-
-    internal static class Defaults {
-
-        public static bool CloseOnEscape => false;
-        public static bool LoadLast => false;
-        public static int NotesLineCount => 3;
-        public static bool ShowStart => true;
-        public static bool SyncPrimaryClipboard => true;
-        public static ThemeVariant Theme => ThemeVariant.System;
-
-    }
 
     public static Settings Current { get; } = new Settings();
 
@@ -29,7 +19,7 @@ internal class Settings {
     [Description("Gets/sets if main window should be closed when Escape key is pressed.")]
     [DefaultValue(false)]
     public bool CloseOnEscape {
-        get { return Config.Read("CloseOnEscape", Defaults.CloseOnEscape); }
+        get { return Config.Read("CloseOnEscape", FindDefault<bool>(nameof(CloseOnEscape))); }
         set { Config.Write("CloseOnEscape", value); }
     }
 
@@ -38,7 +28,7 @@ internal class Settings {
     [Description("Gets/sets if the last file will be automatically loaded.")]
     [DefaultValue(false)]
     public bool LoadLast {
-        get { return Config.Read("LoadLast", Defaults.LoadLast) && !ShowStart; }
+        get { return Config.Read("LoadLast", FindDefault<bool>(nameof(LoadLast))) && !ShowStart; }
         set {
             Config.Write("LoadLast", value);
             if ((value == true) && ShowStart) { ShowStart = false; }
@@ -50,7 +40,7 @@ internal class Settings {
     [Description("Gets/sets if start window will be shown.")]
     [DefaultValue(true)]
     public bool ShowStart {
-        get { return Config.Read("ShowStart", Defaults.ShowStart); }
+        get { return Config.Read("ShowStart", FindDefault<bool>(nameof(ShowStart))); }
         set {
             Config.Write("ShowStart", value);
             if ((value == true) && LoadLast) { LoadLast = false; }
@@ -63,7 +53,7 @@ internal class Settings {
     [DefaultValue(true)]
     [PropertyVisibilityCondition(nameof(IsLinux), true)]
     public bool SyncPrimaryClipboard {
-        get { return Config.Read("SyncPrimaryClipboard", Defaults.SyncPrimaryClipboard); }
+        get { return Config.Read("SyncPrimaryClipboard", FindDefault<bool>(nameof(SyncPrimaryClipboard))); }
         set { Config.Write("SyncPrimaryClipboard", value); }
     }
 
@@ -71,10 +61,10 @@ internal class Settings {
     [Category("UI")]
     [DisplayName("Notes line count")]
     [Description("Gets/sets number of lines in notes field.")]
-    [DefaultValue(true)]
+    [DefaultValue(3)]
     [Range(3, 10)]
     public int NotesLineCount {
-        get { return LimitBetween(Config.Read("NotesLineCount", Defaults.NotesLineCount), 3, 10); }
+        get { return LimitBetween(Config.Read("NotesLineCount", FindDefault<int>(nameof(NotesLineCount))), 3, 10); }
         set { Config.Write("NotesLineCount", value); }
     }
 
@@ -84,7 +74,7 @@ internal class Settings {
     [DefaultValue(ThemeVariant.System)]
     public ThemeVariant Theme {
         get {
-            var value = Config.Read("Theme", Defaults.Theme.ToString());
+            var value = Config.Read("Theme", FindDefault<ThemeVariant>(nameof(Theme)).ToString());
             if (value.Equals("Light", StringComparison.OrdinalIgnoreCase)) { return ThemeVariant.Light; }
             if (value.Equals("Dark", StringComparison.OrdinalIgnoreCase)) { return ThemeVariant.Dark; }
             return ThemeVariant.System;
@@ -495,6 +485,18 @@ internal class Settings {
     // #endregion Autotype
 
 
+    public static T FindDefault<T>(string propertyName) {
+        var property = typeof(Settings).GetProperty(propertyName);
+        if (property == null) { throw new InvalidOperationException($"Property {propertyName} not found."); }
+
+        var attribute = property.GetCustomAttribute<DefaultValueAttribute>();
+        if (attribute == null) { throw new InvalidOperationException($"Property {propertyName} has no default value."); }
+
+        if (attribute.Value is T value) { return value; }
+        throw new InvalidOperationException($"Property {propertyName} cannot be converted to {typeof(T).Name}.");
+    }
+
+
     #region Helper
 
     public enum ThemeVariant {
@@ -513,7 +515,7 @@ internal class Settings {
     }
 
     [ConditionTarget]
-    public bool IsLinux => OperatingSystem.IsLinux();  // cannot be static
+    private bool IsLinux => OperatingSystem.IsLinux();  // cannot be static
 
     #endregion Helper
 }
