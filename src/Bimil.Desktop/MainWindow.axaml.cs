@@ -38,7 +38,7 @@ internal partial class MainWindow : Window {
         ThemeImageResources.Setup(this);
 
         // ThemeVariant
-        switch (Settings.Theme) {
+        switch (Settings.Current.Theme) {
             case Settings.ThemeVariant.Light: AppAvalonia.Current!.RequestedThemeVariant = ThemeVariant.Light; break;
             case Settings.ThemeVariant.Dark: AppAvalonia.Current!.RequestedThemeVariant = ThemeVariant.Dark; break;
             default: break;
@@ -86,13 +86,13 @@ internal partial class MainWindow : Window {
         while (!IsActive) { await Task.Delay(10); }  // wait for window to be fully initialized; otherwise it doesn't center right
 
         var files = Config.Recent.Files;
-        if (Settings.ShowStart) {
+        if (Settings.Current.ShowStart) {
             var frm = new StartWindow();
             await frm.ShowDialog(this);
             if (frm.SelectedFile != null) {
                 OpenFile(frm.SelectedFile, frm.SelectedReadonly);
             }
-        } else if (Settings.LoadLast) {
+        } else if (Settings.Current.LoadLast) {
             OpenFile(files[0], @readonly: false);
         }
     }
@@ -102,7 +102,7 @@ internal partial class MainWindow : Window {
 
         switch ((e.Key, e.KeyModifiers)) {
             case (Key.Escape, KeyModifiers.None):
-                if (Settings.CloseOnEscape) { Close(); }
+                if (Settings.Current.CloseOnEscape) { Close(); }
                 break;
 
             case (Key.Enter, KeyModifiers.None):
@@ -194,6 +194,10 @@ internal partial class MainWindow : Window {
 
             case (Key.F, KeyModifiers.Control):
                 mnuFind_Click(null!, null!);
+                break;
+
+            case (Key.OemComma, KeyModifiers.Control):
+                mnuAppOptions_Click(null!, null!);
                 break;
 
             case (Key.F1, KeyModifiers.None):
@@ -443,18 +447,18 @@ internal partial class MainWindow : Window {
 
     public void OnMenuAppDarkModeClick(object sender, RoutedEventArgs e) {
         AppAvalonia.Current!.RequestedThemeVariant = ThemeVariant.Dark;
-        Settings.Theme = Settings.ThemeVariant.Dark;
+        Settings.Current.Theme = Settings.ThemeVariant.Dark;
     }
 
     public void OnMenuAppLightModeClick(object sender, RoutedEventArgs e) {
         AppAvalonia.Current!.RequestedThemeVariant = ThemeVariant.Light;
-        Settings.Theme = Settings.ThemeVariant.Light;
+        Settings.Current.Theme = Settings.ThemeVariant.Light;
     }
 
     public async void mnuAppOptions_Click(object sender, RoutedEventArgs e) {
         var frm = new OptionsWindow();
         await frm.ShowDialog(this);
-        switch (Settings.Theme) {
+        switch (Settings.Current.Theme) {
             case Settings.ThemeVariant.Dark:
                 AppAvalonia.Current!.RequestedThemeVariant = ThemeVariant.Dark;
                 break;

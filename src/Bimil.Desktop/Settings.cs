@@ -1,10 +1,14 @@
 namespace Bimil;
 
 using System;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.Runtime.InteropServices;
 using Avalonia.Utilities;
 using Medo;
+using PropertyModels.ComponentModel.DataAnnotations;
 
-internal static class Settings {
+internal class Settings {
 
     internal static class Defaults {
 
@@ -17,21 +21,23 @@ internal static class Settings {
 
     }
 
-    #region Behavior
+    public static Settings Current { get; } = new Settings();
 
-    /// <summary>
-    /// Gets/sets if main window should be closed when Escape key is pressed.
-    /// Default value is false.
-    /// </summary>
-    public static bool CloseOnEscape {
+
+    [Category("Behavior")]
+    [DisplayName("Close on escape")]
+    [Description("Gets/sets if main window should be closed when Escape key is pressed.")]
+    [DefaultValue(false)]
+    public bool CloseOnEscape {
         get { return Config.Read("CloseOnEscape", Defaults.CloseOnEscape); }
         set { Config.Write("CloseOnEscape", value); }
     }
 
-    /// <summary>
-    /// Gets/sets if the last file will be automatically loaded.
-    /// </summary>
-    public static bool LoadLast {
+    [Category("Behavior")]
+    [DisplayName("Load last document")]
+    [Description("Gets/sets if the last file will be automatically loaded.")]
+    [DefaultValue(false)]
+    public bool LoadLast {
         get { return Config.Read("LoadLast", Defaults.LoadLast) && !ShowStart; }
         set {
             Config.Write("LoadLast", value);
@@ -39,10 +45,11 @@ internal static class Settings {
         }
     }
 
-    /// <summary>
-    /// Gets/sets if start window will be shown.
-    /// </summary>
-    public static bool ShowStart {
+    [Category("Behavior")]
+    [DisplayName("Show start dialog")]
+    [Description("Gets/sets if start window will be shown.")]
+    [DefaultValue(true)]
+    public bool ShowStart {
         get { return Config.Read("ShowStart", Defaults.ShowStart); }
         set {
             Config.Write("ShowStart", value);
@@ -50,34 +57,32 @@ internal static class Settings {
         }
     }
 
-    /// <summary>
-    /// Gets/sets if primary keyboard should be synced with normal clipboard.
-    /// Default value is true.
-    /// </summary>
-    public static bool SyncPrimaryClipboard {
+    [Category("Behavior")]
+    [DisplayName("Sync Primary and Default clipboard")]
+    [Description("Gets/sets if primary keyboard should be synced with normal clipboard.")]
+    [DefaultValue(true)]
+    [PropertyVisibilityCondition(nameof(IsLinux), true)]
+    public bool SyncPrimaryClipboard {
         get { return Config.Read("SyncPrimaryClipboard", Defaults.SyncPrimaryClipboard); }
         set { Config.Write("SyncPrimaryClipboard", value); }
     }
 
-    #endregion Behavior
 
-    #region UI
-
-    /// <summary>
-    /// Gets/sets number of lines.
-    /// Default value is 3.
-    /// </summary>
-    public static int NotesLineCount {
+    [Category("UI")]
+    [DisplayName("Notes line count")]
+    [Description("Gets/sets number of lines in notes field.")]
+    [DefaultValue(true)]
+    [Range(3, 10)]
+    public int NotesLineCount {
         get { return LimitBetween(Config.Read("NotesLineCount", Defaults.NotesLineCount), 3, 10); }
         set { Config.Write("NotesLineCount", value); }
     }
 
-    /// <summary>
-    /// Gets/sets theme.
-    /// Value can be either "Default", "Light", or "Dark".
-    /// Default value is "Default" (auto-detect).
-    /// </summary>
-    public static ThemeVariant Theme {
+    [Category("UI")]
+    [DisplayName("Theme")]
+    [Description("Gets/sets theme.")]
+    [DefaultValue(ThemeVariant.System)]
+    public ThemeVariant Theme {
         get {
             var value = Config.Read("Theme", Defaults.Theme.ToString());
             if (value.Equals("Light", StringComparison.OrdinalIgnoreCase)) { return ThemeVariant.Light; }
@@ -86,8 +91,6 @@ internal static class Settings {
         }
         set { Config.Write("Theme", value.ToString()); }
     }
-
-    #endregion UI
 
 
 
@@ -508,6 +511,9 @@ internal static class Settings {
         if (value > maxValue) { return maxValue; }
         return value;
     }
+
+    [ConditionTarget]
+    public bool IsLinux => OperatingSystem.IsLinux();  // cannot be static
 
     #endregion Helper
 }

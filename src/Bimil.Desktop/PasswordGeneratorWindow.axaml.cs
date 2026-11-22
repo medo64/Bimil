@@ -172,7 +172,7 @@ internal partial class PasswordGeneratorWindow : Window {
             var text = txtPassword.Text!;
 
             if (PTClipboard.Main.IsAvailable) {
-                if (Settings.SyncPrimaryClipboard) {  // set both primary and clipboard
+                if (Settings.Current.SyncPrimaryClipboard) {  // set both primary and clipboard
                     PTClipboard.SetText(text);
                 } else {
                     PTClipboard.Main.SetText(text);

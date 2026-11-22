@@ -104,7 +104,7 @@ internal partial class EntryWindow : Window {
 
                 case FieldType.Notes: {
                         if (field is TextField textField) {
-                            AddMultilineText(textField, Settings.NotesLineCount);
+                            AddMultilineText(textField, Settings.Current.NotesLineCount);
                         }
                     }
                     break;

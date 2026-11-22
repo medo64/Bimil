@@ -17,20 +17,38 @@ internal partial class OptionsWindow : Window {
         AvaloniaHelpers.FocusControl(btnClose);
     }
 
+    protected override async void OnKeyDown(KeyEventArgs e) {
+        switch ((e.KeyModifiers, e.Key)) {
+            case (KeyModifiers.None, Key.Escape):
+                btnClose_Click(null!, null!);
+                break;
+
+            case (KeyModifiers.Control, Key.OemComma):
+                var frm = new OptionsGridWindow();
+                await frm.ShowDialog(this);
+                Close();
+                break;
+
+            default: base.OnKeyDown(e); return;
+        }
+
+        e.Handled = true;
+    }
+
 
     private void LoadState() {
         // Behavior
-        chbCloseOnEscape.IsChecked = Settings.CloseOnEscape;
-        chbLoadLast.IsChecked = Settings.LoadLast;
-        chbShowStart.IsChecked = Settings.ShowStart;
+        chbCloseOnEscape.IsChecked = Settings.Current.CloseOnEscape;
+        chbLoadLast.IsChecked = Settings.Current.LoadLast;
+        chbShowStart.IsChecked = Settings.Current.ShowStart;
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) {
-            chbSyncPrimaryClipboard.IsChecked = Settings.SyncPrimaryClipboard;
+            chbSyncPrimaryClipboard.IsChecked = Settings.Current.SyncPrimaryClipboard;
         } else {
             chbSyncPrimaryClipboard.IsVisible = false;
         }
 
         // UI
-        cmbTheme.SelectedIndex = (int)Settings.Theme;
+        cmbTheme.SelectedIndex = (int)Settings.Current.Theme;
     }
 
     public void btnDefaults_Click(object sender, RoutedEventArgs e) {
@@ -46,13 +64,13 @@ internal partial class OptionsWindow : Window {
 
     public void btnSave_Click(object sender, RoutedEventArgs e) {
         // Behavior
-        Settings.CloseOnEscape = chbCloseOnEscape.IsChecked!.Value;
-        Settings.LoadLast = chbLoadLast.IsChecked!.Value;
-        Settings.ShowStart = chbShowStart.IsChecked!.Value;
-        Settings.SyncPrimaryClipboard = chbSyncPrimaryClipboard.IsChecked!.Value;
+        Settings.Current.CloseOnEscape = chbCloseOnEscape.IsChecked!.Value;
+        Settings.Current.LoadLast = chbLoadLast.IsChecked!.Value;
+        Settings.Current.ShowStart = chbShowStart.IsChecked!.Value;
+        Settings.Current.SyncPrimaryClipboard = chbSyncPrimaryClipboard.IsChecked!.Value;
 
         // UI
-        Settings.Theme = (Settings.ThemeVariant)cmbTheme.SelectedIndex;
+        Settings.Current.Theme = (Settings.ThemeVariant)cmbTheme.SelectedIndex;
 
         Close();
     }

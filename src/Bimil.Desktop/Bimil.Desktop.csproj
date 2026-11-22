@@ -45,6 +45,7 @@
     <PackageReference Include="Avalonia.Desktop" Version="12.1.6" />
     <PackageReference Include="Avalonia.Themes.Fluent" Version="12.1.6" />
     <PackageReference Include="Avalonia.Fonts.Inter" Version="12.1.6" />
+    <PackageReference Include="bodong.Avalonia.PropertyGrid" Version="12.1.1.1" />
   </ItemGroup>
 
   <ItemGroup>
