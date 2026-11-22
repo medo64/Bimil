@@ -58,6 +58,43 @@ internal class Settings {
     }
 
 
+    [Category("OTP")]
+    [DisplayName("Always use NTP for two-factor")]
+    [Description("If true, each time two-factor code is taken an NTP request will be sent. Note that it will cause an NTP lookup.")]
+    [DefaultValue(true)]
+    public bool AlwaysUseNtpForTwoFactor {
+        get { return Config.Read("AlwaysUseNtpForTwoFactor", FindDefault<bool>(nameof(AlwaysUseNtpForTwoFactor))); }
+        set { Config.Write("AlwaysUseNtpForTwoFactor", value); }
+    }
+
+    [Category("OTP")]
+    [DisplayName("NTP drift warning seconds")]
+    [Description("Amount of drift allowed between system and NTP server.")]
+    [DefaultValue(5)]
+    public int NtpDriftWarningSeconds {
+        get { return LimitBetween(Config.Read("NtpDriftWarningSeconds", FindDefault<int>(nameof(NtpDriftWarningSeconds))), 1, 30, allowZero: false); }
+        set { Config.Write("NtpDriftWarningSeconds", LimitBetween(value, 1, 30, allowZero: false)); }
+    }
+
+    [Category("OTP")]
+    [DisplayName("NTP server")]
+    [Description("NTP server to use.")]
+    [DefaultValue("0.medo64.pool.ntp.org")]
+    public string NtpServer {
+        get { return Config.Read("NtpServer", FindDefault<string>(nameof(NtpServer))); }
+        set { Config.Write("NtpServer", value); }
+    }
+
+    [Category("OTP")]
+    [DisplayName("Show NTP drift warning")]
+    [Description("If true, warning will be shown if system time drifts from NTP server time. Note that it will cause an NTP lookup.")]
+    [DefaultValue(false)]
+    public bool ShowNtpDriftWarning {
+        get { return Config.Read("ShowNtpDriftWarning", FindDefault<bool>(nameof(ShowNtpDriftWarning))); }
+        set { Config.Write("ShowNtpDriftWarning", value); }
+    }
+
+
     [Category("UI")]
     [DisplayName("Notes line count")]
     [Description("Gets/sets number of lines in notes field.")]
@@ -200,42 +237,6 @@ internal class Settings {
     // public static int HibpThrottleInterval {
     //     get { return Math.Max(0, Math.Min(Config.Read("HibpThrottleInterval", 10), 10000)); }
     //     set { Config.Write("HibpThrottleInterval", value); }
-    // }
-
-
-    // [Category("Behavior")]
-    // [DisplayName("Always use NTP for two-factor")]
-    // [Description("If true, each time two-factor code is taken an NTP request will be sent.")]
-    // [DefaultValue(true)]
-    // public static bool AlwaysUseNtpForTwoFactor {
-    //     get { return Config.Read("AlwaysUseNtpForTwoFactor", true); }
-    //     set { Config.Write("AlwaysUseNtpForTwoFactor", value); }
-    // }
-
-    // [Category("Behavior")]
-    // [DisplayName("Show NTP drift warning")]
-    // [Description("If true, warning will be shown if system time drifts from NTP server time.")]
-    // [DefaultValue(false)]
-    // public static bool ShowNtpDriftWarning {
-    //     get { return Config.Read("ShowNtpDriftWarning", false); }
-    //     set { Config.Write("ShowNtpDriftWarning", value); }
-    // }
-
-    // [Category("Behavior")]
-    // [DisplayName("NTP drift warning seconds")]
-    // [Description("Amount of drift allowed between system and NTP server.")]
-    // [DefaultValue(10)]
-    // public static int NtpDriftWarningSeconds {
-    //     get { return Config.Read("NtpDriftWarningSeconds", LimitBetween(10, 1, 30, allowZero: false)); }
-    //     set { Config.Write("NtpDriftWarningSeconds", LimitBetween(value, 1, 30, allowZero: false)); }
-    // }
-
-    // [Category("Behavior")]
-    // [DisplayName("NTP server")]
-    // [Description("NTP server to use.")]
-    // public static string NtpServer {
-    //     get { return Config.Read("NtpServer", DefaultNtpServer); }
-    //     set { Config.Write("NtpServer", value); }
     // }
 
     // [Category("Behavior")]
@@ -504,8 +505,6 @@ internal class Settings {
         Light = 1,
         Dark = 2,
     }
-
-    //private static readonly string DefaultNtpServer = Random.Shared.Next(0, 4).ToString(CultureInfo.InvariantCulture) + ".medo64.pool.ntp.org";
 
     private static int LimitBetween(int value, int minValue, int maxValue, bool allowZero = false) {
         if (allowZero && (value == 0)) { return 0; }

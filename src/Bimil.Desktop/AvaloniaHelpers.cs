@@ -14,6 +14,8 @@ using Avalonia.Styling;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 using Medo;
+using Medo.Avalonia;
+using Medo.Net;
 
 internal static class AvaloniaHelpers {
 
@@ -60,7 +62,7 @@ internal static class AvaloniaHelpers {
                             TimeBasedOtp otp;
                             byte[] secret = field?.Data.GetBytes() ?? [];
                             try {
-                                otp = new TimeBasedOtp(secret);
+                                otp = GetOtp(owner: null, secret);
                                 var code = otp.GetCodeAsText(CodeOutputFormat.None);
                                 Dispatcher.UIThread.Post(() => {
                                     if (textBoxCode.Text != code) {
@@ -88,6 +90,44 @@ internal static class AvaloniaHelpers {
         }
         textBox.KeyDown += keyDownHandler;
         textBoxCode.KeyDown += keyDownHandler;
+    }
+
+    public static TimeBasedOtp GetOtp(Window? owner, byte[] secret) {
+        var localTime = DateTime.UtcNow.AddMinutes(2);
+        var ntpDrift = TimeSpan.Zero;
+
+        if (Settings.Current.AlwaysUseNtpForTwoFactor || Settings.Current.ShowNtpDriftWarning) {
+            try {
+                var ntpTime = TrivialNtpClient.RetrieveTime(Settings.Current.NtpServer);
+                ntpDrift = ntpTime - localTime;
+                if (Settings.Current.ShowNtpDriftWarning && (Math.Abs(ntpDrift.TotalSeconds) >= Settings.Current.NtpDriftWarningSeconds) && (owner != null)) {
+                    string diffFragment;
+                    if (Math.Abs(ntpDrift.TotalDays) >= 1) {
+                        diffFragment = GetSingularOrPluralFragment((int)ntpDrift.TotalDays, "day");
+                    } else if (Math.Abs(ntpDrift.TotalHours) >= 1) {
+                        diffFragment = GetSingularOrPluralFragment((int)ntpDrift.TotalHours, "hour");
+                    } else if (Math.Abs(ntpDrift.TotalMinutes) >= 1) {
+                        diffFragment = GetSingularOrPluralFragment((int)ntpDrift.TotalMinutes, "minute");
+                    } else {
+                        diffFragment = GetSingularOrPluralFragment((int)ntpDrift.TotalSeconds, "second");
+                    }
+                    MessageBox.ShowWarningDialog(owner, "NTP", $"Local time differs from NTP.\nTotal difference is {diffFragment}.", "OK");
+                }
+            } catch (InvalidOperationException) {  // cannot get time
+                if (Settings.Current.ShowNtpDriftWarning && (owner != null)) {
+                    MessageBox.ShowWarningDialog(owner, "NTP", "Cannot retrieve NTP time.", "OK");
+                }
+            }
+        }
+
+        var otp = new TimeBasedOtp(secret);
+        otp.TimeAdjustment = ntpDrift;
+        return otp;
+    }
+
+    private static string GetSingularOrPluralFragment(int number, string baseText) {
+        if (Math.Abs(number) == 1) { return $"{number} {baseText}"; }
+        return $"{number} {baseText}s";
     }
 
     public static void SetupDialog(Window window) {

@@ -269,12 +269,12 @@ internal partial class EntryWindow : Window {
         };
 
         buttonShow.Click += (sender, args) => {
-            var otp = GetOtp(control.Text, out var time);
-            MessageBox.ShowInfoDialog(this, "Two-factor code", "Code: " + otp.GetCodeAsText(CodeOutputFormat.Spaced) + "\n\n" + time.ToString("yyyy-MM-dd\nHH:mm:ss"));
+            var otp = AvaloniaHelpers.GetOtp(this, Otp.ConvertSecretFromBase32(control.Text));
+            MessageBox.ShowInfoDialog(this, "Two-factor code", "Code: " + otp.GetCodeAsText(CodeOutputFormat.Spaced) + "\n\n" + otp.Time.ToLocalTime().ToString("yyyy-MM-dd\nHH:mm:ss"));
         };
 
         buttonCopy.Click += (sender, args) => {
-            var otp = GetOtp(control.Text, out _);
+            var otp = AvaloniaHelpers.GetOtp(this, Otp.ConvertSecretFromBase32(control.Text));
             var data = new DataTransfer();
             data.Add(DataTransferItem.CreateText(otp.GetCodeAsText()));
             Clipboard?.SetDataAsync(data);
@@ -357,15 +357,6 @@ internal partial class EntryWindow : Window {
             button.Content = image;
         };
         return button;
-    }
-
-
-    private static TimeBasedOtp GetOtp(string text, out DateTime time) {
-        time = DateTime.UtcNow;  // TODO: check against server
-        var otp = new TimeBasedOtp(text) {
-            Time = time
-        };
-        return otp;
     }
 
 }

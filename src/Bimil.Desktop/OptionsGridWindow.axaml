@@ -3,9 +3,9 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:apc="clr-namespace:Avalonia.PropertyGrid.Controls;assembly=Avalonia.PropertyGrid"
-    mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="800"
+    mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="600"
     x:Class="Bimil.OptionsGridWindow"
-    Width="600" Height="800"
+    Width="500" Height="600"
     WindowStartupLocation="CenterOwner"
     CanResize="false"
     Title="All Options">
