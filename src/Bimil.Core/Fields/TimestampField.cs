@@ -16,8 +16,9 @@ public sealed class TimestampField : Field {
     /// <param name="type">Type.</param>
     /// <param name="data">Data.</param>
     /// <param name="caption">Caption.</param>
-    internal TimestampField(FieldType type, ProtectedBytes data, string caption)
-       : base(type, data, caption) {
+    /// <param name="isSensitive">If true, field is considered sensitive.</param>
+    internal TimestampField(FieldType type, ProtectedBytes data, string caption, bool isSensitive)
+       : base(type, data, caption, isSensitive) {
     }
 
 
