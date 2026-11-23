@@ -93,7 +93,7 @@ internal static class AvaloniaHelpers {
     }
 
     public static TimeBasedOtp GetOtp(Window? owner, byte[] secret) {
-        var localTime = DateTime.UtcNow.AddMinutes(2);
+        var localTime = DateTime.UtcNow;
         var ntpDrift = TimeSpan.Zero;
 
         if (Settings.Current.AlwaysUseNtpForTwoFactor || Settings.Current.ShowNtpDriftWarning) {
