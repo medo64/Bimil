@@ -98,113 +98,113 @@ internal partial class MainWindow : Window {
     }
 
     protected override void OnKeyDown(KeyEventArgs e) {
-        Debug.WriteLine($"[MainWindow] KeyDown: {e.Key} (Modifiers: {e.KeyModifiers})");
+        Debug.WriteLine($"[MainWindow] KeyDown: {e.KeyModifiers}+{e.Key}");
 
-        switch ((e.Key, e.KeyModifiers)) {
-            case (Key.Escape, KeyModifiers.None):
+        switch ((e.KeyModifiers, e.Key)) {
+            case (KeyModifiers.None, Key.Escape):
                 if (Settings.Current.CloseOnEscape) { Close(); }
                 break;
 
-            case (Key.Enter, KeyModifiers.None):
+            case (KeyModifiers.None, Key.Enter):
                 lsbEntries_DoubleTapped(null!, null!);
                 break;
 
-            case (Key.Down, KeyModifiers.None):
+            case (KeyModifiers.None, Key.Down):
                 if (lsbEntries.SelectedIndex < lsbEntries.Items.Count - 1) {
                     lsbEntries.SelectedIndex += 1;
                 }
                 break;
 
-            case (Key.Up, KeyModifiers.None):
+            case (KeyModifiers.None, Key.Up):
                 if (lsbEntries.SelectedIndex > 0) {
                     lsbEntries.SelectedIndex -= 1;
                 }
                 break;
 
-            case (Key.PageDown, KeyModifiers.None):
+            case (KeyModifiers.None, Key.PageDown):
                 if (cmbGroups.SelectedIndex < cmbGroups.Items.Count - 1) {
                     cmbGroups.SelectedIndex += 1;
                 }
                 break;
 
-            case (Key.C, KeyModifiers.Control):
-            case (Key.Insert, KeyModifiers.Control):
+            case (KeyModifiers.Control, Key.C):
+            case (KeyModifiers.Control, Key.Insert):
                 mnuEntryCopy_Click(null!, null!);
                 break;
 
-            case (Key.N, KeyModifiers.Control):
-            case (Key.N, KeyModifiers.Alt):
+            case (KeyModifiers.Control, Key.N):
+            case (KeyModifiers.Alt, Key.N):
                 mnuFileNew_Click(null!, null!);
                 break;
 
-            case (Key.O, KeyModifiers.Control):
+            case (KeyModifiers.Control, Key.O):
                 mnuFileOpen_Click(null!, null!);
                 break;
 
-            case (Key.O, KeyModifiers.Alt):
+            case (KeyModifiers.Alt, Key.O):
                 mnuFileOpenDropDown.IsSubMenuOpen = true;
                 break;
 
-            case (Key.S, KeyModifiers.Control):
+            case (KeyModifiers.Control, Key.S):
                 mnuFileSave_Click(null!, null!);
                 break;
 
-            case (Key.S, KeyModifiers.Control | KeyModifiers.Shift):
+            case (KeyModifiers.Control | KeyModifiers.Shift, Key.S):
                 mnuFileSaveAs_Click(null!, null!);
                 break;
 
-            case (Key.S, KeyModifiers.Alt):
+            case (KeyModifiers.Alt, Key.S):
                 mnuFileSaveDropDown.IsSubMenuOpen = true;
                 break;
 
-            case (Key.V, KeyModifiers.Control):
-            case (Key.Insert, KeyModifiers.Shift):
+            case (KeyModifiers.Control, Key.V):
+            case (KeyModifiers.Shift, Key.Insert):
                 mnuEntryPaste_Click(null!, null!);
                 break;
 
-            case (Key.X, KeyModifiers.Control):
-            case (Key.Delete, KeyModifiers.Shift):
+            case (KeyModifiers.Control, Key.X):
+            case (KeyModifiers.Shift, Key.Delete):
                 mnuEntryCut_Click(null!, null!);
                 break;
 
 
-            case (Key.Enter, KeyModifiers.Alt):
+            case (KeyModifiers.Alt, Key.Enter):
                 mnuFileProperties_Click(null!, null!);
                 break;
 
-            case (Key.A, KeyModifiers.Alt):
-            case (Key.OemPlus, KeyModifiers.None):
-            case (Key.Add, KeyModifiers.None):
-            case (Key.Insert, KeyModifiers.None):
+            case (KeyModifiers.Alt, Key.A):
+            case (KeyModifiers.None, Key.OemPlus):
+            case (KeyModifiers.None, Key.Add):
+            case (KeyModifiers.None, Key.Insert):
                 mnuItemAdd_Click(null!, null!);
                 break;
 
-            case (Key.E, KeyModifiers.Alt):
-            case (Key.OemPipe, KeyModifiers.None):
-            case (Key.Multiply, KeyModifiers.None):
+            case (KeyModifiers.Alt, Key.E):
+            case (KeyModifiers.None, Key.OemPipe):
+            case (KeyModifiers.None, Key.Multiply):
                 mnuItemEdit_Click(null!, null!);
                 break;
 
-            case (Key.R, KeyModifiers.Alt):
-            case (Key.OemMinus, KeyModifiers.None):
-            case (Key.Subtract, KeyModifiers.None):
-            case (Key.Delete, KeyModifiers.None):
+            case (KeyModifiers.Alt, Key.R):
+            case (KeyModifiers.None, Key.OemMinus):
+            case (KeyModifiers.None, Key.Subtract):
+            case (KeyModifiers.None, Key.Delete):
                 mnuItemRemove_Click(null!, null!);
                 break;
 
-            case (Key.F, KeyModifiers.Control):
+            case (KeyModifiers.Control, Key.F):
                 mnuFind_Click(null!, null!);
                 break;
 
-            case (Key.OemComma, KeyModifiers.Control):
+            case (KeyModifiers.Control, Key.OemComma):
                 mnuAppOptions_Click(null!, null!);
                 break;
 
-            case (Key.F1, KeyModifiers.None):
+            case (KeyModifiers.None, Key.F1):
                 mnuAppDropDown.IsSubMenuOpen = true;
                 break;
 
-            case (Key.F5, KeyModifiers.None):
+            case (KeyModifiers.None, Key.F5):
                 ReplenishEntries();
                 break;
 
