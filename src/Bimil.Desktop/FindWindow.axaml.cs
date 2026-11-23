@@ -53,8 +53,11 @@ internal partial class FindWindow : Window {
             foreach (var word in words) {
                 foreach (var field in entry.Fields) {
                     if (field.IsSensitive && !includeSensitive) { continue; }
-                    if (field is TextField textField) {  // TODO: Other fields
+                    if (field is TextField textField) {
                         if (textField.Text.Contains(word, StringComparison.InvariantCulture)) { matchCount += 1; break; }
+                    } else if (field is CustomTextField customTextField) {
+                        if (customTextField.Caption.Contains(word, StringComparison.InvariantCulture)) { matchCount += 1; break; }
+                        if (customTextField.Text.Contains(word, StringComparison.InvariantCulture)) { matchCount += 1; break; }
                     }
                 }
             }

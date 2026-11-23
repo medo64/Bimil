@@ -140,7 +140,7 @@ public abstract class Field {
             FieldType.PasskeyAlgorithmID => new UnknownField(type, data, "Passkey algorithm ID", isSensitive: false),
             FieldType.PasskeyPrivateKey => new BinaryField(type, data, "Passkey private key", isSensitive: true),
             FieldType.PasskeySignCount => new UnknownField(type, data, "Passkey sign count", isSensitive: false),
-            FieldType.CustomTextField => new UnknownField(type, data, "Custom text field", isSensitive: false),  // TODO
+            FieldType.CustomTextField => new CustomTextField(type, data),
             FieldType.BaseUuid => new UuidField(type, data, "Base UUID", isSensitive: false),
             FieldType.AliasUuid => new UuidField(type, data, "Alias UUID", isSensitive: false),
             FieldType.ShortcutUuid => new UuidField(type, data, "Shortcut UUID", isSensitive: false),
