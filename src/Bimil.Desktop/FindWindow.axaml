@@ -25,10 +25,11 @@
             </Grid>
         </DockPanel>
 
-        <StackPanel>
-            <TextBox Name="txtFilter" PlaceholderText="Search..." Margin="5" />
+        <TextBox Name="txtFilter" PlaceholderText="Search..." Margin="5" DockPanel.Dock="Top" />
+
+        <ScrollViewer DockPanel.Dock="Top">
             <ListBox Name="lsbEntries" Background="{DynamicResource SystemAltMediumLowColor}" />
-        </StackPanel>
+        </ScrollViewer>
 
     </DockPanel>
 
