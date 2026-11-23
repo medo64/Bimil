@@ -25,7 +25,7 @@ internal partial class FindWindow : Window {
     protected override void OnKeyDown(KeyEventArgs e) {
         switch ((e.KeyModifiers, e.Key)) {
             case (KeyModifiers.None, Key.Escape):
-                if (Settings.Current.CloseOnEscape) { Close(); }
+                Close();
                 break;
 
             case (KeyModifiers.None, Key.Enter):
