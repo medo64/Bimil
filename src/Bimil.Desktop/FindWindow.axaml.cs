@@ -52,13 +52,12 @@ internal partial class FindWindow : Window {
             var matchCount = 0;
             foreach (var word in words) {
                 foreach (var field in entry.Fields) {
-                    if (field.IsSensitive && !includeSensitive) { continue; }
-                    if (field is TextField textField) {
-                        if (textField.Text.Contains(word, StringComparison.InvariantCulture)) { matchCount += 1; break; }
-                    } else if (field is CustomTextField customTextField) {
-                        if (customTextField.Caption.Contains(word, StringComparison.InvariantCulture)) { matchCount += 1; break; }
-                        if (customTextField.Text.Contains(word, StringComparison.InvariantCulture)) { matchCount += 1; break; }
+                    if (field is IReadableIsSensitive fieldWithSensitivity) {
+                        if (fieldWithSensitivity.IsSensitive && !includeSensitive) { continue; }
                     }
+
+                    if (field is IReadableCaption fieldWithCaption && fieldWithCaption.Caption.Contains(word, StringComparison.CurrentCultureIgnoreCase)) { matchCount += 1; break; }
+                    if (field is IReadableText fieldWithText && fieldWithText.Text.Contains(word, StringComparison.CurrentCultureIgnoreCase)) { matchCount += 1; break; }
                 }
             }
 

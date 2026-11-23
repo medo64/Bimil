@@ -6,7 +6,7 @@ using System.Text;
 /// <summary>
 /// Text record field.
 /// </summary>
-public sealed class TextField : Field {
+public sealed class TextField : Field, IReadableCaption, IReadableText, IWritableText, IReadableIsSensitive {
 
     /// <summary>
     /// Creates a new instance.
@@ -14,9 +14,9 @@ public sealed class TextField : Field {
     /// <param name="type">Type.</param>
     /// <param name="data">Data.</param>
     /// <param name="caption">Caption.</param>
-    /// <param name="isSensitive">If true, field is considered sensitive.</param>
     internal TextField(FieldType type, ProtectedBytes data, string caption, bool isSensitive)
-       : base(type, data, caption, isSensitive) {
+       : base(type, data, caption) {
+        IsSensitive = isSensitive;
     }
 
 
@@ -36,6 +36,11 @@ public sealed class TextField : Field {
             Data.SetBytes(GetBytes(value), zeroBytes: true);
         }
     }
+
+    /// <summary>
+    /// Gets if field is considered sensitive.
+    /// </summary>
+    public bool IsSensitive { get; }
 
 
     /// <summary>

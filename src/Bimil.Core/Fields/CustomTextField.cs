@@ -8,7 +8,7 @@ using System.Text;
 /// <summary>
 /// Text record field.
 /// </summary>
-public sealed class CustomTextField : Field {
+public sealed class CustomTextField : Field, IReadableCaption, IWritableCaption, IReadableText, IWritableText, IReadableIsSensitive, IWritableIsSensitive {
 
     /// <summary>
     /// Creates a new instance.
@@ -16,7 +16,7 @@ public sealed class CustomTextField : Field {
     /// <param name="type">Type.</param>
     /// <param name="data">Data.</param>
     internal CustomTextField(FieldType type, ProtectedBytes data)
-       : base(type, data, "", false) {
+       : base(type, data, string.Empty) {
     }
 
     /// <summary>
@@ -49,7 +49,7 @@ public sealed class CustomTextField : Field {
     /// <summary>
     /// Gets/sets if field is sensitive.
     /// </summary>
-    public new bool IsSensitive {
+    public bool IsSensitive {
         get {
             ParseData(Data, out var _, out var _, out var isSensitive);
             return isSensitive;
