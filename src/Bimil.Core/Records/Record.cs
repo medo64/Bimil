@@ -48,6 +48,7 @@ public abstract class Record {
     /// <summary>
     /// Exports entry to a JSON object.
     /// </summary>
+    [Obsolete("Use Document.ExportRecordsToJson instead.")]
     public string ExportToJson() {
         return ExportToJson(prettyPrint: false);
     }
@@ -56,6 +57,7 @@ public abstract class Record {
     /// Exports entry to a JSON object.
     /// </summary>
     /// <param name="prettyPrint">If true, output will be indented.</param>
+    [Obsolete("Use Document.ExportRecordsToJson instead.")]
     public string ExportToJson(bool prettyPrint) {
         var options = new JsonWriterOptions();
         if (prettyPrint)  {
@@ -110,6 +112,7 @@ public abstract class Record {
     /// Returns imported entry based on JSON object text.
     /// </summary>
     /// <param name="jsonText">JSON object.</param>
+    [Obsolete("Use Document.ExportRecordsToJson instead.")]
     public static Record ImportFromJson(string jsonText) {
         (var record, var exceptionText) = ImportFromJsonInt(jsonText);
         if (record != null) {
@@ -124,6 +127,7 @@ public abstract class Record {
     /// </summary>
     /// <param name="jsonText">JSON object.</param>
     /// <param name="record">Output record.</param>
+    [Obsolete("Use Document.ExportRecordsToJson instead.")]
     public static bool TryImportFromJson(string jsonText, [NotNullWhen(true)] out Record? record) {
         (record, var exception) = ImportFromJsonInt(jsonText);
         if (record != null) {
@@ -136,7 +140,8 @@ public abstract class Record {
     /// <summary>
     /// Returns imported entry based on JSON object text.
     /// </summary>
-    public static (Record? record, string? exceptionText) ImportFromJsonInt(string jsonText) {
+    [Obsolete("Use Document.ExportRecordsToJson instead.")]
+    private static (Record? record, string? exceptionText) ImportFromJsonInt(string jsonText) {
         if (string.IsNullOrWhiteSpace(jsonText)) { return (null, "No data."); }
 
         try {
@@ -326,7 +331,7 @@ public abstract class Record {
 
     /// <summary>
     /// Returns record based on type.
-    /// </summary>    
+    /// </summary>
     public static Record Create(ICollection<Field> fields) {
         foreach (var field in fields) {
             if (field.Type == FieldType.Uuid) {

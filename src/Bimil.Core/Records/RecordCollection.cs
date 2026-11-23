@@ -246,4 +246,11 @@ public class RecordCollection : IList<Record> {
         return null;
     }
 
+    /// <summary>
+    /// Returns all elements in a collection as an array.
+    /// </summary>
+    public Record[] ToArray() {
+        return [.. BaseCollection];
+    }
+
 }

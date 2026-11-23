@@ -285,9 +285,8 @@ public class FieldCollection : IList<Field> {
 
 
     /// <summary>
-    /// Returns all elements in an array.
+    /// Returns all elements in a collection as an array.
     /// </summary>
-    /// <returns></returns>
     public Field[] ToArray() {
         return [.. BaseCollection];
     }

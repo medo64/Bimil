@@ -486,7 +486,8 @@ internal partial class MainWindow : Window {
 
 
     public void mnuEntry_Opening(object? sender, CancelEventArgs e) {
-        var canPaste = EntryRecord.TryImportFromJson(PTClipboard.GetText(), out _);
+        var text = PTClipboard.GetText();
+        var canPaste = Document.TryImportRecordsFromJson(text, out _);
         var canCopy = (lsbEntries.SelectedItem as ListBoxItem)?.Tag is EntryRecord;
         mnuEntryCut.IsEnabled = canCopy;
         mnuEntryCopy.IsEnabled = canCopy;
@@ -495,7 +496,7 @@ internal partial class MainWindow : Window {
 
     public void mnuEntryCut_Click(object? sender, RoutedEventArgs e) {
         if ((lsbEntries.SelectedItem as ListBoxItem)?.Tag is not EntryRecord entry) { return; }
-        var json = entry.ExportToJson();
+        var json = Document.ExportRecordsToJson(entry);
         PTClipboard.SetText(json);
         lsbEntries.Items.Remove(lsbEntries.SelectedItem);
         Document?.Records.Remove(entry);
@@ -503,30 +504,34 @@ internal partial class MainWindow : Window {
 
     public void mnuEntryCopy_Click(object? sender, RoutedEventArgs e) {
         if ((lsbEntries.SelectedItem as ListBoxItem)?.Tag is not EntryRecord entry) { return; }
-        var json = entry.ExportToJson();
+        var json = Document.ExportRecordsToJson(entry);
         PTClipboard.SetText(json);
     }
 
     public void mnuEntryPaste_Click(object? sender, RoutedEventArgs e) {
         var text = PTClipboard.GetText();
-        if (Record.TryImportFromJson(text, out var pasted)) {
-            if (pasted is EntryRecord pastedEntry) {
-                var foundUuid = false;
-                foreach (var record in Document.Records) {
-                    if (record is EntryRecord entry) {
-                        if (entry.Uuid == pastedEntry.Uuid) {
-                            foundUuid = true;
-                            break;
+        EntryRecord? newSelection = null;
+        if (Document.TryImportRecordsFromJson(text, out var pastedRecords)) {
+            foreach (var pastedRecord in pastedRecords) {
+                if (pastedRecord is EntryRecord pastedEntry) {
+                    var foundUuid = false;
+                    foreach (var currRecord in Document.Records) {
+                        if (currRecord is EntryRecord currEntry) {
+                            if (currEntry.Uuid == pastedEntry.Uuid) {
+                                foundUuid = true;
+                                break;
+                            }
                         }
                     }
+                    if (foundUuid) {
+                        Trace.WriteLine("Updated pasted UUID");
+                        pastedEntry.Uuid = Guid.NewGuid();
+                        pastedEntry.Title += " - Copy";
+                    }
+                    Document.Records.Add(pastedEntry);
+                    newSelection ??= pastedEntry;
                 }
-                if (foundUuid) {
-                    Trace.WriteLine("Updated pasted UUID");
-                    pastedEntry.Uuid = Guid.NewGuid();
-                    pastedEntry.Title += " - Copy";
-                }
-                Document.Records.Add(pastedEntry);
-                ReplenishEntries(pastedEntry);
+                ReplenishEntries(newSelection);
             }
         }
     }

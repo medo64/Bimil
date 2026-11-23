@@ -293,4 +293,12 @@ public class HeaderCollection : IList<Header> {
 
     #endregion
 
+
+    /// <summary>
+    /// Returns all elements in a collection as an array.
+    /// </summary>
+    public Header[] ToArray() {
+        return [.. BaseCollection];
+    }
+
 }
