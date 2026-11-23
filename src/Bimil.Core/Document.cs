@@ -44,6 +44,8 @@ public sealed partial class Document {
         Headers = new HeaderCollection(databaseVersion, [versionField, uuidField]);
         Records = new RecordCollection([]);
         IsReadOnly = false;
+
+        ResetChanges();
     }
 
     /// <summary>
