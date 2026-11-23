@@ -49,8 +49,22 @@ public abstract class Record {
     /// Exports entry to a JSON object.
     /// </summary>
     public string ExportToJson() {
+        return ExportToJson(prettyPrint: false);
+    }
+
+    /// <summary>
+    /// Exports entry to a JSON object.
+    /// </summary>
+    /// <param name="prettyPrint">If true, output will be indented.</param>
+    public string ExportToJson(bool prettyPrint) {
+        var options = new JsonWriterOptions();
+        if (prettyPrint)  {
+            options.Indented = true;
+            options.IndentSize = 2;
+        };
+
         using var stream = new MemoryStream();
-        using var writer = new Utf8JsonWriter(stream);
+        using var writer = new Utf8JsonWriter(stream, options);
 
         writer.WriteStartObject();
         writer.WriteString("kind", "Bimil.Record");
@@ -67,10 +81,16 @@ public abstract class Record {
                 } finally {
                     CryptographicOperations.ZeroMemory(bytes);
                 }
+            } else if (field is CustomTextField customTextField) {
+                writer.WriteString("caption", customTextField.Caption);
+                writer.WriteString("text", customTextField.Text);
+                if (customTextField.IsSensitive) {
+                    writer.WriteBoolean("isSensitive", customTextField.IsSensitive);
+                }
             } else if (field is TextField textField) {
                 writer.WriteString("text", textField.Text);
             } else if (field is TimestampField timestampField) {
-                writer.WriteString("time", timestampField.Timestamp);
+                writer.WriteString("time", timestampField.Timestamp.ToString("yyyy-MM-dd'T'HH:mm:ssZ"));
             } else if (field is UuidField uuidField) {
                 writer.WriteString("uuid", uuidField.Uuid);
             } else {
@@ -152,7 +172,7 @@ public abstract class Record {
                             DateTime? time = null;
                             int? version = null;
                             byte[]? binary = null;
-                            //bool? isSensitive = null;  // TODO: customtextfield
+                            bool? isSensitive = null;
 
                             while (reader.Read()) {
                                 if (reader.TokenType == JsonTokenType.EndObject) { break; }
@@ -179,7 +199,7 @@ public abstract class Record {
                                         if (reader.TokenType == JsonTokenType.String) {
                                             caption = reader.GetString();
                                         } else {
-                                            return (null, "Unexpected caption type.");
+                                            return (null, "Unexpected caption value.");
                                         }
                                         break;
 
@@ -187,7 +207,7 @@ public abstract class Record {
                                         if (reader.TokenType == JsonTokenType.String) {
                                             text = reader.GetString();
                                         } else {
-                                            return (null, "Unexpected text type.");
+                                            return (null, "Unexpected text value.");
                                         }
                                         break;
 
@@ -200,7 +220,7 @@ public abstract class Record {
                                                 return (null, $"Cannot convert '{content}' to UUID.");
                                             }
                                         } else {
-                                            return (null, "Unexpected UUID type.");
+                                            return (null, "Unexpected UUID value.");
                                         }
                                         break;
 
@@ -213,7 +233,7 @@ public abstract class Record {
                                                 return (null, $"Cannot convert '{content}' to time.");
                                             }
                                         } else {
-                                            return (null, "Unexpected time type.");
+                                            return (null, "Unexpected time value.");
                                         }
                                         break;
 
@@ -226,7 +246,7 @@ public abstract class Record {
                                                 return (null, $"Cannot convert '{content}' to version.");
                                             }
                                         } else {
-                                            return (null, "Unexpected version type.");
+                                            return (null, "Unexpected version value.");
                                         }
                                         break;
 
@@ -241,19 +261,19 @@ public abstract class Record {
                                                 return (null, $"Cannot convert '{content}' to binary.");
                                             }
                                         } else {
-                                            return (null, "Unexpected binary type.");
+                                            return (null, "Unexpected binary value.");
                                         }
                                         break;
 
-                                    // case "isSensitive":
-                                    //     if (reader.TokenType == JsonTokenType.True) {
-                                    //         isSensitive = true;
-                                    //     } else if (reader.TokenType == JsonTokenType.False) {
-                                    //         isSensitive = false;
-                                    //     } else {
-                                    //         return (null, "Unexpected isSensitive type.");
-                                    //     }
-                                    //     break;
+                                    case "isSensitive":
+                                        if (reader.TokenType == JsonTokenType.True) {
+                                            isSensitive = true;
+                                        } else if (reader.TokenType == JsonTokenType.False) {
+                                            isSensitive = false;
+                                        } else {
+                                            return (null, "Unexpected isSensitive value.");
+                                        }
+                                        break;
 
                                     default: return (null, $"Unexpected '{name}' property.");
                                 }
@@ -264,6 +284,12 @@ public abstract class Record {
                                 if (field is BinaryField binaryField) {
                                     if (binary == null) { return (null, "Missing binary data."); }
                                     binaryField.Data.SetBytes(binary);
+                                } else if (field is CustomTextField customTextField) {
+                                    if (caption == null) { return (null, "Missing caption data."); }
+                                    if (text == null) { return (null, "Missing text data."); }
+                                    customTextField.Caption = caption;
+                                    customTextField.Text = text;
+                                    customTextField.IsSensitive = isSensitive ?? false;
                                 } else if (field is TextField textField) {
                                     if (text == null) { return (null, "Missing text data."); }
                                     textField.Text = text;
