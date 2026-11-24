@@ -13,9 +13,8 @@ public sealed class TextField : Field, IReadableCaption, IReadableText, IWritabl
     /// </summary>
     /// <param name="type">Type.</param>
     /// <param name="data">Data.</param>
-    /// <param name="caption">Caption.</param>
-    internal TextField(FieldType type, ProtectedBytes data, string caption, bool isSensitive)
-       : base(type, data, caption) {
+    internal TextField(FieldType type, ProtectedBytes data, bool isSensitive)
+       : base(type, data) {
         IsSensitive = isSensitive;
     }
 

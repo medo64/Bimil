@@ -13,7 +13,6 @@ public sealed class TextHeader : Header {
     /// </summary>
     /// <param name="type">Type.</param>
     /// <param name="data">Data.</param>
-    /// <param name="caption">Caption.</param>
     internal TextHeader(HeaderType type, ProtectedBytes data, string caption)
        : base(type, data, caption) {
     }

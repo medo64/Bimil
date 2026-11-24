@@ -15,8 +15,6 @@ internal partial class FieldsWindow : Window {
         AvaloniaHelpers.SetupDialog(this);
 
         Fields = fields;
-        FieldsNew = new Field[Fields.Length];
-        Fields.CopyTo(FieldsNew);
 
         InputElement.KeyDownEvent.AddClassHandler<TopLevel>((sender, e) => {
             if ((e.KeyModifiers == KeyModifiers.None) && (e.Key == Key.Enter)) {
@@ -42,11 +40,9 @@ internal partial class FieldsWindow : Window {
     }
 
     public Field[] Fields;
-    public Field[] FieldsNew;
 
 
     public void btnSave_Click(object? sender, RoutedEventArgs e) {
-        Fields = FieldsNew;
         Close(true);
     }
 
@@ -97,7 +93,7 @@ internal partial class FieldsWindow : Window {
                     var item2 = (ItemEnvelope)lsbFields.Items[pivot + 1]!;
                     lsbFields.Items.Insert(pivot, item2);
                     lsbFields.Items.RemoveAt(pivot + 2);
-                    (FieldsNew[item1.FieldIndex], FieldsNew[item2.FieldIndex]) = (FieldsNew[item2.FieldIndex], FieldsNew[item1.FieldIndex]);
+                    (Fields[item1.FieldIndex], Fields[item2.FieldIndex]) = (Fields[item2.FieldIndex], Fields[item1.FieldIndex]);
                     (item1.FieldIndex, item2.FieldIndex) = (item2.FieldIndex, item1.FieldIndex);
                 }
             } else {
@@ -108,7 +104,7 @@ internal partial class FieldsWindow : Window {
                     var item2 = (ItemEnvelope)lsbFields.Items[pivot + 1]!;
                     lsbFields.Items.Insert(pivot, item2);
                     lsbFields.Items.RemoveAt(pivot + 2);
-                    (FieldsNew[item1.FieldIndex], FieldsNew[item2.FieldIndex]) = (FieldsNew[item2.FieldIndex], FieldsNew[item1.FieldIndex]);
+                    (Fields[item1.FieldIndex], Fields[item2.FieldIndex]) = (Fields[item2.FieldIndex], Fields[item1.FieldIndex]);
                     (item1.FieldIndex, item2.FieldIndex) = (item2.FieldIndex, item1.FieldIndex);
                 }
             }

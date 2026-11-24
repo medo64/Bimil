@@ -12,7 +12,6 @@ public sealed class VersionHeader : Header {
     /// </summary>
     /// <param name="type">Type.</param>
     /// <param name="data">Data.</param>
-    /// <param name="caption">Caption.</param>
     internal VersionHeader(HeaderType type, ProtectedBytes data, string caption)
         : base(type, data, caption) {
     }

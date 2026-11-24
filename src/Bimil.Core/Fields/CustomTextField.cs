@@ -16,7 +16,7 @@ public sealed class CustomTextField : Field, IReadableCaption, IWritableCaption,
     /// <param name="type">Type.</param>
     /// <param name="data">Data.</param>
     internal CustomTextField(FieldType type, ProtectedBytes data)
-       : base(type, data, string.Empty) {
+       : base(type, data) {
     }
 
     /// <summary>

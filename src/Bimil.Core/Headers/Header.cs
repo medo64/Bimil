@@ -12,7 +12,6 @@ public abstract class Header {
     /// </summary>
     /// <param name="type">Type.</param>
     /// <param name="data">Data.</param>
-    /// <param name="caption">Caption.</param>
     private protected Header(HeaderType type, ProtectedBytes data, string caption) {
         ArgumentNullException.ThrowIfNull(data);
         ArgumentNullException.ThrowIfNull(caption);

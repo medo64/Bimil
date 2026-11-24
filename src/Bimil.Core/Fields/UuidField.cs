@@ -12,9 +12,8 @@ public sealed class UuidField : Field {
     /// </summary>
     /// <param name="type">Type.</param>
     /// <param name="data">Data.</param>
-    /// <param name="caption">Caption.</param>
-    internal UuidField(FieldType type, ProtectedBytes data, string caption)
-       : base(type, data, caption) {
+    internal UuidField(FieldType type, ProtectedBytes data)
+       : base(type, data) {
     }
 
 

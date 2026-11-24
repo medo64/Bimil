@@ -15,9 +15,8 @@ public sealed class TimestampField : Field {
     /// </summary>
     /// <param name="type">Type.</param>
     /// <param name="data">Data.</param>
-    /// <param name="caption">Caption.</param>
-    internal TimestampField(FieldType type, ProtectedBytes data, string caption)
-       : base(type, data, caption) {
+    internal TimestampField(FieldType type, ProtectedBytes data)
+       : base(type, data) {
     }
 
 
