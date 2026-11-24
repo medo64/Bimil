@@ -22,7 +22,7 @@
             </DockPanel.Styles>
             <StackPanel HorizontalAlignment="Right" VerticalAlignment="Bottom" Orientation="Horizontal" Spacing="7">
                 <Button Content="_Save" Name="btnSave" HorizontalContentAlignment="Center" />
-                <Button Content="_Close" Name="btnClose" Click="btnClose_Click" HorizontalContentAlignment="Center" />
+                <Button Content="_Close" Name="btnClose" HorizontalContentAlignment="Center" />
             </StackPanel>
         </DockPanel>
 

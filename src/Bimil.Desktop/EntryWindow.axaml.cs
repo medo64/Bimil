@@ -49,77 +49,9 @@ internal partial class EntryWindow : Window {
         txtTitle.Text = entry.Title;
         cmbGroups.Text = entry.Group;
 
-        foreach (var field in entry.Fields) {
-            switch (field.Type) {
-                case FieldType.Uuid:
-                case FieldType.Group:
-                case FieldType.Title:
-                case FieldType.CreationTime:
-                case FieldType.LastAccessTime:
-                case FieldType.LastModificationTime:
-                case FieldType.PasswordExpiryTime:
-                case FieldType.PasswordModificationTime:
-                case FieldType.PasswordHistory:
-                case FieldType.Autotype:
-                    continue;
-
-                case FieldType.UserName: {
-                        if (field is TextField textField) {
-                            var control = AddPlainText(textField);
-                            AvaloniaHelpers.RegisterForAlternateFont(control);
-                        }
-                    }
-                    break;
-
-                case FieldType.Password: {
-                        if (field is TextField textField) {
-                            var control = AddPasswordText(textField);
-                            AvaloniaHelpers.RegisterForAlternateFont(control);
-                        }
-                    }
-                    break;
-
-                case FieldType.Url: {
-                        if (field is TextField textField) {
-                            AddUrlText(textField);
-                        }
-                    }
-                    break;
-
-                case FieldType.EmailAddress: {
-                        if (field is TextField textField) {
-                            var control = AddUrlText(textField, protocol: "mailto");
-                            AvaloniaHelpers.RegisterForAlternateFont(control);
-                        }
-                    }
-                    break;
-
-                case FieldType.TwoFactorKey: {
-                        if (field is BinaryField binaryField) {
-                            var (textBox, textBoxCode) = AddTwoFactorText(binaryField);
-                            AvaloniaHelpers.RegisterForTwoFactorView(textBox, textBoxCode, binaryField);
-                        }
-                    }
-                    break;
-
-                case FieldType.Notes: {
-                        if (field is TextField textField) {
-                            AddMultilineText(textField, Settings.Current.NotesLineCount);
-                        }
-                    }
-                    break;
-
-                default: {
-                        if (field is TextField textField) {
-                            AddUnknownText(textField);
-                        }
-                    }
-                    break;
-            }
-        }
+        ReplenishEntry(entry);
 
     }
-
 
     protected override void OnKeyDown(KeyEventArgs e) {
         switch (e.Key) {
@@ -144,7 +76,13 @@ internal partial class EntryWindow : Window {
     public async void btnFields_Click(object sender, RoutedEventArgs e) {
         var fields = Entry != null ? Entry.Fields.ToArray() : [];
         var frm = new FieldsWindow(fields);
-        await frm.ShowDialog(this);
+        if (await frm.ShowDialog<bool>(this)) {
+            if (Entry is not null) {
+                Entry.Fields.Clear();
+                Entry.Fields.AddRange(frm.Fields);
+                ReplenishEntry(Entry);
+            }
+        }
     }
 
 
@@ -357,6 +295,84 @@ internal partial class EntryWindow : Window {
             button.Content = image;
         };
         return button;
+    }
+
+    private void ReplenishEntry(EntryRecord entry) {
+        for (var i = grdRecords.Children.Count - 1; i >= 4; i--) {
+            grdRecords.Children.RemoveAt(i);
+        }
+        for (var i = grdRecords.RowDefinitions.Count - 1; i >= 2; i--) {
+            grdRecords.RowDefinitions.RemoveAt(i);
+        }
+
+        foreach (var field in entry.Fields) {
+            switch (field.Type) {
+                case FieldType.Uuid:
+                case FieldType.Group:
+                case FieldType.Title:
+                case FieldType.CreationTime:
+                case FieldType.LastAccessTime:
+                case FieldType.LastModificationTime:
+                case FieldType.PasswordExpiryTime:
+                case FieldType.PasswordModificationTime:
+                case FieldType.PasswordHistory:
+                case FieldType.Autotype:
+                    continue;
+
+                case FieldType.UserName: {
+                        if (field is TextField textField) {
+                            var control = AddPlainText(textField);
+                            AvaloniaHelpers.RegisterForAlternateFont(control);
+                        }
+                    }
+                    break;
+
+                case FieldType.Password: {
+                        if (field is TextField textField) {
+                            var control = AddPasswordText(textField);
+                            AvaloniaHelpers.RegisterForAlternateFont(control);
+                        }
+                    }
+                    break;
+
+                case FieldType.Url: {
+                        if (field is TextField textField) {
+                            AddUrlText(textField);
+                        }
+                    }
+                    break;
+
+                case FieldType.EmailAddress: {
+                        if (field is TextField textField) {
+                            var control = AddUrlText(textField, protocol: "mailto");
+                            AvaloniaHelpers.RegisterForAlternateFont(control);
+                        }
+                    }
+                    break;
+
+                case FieldType.TwoFactorKey: {
+                        if (field is BinaryField binaryField) {
+                            var (textBox, textBoxCode) = AddTwoFactorText(binaryField);
+                            AvaloniaHelpers.RegisterForTwoFactorView(textBox, textBoxCode, binaryField);
+                        }
+                    }
+                    break;
+
+                case FieldType.Notes: {
+                        if (field is TextField textField) {
+                            AddMultilineText(textField, Settings.Current.NotesLineCount);
+                        }
+                    }
+                    break;
+
+                default: {
+                        if (field is TextField textField) {
+                            AddUnknownText(textField);
+                        }
+                    }
+                    break;
+            }
+        }
     }
 
 }
