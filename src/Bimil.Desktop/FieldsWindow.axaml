@@ -20,8 +20,12 @@
                     <Setter Property="VerticalContentAlignment" Value="Center" />
                 </Style>
             </DockPanel.Styles>
+            <StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom" Orientation="Horizontal" Spacing="7">
+                <Button Content="_Add" Name="btnAdd" HorizontalContentAlignment="Center" />
+                <Button Content="_Remove" Name="btnRemove" IsEnabled="False" HorizontalContentAlignment="Center" />
+            </StackPanel>
             <StackPanel HorizontalAlignment="Right" VerticalAlignment="Bottom" Orientation="Horizontal" Spacing="7">
-                <Button Content="_Save" Name="btnSave" HorizontalContentAlignment="Center" />
+                <Button Content="_Save" Name="btnSave" IsEnabled="False" HorizontalContentAlignment="Center" />
                 <Button Content="_Close" Name="btnClose" HorizontalContentAlignment="Center" />
             </StackPanel>
         </DockPanel>

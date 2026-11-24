@@ -277,7 +277,7 @@ internal partial class EntryWindow : Window {
         return control;
     }
 
-    private Button GetButton(string bitmapName) {
+    private static Button GetButton(string bitmapName) {
         var button = new Button {
             Padding = new Thickness(2),
             HorizontalContentAlignment = HorizontalAlignment.Center,
@@ -306,19 +306,9 @@ internal partial class EntryWindow : Window {
         }
 
         foreach (var field in entry.Fields) {
-            switch (field.Type) {
-                case FieldType.Uuid:
-                case FieldType.Group:
-                case FieldType.Title:
-                case FieldType.CreationTime:
-                case FieldType.LastAccessTime:
-                case FieldType.LastModificationTime:
-                case FieldType.PasswordExpiryTime:
-                case FieldType.PasswordModificationTime:
-                case FieldType.PasswordHistory:
-                case FieldType.Autotype:
-                    continue;
+            if (!Filtering.IsFieldAppendable(field)) { continue; }
 
+            switch (field.Type) {
                 case FieldType.UserName: {
                         if (field is TextField textField) {
                             var control = AddPlainText(textField);

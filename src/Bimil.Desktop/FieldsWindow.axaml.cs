@@ -1,6 +1,7 @@
 namespace Bimil;
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using Avalonia;
 using Avalonia.Controls;
@@ -14,7 +15,7 @@ internal partial class FieldsWindow : Window {
         InitializeComponent();
         AvaloniaHelpers.SetupDialog(this);
 
-        Fields = fields;
+        Fields = [.. fields];
 
         InputElement.KeyDownEvent.AddClassHandler<TopLevel>((sender, e) => {
             if ((e.KeyModifiers == KeyModifiers.None) && (e.Key == Key.Enter)) {
@@ -24,31 +25,25 @@ internal partial class FieldsWindow : Window {
 
         for (var i = 0; i < fields.Length; i++) {
             var field = fields[i];
-            if (field.Type is FieldType.Uuid or FieldType.Title or FieldType.Group) { continue; }
-            if (field is not TextField) { continue; }
-            var captionBlock = new ItemEnvelope(field, i) { Text = field.Caption };
-            lsbFields.Items.Add(captionBlock);
+            if (!Filtering.IsFieldAppendable(field)) { continue; }
+            lsbFields.Items.Add(new ItemEnvelope(field, i) { Text = field.Caption });
         }
 
+        lsbFields.SelectionChanged += lsbFields_SelectionChanged;
         lsbFields.AddHandler(InputElement.PointerPressedEvent, lsbFields_PointerPressed, RoutingStrategies.Bubble, handledEventsToo: true);
         lsbFields.AddHandler(InputElement.PointerMovedEvent, lsbFields_PointerMoved, RoutingStrategies.Bubble, handledEventsToo: true);
         lsbFields.AddHandler(InputElement.PointerReleasedEvent, lsbFields_PointerReleased, RoutingStrategies.Bubble, handledEventsToo: true);
         lsbFields.AddHandler(InputElement.PointerExitedEvent, lsbFields_PointerExited, RoutingStrategies.Bubble, handledEventsToo: true);
 
+        btnAdd.Click += btnAdd_Click;
+        btnRemove.Click += btnRemove_Click;
         btnSave.Click += btnSave_Click;
         btnClose.Click += btnClose_Click;
+
+        AvaloniaHelpers.FocusControl(btnClose);
     }
 
-    public Field[] Fields;
-
-
-    public void btnSave_Click(object? sender, RoutedEventArgs e) {
-        Close(true);
-    }
-
-    public void btnClose_Click(object? sender, RoutedEventArgs e) {
-        Close(false);
-    }
+    public List<Field> Fields;
 
 
     #region Drag&Drop
@@ -108,6 +103,7 @@ internal partial class FieldsWindow : Window {
                     (item1.FieldIndex, item2.FieldIndex) = (item2.FieldIndex, item1.FieldIndex);
                 }
             }
+            btnSave.IsEnabled = true;
         }
         DragSrcIndex = null;
         SetCursor(null);
@@ -137,6 +133,37 @@ internal partial class FieldsWindow : Window {
     }
 
     #endregion Drag&Drop
+
+    #region Events
+
+    public void lsbFields_SelectionChanged(object? sender, SelectionChangedEventArgs e) {
+        var item = lsbFields.SelectedItem as ItemEnvelope;
+        var hasSelection = item is not null;
+        btnRemove.IsEnabled = hasSelection;
+    }
+
+    public void btnAdd_Click(object? sender, RoutedEventArgs e) {
+        // TODO
+        btnSave.IsEnabled = true;
+    }
+
+    public void btnRemove_Click(object? sender, RoutedEventArgs e) {
+        if (lsbFields.SelectedItem is not ItemEnvelope item) { return; }
+        lsbFields.Items.Remove(item);
+        Fields.RemoveAt(item.FieldIndex);
+        btnSave.IsEnabled = true;
+    }
+
+    public void btnSave_Click(object? sender, RoutedEventArgs e) {
+        Close(true);
+    }
+
+    public void btnClose_Click(object? sender, RoutedEventArgs e) {
+        Close(false);
+    }
+
+    #endregion Events
+
 
     private class ItemEnvelope : TextBlock {
 
