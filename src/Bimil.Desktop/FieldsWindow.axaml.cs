@@ -26,7 +26,7 @@ internal partial class FieldsWindow : Window {
         for (var i = 0; i < fields.Length; i++) {
             var field = fields[i];
             if (!Filtering.IsFieldAppendable(field)) { continue; }
-            lsbFields.Items.Add(new ItemEnvelope(field, i) { Text = field.Caption });
+            lsbFields.Items.Add(new ItemEnvelope(field, i));
         }
 
         lsbFields.SelectionChanged += lsbFields_SelectionChanged;
@@ -142,15 +142,25 @@ internal partial class FieldsWindow : Window {
         btnRemove.IsEnabled = hasSelection;
     }
 
-    public void btnAdd_Click(object? sender, RoutedEventArgs e) {
-        // TODO
-        btnSave.IsEnabled = true;
+    public async void btnAdd_Click(object? sender, RoutedEventArgs e) {
+        var frm = new FieldAddWindow();
+        if (await frm.ShowDialog<bool>(this)) {
+            var newField = frm.Field!;
+            lsbFields.Items.Add(new ItemEnvelope(newField, Fields.Count));
+            Fields.Add(newField);
+            btnSave.IsEnabled = true;
+        }
     }
 
     public void btnRemove_Click(object? sender, RoutedEventArgs e) {
         if (lsbFields.SelectedItem is not ItemEnvelope item) { return; }
-        lsbFields.Items.Remove(item);
+        var itemIndex = lsbFields.Items.IndexOf(item);
+        lsbFields.Items.RemoveAt(itemIndex);
         Fields.RemoveAt(item.FieldIndex);
+        for (var i = itemIndex; i < lsbFields.Items.Count; i++) {
+            var iItem = (ItemEnvelope)(lsbFields.Items[i])!;
+            iItem.FieldIndex -= 1;
+        }
         btnSave.IsEnabled = true;
     }
 
@@ -170,6 +180,7 @@ internal partial class FieldsWindow : Window {
         public ItemEnvelope(Field field, int fieldIndex) {
             Field = field;
             FieldIndex = fieldIndex;
+            Text = Field.Caption;
         }
 
         public Field Field { get; }
