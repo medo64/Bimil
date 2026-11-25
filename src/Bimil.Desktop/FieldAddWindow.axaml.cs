@@ -20,6 +20,9 @@ internal partial class FieldAddWindow : Window {
         }
         if (cmbFields.Items.Count > 0) { cmbFields.SelectedItem = cmbFields.Items[0]; }
 
+        txtCaption.Text = "Custom";
+
+        cmbFields.SelectionChanged += cmbFields_SelectionChanged;
         btnAdd.Click += btnAdd_Click;
         btnCancel.Click += btnCancel_Click;
 
@@ -31,9 +34,17 @@ internal partial class FieldAddWindow : Window {
 
     #region Events
 
+    public void cmbFields_SelectionChanged(object? sender, SelectionChangedEventArgs e) {
+        if (cmbFields.SelectedItem is not ItemEnvelope item) { return; }
+        var isCustomText = item.Field.Type == FieldType.CustomTextField;
+        lblCaption.IsVisible = isCustomText;
+        txtCaption.IsVisible = isCustomText;
+    }
+
     public void btnAdd_Click(object? sender, RoutedEventArgs e) {
         if (cmbFields.SelectedItem is not ItemEnvelope item) { return; }
         Field = item.Field;
+        if (Field is CustomTextField customTextField) { customTextField.Caption = txtCaption.Text ?? ""; }
         Close(true);
     }
 

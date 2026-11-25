@@ -10,9 +10,11 @@
 
     <StackPanel Margin="7">
 
-        <Grid ColumnDefinitions="Auto, 5, *" RowDefinitions="Auto">
+        <Grid ColumnDefinitions="Auto, 5, *" RowDefinitions="Auto,5,Auto">
             <Label Content="Field:" Grid.Column="0" Grid.Row="0" VerticalAlignment="Center" />
             <ComboBox Name="cmbFields" Grid.Column="2" Grid.Row="0" VerticalAlignment="Center" />
+            <Label Name="lblCaption" Content="Caption:" Grid.Column="0" Grid.Row="2" VerticalAlignment="Center" IsVisible="False" />
+            <TextBox Name="txtCaption" Grid.Column="2" Grid.Row="2" VerticalAlignment="Center" IsVisible="False" />
         </Grid>
 
         <DockPanel Margin="0 11 0 0">

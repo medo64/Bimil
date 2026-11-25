@@ -17,12 +17,13 @@ public sealed class CustomTextField : Field, IReadableCaption, IWritableCaption,
     /// <param name="data">Data.</param>
     internal CustomTextField(FieldType type, ProtectedBytes data)
        : base(type, data) {
+        Caption = Field.GetDefaultCaption(type);
     }
 
     /// <summary>
     /// Gets/sets caption.
     /// </summary>
-    public new string Caption {
+    public override string Caption {
         get {
             ParseData(Data, out var caption, out var _, out var _);
             return caption;

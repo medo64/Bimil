@@ -92,9 +92,17 @@ internal partial class EntryWindow : Window {
     }
 
     private TextBox AddPlainText(TextField field) {
+        return AddPlainText(field.Caption, field.Text);
+    }
+
+    private TextBox AddPlainText(CustomTextField field) {
+        return AddPlainText(field.Caption, field.Text);
+    }
+
+    private TextBox AddPlainText(string caption, string text) {
         var buttonCopy = GetButton("EditCopy");
-        var control = AddRow<TextBox>(field.Caption, buttonCopy);
-        control.Text = field.Text;
+        var control = AddRow<TextBox>(caption, buttonCopy);
+        control.Text = text;
 
         control.TextChanged += (sender, args) => {
             var hasData = !string.IsNullOrEmpty(control.Text);
@@ -109,7 +117,6 @@ internal partial class EntryWindow : Window {
 
         return control;
     }
-
 
     private TextBox AddPasswordText(TextField text) {
         var buttonView = GetButton("EditView");
@@ -351,6 +358,14 @@ internal partial class EntryWindow : Window {
                 case FieldType.Notes: {
                         if (field is TextField textField) {
                             AddMultilineText(textField, Settings.Current.NotesLineCount);
+                        }
+                    }
+                    break;
+
+                case FieldType.CustomTextField: {
+                        if (field is CustomTextField customTextField) {
+                            var control = AddPlainText(customTextField);
+                            AvaloniaHelpers.RegisterForAlternateFont(control);
                         }
                     }
                     break;

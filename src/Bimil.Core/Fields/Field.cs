@@ -18,7 +18,7 @@ public abstract class Field : IReadableCaption {
 
         Type = type;
         Data = data;
-        Caption = Field.GetDefaultCaption(type);
+        _caption = Field.GetDefaultCaption(type);
     }
 
 
@@ -32,11 +32,15 @@ public abstract class Field : IReadableCaption {
     /// </summary>
     public ProtectedBytes Data { get; }
 
+    private string _caption;
     /// <summary>
     /// Gets caption.
     /// Caption might be static and in English.
     /// </summary>
-    public string Caption { get; }
+    public virtual string Caption {
+        get { return _caption; }
+        set { throw new NotSupportedException("Caption cannot be set."); }
+    }
 
 
     /// <summary>
@@ -158,7 +162,7 @@ public abstract class Field : IReadableCaption {
     /// Returns default caption for a field type.
     /// </summary>
     /// <param name="type">Type.</param>
-    private static string GetDefaultCaption(FieldType type) {
+    internal static string GetDefaultCaption(FieldType type) {
         return type switch {
             FieldType.Uuid => "UUID",
             FieldType.Group => "Group",
