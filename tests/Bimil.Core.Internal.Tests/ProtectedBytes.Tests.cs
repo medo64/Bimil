@@ -12,8 +12,8 @@ public class ProtectedBytesTests {
     public void ProtectedBytes_Basic() {
         var bytes = Encoding.UTF8.GetBytes("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
 
-         var bytesIn = new byte[bytes.Length];
-         Array.Copy(bytes, 0, bytesIn, 0, bytesIn.Length);
+        var bytesIn = new byte[bytes.Length];
+        Array.Copy(bytes, 0, bytesIn, 0, bytesIn.Length);
 
         var pb = new ProtectedBytes();
         pb.SetBytes(bytesIn);
@@ -28,15 +28,15 @@ public class ProtectedBytesTests {
     public void ProtectedBytes_Zeroed() {
         var bytes = Encoding.UTF8.GetBytes("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
 
-         var bytesIn = new byte[bytes.Length];
-         Array.Copy(bytes, 0, bytesIn, 0, bytesIn.Length);
+        var bytesIn = new byte[bytes.Length];
+        Array.Copy(bytes, 0, bytesIn, 0, bytesIn.Length);
 
         var pb = new ProtectedBytes();
         pb.SetBytes(bytesIn, zeroBytes: true);
         var bytesOut = pb.GetBytes();
 
         Assert.AreEqual(123, pb.Length);
-        Assert.AreEqual("", Convert.ToHexString(bytesIn).Replace("0",""));
+        Assert.AreEqual("", Convert.ToHexString(bytesIn).Replace("0", ""));
         Assert.AreEqual(Convert.ToHexString(bytes), Convert.ToHexString(bytesOut));
     }
 
@@ -68,6 +68,18 @@ public class ProtectedBytesTests {
             pb.SetBytes([])
         );
         Assert.AreEqual(Convert.ToHexString(bytes), Convert.ToHexString(pb.GetBytes()));
+    }
+
+    [TestMethod]
+    public void ProtectedBytes_Clone() {
+        var bytes = Encoding.UTF8.GetBytes("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
+
+        var pb = new ProtectedBytes(bytes);
+        var pb2 = pb.Clone();
+        pb.SetBytes([]);
+
+        Assert.AreEqual("", Convert.ToHexString(pb.GetBytes()));
+        Assert.AreEqual(Convert.ToHexString(bytes), Convert.ToHexString(pb2.GetBytes()));
     }
 
 }

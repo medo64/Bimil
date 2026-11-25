@@ -5,28 +5,36 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
 
-internal partial class FieldAddWindow : Window {
+internal partial class FieldWindow : Window {
 
-    public FieldAddWindow() {
+    public FieldWindow(Field? field = null) {
         InitializeComponent();
         AvaloniaHelpers.SetupDialog(this);
 
+        ItemEnvelope? selectedItem = null;
+
         foreach (var type in Enum.GetValues<FieldType>()) {
             if (type == FieldType.EndOfEntry) { continue; }
-            var field = Field.Create(type);
-            if (Filtering.IsFieldAppendable(field)) {
-                cmbFields.Items.Add(new ItemEnvelope(field));
+            var item = Field.Create(type);
+            if (Filtering.IsFieldAppendable(item)) {
+                var newItem = new ItemEnvelope(item);
+                if (item.Type == field?.Type) { selectedItem = newItem; }
+                cmbFields.Items.Add(newItem);
             }
         }
-        if (cmbFields.Items.Count > 0) { cmbFields.SelectedItem = cmbFields.Items[0]; }
 
-        txtCaption.Text = "Custom";
+        Field = field?.Clone();
+        btnSave.Content = Field is null ? "_Add" : "_Edit";
+
+        txtCaption.Text = Field?.Caption ?? "Custom";
 
         cmbFields.SelectionChanged += cmbFields_SelectionChanged;
-        btnAdd.Click += btnAdd_Click;
+        btnSave.Click += btnSave_Click;
         btnCancel.Click += btnCancel_Click;
 
-        AvaloniaHelpers.FocusControl(btnAdd);
+        if (cmbFields.Items.Count > 0) { cmbFields.SelectedItem = selectedItem ?? cmbFields.Items[0]; }
+
+        AvaloniaHelpers.FocusControl(btnCancel);
     }
 
     public Field? Field { get; private set; }
@@ -41,10 +49,11 @@ internal partial class FieldAddWindow : Window {
         txtCaption.IsVisible = isCustomText;
     }
 
-    public void btnAdd_Click(object? sender, RoutedEventArgs e) {
+    public void btnSave_Click(object? sender, RoutedEventArgs e) {
         if (cmbFields.SelectedItem is not ItemEnvelope item) { return; }
-        Field = item.Field;
-        if (Field is CustomTextField customTextField) { customTextField.Caption = txtCaption.Text ?? ""; }
+        var newField = item.Field;
+        if (newField is IWritableCaption writableCaption) { writableCaption.Caption = txtCaption.Text ?? "Custom"; }
+        Field = newField;
         Close(true);
     }
 

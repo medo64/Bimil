@@ -1,6 +1,7 @@
 namespace Bimil;
 
 using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 /// <summary>
@@ -53,6 +54,12 @@ public abstract class Field : IReadableCaption {
             Data.IsReadOnly = value;
         }
     }
+
+
+    /// <summary>
+    /// Returns clone of the field.
+    /// </summary>
+    public abstract Field Clone();
 
 
     /// <summary>
@@ -135,7 +142,7 @@ public abstract class Field : IReadableCaption {
             FieldType.PasskeyAlgorithmID => new UnknownField(type, data),
             FieldType.PasskeyPrivateKey => new BinaryField(type, data),
             FieldType.PasskeySignCount => new UnknownField(type, data),
-            FieldType.CustomTextField => new CustomTextField(type, data),
+            FieldType.CustomTextField => new CustomTextField(type, data) { Caption = Field.GetDefaultCaption(type) },
             FieldType.BaseUuid => new UuidField(type, data),
             FieldType.AliasUuid => new UuidField(type, data),
             FieldType.ShortcutUuid => new UuidField(type, data),

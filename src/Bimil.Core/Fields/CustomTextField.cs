@@ -17,7 +17,6 @@ public sealed class CustomTextField : Field, IReadableCaption, IWritableCaption,
     /// <param name="data">Data.</param>
     internal CustomTextField(FieldType type, ProtectedBytes data)
        : base(type, data) {
-        Caption = Field.GetDefaultCaption(type);
     }
 
     /// <summary>
@@ -58,6 +57,14 @@ public sealed class CustomTextField : Field, IReadableCaption, IWritableCaption,
         set {
             SetData(Caption, Text, value);
         }
+    }
+
+
+    /// <summary>
+    /// Returns clone of the field.
+    /// </summary>
+    public override Field Clone() {
+        return new CustomTextField(Type, Data.Clone());
     }
 
 

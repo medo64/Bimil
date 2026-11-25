@@ -2,25 +2,28 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     x:Class="Bimil.FieldsWindow"
-    Width="600" Height="400"
+    Width="400" Height="400"
     WindowStartupLocation="CenterOwner"
     CanResize="false"
     Title="Fields">
 
-    <DockPanel Margin="7" VerticalAlignment="Stretch">
+    <DockPanel Margin="7" HorizontalAlignment="Stretch">
 
-        <DockPanel Margin="0 11 0 0" DockPanel.Dock="Bottom">
-            <StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom" Orientation="Horizontal" Spacing="7">
-                <Button Content="_Add" Name="btnAdd" HorizontalContentAlignment="Center" />
-                <Button Content="_Remove" Name="btnRemove" IsEnabled="False" HorizontalContentAlignment="Center" />
-            </StackPanel>
-            <StackPanel HorizontalAlignment="Right" VerticalAlignment="Bottom" Orientation="Horizontal" Spacing="7">
-                <Button Content="_Save" Name="btnSave" IsEnabled="False" HorizontalContentAlignment="Center" />
-                <Button Content="_Cancel" Name="btnCancel" HorizontalContentAlignment="Center" />
-            </StackPanel>
+        <DockPanel Margin="11 0 0 0" DockPanel.Dock="Right">
+            <DockPanel>
+                <StackPanel DockPanel.Dock="Bottom" Spacing="7">
+                    <Button Content="_Save" TabIndex="4" Name="btnSave" IsEnabled="False" />
+                    <Button Content="_Cancel" TabIndex="5" Name="btnCancel" />
+                </StackPanel>
+                <StackPanel DockPanel.Dock="Top" Spacing="7">
+                    <Button Content="_Add" TabIndex="1" Name="btnAdd" />
+                    <Button Content="_Edit" TabIndex="2" Name="btnEdit" IsEnabled="False" />
+                    <Button Content="_Remove" TabIndex="3" Name="btnRemove" IsEnabled="False" />
+                </StackPanel>
+            </DockPanel>
         </DockPanel>
 
-        <ListBox Name="lsbFields" DockPanel.Dock="Top">
+        <ListBox Name="lsbFields" TabIndex="0" DockPanel.Dock="Left">
             <ListBox.Template>
                 <ControlTemplate>
                     <ScrollViewer>

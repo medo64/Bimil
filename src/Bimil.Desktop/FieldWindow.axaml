@@ -1,7 +1,7 @@
 <Window
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    x:Class="Bimil.FieldAddWindow"
+    x:Class="Bimil.FieldWindow"
     Width="350" Height="NaN"
     WindowStartupLocation="CenterOwner"
     CanResize="false"
@@ -19,7 +19,7 @@
 
         <DockPanel Margin="0 11 0 0">
             <StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom" Orientation="Horizontal" Spacing="7">
-                <Button Content="_Add" Name="btnAdd" HorizontalContentAlignment="Center" />
+                <Button Content="Save" Name="btnSave" HorizontalContentAlignment="Center" />
             </StackPanel>
             <StackPanel HorizontalAlignment="Right" VerticalAlignment="Bottom" Orientation="Horizontal" Spacing="7">
                 <Button Content="_Cancel" Name="btnCancel" HorizontalContentAlignment="Center" />

@@ -119,6 +119,14 @@ public sealed class ProtectedBytes {
     }
 
 
+    /// <summary>
+    /// Returns clone of the data.
+    /// </summary>
+    public ProtectedBytes Clone() {
+        return new ProtectedBytes(GetBytes(), zeroBytes: true);
+    }
+
+
     #region Static
 
     private static readonly Lazy<byte[]> LazyRandomKey = new(() => {

@@ -43,6 +43,14 @@ public sealed class TextField : Field, IReadableCaption, IReadableText, IWritabl
 
 
     /// <summary>
+    /// Returns clone of the field.
+    /// </summary>
+    public override Field Clone() {
+        return new TextField(Type, Data.Clone(), IsSensitive);
+    }
+
+
+    /// <summary>
     /// Returns bytes based on the value provided.
     /// </summary>
     /// <param name="value">Value.</param>

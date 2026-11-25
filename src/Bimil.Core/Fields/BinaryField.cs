@@ -16,4 +16,12 @@ public sealed class BinaryField : Field {
        : base(type, data) {
     }
 
+
+    /// <summary>
+    /// Returns clone of the field.
+    /// </summary>
+    public override Field Clone() {
+        return new BinaryField(Type, Data.Clone());
+    }
+
 }

@@ -36,6 +36,7 @@ internal partial class FieldsWindow : Window {
         lsbFields.AddHandler(InputElement.PointerExitedEvent, lsbFields_PointerExited, RoutingStrategies.Bubble, handledEventsToo: true);
 
         btnAdd.Click += btnAdd_Click;
+        btnEdit.Click += btnEdit_Click;
         btnRemove.Click += btnRemove_Click;
         btnSave.Click += btnSave_Click;
         btnCancel.Click += btnCancel_Click;
@@ -139,15 +140,28 @@ internal partial class FieldsWindow : Window {
     public void lsbFields_SelectionChanged(object? sender, SelectionChangedEventArgs e) {
         var item = lsbFields.SelectedItem as ItemEnvelope;
         var hasSelection = item is not null;
+        btnEdit.IsEnabled = hasSelection;
         btnRemove.IsEnabled = hasSelection;
     }
 
     public async void btnAdd_Click(object? sender, RoutedEventArgs e) {
-        var frm = new FieldAddWindow();
+        var frm = new FieldWindow();
         if (await frm.ShowDialog<bool>(this)) {
             var newField = frm.Field!;
             lsbFields.Items.Add(new ItemEnvelope(newField, Fields.Count));
             Fields.Add(newField);
+            btnSave.IsEnabled = true;
+        }
+    }
+
+    public async void btnEdit_Click(object? sender, RoutedEventArgs e) {
+        if (lsbFields.SelectedItem is not ItemEnvelope item) { return; }
+        var itemIndex = lsbFields.Items.IndexOf(item);
+        var frm = new FieldWindow(item.Field);
+        if (await frm.ShowDialog<bool>(this)) {
+            var newField = frm.Field!;
+            Fields[item.FieldIndex] = newField;
+            lsbFields.Items[itemIndex] = new ItemEnvelope(newField, item.FieldIndex);
             btnSave.IsEnabled = true;
         }
     }

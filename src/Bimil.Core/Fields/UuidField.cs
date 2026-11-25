@@ -39,6 +39,14 @@ public sealed class UuidField : Field {
 
 
     /// <summary>
+    /// Returns clone of the field.
+    /// </summary>
+    public override Field Clone() {
+        return new UuidField(Type, Data.Clone());
+    }
+
+
+    /// <summary>
     /// Returns bytes based on the value provided.
     /// </summary>
     /// <param name="value">Value.</param>

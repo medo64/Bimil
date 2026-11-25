@@ -16,4 +16,12 @@ public sealed class UnknownField : Field {
        : base(type, data) {
     }
 
+
+    /// <summary>
+    /// Returns clone of the field.
+    /// </summary>
+    public override Field Clone() {
+        return new UnknownField(Type, Data.Clone());
+    }
+
 }
