@@ -29,6 +29,7 @@ internal partial class FieldsWindow : Window {
             lsbFields.Items.Add(new ItemEnvelope(field, i));
         }
 
+        lsbFields.DoubleTapped += btnEdit_Click;
         lsbFields.SelectionChanged += lsbFields_SelectionChanged;
         lsbFields.AddHandler(InputElement.PointerPressedEvent, lsbFields_PointerPressed, RoutingStrategies.Bubble, handledEventsToo: true);
         lsbFields.AddHandler(InputElement.PointerMovedEvent, lsbFields_PointerMoved, RoutingStrategies.Bubble, handledEventsToo: true);

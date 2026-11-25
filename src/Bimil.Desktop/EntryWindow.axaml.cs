@@ -118,12 +118,20 @@ internal partial class EntryWindow : Window {
         return control;
     }
 
-    private TextBox AddPasswordText(TextField text) {
+    private TextBox AddPasswordText(TextField field) {
+        return AddPasswordText(field.Caption, field.Text);
+    }
+
+    private TextBox AddPasswordText(CustomTextField field) {
+        return AddPasswordText(field.Caption, field.Text);
+    }
+
+    private TextBox AddPasswordText(string caption, string text) {
         var buttonView = GetButton("EditView");
         var buttonCopy = GetButton("EditCopy");
-        var control = AddRow<TextBox>(text.Caption, buttonView, buttonCopy);
+        var control = AddRow<TextBox>(caption, buttonView, buttonCopy);
         control.PasswordChar = '•';
-        control.Text = text.Text;
+        control.Text = text;
 
         control.TextChanged += (sender, args) => {
             var hasData = !string.IsNullOrEmpty(control.Text);
@@ -137,7 +145,7 @@ internal partial class EntryWindow : Window {
 
         buttonCopy.Click += (sender, args) => {
             var data = new DataTransfer();
-            data.Add(DataTransferItem.CreateText(text.Text));
+            data.Add(DataTransferItem.CreateText(control.Text ?? ""));
             Clipboard?.SetDataAsync(data);
         };
 
@@ -364,7 +372,7 @@ internal partial class EntryWindow : Window {
 
                 case FieldType.CustomTextField: {
                         if (field is CustomTextField customTextField) {
-                            var control = AddPlainText(customTextField);
+                            var control = customTextField.IsSensitive ? AddPasswordText(customTextField) : AddPlainText(customTextField);
                             AvaloniaHelpers.RegisterForAlternateFont(control);
                         }
                     }
