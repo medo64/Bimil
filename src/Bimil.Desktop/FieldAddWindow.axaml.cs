@@ -10,17 +10,18 @@ internal partial class FieldAddWindow : Window {
     public FieldAddWindow() {
         InitializeComponent();
         AvaloniaHelpers.SetupDialog(this);
-        btnAdd.Click += btnAdd_Click;
-        btnCancel.Click += btnCancel_Click;
 
         foreach (var type in Enum.GetValues<FieldType>()) {
             if (type == FieldType.EndOfEntry) { continue; }
             var field = Field.Create(type);
             if (Filtering.IsFieldAppendable(field)) {
-                cmbFields.Items.Add(new ItemEnvelope(field) { Text = field.Caption });
+                cmbFields.Items.Add(new ItemEnvelope(field));
             }
         }
         if (cmbFields.Items.Count > 0) { cmbFields.SelectedItem = cmbFields.Items[0]; }
+
+        btnAdd.Click += btnAdd_Click;
+        btnCancel.Click += btnCancel_Click;
 
         AvaloniaHelpers.FocusControl(btnAdd);
     }
@@ -47,6 +48,7 @@ internal partial class FieldAddWindow : Window {
 
         public ItemEnvelope(Field field) {
             Field = field;
+            Text = field.Caption;
         }
 
         public Field Field { get; }

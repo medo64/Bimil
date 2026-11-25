@@ -1,22 +1,62 @@
-<Application xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             x:Class="Bimil.AppAvalonia"
-             RequestedThemeVariant="Default">
+<Application
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    x:Class="Bimil.AppAvalonia"
+    RequestedThemeVariant="Default">
+
     <Application.Styles>
+
         <FluentTheme />
+
+        <Style Selector="Button">
+            <Setter Property="Width" Value="132" />
+            <Setter Property="Height" Value="33" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+        </Style>
+        <Style Selector="Button /template/ ContentPresenter">
+            <Setter Property="Transitions">
+                <Transitions>
+                    <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.07"></TransformOperationsTransition>
+                </Transitions>
+            </Setter>
+        </Style>
+
+        <Style Selector="ComboBox">
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="HorizontalContentAlignment" Value="Left" />
+        </Style>
+
+        <Style Selector="Label:disabled">
+            <Setter Property="Foreground" Value="{DynamicResource MenuTextDisabledForeground}" />
+        </Style>
+
+        <Style Selector="TextBox[IsReadOnly=True]:focus /template/ Border">
+            <Setter Property="Background" Value="{DynamicResource SystemChromeLowColor}" />
+        </Style>
+        <Style Selector="TextBox[IsReadOnly=True] /template/ Border">
+            <Setter Property="Background" Value="{DynamicResource SystemChromeLowColor}" />
+        </Style>
+
     </Application.Styles>
+
     <Application.Resources>
+
         <ResourceDictionary>
             <ResourceDictionary.ThemeDictionaries>
+
                 <ResourceDictionary x:Key="Light">
                     <SolidColorBrush x:Key="MenuTextEnabledForeground">#2D4772</SolidColorBrush>
                     <SolidColorBrush x:Key="MenuTextDisabledForeground">#444444</SolidColorBrush>
                 </ResourceDictionary>
+
                 <ResourceDictionary x:Key="Dark">
                     <SolidColorBrush x:Key="MenuTextEnabledForeground">#90AFE1</SolidColorBrush>
                     <SolidColorBrush x:Key="MenuTextDisabledForeground">#ABABAB</SolidColorBrush>
                 </ResourceDictionary>
+
             </ResourceDictionary.ThemeDictionaries>
         </ResourceDictionary>
+
     </Application.Resources>
 </Application>

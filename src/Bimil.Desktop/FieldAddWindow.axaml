@@ -1,10 +1,8 @@
-<Window xmlns="https://github.com/avaloniaui"
+<Window
+    xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
     x:Class="Bimil.FieldAddWindow"
-    Width="400"
+    Width="350" Height="NaN"
     WindowStartupLocation="CenterOwner"
     CanResize="false"
     SizeToContent="Height"
@@ -13,28 +11,11 @@
     <StackPanel Margin="7">
 
         <Grid ColumnDefinitions="Auto, 5, *" RowDefinitions="Auto">
-            <Grid.Styles>
-                <Style Selector="TextBox[IsReadOnly=True]:focus /template/ Border">
-                    <Setter Property="Background" Value="{DynamicResource SystemChromeLowColor}" />
-                </Style>
-                <Style Selector="TextBox[IsReadOnly=True] /template/ Border">
-                    <Setter Property="Background" Value="{DynamicResource SystemChromeLowColor}" />
-                </Style>
-            </Grid.Styles>
-
             <Label Content="Field:" Grid.Column="0" Grid.Row="0" VerticalAlignment="Center" />
-            <ComboBox Name="cmbFields" Grid.Column="2" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Stretch" />
+            <ComboBox Name="cmbFields" Grid.Column="2" Grid.Row="0" VerticalAlignment="Center" />
         </Grid>
 
         <DockPanel Margin="0 11 0 0">
-            <DockPanel.Styles>
-                <Style Selector="Button">
-                    <Setter Property="Width" Value="129" />
-                    <Setter Property="Height" Value="33" />
-                    <Setter Property="HorizontalContentAlignment" Value="Center" />
-                    <Setter Property="VerticalContentAlignment" Value="Center" />
-                </Style>
-            </DockPanel.Styles>
             <StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom" Orientation="Horizontal" Spacing="7">
                 <Button Content="_Add" Name="btnAdd" HorizontalContentAlignment="Center" />
             </StackPanel>

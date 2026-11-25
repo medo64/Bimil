@@ -1,9 +1,7 @@
-<Window xmlns="https://github.com/avaloniaui"
+<Window
+    xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:local="clr-namespace:Bimil"
-    mc:Ignorable="d" d:DesignWidth="640" d:DesignHeight="480"
     x:Class="Bimil.MainWindow"
     x:DataType="local:ThemeImageResources"
     Width="800" Height="600"
@@ -18,12 +16,13 @@
                     <Setter Property="Background" Value="Transparent" />
                     <Setter Property="CornerRadius" Value="0" />
                     <Setter Property="Height" Value="24" />
+                    <Setter Property="Width" Value="NaN" />
                     <Setter Property="Padding" Value="2" />
                 </Style>
                 <Style Selector="Button /template/ ContentPresenter">
                     <Setter Property="Transitions">
                         <Transitions>
-                            <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.07"></TransformOperationsTransition>
+                            <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.13"></TransformOperationsTransition>
                         </Transitions>
                     </Setter>
                 </Style>
@@ -60,9 +59,6 @@
                     <Setter Property="Height" Value="24" />
                     <Setter Property="VerticalContentAlignment" Value="Center" />
                     <Setter Property="Foreground" Value="{DynamicResource MenuTextEnabledForeground}" />
-                </Style>
-                <Style Selector="Label:disabled">
-                    <Setter Property="Foreground" Value="{DynamicResource MenuTextDisabledForeground}" />
                 </Style>
             </Grid.Styles>
 
@@ -167,7 +163,7 @@
         <!-- Main -->
         <Grid ColumnDefinitions="2*, 1*" RowDefinitions="Auto, *">
             <TextBox Name="txtFilter" Grid.Row="0" Grid.Column="0" PlaceholderText="Search..." Margin="5" />
-            <ComboBox Name="cmbGroups" Grid.Row="0" Grid.Column="1" Margin="0 5 5 5" HorizontalAlignment="Stretch" />
+            <ComboBox Name="cmbGroups" Grid.Row="0" Grid.Column="1" Margin="0 5 5 5" />
             <ListBox Name="lsbEntries" Grid.Row="1" Grid.ColumnSpan="2" Background="{DynamicResource SystemAltMediumLowColor}" SelectionChanged="lsbEntries_SelectionChanged" DoubleTapped="lsbEntries_DoubleTapped">
                 <ListBox.ContextMenu>
                     <ContextMenu Opening="mnuEntry_Opening">

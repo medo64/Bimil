@@ -38,9 +38,9 @@ internal partial class FieldsWindow : Window {
         btnAdd.Click += btnAdd_Click;
         btnRemove.Click += btnRemove_Click;
         btnSave.Click += btnSave_Click;
-        btnClose.Click += btnClose_Click;
+        btnCancel.Click += btnCancel_Click;
 
-        AvaloniaHelpers.FocusControl(btnClose);
+        AvaloniaHelpers.FocusControl(btnCancel);
     }
 
     public List<Field> Fields;
@@ -168,7 +168,7 @@ internal partial class FieldsWindow : Window {
         Close(true);
     }
 
-    public void btnClose_Click(object? sender, RoutedEventArgs e) {
+    public void btnCancel_Click(object? sender, RoutedEventArgs e) {
         Close(false);
     }
 

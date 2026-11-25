@@ -1,9 +1,7 @@
-<Window xmlns="https://github.com/avaloniaui"
+<Window
+    xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:apc="clr-namespace:Avalonia.PropertyGrid.Controls;assembly=Avalonia.PropertyGrid"
-    mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="600"
     x:Class="Bimil.OptionsGridWindow"
     Width="500" Height="600"
     WindowStartupLocation="CenterOwner"
@@ -11,21 +9,15 @@
     Title="All Options">
 
     <DockPanel Margin="7" VerticalAlignment="Stretch">
+
         <DockPanel Margin="0 11 0 0" DockPanel.Dock="Bottom" VerticalAlignment="Bottom" LastChildFill="true">
-            <DockPanel.Styles>
-                <Style Selector="Button">
-                    <Setter Property="Width" Value="129" />
-                    <Setter Property="Height" Value="33" />
-                    <Setter Property="HorizontalContentAlignment" Value="Center" />
-                    <Setter Property="VerticalContentAlignment" Value="Center" />
-                </Style>
-            </DockPanel.Styles>
             <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" HorizontalAlignment="Right" Spacing="7">
                 <Button Content="_Close" Click="btnClose_Click" Name="btnClose" />
             </StackPanel>
         </DockPanel>
 
         <apc:PropertyGrid Name="prgSettings" IsHeaderVisible="False" IsTitleVisible="False" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+
     </DockPanel>
 
 </Window>
