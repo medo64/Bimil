@@ -11,38 +11,52 @@
 
         <TabControl DockPanel.Dock="Top">
 
+            <TabControl.Styles>
+                <Style Selector="Button:disabled /template/ ContentPresenter">
+                    <Setter Property="Background" Value="Transparent" />
+                </Style>
+                <Style Selector="ComboBox">
+                    <Setter Property="HorizontalAlignment" Value="Stretch" />
+                    <Setter Property="Margin" Value="5" />
+                </Style>
+                <Style Selector="CheckBox">
+                    <Setter Property="VerticalContentAlignment" Value="Center" />
+                </Style>
+                <Style Selector="Label">
+                    <Setter Property="VerticalContentAlignment" Value="Center" />
+                    <Setter Property="Foreground" Value="{DynamicResource MenuTextEnabledForeground}" />
+                    <Setter Property="Margin" Value="0,0,7,0" />
+                </Style>
+                <Style Selector="Grid">
+                    <Setter Property="ColumnSpacing" Value="3" />
+                    <Setter Property="RowSpacing" Value="3" />
+                </Style>
+                <Style Selector="TextBox">
+                    <Setter Property="HorizontalAlignment" Value="Stretch" />
+                    <Setter Property="Margin" Value="5" />
+                </Style>
+            </TabControl.Styles>
+
             <TabItem Header="Behavior">
-                <StackPanel Margin="0 7 0 0" Spacing="3">
-                    <CheckBox Content="Close on escape" Name="chbCloseOnEscape" ToolTip.Tip="If set, escape key can be used to close application's main window." />
-                    <CheckBox Content="Load last" Name="chbLoadLast" ToolTip.Tip="If set, last file will be loaded." />
-                    <CheckBox Content="Show start window" Name="chbShowStart" ToolTip.Tip="If set, start dialog will be shown." />
-                    <CheckBox Content="Sync clipboards" Name="chbSyncPrimaryClipboard" ToolTip.Tip="If set, both normal and primary (aka, middle-click) clipboard will be used when copying data." />
-                </StackPanel>
+                <Grid Margin="0 7 0 0" RowDefinitions="Auto,Auto,Auto,Auto" ColumnDefinitions="Auto, *">
+                    <Label Content="Close on escape:" Grid.Row="0" Grid.Column="0" />
+                    <CheckBox Name="chbCloseOnEscape" Grid.Row="0" Grid.Column="1" />
+
+                    <Label Content="Load last:" Grid.Row="1" Grid.Column="0" />
+                    <CheckBox Name="chbLoadLast" Grid.Row="1" Grid.Column="1" />
+
+                    <Label Content="Show start window:" Grid.Row="2" Grid.Column="0" />
+                    <CheckBox Name="chbShowStart" Grid.Row="2" Grid.Column="1" />
+
+                    <Label Content="Sync clipboards:" Grid.Row="3" Grid.Column="0" />
+                    <CheckBox Name="chbSyncPrimaryClipboard" Grid.Row="3" Grid.Column="1" />
+                </Grid>
             </TabItem>
 
             <TabItem Header="UI">
-                <Grid Margin="0 7 0 0" ColumnDefinitions="Auto, *" ColumnSpacing="3" RowSpacing="3">
-                    <Grid.Styles>
-                        <Style Selector="Button:disabled /template/ ContentPresenter">
-                            <Setter Property="Background" Value="Transparent" />
-                        </Style>
-                        <Style Selector="Label">
-                            <Setter Property="Height" Value="24" />
-                            <Setter Property="VerticalContentAlignment" Value="Top" />
-                            <Setter Property="Foreground" Value="{DynamicResource MenuTextEnabledForeground}" />
-                        </Style>
-                        <Style Selector="TextBox">
-                            <Setter Property="HorizontalAlignment" Value="Stretch" />
-                            <Setter Property="Margin" Value="5" />
-                        </Style>
-                        <Style Selector="ComboBox">
-                            <Setter Property="HorizontalAlignment" Value="Stretch" />
-                            <Setter Property="Margin" Value="5" />
-                        </Style>
-                    </Grid.Styles>
-
-                    <Label Grid.Row="0" Grid.Column="0">Theme:</Label>
-                    <ComboBox Name="cmbTheme" Grid.Row="0" Grid.Column="1" ToolTip.Tip="Theme to be used.">
+                <Grid Margin="0 7 0 0" ColumnDefinitions="Auto, *">
+                    <Label Content="Theme:" Grid.Row="0" Grid.Column="0" />
+                    <ComboBox Name="cmbTheme" Grid.Row="0" Grid.Column="1">
                         <ComboBoxItem>System</ComboBoxItem>
                         <ComboBoxItem>Light</ComboBoxItem>
                         <ComboBoxItem>Dark</ComboBoxItem>
@@ -51,8 +65,16 @@
             </TabItem>
 
             <TabItem Header="Security">
-                <StackPanel Margin="0 7 0 0" Spacing="3">
-                </StackPanel>
+            </TabItem>
+
+            <TabItem Header="Two-factor">
+                <Grid Margin="0 7 0 0" RowDefinitions="Auto,Auto" ColumnDefinitions="Auto, *">
+                    <Label Content="Always use NTP:" Grid.Row="0" Grid.Column="0" />
+                    <CheckBox Name="chbUseNtp" Grid.Row="0" Grid.Column="1" />
+
+                    <Label Content="NTP server:" Grid.Row="1" Grid.Column="0" />
+                    <TextBox Name="txtNtpServer" Grid.Row="1" Grid.Column="1" />
+                </Grid>
             </TabItem>
         </TabControl>
 

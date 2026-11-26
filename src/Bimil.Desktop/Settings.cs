@@ -4,8 +4,6 @@ using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
-using System.Runtime.InteropServices;
-using Avalonia.Utilities;
 using Medo;
 using PropertyModels.ComponentModel.DataAnnotations;
 
@@ -82,7 +80,10 @@ internal class Settings {
     [DefaultValue("0.medo64.pool.ntp.org")]
     public string NtpServer {
         get { return Config.Read("NtpServer", FindDefault<string>(nameof(NtpServer))); }
-        set { Config.Write("NtpServer", value); }
+        set {
+            if (string.IsNullOrEmpty(value)) { value = FindDefault<string>(nameof(NtpServer)); }
+            Config.Write("NtpServer", value);
+        }
     }
 
     [Category("OTP")]

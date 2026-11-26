@@ -1,5 +1,7 @@
 namespace Bimil;
 
+using System.ComponentModel;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using Avalonia.Controls;
 using Avalonia.Input;
@@ -15,6 +17,19 @@ internal partial class OptionsWindow : Window {
         chbShowStart.IsCheckedChanged += (sender, e) => { if (chbShowStart.IsChecked == true) { chbLoadLast.IsChecked = false; } };
 
         AvaloniaHelpers.FocusControl(btnClose);
+
+        // Behavior
+        SetTooltip(chbCloseOnEscape, nameof(Settings.Current.CloseOnEscape));
+        SetTooltip(chbLoadLast, nameof(Settings.Current.LoadLast));
+        SetTooltip(chbShowStart, nameof(Settings.Current.ShowStart));
+        SetTooltip(chbSyncPrimaryClipboard, nameof(Settings.Current.SyncPrimaryClipboard));
+
+        // UI
+        SetTooltip(cmbTheme, nameof(Settings.Current.Theme));
+
+        // Two-factor
+        SetTooltip(chbUseNtp, nameof(Settings.Current.AlwaysUseNtpForTwoFactor));
+        SetTooltip(txtNtpServer, nameof(Settings.Current.NtpServer));
     }
 
     protected override async void OnKeyDown(KeyEventArgs e) {
@@ -49,6 +64,10 @@ internal partial class OptionsWindow : Window {
 
         // UI
         cmbTheme.SelectedIndex = (int)Settings.Current.Theme;
+
+        // Two-factor
+        chbUseNtp.IsChecked = Settings.Current.AlwaysUseNtpForTwoFactor;
+        txtNtpServer.Text = Settings.Current.NtpServer;
     }
 
     public void btnDefaults_Click(object sender, RoutedEventArgs e) {
@@ -60,6 +79,10 @@ internal partial class OptionsWindow : Window {
 
         // UI
         cmbTheme.SelectedIndex = (int)Settings.FindDefault<Settings.ThemeVariant>(nameof(Settings.Current.Theme));
+
+        // Two-factor
+        chbUseNtp.IsChecked = Settings.FindDefault<bool>(nameof(Settings.Current.AlwaysUseNtpForTwoFactor));
+        txtNtpServer.Text = Settings.FindDefault<string>(nameof(Settings.Current.NtpServer));
     }
 
     public void btnSave_Click(object sender, RoutedEventArgs e) {
@@ -72,11 +95,26 @@ internal partial class OptionsWindow : Window {
         // UI
         Settings.Current.Theme = (Settings.ThemeVariant)cmbTheme.SelectedIndex;
 
+        // Two-factor
+        Settings.Current.AlwaysUseNtpForTwoFactor = chbUseNtp.IsChecked ?? false;
+        Settings.Current.NtpServer = txtNtpServer.Text ?? "";
+
         Close();
     }
 
     public void btnClose_Click(object sender, RoutedEventArgs e) {
         Close();
+    }
+
+
+    public static void SetTooltip(Control control, string propertyName) {
+        var property = typeof(Settings).GetProperty(propertyName);
+        if (property == null) { return; }
+
+        var attribute = property.GetCustomAttribute<DescriptionAttribute>();
+        if (attribute == null) { return; }
+
+        ToolTip.SetTip(control, attribute.Description);
     }
 
 }
