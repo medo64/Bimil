@@ -1,9 +1,10 @@
 namespace Bimil;
 
 using System;
+using System.Diagnostics;
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Interactivity;
-using Avalonia.Layout;
 
 internal partial class FieldWindow : Window {
 
@@ -24,7 +25,6 @@ internal partial class FieldWindow : Window {
         }
 
         Field = field?.Clone();
-        btnSave.Content = Field is null ? "_Add" : "_Edit";
         Title = Field is null ? "Add Field" : "Edit Field";
 
         txtCaption.Text = Field?.Caption ?? "Custom";
@@ -32,19 +32,31 @@ internal partial class FieldWindow : Window {
             chbIsSensitive.IsChecked = fieldSensitivity.IsSensitive;
         }
 
+        AddHandler(InputElement.KeyDownEvent, Window_KeyDown, RoutingStrategies.Tunnel);
+
         cmbFields.SelectionChanged += cmbFields_SelectionChanged;
-        btnSave.Click += btnSave_Click;
+        btnOk.Click += btnOk_Click;
         btnCancel.Click += btnCancel_Click;
 
         if (cmbFields.Items.Count > 0) { cmbFields.SelectedItem = selectedItem ?? cmbFields.Items[0]; }
 
-        AvaloniaHelpers.FocusControl(btnCancel);
+        AvaloniaHelpers.FocusControl(cmbFields);
     }
 
     public Field? Field { get; private set; }
 
 
     #region Events
+
+    private void Window_KeyDown(object? sender, KeyEventArgs e) {
+        Debug.WriteLine($"{GetType().Name}_KeyDown: {(e.KeyModifiers != KeyModifiers.None ? $"{e.KeyModifiers}+" : "")}{e.Key}");
+        e.Handled = true;  // assume it is handled
+        switch ((e.KeyModifiers, e.Key)) {
+            case (KeyModifiers.None, Key.Escape): btnCancel_Click(null, null!); break;
+            case (KeyModifiers.Alt, Key.S): btnOk_Click(null, null!); break;
+            default: e.Handled = false; break;
+        }
+    }
 
     public void cmbFields_SelectionChanged(object? sender, SelectionChangedEventArgs e) {
         if (cmbFields.SelectedItem is not ItemEnvelope item) { return; }
@@ -55,7 +67,8 @@ internal partial class FieldWindow : Window {
         chbIsSensitive.IsVisible = isCustomText;
     }
 
-    public void btnSave_Click(object? sender, RoutedEventArgs e) {
+    public void btnOk_Click(object? sender, RoutedEventArgs e) {
+        if (!btnOk.IsEnabled) { return; }
         if (cmbFields.SelectedItem is not ItemEnvelope item) { return; }
         var newField = item.Field;
         if (newField is IWritableText writableText && Field is IReadableText readableText) { writableText.Text = readableText.Text; }

@@ -1,6 +1,5 @@
 namespace Bimil;
 
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Avalonia;
@@ -29,6 +28,8 @@ internal partial class FieldsWindow : Window {
             lsbFields.Items.Add(new ItemEnvelope(field, i));
         }
 
+        AddHandler(InputElement.KeyDownEvent, Window_KeyDown, RoutingStrategies.Tunnel);
+
         lsbFields.DoubleTapped += btnEdit_Click;
         lsbFields.SelectionChanged += lsbFields_SelectionChanged;
         lsbFields.AddHandler(InputElement.PointerPressedEvent, lsbFields_PointerPressed, RoutingStrategies.Bubble, handledEventsToo: true);
@@ -39,14 +40,117 @@ internal partial class FieldsWindow : Window {
         btnAdd.Click += btnAdd_Click;
         btnEdit.Click += btnEdit_Click;
         btnRemove.Click += btnRemove_Click;
-        btnSave.Click += btnSave_Click;
+        btnOk.Click += btnOk_Click;
         btnCancel.Click += btnCancel_Click;
 
-        AvaloniaHelpers.FocusControl(btnCancel);
+        if (lsbFields.Items.Count > 0) { lsbFields.SelectedIndex = 0; }
+
+        AvaloniaHelpers.FocusControl(lsbFields);
     }
 
     public List<Field> Fields;
 
+
+    #region Events
+
+    private void Window_KeyDown(object? sender, KeyEventArgs e) {
+        Debug.WriteLine($"{GetType().Name}_KeyDown: {(e.KeyModifiers != KeyModifiers.None ? $"{e.KeyModifiers}+" : "")}{e.Key}");
+        e.Handled = true;  // assume it is handled
+        switch ((e.KeyModifiers, e.Key)) {
+            case (KeyModifiers.None, Key.Escape): btnCancel_Click(null, null!); break;
+            case (KeyModifiers.None, Key.Insert): btnAdd_Click(null, null!); break;
+            case (KeyModifiers.None, Key.F2): btnEdit_Click(null, null!); break;
+            case (KeyModifiers.None, Key.Delete): btnRemove_Click(null, null!); break;
+            case (KeyModifiers.Alt, Key.Up): btnMoveUp_Click(null, null!); break;
+            case (KeyModifiers.Alt, Key.Down): btnMoveDown_Click(null, null!); break;
+            case (KeyModifiers.Alt, Key.S): btnOk_Click(null, null!); break;
+            default: e.Handled = false; break;
+        }
+    }
+
+    public void lsbFields_SelectionChanged(object? sender, SelectionChangedEventArgs e) {
+        var item = lsbFields.SelectedItem as ItemEnvelope;
+        var hasSelection = item is not null;
+        btnEdit.IsEnabled = hasSelection;
+        btnRemove.IsEnabled = hasSelection;
+    }
+
+    public async void btnAdd_Click(object? sender, RoutedEventArgs e) {
+        var frm = new FieldWindow();
+        if (await frm.ShowDialog<bool>(this)) {
+            var newField = frm.Field!;
+            lsbFields.Items.Add(new ItemEnvelope(newField, Fields.Count));
+            Fields.Add(newField);
+            btnOk.IsEnabled = true;
+        }
+    }
+
+    public async void btnEdit_Click(object? sender, RoutedEventArgs e) {
+        if (lsbFields.SelectedItem is not ItemEnvelope item) { return; }
+        var itemIndex = lsbFields.Items.IndexOf(item);
+        var frm = new FieldWindow(item.Field);
+        if (await frm.ShowDialog<bool>(this)) {
+            var newField = frm.Field!;
+            Fields[item.FieldIndex] = newField;
+            lsbFields.Items[itemIndex] = new ItemEnvelope(newField, item.FieldIndex);
+            btnOk.IsEnabled = true;
+        }
+    }
+
+    public void btnRemove_Click(object? sender, RoutedEventArgs e) {
+        if (lsbFields.SelectedItem is not ItemEnvelope item) { return; }
+        var itemIndex = lsbFields.Items.IndexOf(item);
+        lsbFields.Items.RemoveAt(itemIndex);
+        Fields.RemoveAt(item.FieldIndex);
+        for (var i = itemIndex; i < lsbFields.Items.Count; i++) {
+            var iItem = (ItemEnvelope)(lsbFields.Items[i])!;
+            iItem.FieldIndex -= 1;
+        }
+        btnOk.IsEnabled = true;
+    }
+
+    public void btnMoveUp_Click(object? sender, RoutedEventArgs e) {
+        if (lsbFields.SelectedItem is not ItemEnvelope itemSrc) { return; }
+        var itemSrcIndex = lsbFields.Items.IndexOf(itemSrc);
+        if (itemSrcIndex == 0) { return; }
+        var itemDst = (ItemEnvelope)lsbFields.Items[itemSrcIndex - 1]!;
+        var itemDstIndex = lsbFields.Items.IndexOf(itemDst);
+
+        Debug.WriteLine($"Reorder: {itemDstIndex}/{itemDst.FieldIndex} <- {itemSrcIndex}/{itemSrc.FieldIndex}");
+        (Fields[itemSrc.FieldIndex], Fields[itemDst.FieldIndex]) = (Fields[itemDst.FieldIndex], Fields[itemSrc.FieldIndex]);
+        (itemSrc.FieldIndex, itemDst.FieldIndex) = (itemDst.FieldIndex, itemSrc.FieldIndex);
+        (lsbFields.Items[itemSrcIndex], lsbFields.Items[itemDstIndex]) = (lsbFields.Items[itemDstIndex], lsbFields.Items[itemSrcIndex]);
+        lsbFields.SelectedItem = itemSrc;
+
+        btnOk.IsEnabled = true;
+    }
+
+    public void btnMoveDown_Click(object? sender, RoutedEventArgs e) {
+        if (lsbFields.SelectedItem is not ItemEnvelope itemSrc) { return; }
+        var itemSrcIndex = lsbFields.Items.IndexOf(itemSrc);
+        if (itemSrcIndex == lsbFields.Items.Count - 1) { return; }
+        var itemDst = (ItemEnvelope)lsbFields.Items[itemSrcIndex + 1]!;
+        var itemDstIndex = lsbFields.Items.IndexOf(itemDst);
+
+        Debug.WriteLine($"Reorder: {itemSrcIndex}/{itemSrc.FieldIndex} -> {itemDstIndex}/{itemDst.FieldIndex}");
+        (Fields[itemSrc.FieldIndex], Fields[itemDst.FieldIndex]) = (Fields[itemDst.FieldIndex], Fields[itemSrc.FieldIndex]);
+        (itemSrc.FieldIndex, itemDst.FieldIndex) = (itemDst.FieldIndex, itemSrc.FieldIndex);
+        (lsbFields.Items[itemSrcIndex], lsbFields.Items[itemDstIndex]) = (lsbFields.Items[itemDstIndex], lsbFields.Items[itemSrcIndex]);
+        lsbFields.SelectedItem = itemSrc;
+
+        btnOk.IsEnabled = true;
+    }
+
+    public void btnOk_Click(object? sender, RoutedEventArgs e) {
+        if (!btnOk.IsEnabled) { return; }
+        Close(true);
+    }
+
+    public void btnCancel_Click(object? sender, RoutedEventArgs e) {
+        Close(false);
+    }
+
+    #endregion Events
 
     #region Drag&Drop
 
@@ -105,7 +209,7 @@ internal partial class FieldsWindow : Window {
                     (item1.FieldIndex, item2.FieldIndex) = (item2.FieldIndex, item1.FieldIndex);
                 }
             }
-            btnSave.IsEnabled = true;
+            btnOk.IsEnabled = true;
         }
         DragSrcIndex = null;
         SetCursor(null);
@@ -135,59 +239,6 @@ internal partial class FieldsWindow : Window {
     }
 
     #endregion Drag&Drop
-
-    #region Events
-
-    public void lsbFields_SelectionChanged(object? sender, SelectionChangedEventArgs e) {
-        var item = lsbFields.SelectedItem as ItemEnvelope;
-        var hasSelection = item is not null;
-        btnEdit.IsEnabled = hasSelection;
-        btnRemove.IsEnabled = hasSelection;
-    }
-
-    public async void btnAdd_Click(object? sender, RoutedEventArgs e) {
-        var frm = new FieldWindow();
-        if (await frm.ShowDialog<bool>(this)) {
-            var newField = frm.Field!;
-            lsbFields.Items.Add(new ItemEnvelope(newField, Fields.Count));
-            Fields.Add(newField);
-            btnSave.IsEnabled = true;
-        }
-    }
-
-    public async void btnEdit_Click(object? sender, RoutedEventArgs e) {
-        if (lsbFields.SelectedItem is not ItemEnvelope item) { return; }
-        var itemIndex = lsbFields.Items.IndexOf(item);
-        var frm = new FieldWindow(item.Field);
-        if (await frm.ShowDialog<bool>(this)) {
-            var newField = frm.Field!;
-            Fields[item.FieldIndex] = newField;
-            lsbFields.Items[itemIndex] = new ItemEnvelope(newField, item.FieldIndex);
-            btnSave.IsEnabled = true;
-        }
-    }
-
-    public void btnRemove_Click(object? sender, RoutedEventArgs e) {
-        if (lsbFields.SelectedItem is not ItemEnvelope item) { return; }
-        var itemIndex = lsbFields.Items.IndexOf(item);
-        lsbFields.Items.RemoveAt(itemIndex);
-        Fields.RemoveAt(item.FieldIndex);
-        for (var i = itemIndex; i < lsbFields.Items.Count; i++) {
-            var iItem = (ItemEnvelope)(lsbFields.Items[i])!;
-            iItem.FieldIndex -= 1;
-        }
-        btnSave.IsEnabled = true;
-    }
-
-    public void btnSave_Click(object? sender, RoutedEventArgs e) {
-        Close(true);
-    }
-
-    public void btnCancel_Click(object? sender, RoutedEventArgs e) {
-        Close(false);
-    }
-
-    #endregion Events
 
 
     private class ItemEnvelope : TextBlock {

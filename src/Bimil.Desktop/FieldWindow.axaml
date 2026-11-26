@@ -20,10 +20,8 @@
         </Grid>
 
         <DockPanel Margin="0 11 0 0">
-            <StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom" Orientation="Horizontal" Spacing="7">
-                <Button Content="Save" Name="btnSave" HorizontalContentAlignment="Center" />
-            </StackPanel>
             <StackPanel HorizontalAlignment="Right" VerticalAlignment="Bottom" Orientation="Horizontal" Spacing="7">
+                <Button Content="_OK" Name="btnOk" HorizontalContentAlignment="Center" />
                 <Button Content="_Cancel" Name="btnCancel" HorizontalContentAlignment="Center" />
             </StackPanel>
         </DockPanel>

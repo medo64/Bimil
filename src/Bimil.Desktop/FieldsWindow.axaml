@@ -12,7 +12,7 @@
         <DockPanel Margin="11 0 0 0" DockPanel.Dock="Right">
             <DockPanel>
                 <StackPanel DockPanel.Dock="Bottom" Spacing="7">
-                    <Button Content="_Save" TabIndex="4" Name="btnSave" IsEnabled="False" />
+                    <Button Content="_OK" TabIndex="4" Name="btnOk" IsEnabled="False" />
                     <Button Content="_Cancel" TabIndex="5" Name="btnCancel" />
                 </StackPanel>
                 <StackPanel DockPanel.Dock="Top" Spacing="7">
