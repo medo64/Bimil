@@ -391,8 +391,15 @@ internal partial class MainWindow : Window {
     public async void mnuItemAdd_Click(object sender, RoutedEventArgs e) {
         if (mnuItemAdd.IsEnabled == false) { return; }
 
-        var frm = new EntryEditorWindow(Document);
-        await frm.ShowDialog(this);
+        var frm = new EntryTemplateWindow();
+        if (await frm.ShowDialog<bool>(this)) {
+            var newEntry = frm.Entry!;
+            var frm2 = new EntryEditorWindow(Document, newEntry);
+            if (await frm2.ShowDialog<bool>(this)) {
+                Document.Records.Add(newEntry);
+                ReplenishEntries();
+            }
+        }
     }
 
     public async void mnuItemEdit_Click(object sender, RoutedEventArgs e) {
@@ -404,7 +411,9 @@ internal partial class MainWindow : Window {
 
         if (lsbEntries.SelectedItem is ListBoxItem { Tag: EntryRecord selectedEntry }) {
             var frm = new EntryEditorWindow(Document, selectedEntry);
-            await frm.ShowDialog(this);
+            if (await frm.ShowDialog<bool>(this)) {
+                ReplenishEntries();
+            }
         }
     }
 

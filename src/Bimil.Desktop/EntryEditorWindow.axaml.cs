@@ -13,22 +13,6 @@ using Medo.Avalonia;
 
 internal partial class EntryEditorWindow : Window {
 
-    public EntryEditorWindow(Document document) {
-        InitializeComponent();
-        AvaloniaHelpers.SetupDialog(this);
-
-        Document = document;
-
-        Replenishment.FillGroups(document, cmbGroups);
-
-        Title = "New";
-
-        AvaloniaHelpers.FocusControl(txtTitle);
-    }
-
-    public readonly Document Document;
-
-
     public EntryEditorWindow(Document document, EntryRecord entry, bool readOnly = false) {
         InitializeComponent();
         Document = document;
@@ -60,6 +44,7 @@ internal partial class EntryEditorWindow : Window {
 
     }
 
+    public readonly Document Document;
     private readonly EntryRecord? Entry;
 
 

@@ -1,0 +1,27 @@
+<Window
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    x:Class="Bimil.EntryTemplateWindow"
+    Width="350" Height="NaN"
+    WindowStartupLocation="CenterOwner"
+    CanResize="false"
+    SizeToContent="Height"
+    Title="Entry Template">
+
+    <StackPanel Margin="7">
+
+        <Grid ColumnDefinitions="Auto, 5, *" RowDefinitions="Auto,5,Auto,5,Auto">
+            <Label Content="Template:" Grid.Column="0" Grid.Row="0" VerticalAlignment="Center" />
+            <ComboBox Name="cmbTemplates" Grid.Column="2" Grid.Row="0" VerticalAlignment="Center" />
+        </Grid>
+
+        <DockPanel Margin="0 11 0 0">
+            <StackPanel HorizontalAlignment="Right" VerticalAlignment="Bottom" Orientation="Horizontal" Spacing="7">
+                <Button Content="_OK" Name="btnOk" HorizontalContentAlignment="Center" />
+                <Button Content="_Cancel" Name="btnCancel" HorizontalContentAlignment="Center" />
+            </StackPanel>
+        </DockPanel>
+
+    </StackPanel>
+
+</Window>

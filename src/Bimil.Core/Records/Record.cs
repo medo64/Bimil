@@ -332,7 +332,7 @@ public abstract class Record {
     /// <summary>
     /// Returns record based on type.
     /// </summary>
-    public static Record Create(ICollection<Field> fields) {
+    internal static Record Create(ICollection<Field> fields) {
         foreach (var field in fields) {
             if (field.Type == FieldType.Uuid) {
                 return new EntryRecord(fields);
