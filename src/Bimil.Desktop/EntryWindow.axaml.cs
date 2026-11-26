@@ -22,6 +22,7 @@ internal partial class EntryWindow : Window {
         Replenishment.FillGroups(document, cmbGroups);
 
         Title = "New";
+
         AvaloniaHelpers.FocusControl(txtTitle);
     }
 
@@ -37,7 +38,7 @@ internal partial class EntryWindow : Window {
 
         if (readOnly) {
             Title = "View";
-            btnOK.IsVisible = false;
+            btnOk.IsVisible = false;
             btnCancel.Content = "Close";
             btnFields.IsVisible = false;
             AvaloniaHelpers.FocusControl(btnCancel);
@@ -49,31 +50,36 @@ internal partial class EntryWindow : Window {
         txtTitle.Text = entry.Title;
         cmbGroups.Text = entry.Group;
 
+        AddHandler(InputElement.KeyDownEvent, Window_KeyDown, RoutingStrategies.Tunnel);
+        btnAutoType.Click += btnAutoType_Click;
+        btnFields.Click += btnFields_Click;
+        btnOk.Click += btnOk_Click;
+        btnCancel.Click += btnCancel_Click;
+
         ReplenishEntry(entry);
 
     }
 
-    protected override void OnKeyDown(KeyEventArgs e) {
-        switch (e.Key) {
-            case Key.Escape: Close(); break;
+    private readonly EntryRecord? Entry;
 
-            default: base.OnKeyDown(e); break;
+
+    #region Events
+
+    private void Window_KeyDown(object? sender, KeyEventArgs e) {
+        Debug.WriteLine($"{GetType().Name}_KeyDown: {(e.KeyModifiers != KeyModifiers.None ? $"{e.KeyModifiers}+" : "")}{e.Key}");
+        e.Handled = true;  // assume it is handled
+        switch ((e.KeyModifiers, e.Key)) {
+            case (KeyModifiers.None, Key.Escape): btnCancel_Click(null, null!); break;
+            case (KeyModifiers.None, Key.F2): btnFields_Click(null, null!); break;
+            case (KeyModifiers.Alt, Key.S): btnOk_Click(null, null!); break;
+            default: e.Handled = false; break;
         }
     }
 
-    private readonly EntryRecord? Entry;
-
-    public void btnOK_Click(object sender, RoutedEventArgs e) {
+    public void btnAutoType_Click(object? sender, RoutedEventArgs e) {
     }
 
-    public void btnCancel_Click(object sender, RoutedEventArgs e) {
-        Close();
-    }
-
-    public void btnAutoType_Click(object sender, RoutedEventArgs e) {
-    }
-
-    public async void btnFields_Click(object sender, RoutedEventArgs e) {
+    public async void btnFields_Click(object? sender, RoutedEventArgs e) {
         var fields = Entry != null ? Entry.Fields.ToArray() : [];
         var frm = new FieldsWindow(fields);
         if (await frm.ShowDialog<bool>(this)) {
@@ -85,6 +91,15 @@ internal partial class EntryWindow : Window {
         }
     }
 
+    public void btnOk_Click(object? sender, RoutedEventArgs e) {
+        Close(true);
+    }
+
+    public void btnCancel_Click(object? sender, RoutedEventArgs e) {
+        Close(false);
+    }
+
+    #endregion Events
 
     private void AddUnknownText(TextField field) {
         var control = AddRow<TextBox>(field.Caption);

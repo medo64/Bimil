@@ -11,12 +11,12 @@
 
         <DockPanel Margin="0 11 0 0" DockPanel.Dock="Bottom">
             <StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom" Orientation="Horizontal" Spacing="7">
-                <Button Content="_Auto-type" Name="btnAutoType" Click="btnAutoType_Click" HorizontalContentAlignment="Center" />
-                <Button Content="_Fields" Name="btnFields" Click="btnFields_Click" HorizontalContentAlignment="Center" />
+                <Button Content="_Auto-type" Name="btnAutoType" HorizontalContentAlignment="Center" />
+                <Button Content="_Fields" Name="btnFields" HorizontalContentAlignment="Center" />
             </StackPanel>
             <StackPanel HorizontalAlignment="Right" VerticalAlignment="Bottom" Orientation="Horizontal" Spacing="7">
-                <Button Content="_OK" Name="btnOK" Click="btnOK_Click" HorizontalContentAlignment="Center" />
-                <Button Content="_Cancel" Name="btnCancel" Click="btnCancel_Click" HorizontalContentAlignment="Center" />
+                <Button Content="_OK" Name="btnOk" HorizontalContentAlignment="Center" />
+                <Button Content="_Cancel" Name="btnCancel" HorizontalContentAlignment="Center" />
             </StackPanel>
         </DockPanel>
 
