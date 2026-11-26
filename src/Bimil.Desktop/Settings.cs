@@ -34,6 +34,15 @@ internal class Settings {
     }
 
     [Category("Behavior")]
+    [DisplayName("Try current password")]
+    [Description("When opening a new document, it will try the current document's password before displaying dialog.")]
+    [DefaultValue(false)]
+    public bool TryCurrentPassword {
+        get { return Config.Read("TryCurrentPassword", false); }
+        set { Config.Write("TryCurrentPassword", value); }
+    }
+
+    [Category("Behavior")]
     [DisplayName("Show start dialog")]
     [Description("Gets/sets if start window will be shown.")]
     [DefaultValue(true)]
@@ -240,14 +249,6 @@ internal class Settings {
     //     set { Config.Write("HibpThrottleInterval", value); }
     // }
 
-    // [Category("Behavior")]
-    // [DisplayName("Try current password")]
-    // [Description("Tries to open file using current document's password, if possible.")]
-    // public static bool TryCurrentPassword {
-    //     get { return Config.Read("TryCurrentPassword", false); }
-    //     set { Config.Write("TryCurrentPassword", value); }
-    // }
-
 
     // private static readonly string[] MonotypeFontDefaults = { "Consolas", "Lucida Console", "Nimbus Mono L", "Ubuntu Mono", "Courier New", "Courier" };
     // [Category("Visual")]
@@ -274,26 +275,6 @@ internal class Settings {
     //     set {
     //         Config.Write("MonotypeFontName", value.Name);
     //     }
-    // }
-
-
-    // #region PasswordGenerator
-
-    // public enum PasswordGeneratorTab {
-    //     Classic = 0,
-    //     Word = 1,
-    //     Triplet = 2
-    // }
-
-    // [Browsable(false)]
-    // public static PasswordGeneratorTab PasswordGeneratorTabSelection {
-    //     get { return (PasswordGeneratorTab)LimitBetween(Config.Read("PasswordGeneratorTabSelection", (int)(PasswordGeneratorUseWord ? PasswordGeneratorTab.Word : PasswordGeneratorTab.Classic)), 0, 2, allowZero: true); }
-    //     set { Config.Write("PasswordGeneratorTabSelection", (int)value); }
-    // }
-
-    // private static bool PasswordGeneratorUseWord {
-    //     get { return Config.Read("PasswordGeneratorUseWord", true); }
-    //     set { Config.Write("PasswordGeneratorUseWord", value); }
     // }
 
 

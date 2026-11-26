@@ -4,6 +4,7 @@ using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Input;
@@ -216,6 +217,19 @@ internal partial class MainWindow : Window {
 
 
     private async void OpenFile(FileInfo file, bool @readonly) {
+        if (Settings.Current.TryCurrentPassword && Document.ActiveKeyBlock.HasPassphrase) {
+            var passphraseBytes = Document.ActiveKeyBlock.Passphrase.GetBytes();
+            try {
+                var wasReadOnly = Document.IsReadOnly;
+                Document = Document.Load(file, passphraseBytes);
+                Document.IsReadOnly = wasReadOnly;
+                ReplenishEntries();
+                return;
+            } catch (Exception) {
+            } finally {
+                CryptographicOperations.ZeroMemory(passphraseBytes);
+            }
+        }
         while (true) {  // repeat until successful or given up
             var frm = PasswordWindow.GetEnterPasswordWindow($"Enter password ({file.Name})");
             await frm.ShowDialog(this);
