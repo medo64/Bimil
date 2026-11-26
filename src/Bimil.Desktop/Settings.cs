@@ -61,7 +61,7 @@ internal class Settings {
     [Category("OTP")]
     [DisplayName("Always use NTP for two-factor")]
     [Description("If true, each time two-factor code is taken an NTP request will be sent. Note that it will cause an NTP lookup.")]
-    [DefaultValue(true)]
+    [DefaultValue(false)]
     public bool AlwaysUseNtpForTwoFactor {
         get { return Config.Read("AlwaysUseNtpForTwoFactor", FindDefault<bool>(nameof(AlwaysUseNtpForTwoFactor))); }
         set { Config.Write("AlwaysUseNtpForTwoFactor", value); }
