@@ -81,7 +81,7 @@ internal partial class EntryEditorWindow : Window {
 
     public async void btnFields_Click(object? sender, RoutedEventArgs e) {
         var fields = Entry != null ? Entry.Fields.ToArray() : [];
-        var frm = new FieldsWindow(fields);
+        var frm = new FieldEditorWindow(fields);
         if (await frm.ShowDialog<bool>(this)) {
             if (Entry is not null) {
                 Entry.Fields.Clear();

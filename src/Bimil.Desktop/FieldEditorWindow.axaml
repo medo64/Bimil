@@ -1,11 +1,11 @@
 <Window
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    x:Class="Bimil.FieldsWindow"
+    x:Class="Bimil.FieldEditorWindow"
     Width="400" Height="400"
     WindowStartupLocation="CenterOwner"
     CanResize="false"
-    Title="Fields">
+    Title="Field Editor">
 
     <DockPanel Margin="7" HorizontalAlignment="Stretch">
 

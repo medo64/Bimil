@@ -8,9 +8,9 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.VisualTree;
 
-internal partial class FieldsWindow : Window {
+internal partial class FieldEditorWindow : Window {
 
-    public FieldsWindow(Field[] fields) {
+    public FieldEditorWindow(Field[] fields) {
         InitializeComponent();
         AvaloniaHelpers.SetupDialog(this);
 
