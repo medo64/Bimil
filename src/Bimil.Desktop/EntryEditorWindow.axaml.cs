@@ -11,9 +11,9 @@ using Avalonia.Media;
 using Medo;
 using Medo.Avalonia;
 
-internal partial class EntryWindow : Window {
+internal partial class EntryEditorWindow : Window {
 
-    public EntryWindow(Document document) {
+    public EntryEditorWindow(Document document) {
         InitializeComponent();
         AvaloniaHelpers.SetupDialog(this);
 
@@ -29,7 +29,7 @@ internal partial class EntryWindow : Window {
     public readonly Document Document;
 
 
-    public EntryWindow(Document document, EntryRecord entry, bool readOnly = false) {
+    public EntryEditorWindow(Document document, EntryRecord entry, bool readOnly = false) {
         InitializeComponent();
         Document = document;
         Entry = entry;

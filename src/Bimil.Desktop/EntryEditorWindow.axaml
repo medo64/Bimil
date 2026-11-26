@@ -1,11 +1,11 @@
 <Window
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    x:Class="Bimil.EntryWindow"
+    x:Class="Bimil.EntryEditorWindow"
     Width="700" Height="500"
     WindowStartupLocation="CenterOwner"
     CanResize="false"
-    Title="Entry">
+    Title="Entry Editor">
 
     <DockPanel Margin="7" VerticalAlignment="Stretch">
 

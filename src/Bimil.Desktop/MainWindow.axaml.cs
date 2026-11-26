@@ -377,7 +377,7 @@ internal partial class MainWindow : Window {
     public async void mnuItemAdd_Click(object sender, RoutedEventArgs e) {
         if (mnuItemAdd.IsEnabled == false) { return; }
 
-        var frm = new EntryWindow(Document);
+        var frm = new EntryEditorWindow(Document);
         await frm.ShowDialog(this);
     }
 
@@ -389,7 +389,7 @@ internal partial class MainWindow : Window {
         }
 
         if (lsbEntries.SelectedItem is ListBoxItem { Tag: EntryRecord selectedEntry }) {
-            var frm = new EntryWindow(Document, selectedEntry);
+            var frm = new EntryEditorWindow(Document, selectedEntry);
             await frm.ShowDialog(this);
         }
     }
@@ -398,7 +398,7 @@ internal partial class MainWindow : Window {
         if (mnuItemView.IsEnabled == false) { return; }
 
         if (lsbEntries.SelectedItem is ListBoxItem { Tag: EntryRecord selectedEntry }) {
-            var frm = new EntryWindow(Document, selectedEntry, readOnly: true);
+            var frm = new EntryEditorWindow(Document, selectedEntry, readOnly: true);
             await frm.ShowDialog(this);
         }
     }
