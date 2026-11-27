@@ -241,7 +241,7 @@ internal partial class MainWindow : Window {
                 var wasReadOnly = Document.IsReadOnly;
                 Document = Document.Load(file, passphraseBytes);
                 Document.IsReadOnly = wasReadOnly;
-                ReplenishEntries();
+                ReplenishDocument();
                 return;
             } catch (Exception) {
             } finally {
@@ -256,7 +256,7 @@ internal partial class MainWindow : Window {
                     Document = Document.Load(file, frm.ExistingPassword);
                     Document.IsReadOnly = @readonly;
                 }
-                ReplenishEntries();
+                ReplenishDocument();
                 break;
             } catch (Exception ex) {
                 await Dispatcher.UIThread.InvokeAsync(() => { }, DispatcherPriority.Background);  // allow UI to update
