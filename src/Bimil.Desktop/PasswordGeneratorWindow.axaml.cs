@@ -168,23 +168,7 @@ internal partial class PasswordGeneratorWindow : Window {
     }
 
     public async void btnCopy_Click(object sender, RoutedEventArgs e) {
-        if (Clipboard != null) {
-            var text = txtPassword.Text!;
-
-            if (PTClipboard.Main.IsAvailable) {
-                if (Settings.Current.SyncPrimaryClipboard) {  // set both primary and clipboard
-                    PTClipboard.SetText(text);
-                } else {
-                    PTClipboard.Main.SetText(text);
-                }
-            } else if (Clipboard != null) {  // Avalonia fallback
-                var data = new DataTransfer();
-                data.Add(DataTransferItem.CreateText(text));
-                await Clipboard.SetDataAsync(data);
-            }
-        } else {
-            Debug.WriteLine("Clipboard is not available.");
-        }
+        Helper.SetClipboardText(txtPassword.Text, Clipboard);
     }
 
     #endregion Buttons

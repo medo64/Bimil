@@ -142,9 +142,7 @@ internal partial class EntryCommonWindow : Window {
         };
 
         buttonCopy.Click += (sender, args) => {
-            var data = new DataTransfer();
-            data.Add(DataTransferItem.CreateText(control.Text));
-            Clipboard?.SetDataAsync(data);
+            Helper.SetClipboardText(control.Text, Clipboard);
         };
 
         return control;
@@ -185,9 +183,7 @@ internal partial class EntryCommonWindow : Window {
         };
 
         buttonCopy.Click += (sender, args) => {
-            var data = new DataTransfer();
-            data.Add(DataTransferItem.CreateText(control.Text ?? ""));
-            Clipboard?.SetDataAsync(data);
+            Helper.SetClipboardText(control.Text, Clipboard);
         };
 
         return control;
@@ -217,9 +213,7 @@ internal partial class EntryCommonWindow : Window {
         };
 
         buttonCopy.Click += (sender, args) => {
-            var data = new DataTransfer();
-            data.Add(DataTransferItem.CreateText(control.Text));
-            Clipboard?.SetDataAsync(data);
+            Helper.SetClipboardText(control.Text, Clipboard);
         };
 
         control.TextChanged += (_, _) => {
@@ -274,9 +268,7 @@ internal partial class EntryCommonWindow : Window {
 
         buttonCopy.Click += (sender, args) => {
             var otp = AvaloniaHelpers.GetOtp(this, Otp.ConvertSecretFromBase32(control.Text));
-            var data = new DataTransfer();
-            data.Add(DataTransferItem.CreateText(otp.GetCodeAsText()));
-            Clipboard?.SetDataAsync(data);
+            Helper.SetClipboardText(otp.GetCodeAsText(), Clipboard);
         };
 
         control.TextChanged += (_, _) => {
