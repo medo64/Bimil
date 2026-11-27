@@ -3,12 +3,13 @@ namespace Bimil;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Reflection;
 using System.Threading;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Templates;
 using Avalonia.Input;
-using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Styling;
 using Avalonia.Threading;
@@ -150,10 +151,18 @@ internal static class AvaloniaHelpers {
     }
 
     public static void FocusControl(Control control) {
+        void DoFocus(Control control) {
+            if (control is AutoCompleteBox acbControl) {
+                acbControl.ApplyTemplate();
+                acbControl.GetTemplateDescendants().OfType<TextBox>().FirstOrDefault()?.Focus();
+            } else {
+                control.Focus(NavigationMethod.Tab);
+            }
+        }
         if (control.IsAttachedToVisualTree()) {
-            control.Focus(NavigationMethod.Tab);
+            DoFocus(control);
         } else {
-            control.AttachedToVisualTree += (sender, e) => { control.Focus(NavigationMethod.Tab); };
+            control.AttachedToVisualTree += (sender, e) => { DoFocus(control); };
         }
     }
 

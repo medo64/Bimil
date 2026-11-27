@@ -16,16 +16,17 @@ internal partial class GroupRenameWindow : Window {
         Document = document;
 
         txtGroupOld.Text = group;
-        txtGroupNew.Text = group;
+        Replenishment.FillGroups(document, acbGroupNew);
+        acbGroupNew.Text = group;
 
         AddHandler(InputElement.KeyDownEvent, Window_KeyDown, RoutingStrategies.Tunnel);
 
-        txtGroupNew.TextChanged += (_, _) => { btnOk.IsEnabled = !(txtGroupOld.Text ?? "").Equals(txtGroupNew.Text ?? "", StringComparison.Ordinal); };
+        acbGroupNew.TextChanged += (_, _) => { btnOk.IsEnabled = !(txtGroupOld.Text ?? "").Equals(acbGroupNew.Text ?? "", StringComparison.Ordinal); };
 
         btnOk.Click += btnOk_Click;
         btnCancel.Click += btnCancel_Click;
 
-        AvaloniaHelpers.FocusControl(txtGroupNew);
+        AvaloniaHelpers.FocusControl(acbGroupNew);
     }
 
     public string NewGroup { get; private set; }
@@ -49,7 +50,7 @@ internal partial class GroupRenameWindow : Window {
         if (!btnOk.IsEnabled) { return; }
 
         var oldGroup = txtGroupOld.Text ?? "";
-        var newGroup = txtGroupNew.Text ?? "";
+        var newGroup = acbGroupNew.Text ?? "";
 
         foreach (var entry in Document.GetEntryList()) {
             if (entry.Group.Equals(oldGroup, StringComparison.Ordinal)) {

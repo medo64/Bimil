@@ -15,7 +15,7 @@
             <TextBox Name="txtGroupOld" Grid.Column="2" Grid.Row="0" Margin="3" VerticalAlignment="Center" IsReadOnly="true" />
 
             <Label Content="New group:" Grid.Column="0" Grid.Row="2" Margin="3" VerticalAlignment="Center" />
-            <TextBox Name="txtGroupNew" Grid.Column="2" Grid.Row="2" Margin="3" VerticalAlignment="Center" />
+            <AutoCompleteBox Name="acbGroupNew" Grid.Column="2" Grid.Row="2" Margin="3" VerticalAlignment="Center" />
         </Grid>
 
         <DockPanel Margin="0 11 0 0">

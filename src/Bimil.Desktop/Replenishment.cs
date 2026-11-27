@@ -37,8 +37,8 @@ internal static class Replenishment {
         }
     }
 
-    public static void FillGroups(Document document, AutoCompleteBox cmbGroups) {
-        cmbGroups.ItemsSource = document.GetGroupList();
+    public static void FillGroups(Document document, AutoCompleteBox acbGroup) {
+        acbGroup.ItemsSource = document.GetGroupList();
     }
 
     public static void SelectGroup(ComboBox cmbGroups, string group) {
