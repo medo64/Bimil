@@ -1,7 +1,7 @@
 <Window
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    x:Class="Bimil.EntryEditorWindow"
+    x:Class="Bimil.EntryCommonWindow"
     Width="700" Height="500"
     WindowStartupLocation="CenterOwner"
     CanResize="false"
@@ -21,31 +21,38 @@
         </DockPanel>
 
         <ScrollViewer DockPanel.Dock="Top" Margin="0 0 0 13">
-            <Grid ColumnDefinitions="Auto, *" RowDefinitions="*, *" Name="grdRecords">
+            <Grid ColumnDefinitions="Auto, 5, *" RowDefinitions="Auto, 0, Auto, 4" Name="grdRecords">
                 <Grid.Styles>
                     <Style Selector="Button:disabled /template/ ContentPresenter">
                         <Setter Property="Background" Value="Transparent" />
                     </Style>
+                    <Style Selector="AutoCompleteBox">
+                        <Setter Property="HorizontalAlignment" Value="Stretch" />
+                        <Setter Property="Margin" Value="3" />
+                    </Style>
+                    <Style Selector="ComboBox">
+                        <Setter Property="HorizontalAlignment" Value="Stretch" />
+                        <Setter Property="Margin" Value="3" />
+                    </Style>
                     <Style Selector="Label">
-                        <Setter Property="Height" Value="24" />
-                        <Setter Property="VerticalContentAlignment" Value="Top" />
+                        <Setter Property="VerticalAlignment" Value="Center" />
                         <Setter Property="Foreground" Value="{DynamicResource MenuTextEnabledForeground}" />
                     </Style>
                     <Style Selector="TextBox">
                         <Setter Property="HorizontalAlignment" Value="Stretch" />
-                        <Setter Property="Margin" Value="5" />
-                    </Style>
-                    <Style Selector="ComboBox">
-                        <Setter Property="HorizontalAlignment" Value="Stretch" />
-                        <Setter Property="Margin" Value="5" />
+                        <Setter Property="Margin" Value="3" />
                     </Style>
                 </Grid.Styles>
 
                 <Label Grid.Row="0" Grid.Column="0">Title:</Label>
-                <TextBox Grid.Row="0" Grid.Column="1" Name="txtTitle" />
+                <TextBox Grid.Row="0" Grid.Column="2" Name="txtTitle" />
 
-                <Label Grid.Row="1" Grid.Column="0">Group:</Label>
-                <AutoCompleteBox Grid.Row="1" Grid.Column="1" Name="cmbGroups" Margin="3 0 3 13" />
+                <Label Grid.Row="2" Grid.Column="0">Group:</Label>
+                <Grid Grid.Row="2" Grid.Column="2" RowDefinitions="Auto" ColumnDefinitions="*, Auto">
+                    <AutoCompleteBox Grid.Row="0" Grid.Column="0" Name="acbGroup" />
+                    <TextBox Grid.Row="0" Grid.Column="0" Name="txtGroup" IsVisible="False" />
+                    <Button Grid.Row="0" Grid.Column="1" Name="btnRenameGroup" Content="_Rename Group" IsVisible="False" />
+                </Grid>
             </Grid>
         </ScrollViewer>
 

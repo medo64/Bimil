@@ -43,6 +43,22 @@ public abstract class Record {
     }
 
 
+    public Record Clone() {
+        var clonedFields = Fields.Clone();
+        foreach (var field in clonedFields) {
+            if (field.Type == FieldType.Uuid) {
+                return new EntryRecord(clonedFields);
+            } else if (field.Type == FieldType.AliasUuid) {
+                return new AliasRecord(clonedFields);
+            } else if (field.Type == FieldType.ShortcutUuid) {
+                return new AliasRecord(clonedFields);
+            } else if (field.Type == FieldType.Attachment4Uuid) {
+                return new AttachmentRecord(clonedFields);
+            }
+        }
+        return new UnknownRecord(clonedFields);
+    }
+
     #region Export/Import
 
     /// <summary>
@@ -60,10 +76,11 @@ public abstract class Record {
     [Obsolete("Use Document.ExportRecordsToJson instead.")]
     public string ExportToJson(bool prettyPrint) {
         var options = new JsonWriterOptions();
-        if (prettyPrint)  {
+        if (prettyPrint) {
             options.Indented = true;
             options.IndentSize = 2;
-        };
+        }
+        ;
 
         using var stream = new MemoryStream();
         using var writer = new Utf8JsonWriter(stream, options);

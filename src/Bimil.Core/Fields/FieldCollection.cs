@@ -291,4 +291,15 @@ public class FieldCollection : IList<Field> {
         return [.. BaseCollection];
     }
 
+    /// <summary>
+    /// Returns cloned collection.
+    /// </summary>
+    public FieldCollection Clone() {
+        var clonedFields = new List<Field>();
+        foreach (var field in BaseCollection) {
+            clonedFields.Add(field.Clone());
+        }
+        return new FieldCollection(clonedFields);
+    }
+
 }

@@ -62,6 +62,7 @@ internal partial class MainWindow : Window {
         ReplenishDocument();
 
         // attach events
+        AddHandler(InputElement.KeyDownEvent, Window_KeyDown, RoutingStrategies.Tunnel);
         txtFilter.TextChanged += (_, _) => { ReplenishEntries(); };
         cmbGroups.SelectionChanged += (_, _) => { ReplenishEntries(); };
     }
@@ -98,8 +99,9 @@ internal partial class MainWindow : Window {
         }
     }
 
-    protected override void OnKeyDown(KeyEventArgs e) {
-        Debug.WriteLine($"[MainWindow] KeyDown: {e.KeyModifiers}+{e.Key}");
+    private void Window_KeyDown(object? sender, KeyEventArgs e) {
+        Debug.WriteLine($"{GetType().Name}_KeyDown: {(e.KeyModifiers != KeyModifiers.None ? $"{e.KeyModifiers}+" : "")}{e.Key}");
+        e.Handled = true;  // assume it is handled
 
         switch ((e.KeyModifiers, e.Key)) {
             case (KeyModifiers.None, Key.Escape):
@@ -205,14 +207,30 @@ internal partial class MainWindow : Window {
                 mnuAppDropDown.IsSubMenuOpen = true;
                 break;
 
+            case (KeyModifiers.None, Key.F4):
+                if (Document.IsReadOnly) {
+                    mnuItemView_Click(null, null!);
+                } else {
+                    mnuItemEdit_Click(null, null!);
+                }
+                break;
+
+            case (KeyModifiers.Shift, Key.F4):
+                mnuItemView_Click(null, null!);
+                break;
+
+            case (KeyModifiers.Control, Key.F4):
+                if (Document.IsReadOnly) {
+                    mnuItemEdit_Click(null, null!);
+                }
+                break;
+
             case (KeyModifiers.None, Key.F5):
                 ReplenishEntries();
                 break;
 
-            default: base.OnKeyDown(e); return;
+            default: e.Handled = false; break;
         }
-
-        e.Handled = true;
     }
 
 
@@ -394,7 +412,7 @@ internal partial class MainWindow : Window {
         var frm = new EntryTemplateWindow();
         if (await frm.ShowDialog<bool>(this)) {
             var newEntry = frm.Entry!;
-            var frm2 = new EntryEditorWindow(Document, newEntry);
+            var frm2 = new EntryEditorWindow(newEntry, Document);
             if (await frm2.ShowDialog<bool>(this)) {
                 Document.Records.Add(newEntry);
                 ReplenishEntries();
@@ -402,7 +420,7 @@ internal partial class MainWindow : Window {
         }
     }
 
-    public async void mnuItemEdit_Click(object sender, RoutedEventArgs e) {
+    public async void mnuItemEdit_Click(object? sender, RoutedEventArgs e) {
         if (mnuItemEdit.IsEnabled == false) { return; }
         if (mnuItemEdit.IsVisible == false) {  // all "view" actions should call the view handler
             mnuItemView_Click(sender, e);
@@ -410,18 +428,20 @@ internal partial class MainWindow : Window {
         }
 
         if (lsbEntries.SelectedItem is ListBoxItem { Tag: EntryRecord selectedEntry }) {
-            var frm = new EntryEditorWindow(Document, selectedEntry);
+            var frm = new EntryEditorWindow(selectedEntry, Document);
             if (await frm.ShowDialog<bool>(this)) {
+                selectedEntry.Fields.Clear();
+                selectedEntry.Fields.AddRange(frm.Entry.Fields);
                 ReplenishEntries();
             }
         }
     }
 
-    public async void mnuItemView_Click(object sender, RoutedEventArgs e) {
+    public async void mnuItemView_Click(object? sender, RoutedEventArgs e) {
         if (mnuItemView.IsEnabled == false) { return; }
 
         if (lsbEntries.SelectedItem is ListBoxItem { Tag: EntryRecord selectedEntry }) {
-            var frm = new EntryEditorWindow(Document, selectedEntry, readOnly: true);
+            var frm = new EntryViewerWindow(selectedEntry);
             await frm.ShowDialog(this);
         }
     }
