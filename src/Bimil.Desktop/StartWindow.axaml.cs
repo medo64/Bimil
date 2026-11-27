@@ -2,6 +2,7 @@ namespace Bimil;
 
 using System;
 using System.Collections;
+using System.Diagnostics;
 using System.IO;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
@@ -17,11 +18,6 @@ internal partial class StartWindow : Window {
     public StartWindow() {
         InitializeComponent();
         AvaloniaHelpers.SetupDialog(this);
-        InputElement.KeyDownEvent.AddClassHandler<TopLevel>((sender, e) => {
-            if ((e.KeyModifiers == KeyModifiers.None) && (e.Key == Key.Enter)) {
-                OnKeyDown(e);
-            }
-        }, handledEventsToo: true);
 
         lsbFiles.SelectionChanged += (sender, e) => {
             var selectedStack = lsbFiles.SelectedItem as StackPanel;
@@ -33,6 +29,7 @@ internal partial class StartWindow : Window {
             mnuRemove.IsEnabled = hasSelection;
         };
 
+        AddHandler(InputElement.KeyDownEvent, Window_KeyDown, RoutingStrategies.Tunnel);
 
         lsbFiles.DoubleTapped += (sender, e) => {
             var point = e.GetPosition(lsbFiles);
@@ -73,7 +70,9 @@ internal partial class StartWindow : Window {
         }
     }
 
-    protected override void OnKeyDown(KeyEventArgs e) {
+    private void Window_KeyDown(object? sender, KeyEventArgs e) {
+        Debug.WriteLine($"{GetType().Name}_KeyDown: {(e.KeyModifiers != KeyModifiers.None ? $"{e.KeyModifiers}+" : "")}{e.Key}");
+        e.Handled = true;  // assume it is handled
         switch ((e.Key, e.KeyModifiers)) {
             case (Key.Enter, KeyModifiers.None): btnOpen_Click(this, e); break;
 
@@ -104,7 +103,7 @@ internal partial class StartWindow : Window {
                 mnuRemove_Click(null, e);
                 break;
 
-            default: base.OnKeyDown(e); break;
+            default: e.Handled = false; break;
         }
     }
 
@@ -119,6 +118,8 @@ internal partial class StartWindow : Window {
             Close();
         }
     }
+
+    #region Events
 
     public void btnOpenReadonly_Click(object sender, RoutedEventArgs e) {
         if (lsbFiles.SelectedItem is StackPanel stack) {
@@ -144,5 +145,7 @@ internal partial class StartWindow : Window {
     public void btnClose_Click(object sender, RoutedEventArgs e) {
         Close();
     }
+
+    #endregion Events
 
 }

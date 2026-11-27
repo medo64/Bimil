@@ -1,0 +1,30 @@
+<Window
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    x:Class="Bimil.GroupRenameWindow"
+    Width="400"
+    WindowStartupLocation="CenterOwner"
+    CanResize="false"
+    SizeToContent="Height"
+    Title="Group Rename">
+
+    <StackPanel Margin="7">
+
+        <Grid ColumnDefinitions="Auto,3,*" RowDefinitions="Auto,3,Auto">
+            <Label Content="Old group:" Grid.Column="0" Grid.Row="0" Margin="3" VerticalAlignment="Center" />
+            <TextBox Name="txtGroupOld" Grid.Column="2" Grid.Row="0" Margin="3" VerticalAlignment="Center" IsReadOnly="true" />
+
+            <Label Content="New group:" Grid.Column="0" Grid.Row="2" Margin="3" VerticalAlignment="Center" />
+            <TextBox Name="txtGroupNew" Grid.Column="2" Grid.Row="2" Margin="3" VerticalAlignment="Center" />
+        </Grid>
+
+        <DockPanel Margin="0 11 0 0">
+            <StackPanel HorizontalAlignment="Right" VerticalAlignment="Bottom" Orientation="Horizontal" Spacing="7">
+                <Button Content="_OK" Name="btnOk" />
+                <Button Content="_Cancel" Name="btnCancel" />
+            </StackPanel>
+        </DockPanel>
+
+    </StackPanel>
+
+</Window>

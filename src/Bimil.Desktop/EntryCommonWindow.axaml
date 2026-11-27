@@ -51,7 +51,7 @@
                 <Grid Grid.Row="2" Grid.Column="2" RowDefinitions="Auto" ColumnDefinitions="*, Auto">
                     <AutoCompleteBox Grid.Row="0" Grid.Column="0" Name="acbGroup" />
                     <TextBox Grid.Row="0" Grid.Column="0" Name="txtGroup" IsVisible="False" />
-                    <Button Grid.Row="0" Grid.Column="1" Name="btnRenameGroup" Content="_Rename Group" IsVisible="False" />
+                    <Button Grid.Row="0" Grid.Column="1" Name="btnGroupRename" Content="_Rename Group" IsVisible="False" />
                 </Grid>
             </Grid>
         </ScrollViewer>

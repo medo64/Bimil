@@ -30,7 +30,8 @@ internal partial class EntryCommonWindow : Window {
             txtGroup.IsVisible = true;
         } else {
             if (document is not null) {
-                btnRenameGroup.IsVisible = true;
+                btnGroupRename.IsVisible = true;
+                btnGroupRename.Click += btnGroupRename_Click;
                 Replenishment.FillGroups(document, acbGroup);
             }
             acbGroup.Text = Entry.Group;
@@ -68,6 +69,14 @@ internal partial class EntryCommonWindow : Window {
             case (KeyModifiers.None, Key.F2): if (!IsReadOnly) { btnFields_Click(null, null!); } break;
             case (KeyModifiers.Alt, Key.S): if (!IsReadOnly) { btnOk_Click(null, null!); } break;
             default: e.Handled = false; break;
+        }
+    }
+
+    public async void btnGroupRename_Click(object? sender, RoutedEventArgs e) {
+        if (Document is null) { return; }
+        var frm = new GroupRenameWindow(acbGroup.Text ?? "", Document);
+        if (await frm.ShowDialog<bool>(this)) {
+            acbGroup.Text = frm.NewGroup;
         }
     }
 

@@ -134,7 +134,7 @@ internal static class AvaloniaHelpers {
         void CloseWindow() {
             Dispatcher.UIThread.InvokeAsync(() => {
                 window.WindowState = WindowState.Normal;
-                window.Close();
+                window.Close(false);
             });
         }
         window.PropertyChanged += (sender, e) => {  // close on minimize
