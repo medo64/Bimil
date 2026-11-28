@@ -59,7 +59,7 @@ internal partial class FieldEditorWindow : Window {
         switch ((e.KeyModifiers, e.Key)) {
             case (KeyModifiers.None, Key.Escape): btnCancel_Click(null, null!); break;
             case (KeyModifiers.None, Key.Insert): btnAdd_Click(null, null!); break;
-            case (KeyModifiers.None, Key.F2): btnEdit_Click(null, null!); break;
+            case (KeyModifiers.None, Key.F4): btnEdit_Click(null, null!); break;
             case (KeyModifiers.None, Key.Delete): btnRemove_Click(null, null!); break;
             case (KeyModifiers.Alt, Key.Up): btnMoveUp_Click(null, null!); break;
             case (KeyModifiers.Alt, Key.Down): btnMoveDown_Click(null, null!); break;

@@ -1,7 +1,7 @@
 <Window
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    x:Class="Bimil.EntryCommonWindow"
+    x:Class="Bimil.EntryEditorWindow"
     Width="700" Height="500"
     WindowStartupLocation="CenterOwner"
     CanResize="false"
@@ -13,6 +13,7 @@
             <StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom" Orientation="Horizontal" Spacing="7">
                 <Button Content="_Auto-type" Name="btnAutoType" HorizontalContentAlignment="Center" />
                 <Button Content="_Fields" Name="btnFields" HorizontalContentAlignment="Center" />
+                <Button Content="_Edit" Name="btnEditable" HorizontalContentAlignment="Center" IsVisible="False" />
             </StackPanel>
             <StackPanel HorizontalAlignment="Right" VerticalAlignment="Bottom" Orientation="Horizontal" Spacing="7">
                 <Button Content="_OK" Name="btnOk" HorizontalContentAlignment="Center" />
@@ -50,8 +51,8 @@
                 <Label Grid.Row="2" Grid.Column="0">Group:</Label>
                 <Grid Grid.Row="2" Grid.Column="2" RowDefinitions="Auto" ColumnDefinitions="*, Auto">
                     <AutoCompleteBox Grid.Row="0" Grid.Column="0" Name="acbGroup" />
-                    <TextBox Grid.Row="0" Grid.Column="0" Name="txtGroup" IsVisible="False" />
-                    <Button Grid.Row="0" Grid.Column="1" Name="btnGroupRename" Content="_Rename Group" IsVisible="False" />
+                    <TextBox Grid.Row="0" Grid.Column="0" Name="txtGroup" IsReadOnly="True" IsVisible="False" />
+                    <Button Grid.Row="0" Grid.Column="1" Name="btnGroupRename" Content="_Rename Group" />
                 </Grid>
             </Grid>
         </ScrollViewer>

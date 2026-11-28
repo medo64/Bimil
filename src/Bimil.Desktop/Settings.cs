@@ -129,6 +129,15 @@ internal class Settings {
         set { Config.Write("Theme", value.ToString()); }
     }
 
+    [Category("UI")]
+    [DisplayName("Editable by default")]
+    [Description("If true, all fields will be editable by default.")]
+    [DefaultValue(false)]
+    public bool EditableByDefault {
+        get { return Config.Read("EditableByDefault", FindDefault<bool>(nameof(EditableByDefault))); }
+        set { Config.Write("EditableByDefault", value); }
+    }
+
 
 
     // [Category("Behavior")]
@@ -183,15 +192,6 @@ internal class Settings {
     // public static bool AutoClearClipboardForSensitiveDataOnly {
     //     get { return Config.Read("AutoClearClipboardForSensitiveDataOnly", false); }
     //     set { Config.Write("AutoClearClipboardForSensitiveDataOnly", value); }
-    // }
-
-    // [Category("Behavior")]
-    // [DisplayName("Editable by default")]
-    // [Description("If true, all fields will be editable by default.")]
-    // [DefaultValue(true)]
-    // public static bool EditableByDefault {
-    //     get { return Config.Read("EditableByDefault", true); }
-    //     set { Config.Write("EditableByDefault", value); }
     // }
 
     // [Category("Behavior")]

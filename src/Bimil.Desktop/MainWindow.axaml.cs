@@ -25,9 +25,9 @@ internal partial class MainWindow : Window {
 
         ThemeImageResources.Updated += (s, e) => {
             ThemeImageResources.SetImage(mnuFileNew, "FileNew");
-            ThemeImageResources.SetImage(mnuFileOpen, "FileOpen");
-            ThemeImageResources.SetImage(mnuFileSave, "FileSave");
-            ThemeImageResources.SetImage(mnuFileProperties, "FileEdit");
+            ThemeImageResources.SetImage(mnuFileOpenHead, "FileOpen");
+            ThemeImageResources.SetImage(mnuFileSaveHead, "FileSave");
+            ThemeImageResources.SetImage(mnuFilePropertiesHead, "FileEdit");
             ThemeImageResources.SetImage(mnuItemAdd, "ItemAdd");
             ThemeImageResources.SetImage(mnuItemView, "ItemView");
             ThemeImageResources.SetImage(mnuItemEdit, "ItemEdit");
@@ -63,6 +63,32 @@ internal partial class MainWindow : Window {
 
         // attach events
         AddHandler(InputElement.KeyDownEvent, Window_KeyDown, RoutingStrategies.Tunnel);
+        mnuFileNew.Click += mnuFileNew_Click;
+        mnuFileOpenHead.Click += mnuFileOpen_Click;
+        mnuFileOpen.Click += mnuFileOpen_Click;
+        mnuFileSaveHead.Click += mnuFileSave_Click;
+        mnuFileSave.Click += mnuFileSave_Click;
+        mnuFileSaveAs.Click += mnuFileSaveAs_Click;
+        mnuFilePropertiesHead.Click += mnuFileProperties_Click;
+        mnuFileProperties.Click += mnuFileProperties_Click;
+        mnuFilePropertiesPassword.Click += mnuFilePropertiesPassword_Click;
+        mnuFilePropertiesReadonly.Click += mnuFilePropertiesReadonly_Click;
+        mnuItemAdd.Click += mnuItemAdd_Click;
+        mnuItemView.Click += mnuItemView_Click;
+        mnuItemEdit.Click += mnuItemEdit_Click;
+        mnuItemRemove.Click += mnuItemRemove_Click;
+        mnuFind.Click += mnuFind_Click;
+        mnuPasswordGenerator.Click += mnuPasswordGenerator_Click;
+        mnuApp.Click += mnuAppOptions_Click;
+        mnuAppDarkMode.Click += OnMenuAppDarkModeClick;
+        mnuAppLightMode.Click += OnMenuAppLightModeClick;
+        mnuAppOptions.Click += mnuAppOptions_Click;
+        mnuAppFeedback.Click += mnuAppFeedback_Click;
+        mnuAppUpgrade.Click += mnuAppUpgrade_Click;
+        mnuAppAbout.Click += mnuAppAbout_Click;
+        mnuEntryCut.Click += mnuEntryCut_Click;
+        mnuEntryCopy.Click += mnuEntryCopy_Click;
+        mnuEntryPaste.Click += mnuEntryPaste_Click;
         txtFilter.TextChanged += (_, _) => { ReplenishEntries(); };
         cmbGroups.SelectionChanged += (_, _) => { ReplenishEntries(); };
     }
@@ -185,7 +211,7 @@ internal partial class MainWindow : Window {
             case (KeyModifiers.Alt, Key.E):
             case (KeyModifiers.None, Key.OemPipe):
             case (KeyModifiers.None, Key.Multiply):
-                mnuItemEdit_Click(null!, null!);
+                mnuItemEdit_Click(null, null!);
                 break;
 
             case (KeyModifiers.Alt, Key.R):
@@ -208,21 +234,11 @@ internal partial class MainWindow : Window {
                 break;
 
             case (KeyModifiers.None, Key.F4):
-                if (Document.IsReadOnly) {
-                    mnuItemView_Click(null, null!);
-                } else {
-                    mnuItemEdit_Click(null, null!);
-                }
+                lsbEntries_DoubleTapped(null, null!);
                 break;
 
             case (KeyModifiers.Shift, Key.F4):
-                mnuItemView_Click(null, null!);
-                break;
-
-            case (KeyModifiers.Control, Key.F4):
-                if (Document.IsReadOnly) {
-                    mnuItemEdit_Click(null, null!);
-                }
+                mnuItemEdit_Click(null, null!);
                 break;
 
             case (KeyModifiers.None, Key.F5):
@@ -269,7 +285,7 @@ internal partial class MainWindow : Window {
 
     #region Menu
 
-    public async void mnuFileNew_Click(object sender, RoutedEventArgs e) {
+    public async void mnuFileNew_Click(object? sender, RoutedEventArgs e) {
         if (mnuFileNew.IsEnabled == false) { return; }
 
         var frm = PasswordWindow.GetNewPasswordWindow("Select password");
@@ -280,7 +296,7 @@ internal partial class MainWindow : Window {
         }
     }
 
-    public void mnuFileOpen_SubmenuOpened(object sender, RoutedEventArgs e) {
+    public void mnuFileOpen_SubmenuOpened(object? sender, RoutedEventArgs e) {
         var root = sender as Menu ?? (sender as MenuItem)?.Parent as Menu;
         if (root == null) { return; }
 
@@ -302,7 +318,7 @@ internal partial class MainWindow : Window {
         }
     }
 
-    public async void mnuFileOpen_Click(object sender, RoutedEventArgs e) {
+    public async void mnuFileOpen_Click(object? sender, RoutedEventArgs e) {
         if (mnuFileOpen.IsEnabled == false) { return; }
 
         var filePickerOptions = new FilePickerOpenOptions {
@@ -326,7 +342,7 @@ internal partial class MainWindow : Window {
         }
     }
 
-    public void mnuFileSave_Click(object sender, RoutedEventArgs e) {
+    public void mnuFileSave_Click(object? sender, RoutedEventArgs e) {
         if (mnuFileSave.IsEnabled == false) { return; }
 
         if (Document.File != null) {
@@ -340,7 +356,7 @@ internal partial class MainWindow : Window {
         }
     }
 
-    public async void mnuFileSaveAs_Click(object sender, RoutedEventArgs e) {
+    public async void mnuFileSaveAs_Click(object? sender, RoutedEventArgs e) {
         if (mnuFileSave.IsEnabled == false) { return; }
 
         var filePickerOptions = new FilePickerSaveOptions {
@@ -370,20 +386,20 @@ internal partial class MainWindow : Window {
         }
     }
 
-    public void mnuFileProperties_SubmenuOpened(object sender, RoutedEventArgs e) {
+    public void mnuFileProperties_SubmenuOpened(object? sender, RoutedEventArgs e) {
         mnuFilePropertiesReadonly.Header = (Document.IsReadOnly)
                                          ? "Make read/write"
                                          : "Make read-only";
     }
 
-    public async void mnuFileProperties_Click(object sender, RoutedEventArgs e) {
+    public async void mnuFileProperties_Click(object? sender, RoutedEventArgs e) {
         if (mnuFileProperties.IsEnabled == false) { return; }
 
         var frm = new PropertiesWindow(Document);
         await frm.ShowDialog(this);
     }
 
-    public async void mnuFilePropertiesPassword_Click(object sender, RoutedEventArgs e) {
+    public async void mnuFilePropertiesPassword_Click(object? sender, RoutedEventArgs e) {
         var title = (Document.File != null) ? $"Change password ({Document.File.Name})" : $"Change password";
         while (true) {  // repeat until successful or given up
             var frm = PasswordWindow.GetChangePasswordWindow(title, hasFile: true);
@@ -401,18 +417,18 @@ internal partial class MainWindow : Window {
         }
     }
 
-    public void mnuFilePropertiesReadonly_Click(object sender, RoutedEventArgs e) {
+    public void mnuFilePropertiesReadonly_Click(object? sender, RoutedEventArgs e) {
         Document.IsReadOnly = !Document.IsReadOnly;
     }
 
 
-    public async void mnuItemAdd_Click(object sender, RoutedEventArgs e) {
+    public async void mnuItemAdd_Click(object? sender, RoutedEventArgs e) {
         if (mnuItemAdd.IsEnabled == false) { return; }
 
         var frm = new EntryTemplateWindow();
         if (await frm.ShowDialog<bool>(this)) {
             var newEntry = frm.Entry!;
-            var frm2 = new EntryEditorWindow(newEntry, Document);
+            var frm2 = new EntryEditorWindow(newEntry, startReadonly: false, Document);
             if (await frm2.ShowDialog<bool>(this)) {
                 Document.Records.Add(newEntry);
                 ReplenishEntries();
@@ -428,7 +444,7 @@ internal partial class MainWindow : Window {
         }
 
         if (lsbEntries.SelectedItem is ListBoxItem { Tag: EntryRecord selectedEntry }) {
-            var frm = new EntryEditorWindow(selectedEntry, Document);
+            var frm = new EntryEditorWindow(selectedEntry, startReadonly: false, Document);
             if (await frm.ShowDialog<bool>(this)) {
                 selectedEntry.Fields.Clear();
                 selectedEntry.Fields.AddRange(frm.Entry.Fields);
@@ -441,12 +457,12 @@ internal partial class MainWindow : Window {
         if (mnuItemView.IsEnabled == false) { return; }
 
         if (lsbEntries.SelectedItem is ListBoxItem { Tag: EntryRecord selectedEntry }) {
-            var frm = new EntryViewerWindow(selectedEntry);
+            var frm = new EntryEditorWindow(selectedEntry, startReadonly: true, Document);
             await frm.ShowDialog(this);
         }
     }
 
-    public void mnuItemRemove_Click(object sender, RoutedEventArgs e) {
+    public void mnuItemRemove_Click(object? sender, RoutedEventArgs e) {
         if (mnuItemRemove.IsEnabled == false) { return; }
 
         if (lsbEntries.SelectedItem is ListBoxItem { Tag: EntryRecord selectedEntry }) {
@@ -464,18 +480,18 @@ internal partial class MainWindow : Window {
     }
 
 
-    public async void mnuFind_Click(object sender, RoutedEventArgs e) {
+    public async void mnuFind_Click(object? sender, RoutedEventArgs e) {
         var frm = new FindWindow(Document);
         await frm.ShowDialog(this);
     }
 
-    public async void mnuPasswordGenerator_Click(object sender, RoutedEventArgs e) {
+    public async void mnuPasswordGenerator_Click(object? sender, RoutedEventArgs e) {
         var frm = new PasswordGeneratorWindow();
         await frm.ShowDialog(this);
     }
 
 
-    public void OnMenuAppOpened(object sender, RoutedEventArgs e) {
+    public void OnMenuAppOpened(object? sender, RoutedEventArgs e) {
         var app = AppAvalonia.Current!;
         var menuItemDark = this.FindControl<MenuItem>("MenuAppDarkMode") ?? throw new InvalidOperationException("Cannot find menu item.");
         var menuItemLight = this.FindControl<MenuItem>("MenuAppLightMode") ?? throw new InvalidOperationException("Cannot find menu item.");
@@ -489,17 +505,17 @@ internal partial class MainWindow : Window {
         }
     }
 
-    public void OnMenuAppDarkModeClick(object sender, RoutedEventArgs e) {
+    public void OnMenuAppDarkModeClick(object? sender, RoutedEventArgs e) {
         AppAvalonia.Current!.RequestedThemeVariant = ThemeVariant.Dark;
         Settings.Current.Theme = Settings.ThemeVariant.Dark;
     }
 
-    public void OnMenuAppLightModeClick(object sender, RoutedEventArgs e) {
+    public void OnMenuAppLightModeClick(object? sender, RoutedEventArgs e) {
         AppAvalonia.Current!.RequestedThemeVariant = ThemeVariant.Light;
         Settings.Current.Theme = Settings.ThemeVariant.Light;
     }
 
-    public async void mnuAppOptions_Click(object sender, RoutedEventArgs e) {
+    public async void mnuAppOptions_Click(object? sender, RoutedEventArgs e) {
         var frm = new OptionsWindow();
         await frm.ShowDialog(this);
         switch (Settings.Current.Theme) {
@@ -515,15 +531,15 @@ internal partial class MainWindow : Window {
         }
     }
 
-    public void mnuAppFeedback_Click(object sender, RoutedEventArgs e) {
+    public void mnuAppFeedback_Click(object? sender, RoutedEventArgs e) {
         Medo.Avalonia.FeedbackBox.ShowDialog(this, new Uri("https://medo64.com/feedback/"));
     }
 
-    public void mnuAppUpgrade_Click(object sender, RoutedEventArgs e) {
+    public void mnuAppUpgrade_Click(object? sender, RoutedEventArgs e) {
         Medo.Avalonia.UpgradeBox.ShowDialog(this, new Uri("https://medo64.com/upgrade/"));
     }
 
-    public void mnuAppAbout_Click(object sender, RoutedEventArgs e) {
+    public void mnuAppAbout_Click(object? sender, RoutedEventArgs e) {
         Medo.Avalonia.AboutBox.ShowDialog(this, new Uri("https://medo64.com/bimil/"));
     }
 
@@ -583,15 +599,19 @@ internal partial class MainWindow : Window {
 
     #region Events
 
-    public void lsbEntries_SelectionChanged(object sender, SelectionChangedEventArgs e) {
+    public void lsbEntries_SelectionChanged(object? sender, SelectionChangedEventArgs e) {
         var selectedEntry = (lsbEntries.SelectedItem as ListBoxItem)?.Tag as EntryRecord;
         mnuItemView.IsEnabled = (selectedEntry != null);
-        mnuItemEdit.IsEnabled = (selectedEntry != null);
+        mnuItemEdit.IsEnabled = (selectedEntry != null) && !Document.IsReadOnly;
         mnuItemRemove.IsEnabled = (selectedEntry != null);
     }
 
-    public void lsbEntries_DoubleTapped(object sender, TappedEventArgs e) {
-        mnuItemEdit_Click(sender, e);
+    public void lsbEntries_DoubleTapped(object? sender, TappedEventArgs e) {
+        if (Settings.Current.EditableByDefault) {
+            mnuItemEdit_Click(null, null!);
+        } else {
+            mnuItemView_Click(null, null!);
+        }
     }
 
     #endregion

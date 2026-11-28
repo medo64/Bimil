@@ -111,6 +111,7 @@ public sealed partial class Document {
 
             //return new Document(passphraseBuffer, (int)iter, headerFields, [.. recordFields]);
             var doc = new Document(DatabaseVersion.V3, keyBlock, [keyBlock], headerFields, records);
+            if (forcedKey != null) { doc.IsReadOnly = true; }  // no auto-save for forced key
             return doc;
         } finally { //best effort to sanitize memory
             if (stretchedKey != null) { CryptographicOperations.ZeroMemory(stretchedKey); }

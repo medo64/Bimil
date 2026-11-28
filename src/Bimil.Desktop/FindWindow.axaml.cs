@@ -94,7 +94,7 @@ internal partial class FindWindow : Window {
 
     private async void lsbEntries_DoubleTapped() {
         if (lsbEntries.SelectedItem is ListBoxItem { Tag: EntryRecord selectedEntry }) {
-            var frm = new EntryViewerWindow(selectedEntry);
+            var frm = new EntryEditorWindow(selectedEntry, startReadonly: true, Document);
             await frm.ShowDialog(this);
         }
 

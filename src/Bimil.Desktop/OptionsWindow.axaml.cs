@@ -26,6 +26,7 @@ internal partial class OptionsWindow : Window {
 
         // UI
         SetTooltip(cmbTheme, nameof(Settings.Current.Theme));
+        SetTooltip(chbEditableByDefault, nameof(Settings.Current.EditableByDefault));
 
         // Two-factor
         SetTooltip(chbUseNtp, nameof(Settings.Current.AlwaysUseNtpForTwoFactor));
@@ -64,6 +65,7 @@ internal partial class OptionsWindow : Window {
 
         // UI
         cmbTheme.SelectedIndex = (int)Settings.Current.Theme;
+        chbEditableByDefault.IsChecked = Settings.Current.EditableByDefault;
 
         // Two-factor
         chbUseNtp.IsChecked = Settings.Current.AlwaysUseNtpForTwoFactor;
@@ -79,6 +81,7 @@ internal partial class OptionsWindow : Window {
 
         // UI
         cmbTheme.SelectedIndex = (int)Settings.FindDefault<Settings.ThemeVariant>(nameof(Settings.Current.Theme));
+        chbEditableByDefault.IsChecked = Settings.FindDefault<bool>(nameof(Settings.Current.EditableByDefault));
 
         // Two-factor
         chbUseNtp.IsChecked = Settings.FindDefault<bool>(nameof(Settings.Current.AlwaysUseNtpForTwoFactor));
@@ -94,6 +97,7 @@ internal partial class OptionsWindow : Window {
 
         // UI
         Settings.Current.Theme = (Settings.ThemeVariant)cmbTheme.SelectedIndex;
+        Settings.Current.EditableByDefault = chbEditableByDefault.IsChecked!.Value;
 
         // Two-factor
         Settings.Current.AlwaysUseNtpForTwoFactor = chbUseNtp.IsChecked ?? false;

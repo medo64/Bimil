@@ -54,13 +54,16 @@
             </TabItem>
 
             <TabItem Header="UI">
-                <Grid Margin="0 7 0 0" ColumnDefinitions="Auto, *">
+                <Grid Margin="0 7 0 0" RowDefinitions="Auto,Auto" ColumnDefinitions="Auto, *">
                     <Label Content="Theme:" Grid.Row="0" Grid.Column="0" />
                     <ComboBox Name="cmbTheme" Grid.Row="0" Grid.Column="1">
                         <ComboBoxItem>System</ComboBoxItem>
                         <ComboBoxItem>Light</ComboBoxItem>
                         <ComboBoxItem>Dark</ComboBoxItem>
                     </ComboBox>
+
+                    <Label Content="Editable by default:" Grid.Row="1" Grid.Column="0" />
+                    <CheckBox Name="chbEditableByDefault" Grid.Row="1" Grid.Column="1" />
                 </Grid>
             </TabItem>
 
