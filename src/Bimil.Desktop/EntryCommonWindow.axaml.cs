@@ -256,6 +256,8 @@ internal partial class EntryCommonWindow : Window {
             buttonShow.IsEnabled = hasData;
             buttonCopy.IsEnabled = hasData;
         };
+        var originalBackground = control.Background;
+        var errorBackground = new SolidColorBrush(Colors.Red);
 
         buttonView.Click += (sender, args) => {
             control.RevealPassword = !control.RevealPassword;
@@ -272,7 +274,14 @@ internal partial class EntryCommonWindow : Window {
         };
 
         control.TextChanged += (_, _) => {
-            // TODO
+            try {
+                var bytes = Otp.ConvertSecretFromBase32(control.Text);
+                field!.Data.SetBytes(bytes);
+                control.Background = originalBackground;
+            } catch (ArgumentOutOfRangeException) {
+                control.Background = errorBackground;  // TODO: Check why not working
+            }
+            control.UpdateLayout();
         };
         return (control, control2FA);
     }

@@ -28,6 +28,8 @@ internal static class Filtering {
             };
         } else if (field is CustomTextField) {
             return true;
+        } else if (field.Type == FieldType.TwoFactorKey) {
+            return true;
         } else {
             return false;
         }
