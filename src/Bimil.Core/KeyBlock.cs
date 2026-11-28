@@ -38,13 +38,14 @@ public sealed class KeyBlock {
     public ProtectedBytes KeyK { get; }
 
     /// <summary>
-    /// Gets key in base 58 encoding.
+    /// Gets encryption key as base 32 encoded text (Rude32 alphabet).
+    /// This key can be used for backup access.
     /// </summary>
-    public string KeyKAsBase58 {
+    public string BackupKeyAsText {
         get {
             var keyKBytes = KeyK.GetBytes();
             try {
-                return Base58.ToString(keyKBytes);
+                return Rude32.ToString(keyKBytes, includeChecksumInPadding: true);
             } finally {
                 CryptographicOperations.ZeroMemory(keyKBytes);
             }

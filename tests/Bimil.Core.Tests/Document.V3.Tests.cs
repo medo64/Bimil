@@ -108,11 +108,11 @@ public partial class DocumentTests {
     [TestMethod]
     public void Document_V3_LoadFromKey() {
         var stream = GetResourceStream("Empty.psafe3");
-        var doc = Document.Load(stream, Encoding.UTF8.GetBytes("323C8AEB9DADA7EB304A4632CE6E84F863A95FB61AA4E23BA507D6D0EE49658F"));
+        var doc = Document.Load(stream, Encoding.UTF8.GetBytes("68Y8 NUWX NPKY PC2A 8RTC WVM4 Z1HU JQXP 3AJE 4EX5 0ZBD 1VJ9 CP7T"));
 
         Assert.AreEqual(DatabaseVersion.V3, doc.DatabaseVersion);
         Assert.AreEqual(327680U, doc.ActiveKeyBlock.IterationCount);
-        Assert.AreEqual("323C8AEB9DADA7EB304A4632CE6E84F863A95FB61AA4E23BA507D6D0EE49658F", Convert.ToHexString(doc.ActiveKeyBlock.KeyK.GetBytes()));
+        Assert.AreEqual("68Y8NUWXNPKYPC2A8RTCWVM4Z1HUJQXP3AJE4EX50ZBD1VJ9CP7T", doc.ActiveKeyBlock.BackupKeyAsText);
         Assert.AreEqual("", Convert.ToHexString(doc.ActiveKeyBlock.KeyL.GetBytes()));
         Assert.IsTrue(doc.IsReadOnly);
 
@@ -166,7 +166,7 @@ public partial class DocumentTests {
         var ex = Assert.ThrowsExactly<FormatException>(() => {
             var doc = Document.Load(stream, Encoding.UTF8.GetBytes("0000000000000000000000000000000000000000000000000000000000000000"));
         });
-        Assert.AreEqual("Key mismatch.", ex.Message);
+        Assert.AreEqual("Passphrase mismatch.", ex.Message);
     }
 
 }

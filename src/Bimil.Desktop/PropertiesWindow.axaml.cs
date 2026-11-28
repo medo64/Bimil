@@ -2,7 +2,6 @@ namespace Bimil;
 
 using System;
 using Avalonia.Controls;
-using Avalonia.Input;
 using Avalonia.Interactivity;
 
 internal partial class PropertiesWindow : Window {
@@ -36,7 +35,7 @@ internal partial class PropertiesWindow : Window {
 
     public void chbShowKey_IsCheckedChanged(object? sender, RoutedEventArgs e) {
         if (chbShowKey.IsChecked == true) {
-            txtEncryptionKey.Text = Document.ActiveKeyBlock.KeyKAsBase58;
+            txtEncryptionKey.Text = Document.ActiveKeyBlock.BackupKeyAsText;
         } else {
             txtEncryptionKey.Text = "";
         }

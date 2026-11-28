@@ -162,11 +162,11 @@ public partial class DocumentTests {
         ctf.IsSensitive = true;
         record1.Fields.Add(ctf);
 
-        var exported = Document.ExportRecordsToJson(new Record[] { record1 }, prettyPrint: true);
+        var exported = Document.ExportRecordsToJson(new Record[] { record1 }, prettyPrint: true).Replace("\r", "");
         Assert.AreEqual("{\n  \"id\": \"Bimil\",\n  \"records\": [\n    {\n      \"fields\": [\n        {\n          \"type\": \"Uuid\",\n          \"uuid\": \"01234567-89ab-cdef-0123-456789abcdef\"\n        },\n        {\n          \"type\": \"Title\",\n          \"text\": \"Title\"\n        },\n        {\n          \"type\": \"CustomTextField\",\n          \"caption\": \"Caption\",\n          \"text\": \"Text\",\n          \"isSensitive\": true\n        }\n      ]\n    }\n  ]\n}", exported);
 
         Assert.IsTrue(Document.TryImportRecordsFromJson(exported, out var imported));
-        var exported2 = Document.ExportRecordsToJson(imported, prettyPrint: true);
+        var exported2 = Document.ExportRecordsToJson(imported, prettyPrint: true).Replace("\r", "");
 
         Assert.AreEqual(exported, exported2);
     }

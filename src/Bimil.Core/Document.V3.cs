@@ -20,8 +20,12 @@ public sealed partial class Document {
             stretchedKey = GetStretchedKey(passphrase, salt, iter);
             if (!AreBytesTheSame(GetSha256Hash(stretchedKey), bytes, 40)) {
                 try {
-                    forcedKey = Convert.FromHexString(passphrase);  // try converting to bytes
-                    if (forcedKey.Length != 32) { forcedKey = null; }  // key must be 32 bytes
+                    forcedKey = new byte[32];
+                    if (Rude32.TryFromString(passphrase, forcedKey)) {
+                        if (forcedKey.Length != 32) { forcedKey = null; }  // key must be 32 bytes
+                    } else {
+                        forcedKey = null;
+                    }
                 } catch (FormatException) { }
                 if (forcedKey == null) { throw new CryptographicException("Passphrase mismatch."); }
             }

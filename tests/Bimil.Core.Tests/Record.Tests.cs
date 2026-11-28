@@ -123,11 +123,11 @@ public class RecordTests {
         ctf.IsSensitive = true;
         entry.Fields.Add(ctf);
 
-        var exported = entry.ExportToJson(prettyPrint: true);
+        var exported = entry.ExportToJson(prettyPrint: true).Replace("\r", "");
         Assert.AreEqual("{\n  \"kind\": \"Bimil.Record\",\n  \"fields\": [\n    {\n      \"type\": \"Uuid\",\n      \"uuid\": \"01234567-89ab-cdef-0123-456789abcdef\"\n    },\n    {\n      \"type\": \"Title\",\n      \"text\": \"Title\"\n    },\n    {\n      \"type\": \"CustomTextField\",\n      \"caption\": \"Caption\",\n      \"text\": \"Text\",\n      \"isSensitive\": true\n    }\n  ]\n}", exported);
 
         Assert.IsTrue(EntryRecord.TryImportFromJson(exported, out var imported));
-        var exported2 = imported.ExportToJson(prettyPrint: true);
+        var exported2 = imported.ExportToJson(prettyPrint: true).Replace("\r", "");
 
         Assert.AreEqual(exported, exported2);
     }
